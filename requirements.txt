@@ -1,6 +1,13 @@
 Django==1.4.1
+amqplib==1.0.2
+anyjson==0.3.3
+billiard==2.7.3.17
+celery==3.0.11
 distribute==0.6.28
 dj-database-url==0.2.1
-psycopg2==2.4.5
-wsgiref==0.1.2
+django-celery==3.0.10
 gunicorn==0.14.6
+kombu==2.4.7
+psycopg2==2.4.5
+python-dateutil==1.5
+wsgiref==0.1.2
