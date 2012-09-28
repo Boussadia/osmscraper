@@ -1,4 +1,4 @@
 venv
 *pyc
-celerybeat-schedule
+celerybeat-schedule.db
 sqlite_dbs
