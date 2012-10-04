@@ -121,8 +121,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'gunicorn',
     'kombu.transport.django',
+    'place_du_marche',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
