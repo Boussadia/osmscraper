@@ -12,9 +12,6 @@ from scrapers.place_du_marche import Place_du_marche
 celery = Celery('tasks', broker=settings.BROKER_URL)
 place_du_marche = Place_du_marche()
 
-@periodic_task(run_every=crontab(minute="*/1"))
+@periodic_task(run_every=crontab(minute=0, hour=0, day_of_week='sun'))
 def get_place_du_marche_categories():
 	place_du_marche.get_menu()
-
-
-# get_place_du_marche_categories.delay()
