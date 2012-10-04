@@ -123,6 +123,7 @@ INSTALLED_APPS = (
     'kombu.transport.django',
     'djcelery',
     'place_du_marche',
+    'scrapers',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -161,6 +162,7 @@ LOGGING = {
 
 # Backend with Celery
 BROKER_BACKEND = 'django'
+BROKER_URL = 'django://'
 
 import djcelery
 djcelery.setup_loader()
