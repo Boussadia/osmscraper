@@ -121,6 +121,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'gunicorn',
     'kombu.transport.django',
+    'djcelery',
     'place_du_marche',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
@@ -156,3 +157,10 @@ LOGGING = {
         },
     }
 }
+
+
+# Backend with Celery
+BROKER_BACKEND = 'django'
+
+import djcelery
+djcelery.setup_loader()
