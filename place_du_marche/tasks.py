@@ -86,4 +86,4 @@ def get_place_du_marche_categories():
 	# 				products = place_du_marche.extract_product_list(sub_category_level_2[key_last_level]["url"])
 	# 				save_products(products)
 
-get_place_du_marche_categories.delay()
+# get_place_du_marche_categories.delay()
