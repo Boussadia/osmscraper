@@ -61,7 +61,7 @@ def save_products(products):
 	print len(products)
 
 
-@periodic_task(run_every=crontab(minute=0, hour=0))
+@periodic_task(run_every=crontab(minute=0, hour=22))
 def get_place_du_marche_categories():
 	place_du_marche.get_menu()
 	categories = place_du_marche.get_categories()
