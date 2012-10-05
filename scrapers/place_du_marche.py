@@ -31,7 +31,7 @@ class Place_du_marche(OSMScraper):
 
 					url = a.get("href")
 					sub_category[title_sub_catagory] = {
-						"url": url,
+						"url": self.get_base_url()+ "/" +url,
 						"sub_categories": {}
 					}
 				sub_childs = child.find("ol")
@@ -40,7 +40,7 @@ class Place_du_marche(OSMScraper):
 					last_sub_category = {}
 					for a in sub_childs.findAll("a"):
 						titre_sub_child_a = a.find(text=True)
-						url_last_child = a.get("href")
+						url_last_child = self.get_base_url()+ "/" + a.get("href")
 						if titre_sub_child_a != "Tout afficher":
 							print "Found last catagory "+titre_sub_child_a+" for sub category "+title_sub_catagory
 							last_sub_category[titre_sub_child_a] = {}
