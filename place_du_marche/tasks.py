@@ -96,8 +96,8 @@ def get_place_du_marche_categories():
 			promotion = product["promotion"]
 
 			print "Saving product "+ title+" to database..."
-			# product_object, created = Product.objects.get_or_create(category = category_final ,title = unicode(title), brand = brand, url= unicode(url), full_text = unicode(full_text), price = price, unit_price = unit_price, unit = unit, image_url = unicode(image_url), promotion = promotion)
-			product_object, created = Product.objects.get_or_create(url= unicode(url))
+			product_object, created = Product.objects.get_or_create(category = category_final ,title = unicode(title), brand = brand, url= unicode(url), full_text = unicode(full_text), price = price, unit_price = unit_price, unit = unit, image_url = unicode(image_url), promotion = promotion)
+			# product_object, created = Product.objects.get_or_create(category = category_final, title = unicode(title), url= unicode(url), brand = brand, unit = unit, full_text = unicode(full_text), price = price, unit_price = unit_price, image_url = unicode(image_url), promotion = promotion)
 
 			if not created:
 				if product_object.title != unicode(title) or product_object.category != category_final or product_object.brand != brand or product_object.full_text != unicode(full_text) or product_object.price != price or product_object.unit_price != unit_price or product_object.unit != unit or product_object.image_url != unicode(image_url) or product_object.promotion != promotion:

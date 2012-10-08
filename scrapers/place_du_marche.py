@@ -140,7 +140,6 @@ class Place_du_marche(OSMScraper):
 				if len(price_text)>0:
 					if len(price_text[0].findAll(text=True))>0:
 						if len(price_text[0].findAll(text=True)[-1].split())>0:
-							print promotion
 							if promotion != -1:
 								if len(price_text[0].findAll(text=True)[-1].split())>1:
 									unit_price = float(".".join(price_text[0].findAll(text=True)[-1].split()[1][1:].split(",")))

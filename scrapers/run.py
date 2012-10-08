@@ -19,4 +19,4 @@ import time
 
 telemarket = Telemarket()
 telemarket.get_menu()
-# print telemarket.get_categories()
+print telemarket.get_categories()
