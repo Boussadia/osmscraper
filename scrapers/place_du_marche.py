@@ -13,7 +13,7 @@ class Place_du_marche(OSMScraper):
 	def get_menu(self):
 		categories = {}
 		parsed_page = self.get_parsed_page_for_url()
-		menu = parsed_page.find(id="menu").find_all("td");
+		menu = parsed_page.find(id="menu").find_all("td")
 
 		print "Found "+str(len(menu))+" main categories."
 
@@ -95,7 +95,7 @@ class Place_du_marche(OSMScraper):
 	def extract_product(self, url):
 		product = {}
 		image_url = ""
-		promotion = 0
+		promotion = 0 # Sometimes promotion price = normal price, reason : same price but more of the product => -1 = no promotion for sure, else promotion
 		title_product = ""
 		price = 0
 		unit_price = 0
@@ -128,10 +128,10 @@ class Place_du_marche(OSMScraper):
 					if price_html[0].find("strike") is not None:
 						price = float(".".join(price_html[0].find("strike").find(text=True)[:-2].split(",")))
 						price_after_promotion = float(".".join(price_html[0].find("strong").find(text=True)[:-2].split(",")))
-						promotion = 1- price_after_promotion/price
+						promotion = 1- price_after_promotion/price 
 					else:
 						price = float(".".join(price_html[0].find("strong").find(text=True)[:-6].split(",")))
-						promotion = 0
+						promotion = -1 
 			
 
 			# Getting unit price
@@ -140,7 +140,8 @@ class Place_du_marche(OSMScraper):
 				if len(price_text)>0:
 					if len(price_text[0].findAll(text=True))>0:
 						if len(price_text[0].findAll(text=True)[-1].split())>0:
-							if promotion != 0:
+							print promotion
+							if promotion != -1:
 								if len(price_text[0].findAll(text=True)[-1].split())>1:
 									unit_price = float(".".join(price_text[0].findAll(text=True)[-1].split()[1][1:].split(",")))
 									unit = price_text[0].findAll(text=True)[-1].split()[-1][:-1]
@@ -148,7 +149,6 @@ class Place_du_marche(OSMScraper):
 									unit_price = -1
 									unit = "Unit"
 							else:
-								# print price_text[0].findAll(text=True)[-1].split()
 								if len(price_text[0].findAll(text=True)[-1].split())>0:
 									unit_price = float(".".join(price_text[0].findAll(text=True)[-1].split()[0][1:].split(",")))
 									unit = price_text[0].findAll(text=True)[-1].split()[-1][:-1]
