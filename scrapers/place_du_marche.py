@@ -95,7 +95,7 @@ class Place_du_marche(OSMScraper):
 	def extract_product(self, url):
 		product = {}
 		image_url = ""
-		promotion = ""
+		promotion = 0
 		title_product = ""
 		price = ""
 		unit_price = ""
@@ -114,14 +114,14 @@ class Place_du_marche(OSMScraper):
 				image_url = image_html.find("img").get("src")
 			
 
-			# Getting promotion if available
-			image_promotion = product_html.findAll("td",{"class": "photo aligncenter"})
-			if len(image_promotion)>0:
-				image_promotion = image_promotion[0].find("div")
-				if image_promotion is not None:
-					for div_image in image_promotion.findAll('img'):
-						if div_image.get("title")[:-11].find("remise")>-1:
-							promotion = div_image.get("title")[:-11]
+			# # Getting promotion if available
+			# image_promotion = product_html.findAll("td",{"class": "photo aligncenter"})
+			# if len(image_promotion)>0:
+			# 	image_promotion = image_promotion[0].find("div")
+			# 	if image_promotion is not None:
+			# 		for div_image in image_promotion.findAll('img'):
+			# 			if div_image.get("title")[:-11].find("remise")>-1:
+			# 				promotion = div_image.get("title")[:-11]
 			
 			# Getting title
 			infos_produits_html = product_html.find(id="infosProduit")
@@ -133,26 +133,42 @@ class Place_du_marche(OSMScraper):
 			# Getting price
 			
 			if infos_produits_html is not None:
-				price = infos_produits_html.findAll("div", {"class": "prix"} )
-				if len(price)>0:
-					if promotion != "":
-						price = price[0].find("strike").find(text=True)[:-2]
+				price_html = infos_produits_html.findAll("div", {"class": "prix"} )
+				if len(price_html)>0:
+					if price_html[0].find("strike") is not None:
+						price = float(".".join(price_html[0].find("strike").find(text=True)[:-2].split(",")))
+						price_after_promotion = float(".".join(price_html[0].find("strong").find(text=True)[:-2].split(",")))
+						promotion = 1- price_after_promotion/price
 					else:
-						price = price[0].find("strong").find(text=True)[:-6]
+						price = float(".".join(price_html[0].find("strong").find(text=True)[:-6].split(",")))
+						promotion = 0
 			
 
 			# Getting unit price
-			
 			if infos_produits_html is not None:
 				price_text = infos_produits_html.findAll("div", {"class": "prix"} )
 				if len(price_text)>0:
 					if len(price_text[0].findAll(text=True))>0:
 						if len(price_text[0].findAll(text=True)[-1].split())>0:
-							if promotion != "":
-								unit_price = price_text[0].findAll(text=True)[-1].split()[1][1:]
+							if promotion != 0:
+								if len(price_text[0].findAll(text=True)[-1].split())>1:
+									unit_price = float(".".join(price_text[0].findAll(text=True)[-1].split()[1][1:].split(",")))
+									unit = price_text[0].findAll(text=True)[-1].split()[-1][:-1]
+								else:
+									unit_price = -1
+									unit = "Unit"
 							else:
-								unit_price = price_text[0].findAll(text=True)[-1].split()[0][1:]
-							unit = price_text[0].findAll(text=True)[-1].split()[-1][:-1]
+								# print price_text[0].findAll(text=True)[-1].split()
+								if len(price_text[0].findAll(text=True)[-1].split())>0:
+									unit_price = float(".".join(price_text[0].findAll(text=True)[-1].split()[0][1:].split(",")))
+									unit = price_text[0].findAll(text=True)[-1].split()[-1][:-1]
+								else:
+									unit_price = -1
+									unit = "Unit"
+						else:
+							unit_price = -1
+							unit = "Unit"
+
 
 			# Getting Brand
 			

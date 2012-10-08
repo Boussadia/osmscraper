@@ -39,11 +39,12 @@ class Unit(models.Model):
 
 class Product(models.Model):
 	title = models.CharField(max_length=1000)
-	brand = models.ManyToManyField(Brand)
+	url = models.CharField(max_length=9999, unique = True)
+	brand = models.ForeignKey(Brand)
 	full_text = models.TextField()
 	price = models.FloatField()
 	unit_price = models.FloatField()
-	unit = models.ManyToManyField(Unit)
+	unit = models.ForeignKey(Unit)
 	image_url = models.CharField(max_length=9999)
 	promotion = models.FloatField()
 	category = models.ForeignKey(Category_final)
