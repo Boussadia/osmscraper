@@ -97,8 +97,8 @@ class Place_du_marche(OSMScraper):
 		image_url = ""
 		promotion = 0
 		title_product = ""
-		price = ""
-		unit_price = ""
+		price = 0
+		unit_price = 0
 		unit = ""
 		brand = ""
 		block_text = ""
@@ -112,16 +112,6 @@ class Place_du_marche(OSMScraper):
 			if len(image_html)>0:
 				image_html = image_html[0]
 				image_url = image_html.find("img").get("src")
-			
-
-			# # Getting promotion if available
-			# image_promotion = product_html.findAll("td",{"class": "photo aligncenter"})
-			# if len(image_promotion)>0:
-			# 	image_promotion = image_promotion[0].find("div")
-			# 	if image_promotion is not None:
-			# 		for div_image in image_promotion.findAll('img'):
-			# 			if div_image.get("title")[:-11].find("remise")>-1:
-			# 				promotion = div_image.get("title")[:-11]
 			
 			# Getting title
 			infos_produits_html = product_html.find(id="infosProduit")

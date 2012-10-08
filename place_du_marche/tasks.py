@@ -77,27 +77,43 @@ def get_place_du_marche_categories():
 		category_final = categories_final[i]
 		products = place_du_marche.extract_product_list(category_final.url)
 		for product_key in products:
-			print "Url product : "+url
-
 			product = products[product_key]
 
 			url = product_key
+			print "Url product : "+url
 			title = product["title"]
 			brand_str = product["brand"]
-			print "Saving brand "+ brand_str+" to database"
+			print "Saving brand "+ brand_str+" to database..."
 			brand, created_brand = Brand.objects.get_or_create(name = brand_str)
 			full_text = product["full_text"]
 
 			price = product["price"]
 			unit_price = product["unit_price"]
 			unit_str = product["unit"]
-			print "Saving unit "+ unit_str+" to database"
+			print "Saving unit "+ unit_str+" to database..."
 			unit, created_unit = Unit.objects.get_or_create(name = unit_str)
 			image_url = product["image_url"]
 			promotion = product["promotion"]
 
-			print "Saving product "+ title+" to database"
+			print "Saving product "+ title+" to database..."
 			product_object, created = Product.objects.get_or_create(category = category_final ,title = unicode(title), brand = brand, url= unicode(url), full_text = unicode(full_text), price = price, unit_price = unit_price, unit = unit, image_url = unicode(image_url), promotion = promotion)
 
-# get_place_du_marche_categories.delay()
-# print place_du_marche.extract_product("http://www.placedumarche.fr/supermarche-en-ligne-livraison-80-maxi-carr-s-b-b-,3292,9,228,721.htm")
+			if not created:
+				if product_object.title != unicode(title) or product_object.category != category_final or product_object.brand != brand or product_object.full_text != unicode(full_text) or product_object.price != price or product_object.unit_price != unit_price or product_object.unit != unit or product_object.image_url != unicode(image_url) or product_object.promotion != promotion:
+					print "Product changed, saving again"
+					product_object.title = unicode(title)
+					product_object.category = category_final
+					product_object.brand = brand
+					product_object.full_text = unicode(full_text)
+					product_object.price = price
+					product_object.unit_price = unit_price
+					product_object.unit = unit
+					product_object.image_url = unicode(image_url)
+					product_object.promotion = promotion
+					product_object.save()
+				else:
+					print "Product did not change"
+
+
+get_place_du_marche_categories.delay()
+# print place_du_marche.extract_product("http://www.placedumarche.fr/supermarche-en-ligne-livraison-languedoc-roussillon-le-go-t-de-l-authentique-collection-a-lad-couverte-des-chefs-de-nos-r-gions-,7174,11,266.htm")
