@@ -96,7 +96,8 @@ def get_place_du_marche_categories():
 			promotion = product["promotion"]
 
 			print "Saving product "+ title+" to database..."
-			product_object, created = Product.objects.get_or_create(category = category_final ,title = unicode(title), brand = brand, url= unicode(url), full_text = unicode(full_text), price = price, unit_price = unit_price, unit = unit, image_url = unicode(image_url), promotion = promotion)
+			# product_object, created = Product.objects.get_or_create(category = category_final ,title = unicode(title), brand = brand, url= unicode(url), full_text = unicode(full_text), price = price, unit_price = unit_price, unit = unit, image_url = unicode(image_url), promotion = promotion)
+			product_object, created = Product.objects.get_or_create(url= unicode(url))
 
 			if not created:
 				if product_object.title != unicode(title) or product_object.category != category_final or product_object.brand != brand or product_object.full_text != unicode(full_text) or product_object.price != price or product_object.unit_price != unit_price or product_object.unit != unit or product_object.image_url != unicode(image_url) or product_object.promotion != promotion:
@@ -115,5 +116,5 @@ def get_place_du_marche_categories():
 					print "Product did not change"
 
 
-# get_place_du_marche_categories.delay()
+get_place_du_marche_categories.delay()
 # print place_du_marche.extract_product("http://www.placedumarche.fr/supermarche-en-ligne-livraison-tendre-noix-la-broche-2-1-tranche-gratuite,10179,4,182,1001.htm")
