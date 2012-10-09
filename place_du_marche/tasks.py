@@ -116,5 +116,5 @@ def get_place_du_marche_categories():
 					print "Product did not change"
 
 
-get_place_du_marche_categories.delay()
+# get_place_du_marche_categories.delay()
 # print place_du_marche.extract_product("http://www.placedumarche.fr/supermarche-en-ligne-livraison-tendre-noix-la-broche-2-1-tranche-gratuite,10179,4,182,1001.htm")
