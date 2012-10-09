@@ -97,4 +97,4 @@ def get_telemarket_categories():
 	categories = telemarket.get_categories()
 	save_categories(categories)
 
-get_telemarket_categories.delay()
+# get_telemarket_categories.delay()
