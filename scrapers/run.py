@@ -18,5 +18,6 @@ import time
 # Telemarket
 
 telemarket = Telemarket()
-telemarket.get_menu()
+# telemarket.get_menu()
 # print telemarket.get_categories()
+# print telemarket.extract_product_list("http://www.telemarket.fr/dynv6/listeProduitsCategorie/0060002000200-Laits-de-croissance.shtml?module=&path=/listeProduitsCategorie/006002000001000030-Bavoirs-et-Vaisselle")

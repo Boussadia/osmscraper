@@ -39,7 +39,7 @@ class Unit(models.Model):
 
 class Product(models.Model):
 	title = models.CharField(max_length=1000)
-	url = models.CharField(max_length=9999, unique = True)
+	url = models.CharField(max_length=9999)
 	brand = models.ForeignKey(Brand)
 	full_text = models.TextField()
 	price = models.FloatField()
@@ -48,6 +48,10 @@ class Product(models.Model):
 	image_url = models.CharField(max_length=9999)
 	promotion = models.FloatField()
 	category = models.ForeignKey(Category_final)
+
+	class Meta:
+		unique_together = ("title", "url", "category")
+
 
 	def __unicode__(self):
 		return self.title

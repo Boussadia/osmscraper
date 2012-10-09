@@ -19,7 +19,11 @@ class OSMScraper(object):
 		if url.find(self.get_base_url())>-1:
 			pass
 		else:
-			url = self.get_base_url()+"/"+url
+			if len(url)>0:
+				if url[0] != '/':
+					url = self.get_base_url()+"/"+url
+				else:
+					url = self.get_base_url()+url
 		print "Fetching page from "+url
 		response = urllib2.urlopen(url)
 		html = response.read()
@@ -29,7 +33,7 @@ class OSMScraper(object):
 
 	def get_parsed_page_for_url(self, url=""):
 		html_page = self.fetch_html(url)
-		parsed_page = BeautifulSoup(html_page)
+		parsed_page = BeautifulSoup(html_page, "lxml")
 		return parsed_page
 
 	def get_base_url(self):
@@ -46,3 +50,6 @@ class OSMScraper(object):
 			Method to overide by child class.
 		"""
 		pass
+
+	def convert_price_to_float(self, price):
+		return float(".".join(price.split(",")))

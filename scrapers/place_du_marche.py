@@ -126,11 +126,11 @@ class Place_du_marche(OSMScraper):
 				price_html = infos_produits_html.findAll("div", {"class": "prix"} )
 				if len(price_html)>0:
 					if price_html[0].find("strike") is not None:
-						price = float(".".join(price_html[0].find("strike").find(text=True)[:-2].split(",")))
-						price_after_promotion = float(".".join(price_html[0].find("strong").find(text=True)[:-2].split(",")))
+						price = self.convert_price_to_float(price_html[0].find("strike").find(text=True)[:-2])
+						price_after_promotion = self.convert_price_to_float(price_html[0].find("strong").find(text=True)[:-2])
 						promotion = 1- price_after_promotion/price 
 					else:
-						price = float(".".join(price_html[0].find("strong").find(text=True)[:-6].split(",")))
+						price = self.convert_price_to_float(price_html[0].find("strong").find(text=True)[:-6])
 						promotion = -1 
 			
 
@@ -142,14 +142,14 @@ class Place_du_marche(OSMScraper):
 						if len(price_text[0].findAll(text=True)[-1].split())>0:
 							if promotion != -1:
 								if len(price_text[0].findAll(text=True)[-1].split())>1:
-									unit_price = float(".".join(price_text[0].findAll(text=True)[-1].split()[1][1:].split(",")))
+									unit_price = self.convert_price_to_float(price_text[0].findAll(text=True)[-1].split()[1][1:])
 									unit = price_text[0].findAll(text=True)[-1].split()[-1][:-1]
 								else:
 									unit_price = -1
 									unit = "Unit"
 							else:
 								if len(price_text[0].findAll(text=True)[-1].split())>0:
-									unit_price = float(".".join(price_text[0].findAll(text=True)[-1].split()[0][1:].split(",")))
+									unit_price = self.convert_price_to_float(price_text[0].findAll(text=True)[-1].split()[0][1:])
 									unit = price_text[0].findAll(text=True)[-1].split()[-1][:-1]
 								else:
 									unit_price = -1

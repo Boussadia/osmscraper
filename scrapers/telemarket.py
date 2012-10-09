@@ -80,7 +80,6 @@ class Telemarket(OSMScraper):
 				first_categories[name] = {}
 				first_categories[name]["url"] = url
 				second_categories = self.extract_sub_category_level_3(child.find("ul",{"class":"subMenuLevel3"}))
-				print len(second_categories)
 				first_categories[name]["sub_categories"] = second_categories
 		return first_categories
 
@@ -93,3 +92,63 @@ class Telemarket(OSMScraper):
 				first_categories[name] = {}
 				first_categories[name]["url"] = url
 		return first_categories
+
+
+	def extract_product_list(self, url):
+		products = {}
+		parsed_page = self.get_parsed_page_for_url(url)
+
+		block_produtcs_html = parsed_page.find("div",{"class","blocListeProduit"})
+
+		if block_produtcs_html is not None:
+			product_list = block_produtcs_html.find_all("div",{"class":"blocConteneurProduit"})
+			print "Found "+str(len(product_list))+" products"
+
+			for product in product_list:
+				p = self.extract_product(product)
+
+				products[p["title"]] = p
+
+		return products
+
+	def extract_product(self, product):
+		image_url = self.convert_imae_url(product.find("div",{"class":"imageProduit"}).find("img").get("src"))
+		title = product.find("div",{"class":"blocDescriptionProduit"}).find("span").find(text=True)
+		url = product.find("div",{"class":"imageProduit"}).find("a").get("href")
+		if product.find("div",{"class":"blocTarifProduit"}).find(text=True) is not None:
+			price = self.convert_price_to_float(product.find("div",{"class":"blocTarifProduit"}).find(text=True)[:-2])
+		else:
+			price = -1
+
+		unit_price_html = product.find("div",{"class":"prixPoidsProduit"}).find(text=True)
+		if unit_price_html is None:
+			unit = "Unit"
+			unit_price = -1
+		else:
+			unit = unit_price_html.split(' / ')[-1]
+			unit_price = self.convert_price_to_float(unit_price_html.split(' / ')[0][:-2])
+
+
+		promotion = False
+		type_promotion = ''
+		# Promotion
+		img_html = product.find("div",{"class":"infoDroiteProduit"}).find("img")
+		if img_html is not None and img_html.get("alt")=="promotion":
+			promotion = True
+			label_promoation = product.find("div",{"class":"LabelProduitPromo"})
+			if label_promoation is not None:
+				type_promotion = label_promoation.find("span").find(text=True)
+
+		return { 
+					"url": url,
+					"title": title,
+					"price": price,
+					"unit": unit,
+					"unit_price": unit_price,
+					"image_url": image_url,
+					"promotion": promotion,
+					"type_promotion": type_promotion,
+				}
+
+	def convert_imae_url(self, image_url):
+		return image_url[:-6]+"t0.jpg" 

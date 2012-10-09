@@ -1,7 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# import sys
-# sys.setrecursionlimit(1500)
 
 from celery.task.schedules import crontab
 from celery.task import periodic_task
@@ -63,9 +61,6 @@ def save_categories_final_for_sub(categories_final, category_sub):
 
 	return categories_final_objects
 
-def save_products(products):
-	print len(products)
-
 
 @periodic_task(run_every=crontab(minute=0, hour=22))
 def get_place_du_marche_categories():
@@ -96,7 +91,7 @@ def get_place_du_marche_categories():
 			promotion = product["promotion"]
 
 			print "Saving product "+ title+" to database..."
-			product_object, created = Product.objects.get_or_create(category = category_final ,title = unicode(title), brand = brand, url= unicode(url), full_text = unicode(full_text), price = price, unit_price = unit_price, unit = unit, image_url = unicode(image_url), promotion = promotion)
+			product_object, created = Product.objects.get_or_create(category = category_final ,title = unicode(title),  url= unicode(url), defaults= { "brand" : brand, "full_text" : unicode(full_text), "price" : price, "unit_price" : unit_price, "unit" : unit, "image_url" : unicode(image_url), "promotion" : promotion})
 			# product_object, created = Product.objects.get_or_create(category = category_final, title = unicode(title), url= unicode(url), brand = brand, unit = unit, full_text = unicode(full_text), price = price, unit_price = unit_price, image_url = unicode(image_url), promotion = promotion)
 
 			if not created:
@@ -116,5 +111,5 @@ def get_place_du_marche_categories():
 					print "Product did not change"
 
 
-# get_place_du_marche_categories.delay()
+# get_place_du_marche_categories()
 # print place_du_marche.extract_product("http://www.placedumarche.fr/supermarche-en-ligne-livraison-tendre-noix-la-broche-2-1-tranche-gratuite,10179,4,182,1001.htm")
