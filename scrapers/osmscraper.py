@@ -24,6 +24,9 @@ class OSMScraper(object):
 					url = self.get_base_url()+"/"+url
 				else:
 					url = self.get_base_url()+url
+			else:
+				url = self.get_base_url()
+		
 		print "Fetching page from "+url
 		response = urllib2.urlopen(url)
 		html = response.read()
