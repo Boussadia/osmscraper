@@ -1,5 +1,6 @@
 from place_du_marche import Place_du_marche
 from telemarket import Telemarket
+from monoprix import Monoprix
 
 import time
 
@@ -17,7 +18,15 @@ import time
 
 # Telemarket
 
-telemarket = Telemarket()
-telemarket.get_menu()
+# telemarket = Telemarket()
+# telemarket.get_menu()
 # print telemarket.get_categories()
 # print telemarket.extract_product_list("http://www.telemarket.fr/dynv6/listeProduitsCategorie/0060002000200-Laits-de-croissance.shtml?module=&path=/listeProduitsCategorie/006002000001000030-Bavoirs-et-Vaisselle")
+
+# Monoprix
+
+monoprix = Monoprix()
+# monoprix.get_menu()
+# print monoprix.get_categories()
+# print monoprix.extract_product_list("http://courses.monoprix.fr/RIDD/Croquettes-Friandises-8594010")
+print monoprix.extract_product("http://courses.monoprix.fr/RIDE/Cordons-bleus-a-la-dinde-1963653")

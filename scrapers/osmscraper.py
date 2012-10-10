@@ -54,5 +54,8 @@ class OSMScraper(object):
 		"""
 		pass
 
-	def convert_price_to_float(self, price):
-		return float(".".join(price.split(",")))
+	def convert_price_to_float(self, str_price):
+		return float(self.strip_string(str_price).replace(",",".").replace(u'\u20ac',""))
+
+	def strip_string(self, str):
+		return " ".join(str.split())

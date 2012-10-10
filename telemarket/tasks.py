@@ -91,7 +91,7 @@ def save_products(url_sub_category, category_final):
 			else:
 				print "Product did not change"
 
-@periodic_task(run_every=crontab(minute=0, hour=0))
+@periodic_task(run_every=crontab(minute=0, hour=23))
 def get_telemarket_categories():
 	telemarket.get_menu()
 	categories = telemarket.get_categories()
