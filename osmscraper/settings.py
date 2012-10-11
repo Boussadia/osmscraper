@@ -124,7 +124,9 @@ INSTALLED_APPS = (
     'djcelery',
     'place_du_marche',
     'telemarket',
+    'monoprix',
     'scrapers',
+    'scraper_scheduler',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:

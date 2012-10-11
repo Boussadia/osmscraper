@@ -26,7 +26,7 @@ import time
 # Monoprix
 
 monoprix = Monoprix()
-# monoprix.get_menu()
-# print monoprix.get_categories()
+monoprix.get_menu()
+print monoprix.get_categories()
 # print monoprix.extract_product_list("http://courses.monoprix.fr/RIDD/Croquettes-Friandises-8594010")
-print monoprix.extract_product("http://courses.monoprix.fr/RIDE/Cordons-bleus-a-la-dinde-1963653")
+# print monoprix.extract_product("http://courses.monoprix.fr/RIDE/Savon-a-l-huile-d-amande-douce-bio-1951547")

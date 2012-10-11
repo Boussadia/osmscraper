@@ -1,16 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from celery.task.schedules import crontab
-from celery.task import periodic_task
-
 from django.conf import settings
-from celery import Celery
 
 from scrapers.place_du_marche import Place_du_marche
 from models import *
 
-celery = Celery('tasks', broker=settings.BROKER_URL)
 place_du_marche = Place_du_marche()
 
 def save_categories(categories):
@@ -62,8 +57,7 @@ def save_categories_final_for_sub(categories_final, category_sub):
 	return categories_final_objects
 
 
-@periodic_task(run_every=crontab(minute=0, hour=22))
-def get_place_du_marche_categories():
+def perform_scraping():
 	place_du_marche.get_menu()
 	categories = place_du_marche.get_categories()
 	categories_final = save_categories(categories)
@@ -111,5 +105,5 @@ def get_place_du_marche_categories():
 					print "Product did not change"
 
 
-# get_place_du_marche_categories()
+# get_place_du_marche_categories.delay()
 # print place_du_marche.extract_product("http://www.placedumarche.fr/supermarche-en-ligne-livraison-tendre-noix-la-broche-2-1-tranche-gratuite,10179,4,182,1001.htm")

@@ -152,7 +152,16 @@ class Monoprix(OSMScraper):
 
 		product["brand"] = self.strip_string(product_infos.find("p",{"class":"Style01"}).find(text=True))
 		product["title"] = self.strip_string(product_infos.find("p",{"class":"Style02"}).find(text=True))
-		product["price"] = self.convert_price_to_float(product_section.find("p",{"class","priceBox"}).find("label").find(text=True))
+		if product_section.find("p",{"class","priceBox"}) is not None:
+			product["price"] = self.convert_price_to_float(product_section.find("p",{"class","priceBox"}).find("label").find(text=True))
+			product["promotion"] = 0
+			product["promotion_html"] = ""
+		else:
+			product["price"] = self.convert_price_to_float(product_section.find("span",{"class","priceBox"}).find(text=True))
+			product["promotion_html"] =  "".join([unicode(element) for element in product_section.find("p",{"class","Style05"}).contents])
+			product["promotion"] = 1-(self.convert_price_to_float(product_section.find("p",{"class","promoPriceBox"}).find("del").find(text=True)))/(product["price"])
+
+
 		product["unit_price"], product["unit"] = self.strip_string(product_section.find("p",{"class":"Style06"}).find(text=True)).split(" / ")
 		product["unit_price"] = self.convert_price_to_float(product["unit_price"])
 

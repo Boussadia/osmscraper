@@ -1,16 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from celery.task.schedules import crontab
-from celery.task import periodic_task
-
 from django.conf import settings
-from celery import Celery
 
 from scrapers.telemarket import Telemarket
 from models import *
 
-celery = Celery('tasks', broker=settings.BROKER_URL)
 telemarket = Telemarket()
 
 def save_categories(categories):
@@ -91,10 +86,7 @@ def save_products(url_sub_category, category_final):
 			else:
 				print "Product did not change"
 
-@periodic_task(run_every=crontab(minute=0, hour=23))
-def get_telemarket_categories():
+def perform_scraping():
 	telemarket.get_menu()
 	categories = telemarket.get_categories()
 	save_categories(categories)
-
-# get_telemarket_categories.delay()
