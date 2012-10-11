@@ -24,7 +24,7 @@ def save_categories(categories):
 	for name_category in categories:
 		print "Saving Main Category "+name_category
 		url_category = categories[name_category]["url"]
-		category, created = Category_main.objects.get_or_create(name=name_category, url = url_category)
+		category, created = Category_main.objects.get_or_create(name=name_category, defaults={"url":url_category})
 		sub_categories = categories[name_category]["sub_categories"]
 
 		for name_sub_category in sub_categories:
