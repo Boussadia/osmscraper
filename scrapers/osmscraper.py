@@ -38,23 +38,37 @@ class OSMScraper(object):
 			print "Page Fetched for "+response.geturl()
 			response.close()
 			self.__network_failures_retry__ = 0 # Everything went OK, setting variable for network failure to 0
-			return html
+			return html, 200
+		except urllib2.HTTPError, e:
+			if e.code == 404:
+				print "Error when retrieving "+url+" : page not found."
+				return None, 404
+			else:
+				self.__network_failures_retry__ = self.__network_failures_retry__ + 1
+				if self.__network_failures_retry__ < OSMScraper.MAX_NETWORK_FAILURE_TRIES:
+					print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
+					time.sleep(self.__network_failures_retry__)
+					return self.fetch_html(url)
+				else:
+					print "Error when retrieving "+url
+					return None, e.code
 		except urllib2.URLError, e:
-			print e.reason
 			self.__network_failures_retry__ = self.__network_failures_retry__ + 1
-			if self.__network_failures_retry__ < MAX_NETWORK_FAILURE_TRIES:
-				print "Error occured, retrying in "+self.__network_failures_retry__" s"
+			if self.__network_failures_retry__ < OSMScraper.MAX_NETWORK_FAILURE_TRIES:
+				print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
 				time.sleep(self.__network_failures_retry__)
-				self.fetch_html(url)
-		else:
-			pass
-		finally:
-			pass
+				return self.fetch_html(url)
+			else:
+				print "Error when retrieving "+url
+				return None, -1
 
 	def get_parsed_page_for_url(self, url=""):
-		html_page = self.fetch_html(url)
-		parsed_page = BeautifulSoup(html_page, "lxml")
-		return parsed_page
+		html_page, code = self.fetch_html(url)
+		if html_page is not None:
+			parsed_page = BeautifulSoup(html_page, "lxml")
+		else:
+			parsed_page = BeautifulSoup("", "lxml")
+		return parsed_page, code
 
 	def get_base_url(self):
 		return self.__base_url__

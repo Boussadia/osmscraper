@@ -13,51 +13,59 @@ class Telemarket(OSMScraper):
 
 	def get_menu(self):
 		categories = {}
-		parsed_page = self.get_parsed_page_for_url("http://www.telemarket.fr/dynv6/index.shtml")
-		# print parsed_page.prettify()
-		menu_html = parsed_page.find(id="menuP").find_all("ul",{"class":"first"})[0]
-		categories_html = menu_html.find_all("li")
+		parsed_page, code = self.get_parsed_page_for_url("http://www.telemarket.fr/dynv6/index.shtml")
 
-		# Site menu nb : index 0 = home, we skip it is not a category
-		for i in xrange(1,len(categories_html)):
-			category_html = categories_html[i]
-			category_name = category_html.find(text=True)
-			category_url = category_html.find_all("a")[0].get("href")
-			categories[category_name] = {
-				"url": category_url,
-			}
+		if code == 200:
+			# The request was sucessfull
+			menu_html = parsed_page.find(id="menuP").find_all("ul",{"class":"first"})[0]
+			categories_html = menu_html.find_all("li")
 
-		for category_name in categories:
-			category = categories[category_name]
+			# Site menu nb : index 0 = home, we skip it is not a category
+			for i in xrange(1,len(categories_html)):
+				category_html = categories_html[i]
+				category_name = category_html.find(text=True)
+				category_url = category_html.find_all("a")[0].get("href")
+				categories[category_name] = {
+					"url": category_url,
+				}
 
-			url = self.get_base_url()+category["url"]
-			parsed_page = self.get_parsed_page_for_url(url)
-			left_column = parsed_page.find(id="zoneGauche")
-			
-			titles = left_column.find_all("div",{"class":"menuTitle"})
-			sub_categories = left_column.find_all("div",{"class":"menuYaAccordeon"})
-			
-			category["sub_categories"] ={}
+			for category_name in categories:
+				category = categories[category_name]
 
-			if len(titles) == len(sub_categories):
-				for i in xrange(0,len(titles)):
-					sub_category_html = sub_categories[i].find("ul",{"class":"subMenuLevel1"})
-					sub_category = self.extract_sub_category_level_1(sub_category_html)
-					title = titles[i].find_all("strong")[0].find(text=True)
-					title = " ".join(title.split())
-					category["sub_categories"][title] = sub_category
+				url = self.get_base_url()+category["url"]
+				parsed_page, code = self.get_parsed_page_for_url(url)
+				if code == 200:
+					# The request was sucessfull
+					left_column = parsed_page.find(id="zoneGauche")
 					
-			else:
-				sub_category_html = sub_categories[0].find("ul",{"class":"subMenuLevel1"})
-				sub_category = self.extract_sub_category_level_1(sub_category_html)
-				category["sub_categories"][category_name] = sub_category
+					titles = left_column.find_all("div",{"class":"menuTitle"})
+					sub_categories = left_column.find_all("div",{"class":"menuYaAccordeon"})
+					
+					category["sub_categories"] ={}
 
-				second_category = self.extract_sub_category_level_2(sub_category_html)
-				
+					if len(titles) == len(sub_categories):
+						for i in xrange(0,len(titles)):
+							sub_category_html = sub_categories[i].find("ul",{"class":"subMenuLevel1"})
+							sub_category = self.extract_sub_category_level_1(sub_category_html)
+							title = titles[i].find_all("strong")[0].find(text=True)
+							title = " ".join(title.split())
+							category["sub_categories"][title] = sub_category
+							
+					else:
+						sub_category_html = sub_categories[0].find("ul",{"class":"subMenuLevel1"})
+						sub_category = self.extract_sub_category_level_1(sub_category_html)
+						category["sub_categories"][category_name] = sub_category
 
-			categories[category_name] = category
+						second_category = self.extract_sub_category_level_2(sub_category_html)
+						
 
-		self.set_categories(categories)
+					categories[category_name] = category
+				else:
+					print "Aborting scraping sub categories"
+
+			self.set_categories(categories)
+		else:
+			print "Aborting scraping of main categories"
 
 
 	def extract_sub_category_level_1(self, first_category_html):
@@ -96,18 +104,22 @@ class Telemarket(OSMScraper):
 
 	def extract_product_list(self, url):
 		products = {}
-		parsed_page = self.get_parsed_page_for_url(url)
+		parsed_page, code = self.get_parsed_page_for_url(url)
 
-		block_produtcs_html = parsed_page.find("div",{"class","blocListeProduit"})
+		if code == 200:
+			# The request was sucessfull
+			block_produtcs_html = parsed_page.find("div",{"class","blocListeProduit"})
 
-		if block_produtcs_html is not None:
-			product_list = block_produtcs_html.find_all("div",{"class":"blocConteneurProduit"})
-			print "Found "+str(len(product_list))+" products"
+			if block_produtcs_html is not None:
+				product_list = block_produtcs_html.find_all("div",{"class":"blocConteneurProduit"})
+				print "Found "+str(len(product_list))+" products"
 
-			for product in product_list:
-				p = self.extract_product(product)
+				for product in product_list:
+					p = self.extract_product(product)
 
-				products[p["title"]] = p
+					products[p["title"]] = p
+		else:
+			print "Aborting scraping products list"
 
 		return products
 

@@ -19,8 +19,8 @@ celery = Celery('tasks', broker=settings.BROKER_URL)
 
 @periodic_task(run_every=crontab(minute=0, hour=22))
 def perform_scraping():
-	# place_du_marche.tasks.perform_scraping()
-	# telemarket.tasks.perform_scraping()
+	telemarket.tasks.perform_scraping()
 	monoprix.tasks.perform_scraping()
+	place_du_marche.tasks.perform_scraping()
 
-perform_scraping.delay()
+# perform_scraping.delay()

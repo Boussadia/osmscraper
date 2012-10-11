@@ -68,42 +68,45 @@ def perform_scraping():
 		for product_key in products:
 			product = products[product_key]
 
-			url = product_key
-			print "Url product : "+url
-			title = product["title"]
-			brand_str = product["brand"]
-			print "Saving brand "+ brand_str+" to database..."
-			brand, created_brand = Brand.objects.get_or_create(name = brand_str)
-			full_text = product["full_text"]
+			if product["status"] == 200:
+				# Product retrieved successfully
+				url = product_key
+				print "Url product : "+url
+				title = product["title"]
+				brand_str = product["brand"]
+				print "Saving brand "+ brand_str+" to database..."
+				brand, created_brand = Brand.objects.get_or_create(name = brand_str)
+				full_text = product["full_text"]
 
-			price = product["price"]
-			unit_price = product["unit_price"]
-			unit_str = product["unit"]
-			print "Saving unit "+ unit_str+" to database..."
-			unit, created_unit = Unit.objects.get_or_create(name = unit_str)
-			image_url = product["image_url"]
-			promotion = product["promotion"]
+				price = product["price"]
+				unit_price = product["unit_price"]
+				unit_str = product["unit"]
+				print "Saving unit "+ unit_str+" to database..."
+				unit, created_unit = Unit.objects.get_or_create(name = unit_str)
+				image_url = product["image_url"]
+				promotion = product["promotion"]
 
-			print "Saving product "+ title+" to database..."
-			product_object, created = Product.objects.get_or_create(category = category_final ,title = unicode(title),  url= unicode(url), defaults= { "brand" : brand, "full_text" : unicode(full_text), "price" : price, "unit_price" : unit_price, "unit" : unit, "image_url" : unicode(image_url), "promotion" : promotion})
-			# product_object, created = Product.objects.get_or_create(category = category_final, title = unicode(title), url= unicode(url), brand = brand, unit = unit, full_text = unicode(full_text), price = price, unit_price = unit_price, image_url = unicode(image_url), promotion = promotion)
+				print "Saving product "+ title+" to database..."
+				product_object, created = Product.objects.get_or_create(category = category_final ,title = unicode(title),  url= unicode(url), defaults= { "brand" : brand, "full_text" : unicode(full_text), "price" : price, "unit_price" : unit_price, "unit" : unit, "image_url" : unicode(image_url), "promotion" : promotion})
 
-			if not created:
-				if product_object.title != unicode(title) or product_object.category != category_final or product_object.brand != brand or product_object.full_text != unicode(full_text) or product_object.price != price or product_object.unit_price != unit_price or product_object.unit != unit or product_object.image_url != unicode(image_url) or product_object.promotion != promotion:
-					print "Product changed, saving again"
-					product_object.title = unicode(title)
-					product_object.category = category_final
-					product_object.brand = brand
-					product_object.full_text = unicode(full_text)
-					product_object.price = price
-					product_object.unit_price = unit_price
-					product_object.unit = unit
-					product_object.image_url = unicode(image_url)
-					product_object.promotion = promotion
-					product_object.save()
-				else:
-					print "Product did not change"
+				if not created:
+					if product_object.title != unicode(title) or product_object.category != category_final or product_object.brand != brand or product_object.full_text != unicode(full_text) or product_object.price != price or product_object.unit_price != unit_price or product_object.unit != unit or product_object.image_url != unicode(image_url) or product_object.promotion != promotion:
+						print "Product changed, saving again"
+						product_object.title = unicode(title)
+						product_object.category = category_final
+						product_object.brand = brand
+						product_object.full_text = unicode(full_text)
+						product_object.price = price
+						product_object.unit_price = unit_price
+						product_object.unit = unit
+						product_object.image_url = unicode(image_url)
+						product_object.promotion = promotion
+						product_object.save()
+					else:
+						print "Product did not change"
+			elif product["status"] == 404:
+				print "Product not found, removing if exists in database"
+				if Product.objects.filter(url=product_key).exists():
+					Product.objects.get(url=product_key).delete()
 
-
-# get_place_du_marche_categories.delay()
 # print place_du_marche.extract_product("http://www.placedumarche.fr/supermarche-en-ligne-livraison-tendre-noix-la-broche-2-1-tranche-gratuite,10179,4,182,1001.htm")
