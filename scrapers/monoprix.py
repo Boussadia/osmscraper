@@ -12,6 +12,14 @@ class Monoprix(OSMScraper):
 		super(Monoprix, self).__init__("http://courses.monoprix.fr")
 
 	def get_menu(self):
+		"""
+			Retrieves all categories from website, and saves the dictionnay in the object.
+
+			Input :
+				Nothing
+			Return : 
+				Nothing
+		"""
 		categories = {}
 		parsed_page = self.get_parsed_page_for_url("http://courses.monoprix.fr/magasin-en-ligne/courses-en-ligne.html?ok")
 
@@ -109,7 +117,16 @@ class Monoprix(OSMScraper):
 
 		self.set_categories(categories)
 
-	def  extract_product_list(self, url):
+	def extract_product_list(self, url):
+		"""
+			Extract products from url
+
+			Input :
+				url - url of products page
+
+			Return :
+				products - dictionnay of prodcuts title and urls to product page
+		"""
 		products ={}
 		parsed_page = self.get_parsed_page_for_url(url)
 
@@ -145,6 +162,15 @@ class Monoprix(OSMScraper):
 		return products
 
 	def extract_product(self, url_product):
+		"""
+			Retrieving information of product in url_product
+
+			Input :
+				- url_product - url of product page
+
+			Return :
+				- product - dictionnay containing produt informations
+		"""
 		product = {}
 		parsed_page = self.get_parsed_page_for_url(url_product)
 		product_section = parsed_page.find(id="ficheProduit")
