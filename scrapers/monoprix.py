@@ -178,7 +178,6 @@ class Monoprix(OSMScraper):
 						if child.name == "li":
 							url_product = child.findChildren(recursive=False)[0].get("href")
 							title_product = child.findChildren(recursive=False)[0].find("img").get("alt")
-							print title_product
 							products[title_product] ={
 								"title": title_product,
 								"url": url_product

@@ -119,7 +119,6 @@ def save_product(product, sub_category_final):
 		conservation = None
 		conseil = None
 		composition = None
-		print product
 
 		if "Description" in product.keys():
 			description = unicode(product["Description"])
