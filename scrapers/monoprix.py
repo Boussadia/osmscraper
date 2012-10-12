@@ -10,6 +10,7 @@ class Monoprix(OSMScraper):
 
 	def __init__(self):
 		super(Monoprix, self).__init__("http://courses.monoprix.fr")
+	
 
 	def get_menu(self):
 		"""

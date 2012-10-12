@@ -1,6 +1,7 @@
 from place_du_marche import Place_du_marche
 from telemarket import Telemarket
 from monoprix import Monoprix
+from coursengo import Coursengo
 
 import time
 
@@ -25,8 +26,16 @@ import time
 
 # Monoprix
 
-monoprix = Monoprix()
+# monoprix = Monoprix()
 # monoprix.get_menu()
 # print monoprix.get_categories()
 # print monoprix.extract_product_list("http://courses.monoprix.fr/RIDD/Croquettes-Friandises-8594010")
-print monoprix.extract_product("http://courses.monoprix.fr/RIDE/Batonnets-coton-embouts-100-pur-coton-tiges-legeres-et-souples-1400517;jsessionid=CB048D812057C46A0E33BF9F9670E88E.096BF47C1961F2511E74EC7E186DB13C19")
+# print monoprix.extract_product("http://courses.monoprix.fr/RIDE/Batonnets-coton-embouts-100-pur-coton-tiges-legeres-et-souples-1400517;jsessionid=CB048D812057C46A0E33BF9F9670E88E.096BF47C1961F2511E74EC7E186DB13C19")
+
+# Coursengo
+coursengo = Coursengo()
+# coursengo.get_menu()
+# print coursengo.get_categories()
+# coursengo.extract_product_lists("http://www.coursengo.com/supermarche/bebe/couches/couches/")
+# print coursengo.extract_product("http://www.coursengo.com/supermarche/salade-batavia-la-piece.html")
+# print coursengo.extract_product("http://www.coursengo.com/supermarche/ail-temps-des-saisons-filet-de-250g.html")

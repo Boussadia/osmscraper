@@ -21,6 +21,7 @@ class OSMScraper(object):
 
 	def fetch_html(self, url=""):
 		try:
+			url = self.pre_processing_url(url)
 			if url.find(self.get_base_url())>-1:
 				pass
 			else:
@@ -90,3 +91,6 @@ class OSMScraper(object):
 
 	def strip_string(self, str):
 		return " ".join(str.split())
+
+	def pre_processing_url(self, url):
+		return url

@@ -43,6 +43,3 @@ def perform_scraping():
 		print "Aborting after error while executing place du marche scraper"
 	else:
 		print "Place du Marche scraper executed properly"
-
-
-# perform_scraping.delay()
