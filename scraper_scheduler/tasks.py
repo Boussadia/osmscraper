@@ -10,10 +10,12 @@ from celery import Celery
 from scrapers.monoprix import Monoprix
 from scrapers.telemarket import Telemarket
 from scrapers.place_du_marche import Place_du_marche
+from scrapers.coursengo import Coursengo
 
 import monoprix
 import place_du_marche
 import telemarket
+import coursengo
 
 celery = Celery('tasks', broker=settings.BROKER_URL)
 
@@ -22,6 +24,7 @@ def perform_scraping():
 	print "Begining scraping."
 	
 	try:
+		print "Step 1 : Telemarket"
 		telemarket.tasks.perform_scraping()
 	except Exception:
 		print "Aborting after error while executing telemarket scraper"
@@ -29,7 +32,7 @@ def perform_scraping():
 		print "Telemarket scraper executed properly"
 	
 	try:
-		print "Step 1 : Monoprix"
+		print "Step 2 : Monoprix"
 		monoprix.tasks.perform_scraping()
 	except Exception:
 		print "Aborting after error while executing monoprix scraper"
@@ -37,9 +40,18 @@ def perform_scraping():
 		print "Monoprix scraper executed properly"
 
 	try:
-		print "Step 1 : Place du Marche"
+		print "Step 3 : Place du Marche"
 		place_du_marche.tasks.perform_scraping()
 	except Exception:
 		print "Aborting after error while executing place du marche scraper"
 	else:
 		print "Place du Marche scraper executed properly"
+
+	try:
+		print "Step 4 : Coursengo"
+		coursengo.tasks.perform_scraping()		
+	except Exception as e :
+		print "Aborting after error while executing coursengo scraper"
+		print e
+	else:
+		print "Coursengo scraper executed properly"

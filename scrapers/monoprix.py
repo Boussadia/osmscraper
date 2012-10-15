@@ -204,40 +204,44 @@ class Monoprix(OSMScraper):
 			"url": url_product
 		}
 		parsed_page, code = self.get_parsed_page_for_url(url_product)
+
 		product["status"] = code
 
 		if code == 200:
 			# The request was sucessfull
 			product_section = parsed_page.find(id="ficheProduit")
-			product_infos = product_section.find("div",{"class","InfoProduit"})
+			if product_section is not None:
+				product_infos = product_section.find("div",{"class","InfoProduit"})
 
-			product["brand"] = self.strip_string(product_infos.find("p",{"class":"Style01"}).find(text=True))
-			product["title"] = self.strip_string(product_infos.find("p",{"class":"Style02"}).find(text=True))
-			if product_section.find("p",{"class","priceBox"}) is not None:
-				product["price"] = self.convert_price_to_float(product_section.find("p",{"class","priceBox"}).find("label").find(text=True))
-				product["promotion"] = 0
-				product["promotion_html"] = ""
+				product["brand"] = self.strip_string(product_infos.find("p",{"class":"Style01"}).find(text=True))
+				product["title"] = self.strip_string(product_infos.find("p",{"class":"Style02"}).find(text=True))
+				if product_section.find("p",{"class","priceBox"}) is not None:
+					product["price"] = self.convert_price_to_float(product_section.find("p",{"class","priceBox"}).find("label").find(text=True))
+					product["promotion"] = 0
+					product["promotion_html"] = ""
+				else:
+					product["price"] = self.convert_price_to_float(product_section.find("span",{"class","priceBox"}).find(text=True))
+					product["promotion_html"] =  "".join([unicode(element) for element in product_section.find("p",{"class","Style05"}).contents])
+					product["promotion"] = 1-(self.convert_price_to_float(product_section.find("p",{"class","promoPriceBox"}).find("del").find(text=True)))/(product["price"])
+
+				print 
+
+				if len(self.strip_string(product_section.find("p",{"class":"Style06"}).find(text=True)).split(" / ")) > 1:
+					product["unit_price"], product["unit"] = self.strip_string(product_section.find("p",{"class":"Style06"}).find(text=True)).split(" / ")
+					product["unit_price"] = self.convert_price_to_float(product["unit_price"])
+				else:
+					product["unit_price"] = -1
+					product["unit"] = "Unit"
+
+				product["image_url"] = product_section.find("div",{"class","InfoProduitExtra"}).find("div",{"class","ContentCenterSubWrap"}).find("img").get("src")
+
+				lis = product_section.find("ul",{"class","Accordion02"}).find_all("li")
+
+				for i in xrange(0,len(lis)):
+					li = lis[i]
+					product[li.find("h4").find(text=True)] = li.find("p",{"class","Para04"}).find(text=True)
 			else:
-				product["price"] = self.convert_price_to_float(product_section.find("span",{"class","priceBox"}).find(text=True))
-				product["promotion_html"] =  "".join([unicode(element) for element in product_section.find("p",{"class","Style05"}).contents])
-				product["promotion"] = 1-(self.convert_price_to_float(product_section.find("p",{"class","promoPriceBox"}).find("del").find(text=True)))/(product["price"])
-
-			print 
-
-			if len(self.strip_string(product_section.find("p",{"class":"Style06"}).find(text=True)).split(" / ")) > 1:
-				product["unit_price"], product["unit"] = self.strip_string(product_section.find("p",{"class":"Style06"}).find(text=True)).split(" / ")
-				product["unit_price"] = self.convert_price_to_float(product["unit_price"])
-			else:
-				product["unit_price"] = -1
-				product["unit"] = "Unit"
-
-			product["image_url"] = product_section.find("div",{"class","InfoProduitExtra"}).find("div",{"class","ContentCenterSubWrap"}).find("img").get("src")
-
-			lis = product_section.find("ul",{"class","Accordion02"}).find_all("li")
-
-			for i in xrange(0,len(lis)):
-				li = lis[i]
-				product[li.find("h4").find(text=True)] = li.find("p",{"class","Para04"}).find(text=True)
+				product["status"] = 404
 		else:
 			print "Aborting scrapping of product"
 

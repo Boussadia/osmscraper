@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     'place_du_marche',
     'telemarket',
     'monoprix',
+    'coursengo',
     'scrapers',
     'scraper_scheduler',
     # Uncomment the next line to enable the admin:
