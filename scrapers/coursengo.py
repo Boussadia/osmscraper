@@ -96,7 +96,7 @@ class Coursengo(OSMScraper):
 		else:
 			print "Aborting scraping of main categories."
 
-	def extract_product_lists(self, url):
+	def extract_product_list(self, url):
 		"""
 			Extracting product list for a sub category page
 
@@ -126,11 +126,13 @@ class Coursengo(OSMScraper):
 		else:
 			print "Aborting scraping of products list."
 
+		return products
+
 	def extract_product(self,url):
 		product = {}
 		parsed_page, code = self.get_parsed_page_for_url(url)
 		product["url"] = url
-		product["code"] = code
+		product["status"] = code
 
 		if code == 200:
 			# The request was sucessfull
@@ -167,7 +169,7 @@ class Coursengo(OSMScraper):
 						promotion = 0
 
 					product["title"] = title
-					product["url_image"] = url_image
+					product["image_url"] = url_image
 					product["price"] = price
 					product["brand"] = brand
 					product["quantity_text"] = quantity_text
