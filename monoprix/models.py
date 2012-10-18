@@ -1,5 +1,8 @@
 from django.db import models
 
+from dalliz.models import Category_sub as Category_dalliz
+from dalliz.models import Brand as Brand_dalliz
+
 class Category_main(models.Model):
 	name = models.CharField(max_length=100, unique=True)
 	url = models.CharField(max_length=9999)
@@ -33,6 +36,7 @@ class Category_final(models.Model):
 	name = models.CharField(max_length=100)
 	parent_category = models.ForeignKey(Category_sub_level_2)
 	url = models.CharField(max_length=9999)
+	dalliz_category = models.ManyToManyField(Category_dalliz, related_name="monoprix_category_final_category_dalliz")
 
 	def __unicode__(self):
 		return self.name
@@ -42,6 +46,7 @@ class Category_final(models.Model):
 
 class Brand(models.Model):
 	name = models.CharField(max_length=100, unique=True)
+	dalliz_brand = models.ForeignKey(Brand_dalliz, null=True)
 
 	def __unicode__(self):
 		return self.name

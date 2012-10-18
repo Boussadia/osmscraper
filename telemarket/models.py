@@ -1,5 +1,9 @@
 from django.db import models
 
+from dalliz.models import Category_sub as Category_dalliz
+from dalliz.models import Brand as Brand_dalliz
+
+
 # Create your models here.
 class Category_main(models.Model):
 	name = models.CharField(max_length=100, unique=True)
@@ -44,6 +48,7 @@ class Category_final(models.Model):
 	name = models.CharField(max_length=100)
 	parent_category = models.ForeignKey(Category_sub_3)
 	url = models.CharField(max_length=9999)
+	dalliz_category = models.ManyToManyField(Category_dalliz, related_name="telemarket_category_final_category_dalliz")
 
 	def __unicode__(self):
 		return self.name
@@ -75,6 +80,7 @@ class Product(models.Model):
 	image_url = models.CharField(max_length=9999)
 	promotion = models.ForeignKey(Promotion)
 	category = models.ForeignKey(Category_final)
+	dalliz_brand = models.ForeignKey(Brand_dalliz, null=True)
 
 	class Meta:
 		unique_together = ("title", "url", "category")

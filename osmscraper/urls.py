@@ -14,4 +14,11 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+
+    # Categories matcher app
+    url(r'^categories_matcher/?$', 'categories_matcher.views.index'),
+    url(r'^categories_matcher/(?P<osm>(\w)+)/(?P<level>\d+)(/(?P<parent>\d+))?/?$', 'categories_matcher.views.categories'),
+    url(r'^categories_matcher/add_link/?$', 'categories_matcher.views.add_link'),
+    url(r'^categories_matcher/delete_link/?$', 'categories_matcher.views.delete_link'),
+    url(r'^categories_matcher/get_links/(?P<osm>(\w)+)/(?P<category_id>\d+)/?$', 'categories_matcher.views.get_links'),
 )
