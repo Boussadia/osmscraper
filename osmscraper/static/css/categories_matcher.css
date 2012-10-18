@@ -1,0 +1,58 @@
+#main{
+
+}
+
+#main .block{
+	float: left;
+	border: 1px solid black;
+	width: 150px;
+	margin-right: 10px;
+}
+
+#main .block ul{
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+#main .block li{
+	cursor: pointer;
+	line-height: 65px;
+	text-align: center;
+	border: 1px solid black;
+	height: 60px;
+	overflow: hidden;
+	position: relative;
+}
+
+#main .set_category{
+	position: absolute;
+	top: 0px;
+	right: 0px;	
+}
+
+#main.blur{
+	opacity: .1;
+}
+
+#pop_over_window {
+	display: none;
+	position: fixed;
+	width: 500px;
+	height: 400px;
+	padding: .5em;
+	overflow-y:scroll; 
+	border: 2px solid black;
+	left: 300px;
+	background-color: white;
+}
+
+#pop_over_window .close{
+	position: absolute;
+	right: 10px;
+	top: 10px;
+}
+
+.categorized{
+	background-color: green;
+}
