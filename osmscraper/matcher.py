@@ -77,24 +77,6 @@ class Matcher(object):
 
 	@staticmethod
 	def get_similarity(word_1, word_2):
-		# if word_1 == word_2:
-		# 	return 1.0
-		# elif word_2 == "" or word_1 == "":
-		# 	return 0.0
-		# else:
-		# 	hist_1 = Matcher.get_histogram(word_1)
-		# 	hist_2 = Matcher.get_histogram(word_2)
-		# 	norm_1 = Matcher.get_norm(hist_1)
-		# 	norm_2 = Matcher.get_norm(hist_2)
-
-		# 	score = 0.0
-
-		# 	for s, v in hist_1.iteritems():
-		# 		if s in hist_2.iterkeys():
-		# 			score += v*hist_2[s]
-
-		# 	return score /(norm_1*norm_2)
-
 		return math.exp(-(1.0/1.0)*Matcher.levenshtein(word_1, word_2)**(2.0))
 
 	@staticmethod
@@ -169,14 +151,14 @@ class Matcher(object):
 			index[term]['idf'] = math.log(len(documents)/(1.0+index[term]["frequency_corpus"]))
 
 		# Calculating norm of each document
-		for i in xrange(0,len(documents)):
-			# Problem with 
-			documents[i]['norm'] = 0
-			for word, tf in documents[i]["tfs"].iteritems():
-				tfidf_base_term = tf*index[word]['idf']
-				documents[i]['norm'] += tfidf_base_term**2
+		# for i in xrange(0,len(documents)):
+		# 	# Problem with norm calculus ???
+		# 	documents[i]['norm'] = 0
+		# 	for word, tf in documents[i]["tfs"].iteritems():
+		# 		tfidf_base_term = tf*index[word]['idf']
+		# 		documents[i]['norm'] += tfidf_base_term**2
 
-			documents[i]['norm'] = math.sqrt(documents[i]['norm'])
+		# 	documents[i]['norm'] = math.sqrt(documents[i]['norm'])
 
 		self.set_index(index)
 		self.set_tokens(documents)
@@ -262,18 +244,6 @@ class Matcher(object):
 
 		return score, index
 
-	@staticmethod
-	def get_norm_matrix(matrix):
-		norm = 0.0
-		size = len(matrix[0])
-		vector = [ 0 for i in xrange(0,size) ]
-
-		for i in xrange(0,size):
-			vector[i] = sum( ( base_vector[i]**2 for base_vector in matrix ) )
-
-		return math.sqrt( sum( val for val in vector) )
-
-
 	def process_query(self, query):
 		print "Calculating score for "+query
 		possible_matches = []
@@ -310,5 +280,37 @@ class Matcher(object):
 			if possible_matches[i]['score'] > threshold:
 				print 'Content : '+token['content']+' -> '+str(possible_matches[i]['score'])
 
+	def are_comprable(self, document_1, document_2):
+		"""
+			In order to use this method, create a child class and overide default behavior
+		"""
+		return True
 
+class Product_matcher(Matcher):
+	def __init__(self, corpus):
+		super(Product_matcher, self).__init__(corpus)
 
+	def are_comprable(self, product_1, product_2):
+		"""
+			Comparaison of products compared by unit of product
+		"""
+		return product_1["unit"] == product_2["unit"]
+
+	def set_possible_products(self, product):
+		query = product['content']
+		print "Calculating score for "+product['content']
+		possible_matches = []
+
+		products = self.get_tokens()
+		index = self.get_index()
+
+		for i in xrange(0,len(products)):
+			if self.are_comprable(product, products[i]):
+				score, index = Matcher.generate_score(query, products[i], index)
+			else:
+				score = 0.0
+			if score > 0:
+				possible_matches.append({"id": products[i]["id"], "score": score})
+
+		self.set_index(index)
+		self.set_possible_matches(query, possible_matches)
