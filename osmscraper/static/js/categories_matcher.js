@@ -6,9 +6,12 @@ $(document).ready(function(){
 	);
 
 	$(".add button").click(function(){
-		var id_category = $(this).parent().data("id_category");
+		var id_category = $(this).parent().attr("data-id_category");
 		var id_dalliz = $(".add select").val();
-		var osm = $(this).parent().data("osm");
+		var osm = $(this).parent().attr("data-osm");
+		console.log(id_category);
+		console.log(id_dalliz);
+		console.log(osm);
 		$.ajax({
 			url:'categories_matcher/add_link',
 			type:"POST",
@@ -17,6 +20,10 @@ $(document).ready(function(){
 				"osm": osm,
 				"id_category_final": id_category,
 				"id_dalliz_category": id_dalliz
+			},
+			beforeSend: function(jqXHR, settings){
+				console.log(jqXHR);
+				console.log(settings);
 			},
 			success: function(data, textStatus, jqXHR){
 				console.log(data);
@@ -108,10 +115,10 @@ $(document).ready(function(){
 					button.click(function(e){
 						var $that = $(this);
 						var parent = $that.parent();
-						var osm = parent.data("osm");
-						var id = parent.data("id");
-						var parent_category = parent.data("parent");
-						var level = parent.data("level");
+						var osm = parent.attr("data-osm");
+						var id = parent.attr("data-id");
+						var parent_category = parent.attr("data-parent");
+						var level = parent.attr("data-level");
 						$("#main").addClass("blur");
 						$("#pop_over_window").show();
 						$(".add").attr("data-id_category",id);
@@ -159,10 +166,10 @@ $(document).ready(function(){
 
 	function click_handler(){
 		var $that = $(this);
-		var level = $that.data("level");
-		var parent = $that.data("parent");
-		var osm = $that.data("osm");
-		var id = $that.data("id");
+		var level = $that.attr("data-level");
+		var parent = $that.attr("data-parent");
+		var osm = $that.attr("data-osm");
+		var id = $that.attr("data-id");
 		$.ajax({
 			url:'/categories_matcher/'+osm+'/'+level+'/'+id,
 			type:"GET",
