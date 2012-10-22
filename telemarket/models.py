@@ -2,6 +2,7 @@ from django.db import models
 
 from dalliz.models import Category_sub as Category_dalliz
 from dalliz.models import Brand as Brand_dalliz
+from dalliz.models import Unit as Unit_dalliz
 
 
 # Create your models here.
@@ -58,6 +59,7 @@ class Category_final(models.Model):
 
 class Unit(models.Model):
 	name = models.CharField(max_length=30, unique=True)
+	dalliz_unit = models.ManyToManyField(Unit_dalliz, related_name="telemarket_unit_dalliz_unit")
 
 	def __unicode__(self):
 		return self.name
@@ -80,7 +82,7 @@ class Product(models.Model):
 	image_url = models.CharField(max_length=9999)
 	promotion = models.ForeignKey(Promotion)
 	category = models.ForeignKey(Category_final)
-	dalliz_brand = models.ForeignKey(Brand_dalliz, null=True)
+	dalliz_brand = models.ForeignKey(Brand_dalliz, null=True, related_name="telemarket_brand_dalliz_brand")
 
 	class Meta:
 		unique_together = ("title", "url", "category")

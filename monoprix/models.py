@@ -2,6 +2,7 @@ from django.db import models
 
 from dalliz.models import Category_sub as Category_dalliz
 from dalliz.models import Brand as Brand_dalliz
+from dalliz.models import Unit as Unit_dalliz
 
 class Category_main(models.Model):
 	name = models.CharField(max_length=100, unique=True)
@@ -53,6 +54,7 @@ class Brand(models.Model):
 
 class Unit(models.Model):
 	name = models.CharField(max_length=30, unique=True)
+	dalliz_unit = models.ManyToManyField(Unit_dalliz, related_name="monoprix_unit_dalliz_unit")
 
 	def __unicode__(self):
 		return self.name
