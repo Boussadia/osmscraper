@@ -8,6 +8,49 @@ $(document).ready(function(){
 			next();
 		}
 	});
+
+	$("#next").click(function(){
+		next();
+	});
+
+	$("#previous").click(function(){
+		previous();
+	});
+
+	$('#cancel').click(function(){
+		$('#loading').show();
+		$('#main').addClass('loading');
+		var id_telemarket = $('#telemarket').attr('data-id');
+		$.ajax({
+			url:'/telemarket_monoprix/products/cancel/'+id_telemarket,
+			type:"POST",
+			dataType:"json",
+			data:{},
+			beforeSend: function(jqXHR, settings){
+				// console.log(jqXHR);
+				// console.log(settings);
+			},
+			success: function(data, textStatus, jqXHR){
+				// console.log(data);
+				// console.log(textStatus);
+				// console.log(jqXHR);
+				$('#loading').hide();
+				$('#main').removeClass('loading');
+				$('.selected').removeClass('selected');
+				
+
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				console.log(jqXHR);
+				console.log(textStatus);
+				console.log(errorThrown);
+
+				// alert("L'opération ne s'est pas déroulée avec succès, réessayez ultérieurement!");
+			}
+		});
+
+	})
+
 	// Hash change handling
 	var current_hash = "";
 	setInterval(function(){
@@ -16,7 +59,7 @@ $(document).ready(function(){
 			current_hash = new_hash;
 			var id = parseInt(current_hash.substring(1));
 			if (!isNaN(id)){
-				$('#telemarket').attr('data-id', id)
+				$('#telemarket').attr('data-id', id);
 				get_data(id);
 				ID_TELEMARKET_PRODUCT = id;
 
@@ -28,7 +71,7 @@ $(document).ready(function(){
 	get_data = function(id){
 		$('#loading').show();
 		$('#main').addClass('loading');
-		ID_TELEMARKET_PRODUCT = id
+		ID_TELEMARKET_PRODUCT = id;
 
 		$('#start').hide();
 		$('#main').show();
@@ -202,7 +245,38 @@ $(document).ready(function(){
 				// alert("L'opération ne s'est pas déroulée avec succès, réessayez ultérieurement!");
 			}
 		});
+	}
 
+	// Go to next product
+	previous = function(){
+		var id_telemarket = $('#telemarket').attr('data-id');
 
+		$.ajax({
+			url:'/telemarket_monoprix/products/previous/'+id_telemarket,
+			type:"GET",
+			dataType:"json",
+			data:{},
+			beforeSend: function(jqXHR, settings){
+				// console.log(jqXHR);
+				// console.log(settings);
+			},
+			success: function(data, textStatus, jqXHR){
+				// console.log(data);
+				// console.log(textStatus);
+				// console.log(jqXHR);
+				if (data['status'] == 200){
+					window.location.hash = data['id']
+				}
+				
+
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				console.log(jqXHR);
+				console.log(textStatus);
+				console.log(errorThrown);
+
+				// alert("L'opération ne s'est pas déroulée avec succès, réessayez ultérieurement!");
+			}
+		});
 	}
 })

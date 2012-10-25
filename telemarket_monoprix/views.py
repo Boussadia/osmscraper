@@ -68,6 +68,27 @@ def next(request, id):
 		result['status'] = 200
 	else:
 		result['status'] = 404
-
-
 	return HttpResponse(json.dumps(result))
+
+def previous(request, id):
+	result = {}
+	id_previous = int(id)-1
+	products = Telemarket_product.objects.order_by('-id').filter(id__lte=id_previous)[:1]
+	
+	if len(products)>0:
+		product = products[0]
+		result = {'id': product.id}
+		result['status'] = 200
+	else:
+		result['status'] = 404
+	return HttpResponse(json.dumps(result))
+
+
+def cancel(request, id):
+	if request.method == 'POST':
+		product_telemarket = Telemarket_product.objects.get(id=id)
+		product_telemarket.monoprix_product = None
+		product_telemarket.save()
+		result = {'status': 200}
+		return HttpResponse(json.dumps(result))
+

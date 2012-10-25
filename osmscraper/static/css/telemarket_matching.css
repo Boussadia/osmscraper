@@ -5,6 +5,12 @@
 	margin-top: -10px;
 	border-bottom: 5px solid black;
 	z-index: 10;
+	height: 285px;
+}
+
+#start{
+	position: relative;
+	z-index: 1001;
 }
 
 #suggestions{
@@ -53,6 +59,7 @@ img.product_image{
 	position: relative;
 	top: -70px;
 	right: -60px;
+	height: 60px;
 	background-color: beige;
 }
 
@@ -70,4 +77,25 @@ img.product_image{
 	border-radius: 50px;
 	position: relative;
 	top: 180px;
+}
+
+.navigation{
+	display: inline-block;
+	position: relative;
+	top: -130px;
+	left: 30px;
+}
+
+.navigation button{
+	background-color: beige;
+	height: 60px;
+	width: 120px;
+	margin-left: 120px;
+}
+
+#cancel{
+	background-color: red;
+	position: absolute;
+	right: 120px;
+	top: 100px;
 }

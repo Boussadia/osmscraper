@@ -26,4 +26,6 @@ urlpatterns = patterns('',
     url(r'^telemarket_monoprix/products/?$', 'telemarket_monoprix.views.index'),
     url(r'^telemarket_monoprix/products/suggestions/(?P<id>\d+)/?$', 'telemarket_monoprix.views.suggestions'),
     url(r'^telemarket_monoprix/products/next/(?P<id>\d+)/?$', 'telemarket_monoprix.views.next'),
+    url(r'^telemarket_monoprix/products/previous/(?P<id>\d+)/?$', 'telemarket_monoprix.views.previous'),
+    url(r'^telemarket_monoprix/products/cancel/(?P<id>\d+)/?$', 'telemarket_monoprix.views.cancel'),
 )
