@@ -56,3 +56,13 @@
 .categorized{
 	background-color: green;
 }
+
+.path{
+	width: 10px;
+	height: 10px;
+	position: absolute;
+}
+
+.indicate{
+	background-color: blue;
+}

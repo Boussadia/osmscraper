@@ -21,4 +21,9 @@ urlpatterns = patterns('',
     url(r'^categories_matcher/add_link/?$', 'categories_matcher.views.add_link'),
     url(r'^categories_matcher/delete_link/?$', 'categories_matcher.views.delete_link'),
     url(r'^categories_matcher/get_links/(?P<osm>(\w)+)/(?P<category_id>\d+)/?$', 'categories_matcher.views.get_links'),
+
+    # Telemarket/Monoprix products validation
+    url(r'^telemarket_monoprix/products/?$', 'telemarket_monoprix.views.index'),
+    url(r'^telemarket_monoprix/products/suggestions/(?P<id>\d+)/?$', 'telemarket_monoprix.views.suggestions'),
+    url(r'^telemarket_monoprix/products/next/(?P<id>\d+)/?$', 'telemarket_monoprix.views.next'),
 )

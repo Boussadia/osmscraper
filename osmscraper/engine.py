@@ -11,10 +11,11 @@ import math
 """
 
 REGEXP = re.compile(r'\W')
+STOP_WORDS = ['l','g','cl','et','d','kg','de', 'au', 'a', 'les', 'la']
 
-class Matcher(object):
+class Engine(object):
 	"""
-		Base matcher class that performs algorithm that matches products together.
+		Base engine class that performs algorithm that matches products together.
 
 		Init:
 			- corpus (dict):
@@ -25,19 +26,41 @@ class Matcher(object):
 				}
 	"""
 	def __init__(self, corpus):
-		super(Matcher, self).__init__()
+		super(Engine, self).__init__()
 		self.__corpus__ = corpus
 		self.__tokens__ = {}
 		self.__index__ = {}
 		self.__possible_matches__ = {} # possible matches for queries
-		self.__matches__ = {} # definitive matches for queries (after decision process)
+		self.__similarities__ = {}
 
+	@staticmethod
+	def remove_stop_words( text):
+		terms = REGEXP.split(text)
+		clean_terms = []
+		while len(terms)>0:
+			if terms[0] in STOP_WORDS:
+				terms.pop(0)
+			else:
+				clean_terms.append(terms.pop(0))
+
+		return clean_terms
+
+	def add_similarity_word(self, word, base_word, similarity):
+		self.__similarities__[word] = {"word":base_word, "similarity":similarity}
+
+	def get_similarity_word(self, word):
+		if word in self.__similarities__:
+			return self.__similarities__[word]
+		else:
+			return None
 
 	def get_corpus(self):
-		return self.__corpus__
+		for i in xrange(0, len(self.__corpus__)):
+			yield self.__corpus__[i]
 
 	def get_tokens(self):
-		return self.__tokens__
+		for i in xrange(0, len(self.__tokens__)):
+			yield self.__tokens__[i]
 
 	def get_index(self):
 		return self.__index__
@@ -73,16 +96,40 @@ class Matcher(object):
 
 	@staticmethod
 	def get_norm(histogram):
-		return math.sqrt(sum( [ v**2 for s,v in histogram.iteritems() ] ))
+		return math.sqrt(sum( ( float(v)**2 for s,v in histogram.iteritems() ) ))
 
 	@staticmethod
 	def get_similarity(word_1, word_2):
-		return math.exp(-(1.0/1.0)*Matcher.levenshtein(word_1, word_2)**(2.0))
+		len_word_1 = len(word_1)
+		len_word_2 = len(word_2)
+		max_len = max(len_word_1, len_word_2)
+		if max_len == 0:
+			return 0
+		elif abs(len_word_1-len_word_2)/max_len>.1:
+			return 0 
+		else:
+			# hist_1 = Engine.get_histogram(word_1)
+			# hist_2 = Engine.get_histogram(word_2)
+			# norm_1 = Engine.get_norm(hist_1)
+			# norm_2 = Engine.get_norm(hist_2)
+
+			# if norm_2*norm_1>0:
+
+			# 	score = 0.0
+
+			# 	for char_1, f_1 in hist_1.iteritems():
+			# 		if char_1 in hist_2.iterkeys():
+			# 			score += f_1*hist_2[char_1]
+
+			# 	return score/(norm_1*norm_2)
+			# else:
+			# 	return 0.0
+			return math.exp(-(1.0/1.0)*Engine.levenshtein(word_1, word_2)**(2.0))
 
 	@staticmethod
 	def levenshtein(s1, s2):
 		if len(s1) < len(s2):
-			return Matcher.levenshtein(s2, s1)
+			return Engine.levenshtein(s2, s1)
 		if not s1:
 			return len(s2)
 
@@ -102,21 +149,21 @@ class Matcher(object):
 	def generate_TF(word, terms):
 		score = 0.0
 		if word in terms:
-			# score += Matcher.get_similarity(term, word)
+			# score += Engine.get_similarity(term, word)
 			score += 1
 		return score / len(terms)
 
 	@staticmethod
 	def generate_TFS(text):
-		terms = REGEXP.split(text)
+		terms = Engine.remove_stop_words(text)
 		TFS = {}
 
 		for i in xrange(0,len(terms)):
 			term = terms[i]
 			if term in TFS.iterkeys():
-				TFS[term] += Matcher.generate_TF(term, terms)
+				TFS[term] += Engine.generate_TF(term, terms)
 			else:
-				TFS[term] = Matcher.generate_TF(term, terms)
+				TFS[term] = Engine.generate_TF(term, terms)
 
 		return TFS
 
@@ -131,13 +178,17 @@ class Matcher(object):
 		self.set_index({})
 		index = {}
 		documents = self.get_corpus()
-		print "Building index for corpus of "+str(len(documents))+" documents"
+		tokens = []
+		print "Building index for corpus"
+		nb_documents = 0
 
 		# Calculating TF
-		for i in xrange(0,len(documents)):
-			name = documents[i]["content"]
-			tfs = Matcher.generate_TFS(name)
-			documents[i]["tfs"] = tfs
+		for document in documents:
+			nb_documents += 1
+			name = document["content"]
+			tfs = Engine.generate_TFS(name)
+			document["tfs"] = tfs
+			tokens.append(document)
 
 			# Adding terms to base vector
 			for term, tf in tfs.iteritems():
@@ -148,115 +199,90 @@ class Matcher(object):
 
 		# Calculating IDF
 		for term in index.iterkeys():
-			index[term]['idf'] = math.log(len(documents)/(1.0+index[term]["frequency_corpus"]))
-
-		# Calculating norm of each document
-		# for i in xrange(0,len(documents)):
-		# 	# Problem with norm calculus ???
-		# 	documents[i]['norm'] = 0
-		# 	for word, tf in documents[i]["tfs"].iteritems():
-		# 		tfidf_base_term = tf*index[word]['idf']
-		# 		documents[i]['norm'] += tfidf_base_term**2
-
-		# 	documents[i]['norm'] = math.sqrt(documents[i]['norm'])
+			index[term]['idf'] = math.log(nb_documents/(1.0+index[term]["frequency_corpus"]))
 
 		self.set_index(index)
-		self.set_tokens(documents)
+		self.set_tokens(tokens)
 
 	@staticmethod
 	def get_TFIDF(text, index):
 		idfs = {}
-		tfs = Matcher.generate_TFS(text)
+		tfs = Engine.generate_TFS(text)
 
 		for word, tf in tfs.iteritems():
-			idf = Matcher.get_IDF(word, index)
+			idf = Engine.get_IDF(word, index)
 			idfs[word] = idf
 
 		return tfs, idfs, index
 
-	@staticmethod
-	def generate_score(text, document, index ):
+	def generate_score(self, text, document ):
 		score = 0.0
-		# tfs, idfs, index = Matcher.get_TFIDF(text, index)
-
-		# norm_text = math.sqrt(sum( [ (idf*tfs[word])**2 for word, idf in idfs.iteritems()]))
-
-		# if norm_text>0:
-		# 	for word, tf in tfs.iteritems():
-		# 		if word in document["tfs"].iterkeys():
-		# 			score += document["tfs"][word]*index[word]['idf']*tf*idfs[word]
-		# 		else:
-		# 			if 'similarity_word' in index[word].iterkeys():
-		# 				similarity_word = index[word]['similarity_word']
-		# 				if similarity_word in document["tfs"].iterkeys():
-		# 					score += document["tfs"][similarity_word]*index[similarity_word]['idf']*tf*idfs[word]
-		# 			else:
-		# 				# Looking for word with biggest similarity
-		# 				max_similarity = 0.0
-		# 				word_similarity = ''
-		# 				for document_word in document["tfs"].iterkeys():
-		# 					score_similarity = Matcher.get_similarity(document_word, word)
-		# 					if score_similarity > max_similarity:
-		# 						max_similarity = score_similarity
-		# 						word_similarity = document_word
-
-		# 				score += document["tfs"][word_similarity]*index[word_similarity]['idf']*tf*idfs[word]*score_similarity
-
-
-			
-		# 	score = score/(norm_text*document['norm'])
-
-		# Matricial calculation
-		words = REGEXP.split(text)
+		words = Engine.remove_stop_words(text)
+		index = self.get_index()
 		norm_text = 0
 		norm_doc = 0
 
 		words_similarity = {}
+
 		for word in words:
-			if word in document["tfs"].iterkeys():
+			if word in index.iterkeys():
 				words_similarity[word] = {"word":word, "similarity": 1.0}
 			else:
-				words_similarity[word] = {"word":word, "similarity": 0.0}
-				for base_term in document["tfs"].iterkeys():
-					similarity = Matcher.get_similarity(base_term, word)
-					if similarity>words_similarity[word]["similarity"]:
-						words_similarity[word] = {"word":base_term, "similarity": similarity}
+				dict_similarity = self.get_similarity_word(word)
+				if dict_similarity is None:
+					words_similarity[word] = {"word":word, "similarity": 0.0}
+					for base_term in index.iterkeys():
+						similarity = Engine.get_similarity(base_term, word)
+						if similarity>words_similarity[word]["similarity"]:
+							words_similarity[word] = {"word":base_term, "similarity": similarity}
 
-		# print words_similarity
+					if words_similarity[word]["word"] in index.iterkeys():
+						self.add_similarity_word(word, words_similarity[word]["word"], words_similarity[word]["similarity"])
+				else:
+					words_similarity[word] = {"word":dict_similarity['word'], "similarity": dict_similarity['similarity']}
+
+		tfidfs = {}
+		for word in document['tfs'].iterkeys():
+			tfidfs[word] = document["tfs"][word]*index[word]['idf']
+			norm_doc += tfidfs[word]**2
 
 		for word in words_similarity.iterkeys():
 			base_term = words_similarity[word]["word"]
 			similarity = words_similarity[word]["similarity"]
-			tfidf_base_term = document["tfs"][base_term]*index[base_term]['idf']
+			if base_term in document["tfs"].iterkeys():
+				tfidf_base_term =tfidfs[base_term]
+			else:
+				tfidf_base_term = 0
 			# print str(similarity)+' btw '+base_term+' and '+word+' tfidf : '+str(tfidf_base_term)
 			score += (tfidf_base_term*similarity)*tfidf_base_term
 			norm_text += (tfidf_base_term*similarity)**2
-			norm_doc += tfidf_base_term**2
 
-		# print score
 		norm_text = math.sqrt(norm_text)
 		norm_doc = math.sqrt(norm_doc)
-		score = score/(norm_text*norm_doc)
-
+		# print score
 		# print norm_text
 		# print norm_doc
-		# print document['norm']
+		# print ''
+		if norm_text*norm_doc>0 and score>0.01:
+			score = score/(norm_text*norm_doc)
+		else:
+			score = 0
 
-		return score, index
+		self.set_index(index)
+		return score
 
 	def process_query(self, query):
 		print "Calculating score for "+query
 		possible_matches = []
 
 		documents = self.get_tokens()
-		index = self.get_index()
 
-		for i in xrange(0,len(documents)):
-			score, index = Matcher.generate_score(query, documents[i], index)
+		for document in documents:
+			score = self.generate_score(query, document)
 			if score > 0:
-				possible_matches.append({"id": documents[i]["id"], "score": score})
+				possible_matches.append({"id": document["id"], "score": score})
+				# print '\tScore for '+document['content']+' -> '+str(score)
 
-		self.set_index(index)
 		self.set_possible_matches(query, possible_matches)
 
 	def process_queries(self, queries):
@@ -265,13 +291,12 @@ class Matcher(object):
 			self.process_query(query)
 
 	def get_token(self, id):
-		token = None
 		tokens = self.get_tokens()
-		for i in xrange(0,len(tokens)):
-			if tokens[i]['id'] == id:
-				token =tokens[i]
+		for token in tokens:
+			if token['id'] == id:
+				return token
 				break
-		return token
+		return None
 
 	def print_matches(self, query, threshold = 0):
 		possible_matches = self.get_possible_matches(query)
@@ -286,31 +311,37 @@ class Matcher(object):
 		"""
 		return True
 
-class Product_matcher(Matcher):
+class Product_engine(Engine):
 	def __init__(self, corpus):
-		super(Product_matcher, self).__init__(corpus)
+		super(Product_engine, self).__init__(corpus)
 
 	def are_comprable(self, product_1, product_2):
 		"""
 			Comparaison of products compared by unit of product
 		"""
-		return product_1["unit"] == product_2["unit"]
+		if product_1["unit"] == product_2["unit"]:
+			for i in xrange(0,len(product_1['categories'])):
+				for j in xrange(0,len(product_2['categories'])):
+					if product_1['categories'][i] == product_2['categories'][j]:
+						return True
 
-	def set_possible_products(self, product):
-		query = product['content']
-		print "Calculating score for "+product['content']
+		return False
+
+	def set_possible_products(self, product_dict):
+		query = product_dict['content']
+		print "Calculating score for "+product_dict['content']
 		possible_matches = []
 
 		products = self.get_tokens()
 		index = self.get_index()
 
-		for i in xrange(0,len(products)):
-			if self.are_comprable(product, products[i]):
-				score, index = Matcher.generate_score(query, products[i], index)
+		for product in products:
+			if self.are_comprable(product_dict, product):
+				score = self.generate_score(query, product)
 			else:
 				score = 0.0
 			if score > 0:
-				possible_matches.append({"id": products[i]["id"], "score": score})
+				possible_matches.append({"id": product["id"], "score": score})
 
 		self.set_index(index)
 		self.set_possible_matches(query, possible_matches)

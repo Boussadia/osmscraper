@@ -134,6 +134,7 @@ INSTALLED_APPS = (
     'south',
     'place_du_marche',
     'telemarket',
+    'telemarket_monoprix',
     'monoprix',
     'coursengo',
     'scrapers',

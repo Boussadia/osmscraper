@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Telemarket/Monoprix product matcher </title>
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+		<script type="text/javascript" src="/static/js/telemarket_matching.js"></script>
+		<link rel="stylesheet" type="text/css" href="/static/css/telemarket_matching.css">
+	</head>
+	<body>
+		<button id="start"> Start Matching! </button>
+		
+		<div id="main" class="loading">
+			<section id="telemarket">
+				<h1 class="name_product"></h1>
+				<h3 class='categories'>Categories : </h3>
+				<a href="" class="link_product" target="_blank">
+					<img class="product_image" src=''></img>
+				</a>
+
+			</section>
+			<div class="separator"></div>
+
+			<section id='suggestions'>
+				<h2> Suggestions </h2>
+				<div class="container"></div>
+			</section>
+		</div>
+
+		<div id="loading">
+			<img src="/static/images/loading.gif">
+		</div>
+
+		<script type="text/javascript">
+			var first_element_id = {{ element_id }};
+			ID_TELEMARKET_PRODUCT = first_element_id;
+		</script>
+	</body>
+</html>

@@ -107,14 +107,18 @@ $(document).ready(function(){
 		for( id in categories){
 			if(id !== "final"){
 				var title = categories[id];
+				var path_indicator = $('<div>').addClass("path");
 				var li = $("<li>").text(title).attr("data-osm",osm).attr("data-id", id).attr("data-level", level).attr("data-parent", parent).attr("data-final", categories["final"]);
+				li.prepend(path_indicator);
+				
+
 				if(categories["final"]){
-
 					var button = $("<button>").text("Set").addClass("set_category");
-
 					button.click(function(e){
 						var $that = $(this);
 						var parent = $that.parent();
+						parent.parent().find(".path").removeClass('indicate');
+						parent.find('div.path').addClass('indicate');
 						var osm = parent.attr("data-osm");
 						var id = parent.attr("data-id");
 						var parent_category = parent.attr("data-parent");
@@ -123,6 +127,7 @@ $(document).ready(function(){
 						$("#pop_over_window").show();
 						$(".add").attr("data-id_category",id);
 						$(".add").attr("data-osm",osm);
+						$("#pop_over_window button.close").hide();
 						// Getting data from server
 						$.ajax({
 							url:'/categories_matcher/get_links/'+osm+'/'+id,
@@ -138,12 +143,14 @@ $(document).ready(function(){
 									var div = get_row_link(data[id_dalliz], id_dalliz, osm, id);
 									$("#pop_over_window").append(div);
 								}
+								$("#pop_over_window button.close").show();
 
 							},
 							error: function(jqXHR, textStatus, errorThrown){
 								console.log(jqXHR);
 								console.log(textStatus);
 								console.log(errorThrown);
+								$("#pop_over_window button.close").show();
 
 								// alert("L'opération ne s'est pas déroulée avec succès, réessayez ultérieurement!");
 							}
@@ -151,8 +158,9 @@ $(document).ready(function(){
 
 						e.stopPropagation();
 					});
-
 					li.append(button);
+				}else{
+
 				}
 				
 				li.click(click_handler);
@@ -170,6 +178,8 @@ $(document).ready(function(){
 		var parent = $that.attr("data-parent");
 		var osm = $that.attr("data-osm");
 		var id = $that.attr("data-id");
+		$that.parent().find(".path").removeClass('indicate')
+		$that.find('div.path').addClass('indicate');
 		$.ajax({
 			url:'/categories_matcher/'+osm+'/'+level+'/'+id,
 			type:"GET",

@@ -1,5 +1,6 @@
 from django.db import models
 
+from monoprix.models import Product as Product_monoprix
 from dalliz.models import Category_sub as Category_dalliz
 from dalliz.models import Brand as Brand_dalliz
 from dalliz.models import Unit as Unit_dalliz
@@ -82,10 +83,17 @@ class Product(models.Model):
 	image_url = models.CharField(max_length=9999)
 	promotion = models.ForeignKey(Promotion)
 	category = models.ForeignKey(Category_final)
-	dalliz_brand = models.ForeignKey(Brand_dalliz, null=True, related_name="telemarket_brand_dalliz_brand")
+	monoprix_product = models.ForeignKey(Product_monoprix, null=True)
+
 
 	class Meta:
 		unique_together = ("title", "url", "category")
 
 	def __unicode__(self):
 		return self.title
+
+
+class Monoprix_matching(models.Model):
+	telemarket_product = models.ForeignKey(Product)
+	monoprix_product = models.ForeignKey(Product_monoprix)
+	score = models.FloatField()
