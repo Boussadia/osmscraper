@@ -41,7 +41,7 @@ def suggestions(request, id):
 					"JOIN monoprix_brand ON monoprix_brand.id = monoprix_product.brand_id "
 					"WHERE telemarket_product.id = "+str(id)+" "
 					"ORDER BY telemarket_monoprix_matching.score DESC "
-					"LIMIT 10")
+					" ")
 		cursor = connection.cursor()
 		cursor.execute(sql_query)
 		result['suggestions'] = dictfetchall(cursor)
