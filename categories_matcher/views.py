@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template import Context, loader
 
 import simplejson as json
@@ -15,7 +15,7 @@ def index(request):
 	sub_categories = dalliz.models.Category_sub.objects.all()
 	for i in xrange(0,len(sub_categories)):
 		categories[sub_categories[i].id] = sub_categories[i].name
-	return render_to_response('categories_matcher/index.html', {"categories": categories})
+	return render(request, 'categories_matcher/index.html', {"categories": categories})
 
 def categories(request, osm, level, parent="1"):
 	response = {"final":False}

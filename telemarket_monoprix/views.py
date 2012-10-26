@@ -1,7 +1,7 @@
 import simplejson as json
 
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template import Context, loader
 from django.core import serializers
 from django.db import connection, transaction
@@ -17,7 +17,7 @@ def dictfetchall(cursor):
 
 def index(request):
 	element_id = Telemarket_product.objects.all().order_by('id')[:1][0].id
-	return render_to_response('telemarket_monoprix/index.html', {'element_id': element_id})
+	return render(request, 'telemarket_monoprix/index.html', {'element_id': element_id})
 
 def suggestions(request, id):
 	result = {}

@@ -7,7 +7,7 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 # Django settings for osmscraper project.
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -132,6 +132,7 @@ INSTALLED_APPS = (
     'kombu.transport.django',
     'djcelery',
     'south',
+    'storages',
     'place_du_marche',
     'telemarket',
     'telemarket_monoprix',
@@ -183,3 +184,12 @@ BROKER_URL = 'django://'
 
 import djcelery
 djcelery.setup_loader()
+
+if not DEBUG:
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+    STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
+    AWS_ACCESS_KEY_ID = 'AKIAIGSH7FB6CXL277VQ'
+    AWS_SECRET_ACCESS_KEY = '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'
+    AWS_STORAGE_BUCKET_NAME = 'dalliz_static'
+    STATIC_URL = '//s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
+    ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
