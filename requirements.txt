@@ -13,6 +13,7 @@ django-storages==1.1.4
 gunicorn==0.14.6
 kombu==2.4.7
 lxml==3.0
+newrelic
 psycopg2==2.4.5
 python-dateutil==1.5
 pytz==2012f
