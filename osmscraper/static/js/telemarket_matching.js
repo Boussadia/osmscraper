@@ -121,6 +121,7 @@ $(document).ready(function(){
 				text_categories = text_categories +', ';
 			}
 		}
+		text_categories = text_categories+' | price = '+telemarket_product['price']+'€ | unit price '+telemarket_product['unit_price']+'€/unit';
 		ID_TELEMARKET_PRODUCT = telemarket_product['id'];
 
 		$('#telemarket .name_product').text(name_product);
@@ -201,6 +202,7 @@ $(document).ready(function(){
 		var h3 = $('<h3>').addClass('name_product').text(name_product);
 		var h4 = $('<h3>').addClass('brand_name').text(brand_name);
 		var a = $('<a>').addClass('link_product').attr('target','_blank').attr("href",url_product);
+		var div_unit_price = $('<p>').addClass('unit_price').text(product['price']+' € | '+product['unit_price']+' €/'+product['unit']+' | '+Math.round(product['price']/product['unit_price']*100)/100+' '+product['unit'])
 		var img = $('<img>').addClass('product_image').attr("src",url_photo);
 		var button = $('<button>').addClass('set_match').text('Select this product.');
 		button.click(function(){
@@ -209,6 +211,7 @@ $(document).ready(function(){
 		a.append(img);
 		div.append(h3);
 		div.append(h4);
+		div.append(div_unit_price);
 		div.append(a);
 		div.append(button);
 		return div;

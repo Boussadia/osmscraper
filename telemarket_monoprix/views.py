@@ -34,13 +34,15 @@ def suggestions(request, id):
 
 
 		# Fetching related suggestions
-		sql_query = ("SELECT telemarket_monoprix_matching.score as score , max(monoprix_product.id) as id, monoprix_product.title as product_name, monoprix_brand.name as brand_name , monoprix_product.url, monoprix_product.image_url "
+		sql_query = ("SELECT telemarket_monoprix_matching.score as score , max(monoprix_product.id) as id, monoprix_product.title as product_name, monoprix_brand.name as brand_name , monoprix_product.url, monoprix_product.image_url,  monoprix_product.unit_price as unit_price,monoprix_product.price as price , dalliz_unit.name as unit "
 					"FROM telemarket_monoprix_matching "
 					"JOIN telemarket_product ON telemarket_monoprix_matching.telemarket_product_id = telemarket_product.id "
 					"JOIN monoprix_product ON monoprix_product.id = telemarket_monoprix_matching.monoprix_product_id "
 					"JOIN monoprix_brand ON monoprix_brand.id = monoprix_product.brand_id "
+					"JOIN monoprix_unit_dalliz_unit ON monoprix_product.unit_id = monoprix_unit_dalliz_unit.from_unit_id "
+					"JOIN dalliz_unit ON dalliz_unit.id = monoprix_unit_dalliz_unit.to_unit_id "
 					"WHERE telemarket_product.id = "+str(id)+" "
-					"GROUP BY  telemarket_monoprix_matching.score , monoprix_product.title, monoprix_brand.name , monoprix_product.url, monoprix_product.image_url "
+					"GROUP BY  telemarket_monoprix_matching.score , monoprix_product.title, monoprix_brand.name , monoprix_product.url, monoprix_product.image_url, monoprix_product.unit_price, dalliz_unit.name, monoprix_product.price "
 					"ORDER BY telemarket_monoprix_matching.score DESC "
 					" ")
 		cursor = connection.cursor()
