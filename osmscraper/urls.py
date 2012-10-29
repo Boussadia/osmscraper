@@ -15,9 +15,6 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
-    # Dalliz website
-    url(r'^/?', 'dalliz.views.index'),
-
     # Categories matcher app
     url(r'^categories_matcher/?$', 'categories_matcher.views.index'),
     url(r'^categories_matcher/(?P<osm>(\w)+)/(?P<level>\d+)(/(?P<parent>\d+))?/?$', 'categories_matcher.views.categories'),
@@ -31,4 +28,8 @@ urlpatterns = patterns('',
     url(r'^telemarket_monoprix/products/next/(?P<id>\d+)/?$', 'telemarket_monoprix.views.next'),
     url(r'^telemarket_monoprix/products/previous/(?P<id>\d+)/?$', 'telemarket_monoprix.views.previous'),
     url(r'^telemarket_monoprix/products/cancel/(?P<id>\d+)/?$', 'telemarket_monoprix.views.cancel'),
+
+
+    # Dalliz website
+    url(r'^/?', 'dalliz.views.index'),
 )
