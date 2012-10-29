@@ -96,6 +96,7 @@
 
 #osms .ooshop{
 	background-image: url(../images/osms/ooshop.png);
+	background-size: 120px !important;
 }
 
 #osms .place_du_marche{
@@ -104,6 +105,7 @@
 
 #osms .simply_market{
 	background-image: url(../images/osms/simply_market.png);
+    background-position: 50% 55% !important;
 }
 
 #osms .coursengo{
@@ -118,6 +120,16 @@
 	background-image: url(../images/osms/logo_telemarket.jpg);
 }
 
+#osms .row{
+	margin-left: 0px;
+}
+
+#osms [class*="span"]{
+	float: left;
+	min-height: 1px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
 
 /* Comercial pitch */
 #pitch{
@@ -164,5 +176,5 @@
 	color: #212121;
 	font-family: Arial;
 	margin: auto;
-	width: 220px;
+	width: 228px;
 }
