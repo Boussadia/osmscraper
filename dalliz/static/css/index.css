@@ -1,9 +1,3 @@
-@font-face{
-	font-family: Brankovic;
-	src: url('../fonts/brankovic.ttf');
-	font-weight:bold;
-}
-
 .content .container{
 	margin-bottom: 5px;
 	background-color: white;
@@ -51,7 +45,7 @@
 	width: 11px;
 	height: 0;
 	padding-top: 12px;
-	background-image: url(../images/pagination.png);
+	background-image: url(../images/home/pagination.png);
 	background-position: 0px 0px;
 	float: left;
 	overflow: hidden;
@@ -87,8 +81,88 @@
 	height: 160px;
 }
 
+#osms .row div{
+	height: 160px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 100%;
+}
+
+#osms .row div a{
+	display: block;
+	width: inherit;
+	height: inherit;
+}
+
+#osms .ooshop{
+	background-image: url(../images/osms/ooshop.png);
+}
+
+#osms .place_du_marche{
+	background-image: url(../images/osms/place_du_marche.png);
+}
+
+#osms .simply_market{
+	background-image: url(../images/osms/simply_market.png);
+}
+
+#osms .coursengo{
+	background-image: url(../images/osms/coursengo.png);
+}
+
+#osms .monoprix{
+	background-image: url(../images/osms/monop.gif);
+}
+
+#osms .telemarket{
+	background-image: url(../images/osms/logo_telemarket.jpg);
+}
+
+
 /* Comercial pitch */
 #pitch{
 	height: 380px;
 	margin-bottom: 0px;
+	text-shadow: 0 1px 0 white;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizelegibility;
+	font-smooth: always;
+}
+
+#pitch .image_bloc{
+	width: 220px;
+	height: 220px;
+	background-position: center;
+	background-repeat: no-repeat;
+	margin: auto;
+}
+
+#pitch .compose{
+	background-image: url(../images/pitch/compose.png);
+
+}
+
+#pitch .compare{
+	background-image: url(../images/pitch/compare.png);
+}
+
+#pitch .commande{
+	background-image: url(../images/pitch/commande.png);
+}
+
+
+#pitch .row div{
+	margin-top: 15px;
+}
+
+#pitch h3{
+	font-family: bpreplay;
+	text-align: center;
+}
+
+#pitch p{
+	color: #212121;
+	font-family: Arial;
+	margin: auto;
+	width: 220px;
 }

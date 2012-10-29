@@ -1,3 +1,15 @@
+@font-face{
+	font-family: BPreplay;
+	src: url('../fonts/bpreplay/BPreplayBold.otf');
+	font-weight:bold;
+}
+
+@font-face{
+	font-family: Brankovic;
+	src: url('../fonts/brankovic.ttf');
+	font-weight:bold;
+}
+
 body{
 	background-image: url(../images/bg.png);
 }
@@ -25,7 +37,7 @@ header{
 }
 
 header .beta{
-	background-image: url(../images/ruban.png);
+	background-image: url(../images/header/ruban.png);
 	background-repeat: no-repeat;
 	width: 52px;
 	height: 105px;
@@ -143,7 +155,7 @@ nav form.navbar-search{
 	display: block;
 	width: 32px;
 	height: 32px;
-	background-image: url('../images/social_sprits_5px.png');
+	background-image: url('../images/footer/social_sprits_5px.png');
 	background-position: 0px -42px;
 }
 

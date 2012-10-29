@@ -11,13 +11,13 @@
 	<section id="slide_show" class="container block">
 			<div class="slides_container">
 				<div>
-					<img src="{{ STATIC_URL }}images/pub1.png">
+					<img src="{{ STATIC_URL }}images/home/pub1.png">
 				</div>
 				<div>
-					<img src="{{ STATIC_URL }}images/pub2.png">
+					<img src="{{ STATIC_URL }}images/home/pub2.png">
 				</div>
 				<div>
-					<img src="{{ STATIC_URL }}images/pub3.png">
+					<img src="{{ STATIC_URL }}images/home/pub3.png">
 				</div>
 			</div>
 
@@ -30,16 +30,56 @@
 			</div>
 	</section>
 
-	<section id="osms" class="container block"></section>
+	<section id="osms" class="container block">
+		<div class="row">
+			<div class="span2 ooshop">
+				<a href="http://www.ooshop.com/courses-en-ligne/Home.aspx" target="_blank"></a>
+			</div>
+			<div class="span2 telemarket">
+				<a href="http://www.telemarket.fr/dynv6/index.shtml" target="_blank"></a>
+			</div>
+			<div class="span2 place_du_marche">
+				<a href="http://www.placedumarche.fr/" target="_blank"></a>
+			</div>
+			<div class="span2 monoprix">
+				<a href="http://courses.monoprix.fr/magasin-en-ligne/courses-en-ligne.html" target="_blank"></a>
+			</div>
+			<div class="span2 simply_market">
+				<a href="http://www.simplymarket.fr/" target="_blank"></a>
+			</div>
+			<div class="span2 coursengo">
+				<a href="http://www.coursengo.com/supermarche/accueil.html" target="_blank"></a>
+			</div>
+		</div>
 
-	<section id="pitch" class="container block"></section>
+	</section>
+
+	<section id="pitch" class="container block">
+		<div class="row">
+			<div class="span4">
+				<div class="compose image_bloc"></div>
+				<h3>Je compose</h3>
+				<p>mon panier de courses. J’y trouve tout ce dont j’ai besoin au quotidien.</p>
+			</div>
+			<div class="span4">
+				<div class="compare image_bloc"></div>
+				<h3>Je compare</h3>
+				<p> le prix de mon panier chez les différents supermarchés en ligne. </p>
+			</div>
+			<div class="span4">
+				<div class="commande image_bloc"></div>
+				<h3>Je commande</h3>
+				<p> mon panier puis je le reçois chez moi, avec l’assurance du prix le moins cher. </p>
+			</div>
+		</div>
+	</section>
 	
 </div>
 
 {% endblock %}
 
 {% block javascript %}
-<script type="text/javascript" src='http://formations.ai-environnement.fr/assets/js/slides.min.jquery.js'></script>
+<script type="text/javascript" src='{{STATIC_URL}}/js/slides.min.jquery.js'></script>
 <script type="text/javascript">
 	$(function(){		
 		$("#slide_show").slides({
