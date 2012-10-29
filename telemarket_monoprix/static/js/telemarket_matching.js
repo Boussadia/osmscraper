@@ -3,12 +3,6 @@ $(document).ready(function(){
 		window.location.hash = first_element_id;
 	})
 
-	$('html').keyup(function(e){
-		if(e.keyCode==17){
-			next();
-		}
-	});
-
 	$("#next").click(function(){
 		next();
 	});
