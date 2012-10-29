@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<title> Dalliz, Comparateur de panier</title>
+
+		<!-- Favico -->
+		<link href="{{STATIC_URL}}images/favicon.ico" rel="icon" type="image/x-icon" />
+
+		<!-- CSS -->
+		<link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet">
+		<link href="{{ STATIC_URL }}css/base.css" rel="stylesheet">
+
+		<!-- Support for full multi-stop gradients with IE9 (using SVG). Add a "gradient" class to all your elements that have a gradient, and add the following override to your HTML to complete the IE9 support: -->
+		<!--[if gte IE 9]>
+			<style type="text/css">
+				.gradient {
+					filter: none;
+				}
+			</style>
+		<![endif]-->
+
+	</head>
+	<body>
+
+		{% block header %}
+		<header class="gradient">
+			<div class="container">
+				<div class="logo"></div>
+				<div class="user menu">
+					<div class="cart"></div>
+					<div class="acount"></div>
+				</div>
+			</div>
+
+			<div class="beta"></div>
+
+		</header>
+		{% endblock%}
+
+		{% block menu %}
+
+		<nav class="container">
+			<div class="navbar navbar-inverse">
+				<div class="navbar-inner">
+					<ul class="nav">
+						<li class="active"><a href="#1">Alimentaire</a></li>
+						<li><a href="#2">Beauté & Hygiene</a></li>
+						<li><a href="#3">Maison & Entretien</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		
+		{% endblock %}
+
+		{% block content %}
+		{% endblock %}
+
+
+		{% block footer %}
+		<footer>
+
+		</footer>
+		<!-- Javascript -->
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/bootstrap.min.js"></script>
+
+		<!-- User Voice -->
+		<script type="text/javascript">
+			var uvOptions = {};
+			(function() {
+				var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
+				uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/JrMr2PkknuAg7ITkaUHIQ.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+			})();
+		</script>
+
+		{% endblock %}
+
+	</body>
+</html>
