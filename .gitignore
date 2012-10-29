@@ -3,3 +3,4 @@ venv
 celerybeat-schedule.db
 sqlite_dbs
 .DS_Store
+osmscraper/static/*

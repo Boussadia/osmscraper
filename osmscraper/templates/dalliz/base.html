@@ -3,6 +3,25 @@
 	<head>
 		<title> Dalliz, Comparateur de panier</title>
 
+		<!-- Classic meta description -->
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<meta http-equiv="Content-Language" content="fr-fr">
+		<meta name="author" content="dalliz.com" >
+		<meta name="description" content="Dalliz est un comparateur de panier entre les différents supermarchés en lignes. Avec Dalliz, gagnez du temps, économisez de l'argent.">
+		<meta name="keywords" content="dalliz, gagner du temps, économiser de l'argent, comparateur de panier, supermarchés en ligne, courses moins chères">
+		<meta name="robots" content="all" />
+
+
+		<!-- Open graph meta tags -->
+		<meta property="og:title" content="Dalliz" >
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="http://dalliz.com">
+		<meta property="og:locale" content="fr-fr" >
+		<meta property="og:site_name" content="Dalliz">
+		<meta property="og:description" content="Dalliz est un comparateur de panier entre les différents supermarchés en lignes. Avec Dalliz, gagnez du temps, économisez de l'argent.">
+		<meta property="og:image" content="{{ STATIC_URL}}images/logo_og.png">
+		<meta property="fb:admins" content="1478671803" />
+
 		<!-- Favico -->
 		<link href="{{STATIC_URL}}images/favicon.ico" rel="icon" type="image/x-icon" />
 
@@ -19,13 +38,21 @@
 			</style>
 		<![endif]-->
 
+		<!-- Custom CSS -->
+		{% block css %}
+		{% endblock%}
+
+
 	</head>
 	<body>
 
 		{% block header %}
 		<header class="gradient">
 			<div class="container">
-				<div class="logo"></div>
+				<div class="logo">
+					<a href="/"></a>
+				</div>
+				
 				<div class="user menu">
 					<div class="cart"></div>
 					<div class="acount"></div>
@@ -39,14 +66,19 @@
 
 		{% block menu %}
 
-		<nav class="container">
+		<nav>
 			<div class="navbar navbar-inverse">
 				<div class="navbar-inner">
-					<ul class="nav">
-						<li class="active"><a href="#1">Alimentaire</a></li>
-						<li><a href="#2">Beauté & Hygiene</a></li>
-						<li><a href="#3">Maison & Entretien</a></li>
-					</ul>
+					<div class="container">
+						<ul class="nav">
+							<li class="active"><a href="#1">Alimentaire</a></li>
+							<li><a href="#2">Beauté & Hygiene</a></li>
+							<li><a href="#3">Maison & Entretien</a></li>
+						</ul>
+						<form class="navbar-search pull-right">
+							<input type="text" class="search-query" placeholder="Recherche Produit/Marque">
+						</form>
+					</div>
 				</div>
 			</div>
 		</nav>
@@ -56,14 +88,60 @@
 		{% block content %}
 		{% endblock %}
 
-
 		{% block footer %}
 		<footer>
-
+			<div class="top">
+				<div class="container">
+					<div class="blog">
+						<h2><a href="http://blog.dalliz.com" title="Découvrez des méthodes qui vous ferons gagner du temps"> Blog </a></h2>
+						<p> Découvrez des méthodes qui vous feront gagner du temps.</p>
+					</div>
+					<div class="separator"><h2>•</h2></div>
+					<div class="social_bloc">
+						<h2>Suivez-nous : </h2>
+						<div class="social-widget">
+							<ul class="links-list">
+								<li class="facebook_icon">
+									<a href="https://www.facebook.com/pages/Dalliz/334455173295782" target="_blank" title="Suivez-nous sur notre page Facebook !"></a>
+								</li>
+								<li class="twitter_icon">
+									<a href="https://twitter.com/dalliz_" target="_blank" title="Suivez-nous sur Twitter !"></a>
+								</li>
+								<li class="google_icon">
+									<a href="https://plus.google.com/b/113481628276817850414/113481628276817850414" target="_blank" title="Suivez-nous sur Google+ !"></a>
+								</li>
+								<li class="pinterest_icon">
+									<a href="http://pinterest.com/dallizdotcom/" target="_blank" title="Suivez-nous sur Pinterest !"></a>
+								</li>
+								<li class="linked_in_icon">
+									<a href="https://www.linkedin.com/company/dalliz" target="_blank" title="Suivez-nous sur LinkedIn !"></a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="separator"><h2>•</h2></div>					
+					<div class="contact">
+						<h2><a href="mailto:hello@dalliz.com?Subject=Prise%20de%20contact" title=""> Contactez-nous ! </a></h2>
+					</div>
+				</div>
+			</div>
+			<div class="bottom">
+				<div class="container">
+					<span>Partenariat </span>•<a href="{{ STATIC_URL }}files/presse_kit_dalliz.rar"> Presse kit </a>•<span> Jobs </span>•<span>  Mentions légales </span><span>• Conditions générales de ventes </span><span>• Confidentialité </span>
+					<span>dalliz © 2012</span>
+				</div>	
+			</div>
 		</footer>
+
+		{% endblock %}
+
 		<!-- Javascript -->
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/bootstrap.min.js"></script>
+
+		<!-- Custom Javascript Import -->
+		{% block javascript%}
+		{% endblock%}
 
 		<!-- User Voice -->
 		<script type="text/javascript">
@@ -74,8 +152,6 @@
 				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
 			})();
 		</script>
-
-		{% endblock %}
 
 	</body>
 </html>

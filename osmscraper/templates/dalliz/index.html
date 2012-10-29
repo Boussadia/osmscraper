@@ -1,4 +1,42 @@
 {% extends "dalliz/base.html" %}
 
+{% block css%}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/index.css">
+{% endblock %}
+
 {% block content %}
+
+
+<div class="content">
+	<section id="slide_show" class="container">
+			<div class="slides_container">
+				<div>
+					<img src="{{ STATIC_URL }}images/pub1.png">
+				</div>
+				<div>
+					<img src="{{ STATIC_URL }}images/pub2.png">
+				</div>
+				<div>
+					<img src="{{ STATIC_URL }}images/pub3.png">
+				</div>
+			</div>
+	</section>
+
+	<section id="osms" class="container"></section>
+
+	<section id="pitch" class="container"></section>
+	
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src='http://formations.ai-environnement.fr/assets/js/slides.min.jquery.js'></script>
+<script type="text/javascript">
+	$(function(){		
+		$("#slide_show").slides({
+			play: 5000
+		});
+	});
+</script>
 {% endblock %}

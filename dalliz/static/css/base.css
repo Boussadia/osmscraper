@@ -2,6 +2,7 @@ body{
 	background-image: url(../images/bg.png);
 }
 
+/* Header*/
 header{
 	width: 100%;
 	height: 40px;
@@ -31,7 +32,6 @@ header .beta{
 	left: 70px;
 	z-index: 9999999999;
 }
-
 header .logo{
 	background-image: url(../images/logo.png);
 	background-repeat:  no-repeat;
@@ -40,8 +40,15 @@ header .logo{
 	margin: auto;
 }
 
-nav.container{
-	width: 100%;
+header .logo a{
+	display: block;
+	width: inherit;
+	height: inherit;
+}
+
+/* Menu */
+nav .navbar{
+	margin-bottom: 0px;
 }
 
 nav .navbar .nav > li > a{
@@ -49,13 +56,222 @@ nav .navbar .nav > li > a{
 }
 
 nav .navbar .nav{
-	width: 38%;
 	margin: auto;
 	position: initial;
 	float: initial;
 }
 
-nav .navbar-inner{
+nav .navbar-inverse .navbar-inner{
 	border: none;
 	border-radius: 0px;
+	background-color: #141414;
+	background-image: none;
+	filter: none;
+
+	-moz-box-shadow: 0px 3px 7px rgba(0,0,0,.75);
+	-webkit-box-shadow: 0px 3px 7px rgba(0,0,0,.75);
+	box-shadow: 0px 3px 7px rgba(0,0,0,.75);
+}
+
+nav .navbar-inner {
+	min-height: 0px;
+	height: 32px;
+}
+
+nav .navbar-inner .container{
+	width: 960px;
+	margin-top: 1px;
+	margin-bottom: 1px;
+}
+
+nav .navbar-search .search-query{
+	width: 170px;
+	height: 20px;
+	border-radius: 5px;
+}
+
+nav .nav{
+	width: 50%;
+}
+
+nav .navbar .nav > li > a{
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+nav form.navbar-search{
+	margin: 0px;
+}
+
+/* Social links*/
+.social-widget{
+	display: inline-block;
+	
+}
+.social-widget ul{
+	margin: 6px 0 0 !important;
+	padding: 0px;
+	display: inline;
+}
+
+.social-widget ul li{
+	padding: 0 2px 0 0;
+	margin: 0;
+	display: inline-block;
+	zoom: 1;
+	border: none !important;
+	clear: none;
+	line-height: 100%;
+}
+
+.social-widget a{
+	text-decoration: none;
+}
+
+.links-list{
+	list-style-type: none;
+}
+
+.links-list li a{
+	display: block;
+	width: 32px;
+	height: 32px;
+	background-image: url('../images/social_sprits_5px.png');
+	background-position: 0px -42px;
+}
+
+.facebook_icon a{
+	background-position: -5px -42px !important;
+}
+
+.facebook_icon a:hover{
+	background-position: -5px -5px !important;
+}
+
+.twitter_icon a{
+	background-position: -42px -42px !important;
+}
+
+.twitter_icon a:hover{
+	background-position: -42px -5px !important;
+}
+
+.google_icon a{
+	background-position: -79px -42px !important;
+}
+
+.google_icon a:hover{
+	background-position: -79px -5px !important;
+}
+
+.pinterest_icon a{
+	background-position: -116px -42px !important;
+}
+
+.pinterest_icon a:hover{
+	background-position: -116px -5px !important;
+}
+
+.linked_in_icon a{
+	background-position: 74px -42px !important;
+}
+
+.linked_in_icon a:hover{
+	background-position: 74px -5px !important;
+}
+
+/* Footer */
+footer{
+	font-family: Arial;
+	overflow: hidden;
+	width: 100%;
+	box-shadow: 1px -1px 3px #ACACAC;
+	color: white;
+}
+
+footer a{
+	color: inherit;
+	text-decoration: none;
+}
+
+footer div.top{
+	height: 48px;
+	background-color: #212121;
+}
+
+footer div.top h2{
+	font-size: .77em;
+}
+
+footer div.bottom{
+	height: 33px;
+	background-color: #000000;
+	text-align: center;
+	font-size: 0.67em;
+}
+
+footer div.bottom a, footer div.bottom span{
+	color: white;
+	text-decoration: none;
+}
+
+footer .top .container > div{
+	height: 100%;
+	display: inline-block;
+	float: left;
+	width: 49%;
+}
+
+footer .container{
+	height: 100%;
+}
+
+footer .bottom span:last-child{
+	float: right;
+}
+
+footer .bottom .container{
+	padding-top: 10px;
+}
+
+footer .top h2{
+	text-align: center;
+	font-weight: bold;
+}
+
+footer .social_bloc >h2{
+	display: inline-block;
+}
+
+footer .blog p{
+	width: 175px;
+	margin: auto;
+	font-weight: bold;
+}
+
+footer .social-widget{
+	float: none;
+	position: relative;
+	top: 9px;
+}
+
+footer .blog{
+	width: 24% !important;
+}
+
+footer .blog p{
+	display: none;
+}
+
+footer .social_bloc{
+	width: 50% !important;
+	text-align: center;
+}
+
+footer .contact{
+	width: 24% !important;
+}
+
+footer .separator{
+	width: 1% !important;
 }
