@@ -31,7 +31,7 @@
 	margin-right: 360px;
 	width:39px;
 	position: relative;
-	z-index: 99999999;
+	z-index: 9999;
 }
 
 #slide_show .pagination li {
@@ -59,7 +59,7 @@
 #slide_show .cta{
 	position: absolute;
 	top: 125px;
-	z-index: 99999;
+	z-index: 99;
 }
 
 #slide_show .cta .message{
