@@ -1,9 +1,17 @@
+@font-face{
+	font-family: Brankovic;
+	src: url('../fonts/brankovic.ttf');
+	font-weight:bold;
+}
+
 .content .container{
 	margin-bottom: 5px;
 	background-color: white;
 }
 
+/* Slide Show block */
 #slide_show{
+	position: relative;
 	height: 350px;
 }
 
@@ -53,10 +61,33 @@
 	background-position:-9px 0px;
 }
 
+/* Call to action in slide show */
+#slide_show .cta{
+	position: absolute;
+	top: 125px;
+	z-index: 99999;
+}
+
+#slide_show .cta .message{
+	font-family: brankovic;
+	margin-left: 10px;
+	color: #9E09A8;
+	font-size: 30px;
+	line-height: 30px;
+}
+
+#slide_show button{
+	left: 80px;
+	position: absolute;
+	top: 110px;
+}
+
+/* Online Supermarkets*/
 #osms{
 	height: 160px;
 }
 
+/* Comercial pitch */
 #pitch{
 	height: 380px;
 	margin-bottom: 0px;
