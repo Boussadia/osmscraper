@@ -68,6 +68,7 @@
 	color: #9E09A8;
 	font-size: 30px;
 	line-height: 30px;
+	width: 305px;
 }
 
 #slide_show button{
@@ -136,9 +137,6 @@
 	height: 380px;
 	margin-bottom: 0px;
 	text-shadow: 0 1px 0 white;
-	-webkit-font-smoothing: antialiased;
-	text-rendering: optimizelegibility;
-	font-smooth: always;
 }
 
 #pitch .image_bloc{
@@ -176,5 +174,5 @@
 	color: #212121;
 	font-family: Arial;
 	margin: auto;
-	width: 228px;
+	width: 250px;
 }
