@@ -1,0 +1,32 @@
+#propos h1, #propos h3{
+	font-family: BPreplay;
+}
+
+#propos strong{
+	color: #9E09A9;
+	text-shadow: 0px -1px 0px #690670;
+}
+
+
+#propos .pitch{
+	background-color: #212121;
+	color: white;
+	font-family: Arial;
+}
+
+#propos .motos{
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+#propos .motos h3{
+	text-align: center;
+	font-size: 32px;
+}
+
+#propos .motos p{
+	color: #212121;
+	font-family: Arial;
+	margin: auto;
+	padding-left: 10px;
+}

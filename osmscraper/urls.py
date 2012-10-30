@@ -32,7 +32,9 @@ urlpatterns = patterns('',
 
 
     # Dalliz website
-    url(r'^/?', 'dalliz.views.index'),
+    url(r'^/?$', 'dalliz.views.index'),
+    url(r'^a-propos-de-dalliz/?$', 'dalliz.views.a_propos'),
+    url(r'^partenariat/?$', 'dalliz.views.partenariat'),
 )
 
 

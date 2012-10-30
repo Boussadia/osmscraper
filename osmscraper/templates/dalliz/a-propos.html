@@ -1,0 +1,57 @@
+{% extends "dalliz/base.html" %}
+
+{% block title %}
+À propos de Dalliz
+{% endblock %}
+
+{% block css%}
+<link rel="stylesheet" type="text/css" href="{% static css/a-propos.css %}">
+{% endblock %}
+
+{% block content %}
+<section  id="propos" class="container block">
+
+	<div class="row">
+		<div class="span12">
+			<h1>
+				{% block title_page %}
+					<strong>À propos</strong> de Dalliz
+				{% endblock %}
+			</h1>
+		</div>
+	</div>
+
+	<div class="pitch row">
+		<div class="span12">
+			<h1>Gagnez du <strong>temps</strong>. Economisez de l'<strong>argent</strong> !</h1>
+			<p>Chez Dalliz, nous voulons gagner du temps avec les supermarchés en ligne, et économiser notre argent sur notre panier.
+				On vous proposera donc prochainement une plate-forme qui vous permettra de :</p>
+
+			<ol>
+				<li>créer votre panier avec les produits que vous consommez tous les jours</li>
+				<li>lancer la comparaison sur les différents cybermarchés</li>
+				<li>demander la livraison de votre panier </li>
+			</ol>
+
+		</div>
+	</div>
+
+	{% block specific%}
+		<div class="motos row">
+			<div class="span6">
+				<h3>Dalliz, pourquoi ?</h3>
+				<p>Chez Dalliz, nous adorons les supermarchés en ligne, on y gagne du temps, mais nous voulons payer le prix juste pour notre panier. Nous nous engageons à trouver les meilleurs prix pour vous, livraison comprise ! </p>
+			</div>
+			<div class="span6">
+				<h3>Meilleurs prix garantis !</h3>
+				<p>Avec Dalliz, vous avez la garantie d’avoir les meilleurs prix. Dalliz est un comparateur indépendant des enseignes de la grande distribution et des marques. </p>
+			</div>
+		</div>
+	{% endblock %}
+
+
+</section>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

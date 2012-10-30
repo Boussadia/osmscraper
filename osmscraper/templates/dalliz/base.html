@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="fr">
 	<head>
-		<title> Dalliz, Comparateur de panier</title>
+		<title>
+			{% block title%}
+				Dalliz, Comparateur de panier
+			{% endblock %}
+		</title>
 
 		<!-- Classic meta description -->
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
@@ -40,7 +44,7 @@
 
 		<!-- Custom CSS -->
 		{% block css %}
-		{% endblock%}
+		{% endblock %}
 
 
 	</head>
@@ -85,8 +89,11 @@
 		
 		{% endblock %}
 
-		{% block content %}
-		{% endblock %}
+		<div class="content">
+
+			{% block content %}
+			{% endblock %}
+		</div>
 
 		{% block footer %}
 		<footer>
@@ -127,7 +134,7 @@
 			</div>
 			<div class="bottom">
 				<div class="container">
-					<span>Partenariat </span>•<a href="{{ STATIC_URL }}files/presse_kit_dalliz.rar"> Presse kit </a>•<span> Jobs </span>•<span>  Mentions légales </span><span>• Conditions générales d'utilisation </span><span>• Confidentialité </span>
+					<span> <a href="/partenariat/">Partenariat</a> </span>•<a href="{% static files/presse_kit_dalliz.rar %}"> Presse kit </a>•<span> Jobs </span>•<span>  Mentions légales </span><span>• Conditions générales d'utilisation </span><span>• <a href="/a-propos-de-dalliz/">À propos de Dalliz </a></span>
 					<span>Dalliz © 2012</span>
 				</div>	
 			</div>

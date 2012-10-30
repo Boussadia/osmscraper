@@ -20,6 +20,10 @@ body{
 	background-image: url(../images/bg.png);
 }
 
+.content{
+	/*min-height: 600px;*/
+}
+
 /* Header*/
 header{
 	width: 100%;
@@ -306,7 +310,9 @@ footer .separator{
 .block{
 	-moz-box-shadow: 0px 1px 3px;
 	-webkit-box-shadow: 0px 1px 3px;
-	box-shadow: 0px 1px 3px rgba(34, 25, 25, 0.4); 
+	box-shadow: 0px 1px 3px rgba(34, 25, 25, 0.4);
+	background-color: white;
+	/*padding: 10px; */
 }
 
 .btn-success {

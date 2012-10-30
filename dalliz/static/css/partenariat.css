@@ -1,0 +1,19 @@
+#propos .motos h3{
+	text-align: left;
+	margin-left: 10px;
+}
+
+#propos .motos .span12{
+	width: 920px;
+}
+
+#propos .cta{
+	height: 130px;
+	position: relative;
+}
+
+#propos .cta button{
+	position: absolute;
+	right: 310px;
+	bottom: 50px;
+}

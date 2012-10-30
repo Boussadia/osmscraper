@@ -6,3 +6,9 @@ import simplejson as json
 
 def index(request):
 	return render(request, 'dalliz/index.html', {})
+
+def a_propos(request):
+	return render(request, 'dalliz/a-propos.html', {})
+
+def partenariat(request):
+	return render(request, 'dalliz/partenariat.html', {})

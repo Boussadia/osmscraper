@@ -1,0 +1,41 @@
+{% extends "dalliz/a-propos.html" %}
+
+{% block title %}
+Page partenaires
+{% endblock %}
+
+{% block css%}
+<link rel="stylesheet" type="text/css" href="{% static css/a-propos.css %}">
+<link rel="stylesheet" type="text/css" href="{% static css/partenariat.css %}">
+{% endblock %}
+
+{% block title_page %}
+	Page <strong>partenaires  </strong>
+{% endblock %}
+
+
+{% block specific%}
+
+<div class="motos">
+	<div class="row referencement">
+		<div class="span12">
+			<h3>Referencement</h3>
+			<p>Vous souhaitez indexer votre supermarché dans Dalliz et ainsi bénéficier d’un traffic accru vers votre site ? Rien de plus simple ! Contactez-nous et on se charge du reste ! </p>
+		</div>
+	</div>
+	<div class="row communication">
+		<div class="span12">
+			<h3>Communication</h3>
+			<p>Vous souhaitez communiquer sur vos offres promotionnelles ou coupons de réductions ? Notre équipe s’en occupe aussi ! </p>
+		</div>
+	</div>
+	<div class="row cta">
+		<div class="span12">
+			<a href="mailto:hello@dalliz.com">
+				<button class='btn btn-success'>Contactez-nous ici!</button>
+			</a>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
