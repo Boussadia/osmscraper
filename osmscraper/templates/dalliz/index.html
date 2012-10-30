@@ -1,7 +1,7 @@
 {% extends "dalliz/base.html" %}
 
 {% block css%}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/index.css">
+<link rel="stylesheet" type="text/css" href="{% static css/index.css %}">
 {% endblock %}
 
 {% block content %}
@@ -84,7 +84,7 @@
 {% endblock %}
 
 {% block javascript %}
-<script type="text/javascript" src='{{STATIC_URL}}js/slides.min.jquery.js'></script>
+<script type="text/javascript" src='{% static js/slides.min.jquery.js %}'></script>
 <script type="text/javascript">
 	$(function(){		
 		$("#slide_show").slides({

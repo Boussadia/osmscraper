@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     'djcelery',
     'south',
     'storages',
+    'cachebuster',
     'place_du_marche',
     'telemarket',
     'telemarket_monoprix',
@@ -185,6 +186,8 @@ BROKER_URL = 'django://'
 import djcelery
 djcelery.setup_loader()
 
+
+# S3 Storage for static files (production environnement)
 if not DEBUG:
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
@@ -193,3 +196,11 @@ if not DEBUG:
     AWS_STORAGE_BUCKET_NAME = 'dalliz_static'
     STATIC_URL = '//s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
     ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
+
+# Cache busting
+from django.template.loader import add_to_builtins
+from cachebuster.detectors import git
+
+add_to_builtins('cachebuster.templatetags.cachebuster')
+CACHEBUSTER_UNIQUE_STRING = git.unique_string(__file__)
+CACHEBUSTER_PREPEND_STATIC = False

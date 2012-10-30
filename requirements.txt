@@ -8,12 +8,12 @@ boto==2.2.1
 celery==3.0.11
 distribute==0.6.28
 dj-database-url==0.2.1
+django-cachebuster==0.2.1
 django-celery==3.0.10
 django-storages==1.1.4
 gunicorn==0.14.6
 kombu==2.4.7
 lxml==3.0
-newrelic
 psycopg2==2.4.5
 python-dateutil==1.5
 pytz==2012f
