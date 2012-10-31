@@ -17,3 +17,11 @@
 	right: 310px;
 	bottom: 50px;
 }
+
+#propos .motos p{
+	width: initial;
+}
+
+#propos .motos .span6{
+	width: initial;
+}

@@ -35,6 +35,7 @@ urlpatterns = patterns('',
     url(r'^/?$', 'dalliz.views.index'),
     url(r'^a-propos-de-dalliz/?$', 'dalliz.views.a_propos'),
     url(r'^partenariat/?$', 'dalliz.views.partenariat'),
+    url(r'produit/(?P<name>((\w)+-?)+)/?$','dalliz.views.product'),
 )
 
 

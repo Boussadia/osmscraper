@@ -6,13 +6,10 @@ from django.template import Context, loader
 from django.core import serializers
 from django.db import connection, transaction
 
+from osmscraper.utility import dictfetchall
+
 from telemarket.models import Product as Telemarket_product
 from monoprix.models import Product as Monoprix_product
-
-def dictfetchall(cursor):
-		"Generator of all rows from a cursor"
-		desc = cursor.description
-		return [ dict(zip([col[0] for col in desc], row)) for row in cursor.fetchall() ]
 
 
 def index(request):
