@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="fr">
+<!--[if lt IE 7 ]> <html lang="fr" class="ie6"> <![endif]--> <!--[if IE 7 ]>    <html lang="fr" class="ie7"> <![endif]--> <!--[if IE 8 ]>    <html lang="fr" class="ie8"> <![endif]--> <!--[if IE 9 ]>    <html lang="fr" class="ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="fr"> <!--<![endif]-->
 	<head>
 		<title>
 			{% block title%}
@@ -41,6 +42,10 @@
 				}
 			</style>
 		<![endif]-->
+		
+		<!--[if lt IE 9]>
+			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
 
 		<!-- Custom CSS -->
 		{% block css %}
@@ -75,9 +80,9 @@
 				<div class="navbar-inner">
 					<div class="container">
 						<ul class="nav">
-							<li class="active"><a href="#1">Alimentaire</a></li>
-							<li><a href="#2">Beauté & Hygiene</a></li>
-							<li><a href="#3">Maison & Entretien</a></li>
+							<li><a href="/">Alimentaire</a></li>
+							<li><a href="/">Beauté & Hygiene</a></li>
+							<li><a href="/">Maison & Entretien</a></li>
 						</ul>
 						<form class="navbar-search pull-right">
 							<input type="text" class="search-query" placeholder="Recherche Produit/Marque">
@@ -94,6 +99,7 @@
 			{% block content %}
 			{% endblock %}
 		</div>
+
 
 		{% block footer %}
 		<footer>
@@ -134,7 +140,12 @@
 			</div>
 			<div class="bottom">
 				<div class="container">
-					<span> <a href="/partenariat/">Partenariat</a> </span>•<a href="{% static files/presse_kit_dalliz.rar %}"> Presse kit </a>•<span> Jobs </span>•<span>  Mentions légales </span><span>• Conditions générales d'utilisation </span><span>• <a href="/a-propos-de-dalliz/">À propos de Dalliz </a></span>
+					<span><a href="/partenariat/">Partenariat</a> </span>
+					•<a href="{% static files/presse_kit_dalliz.rar %}"> Presse kit </a>
+					•<span> Jobs </span>
+					•<span>  Mentions légales </span>
+					<span>• Conditions générales d'utilisation </span>
+					<span>• <a href="/a-propos-de-dalliz/">À propos de Dalliz </a></span>
 					<span>Dalliz © 2012</span>
 				</div>	
 			</div>
@@ -142,13 +153,22 @@
 
 		{% endblock %}
 
+		<script type="text/x-handlebars" data-template-name="application">
+				
+		</script>
+
 		<!-- Javascript -->
-		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<!-- JQuery -->
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script>window.jQuery || document.write('<script src="{% static js/libs/jquery-1.7.2.min.js %}"><\/script>')</script>
+		<!-- EmberJS -->
+		<!-- Bootstrap JS -->
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/bootstrap.min.js"></script>
 
 		<!-- Custom Javascript Import -->
 		{% block javascript%}
 		{% endblock%}
+
 
 		<!-- User Voice -->
 		<script type="text/javascript">
