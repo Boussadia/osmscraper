@@ -1,0 +1,36 @@
+{% extends "dalliz/base.html" %}
+
+{% block title %}
+Erreur 404
+{% endblock %}
+
+{% block css%}
+<link rel="stylesheet" type="text/css" href="{% static css/404.css %}">
+{% endblock %}
+
+{% block content %}
+<section  id="erreur" class="container block">
+
+	<div class="row">
+		<div class="span12">
+			<h1>
+				{% block title_page %}
+					Erreur <strong>404</strong>
+				{% endblock %}
+			</h1>
+		</div>
+	</div>
+
+	<div class="message row">
+		<div class="span12">
+			<p class='first'>La page que vous demandez</p>
+			<p class='second'>n’est pas actuellement <strong>en stock.</strong> </p>
+
+		</div>
+	</div>
+
+</section>
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
