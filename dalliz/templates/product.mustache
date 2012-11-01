@@ -1,0 +1,42 @@
+{{# product }}
+
+<section class="container block" id="product">
+	<div class="row">
+		<div class="span6" id="left">
+			<img src="http://courses.monoprix.fr{{ image_url }}" id="image_product">
+			<div class="consumer"></div>
+		</div>
+		<div class="separation_verticale"></div>
+		<div class="span6" id="right">
+			<div class="infos sub_container">
+				<div class="brand">{{ brand_name }}</div>
+				<div class="prduct_name">{{ product_name }}</div>
+				<div class="price"> A partir de {{ price }} € <sup>*</sup></div>
+				<div class="add_to_cart"></div>
+			</div>
+			<div class="accordion sub_container" id="accordion">
+				{{# items}}
+					{{# isNotEmpty }}
+						<div class="accordion-group">
+							<div class="accordion-heading">
+
+								<a class="accordion-toggle collapsed" data-toggle="collapse" href="#{{ id }}">
+									<div class='arrow'></div>
+									{{ name }}
+								</a>
+							</div>
+							<div id="{{ id }}" class="accordion-body collapse" style="height: 0px; ">
+								<div class="accordion-inner">
+									{{ content }}
+								</div>
+							</div>
+						</div>
+					{{/ isNotEmpty }}
+				{{/ items}}
+			</div>
+			<div class="foot_note sub_container"> <sup>*</sup>Chez 2 Supermarchés</div>
+		</div>
+	</div>
+</section>
+
+{{/ product }}
