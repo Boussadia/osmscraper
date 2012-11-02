@@ -101,11 +101,18 @@ def get_product_from_category_id(category_id):
 #
 
 def get_products_for_sub_category(sub_category_url):
-	sql_query_categories = ("SELECT * FROM "
-							"(SELECT id, STRING_AGG(chunck.chuncks, '-') as short_url "
-							"FROM ( SELECT regexp_split_to_table(unaccent(lower(name)), '(\W)+') as chuncks, id  FROM dalliz_category_sub) as chunck "
-							"GROUP BY chunck.id ) AS result "
-							"WHERE result.short_url = '"+sub_category_url+"' ")
+	if settings.DEBUG:
+		sql_query_categories = ("SELECT * FROM "
+								"(SELECT id, STRING_AGG(chunck.chuncks, '-') as short_url "
+								"FROM ( SELECT regexp_split_to_table(unaccent(lower(name)), '(\W)+') as chuncks, id  FROM dalliz_category_sub) as chunck "
+								"GROUP BY chunck.id ) AS result "
+								"WHERE result.short_url = '"+sub_category_url+"' ")
+	else:
+		sql_query_categories = ("SELECT * FROM "
+								"(SELECT id, STRING_AGG(chunck.chuncks, '-') as short_url "
+								"FROM ( SELECT regexp_split_to_table(unaccent(lower(name)), E'(\\W)+') as chuncks, id  FROM dalliz_category_sub) as chunck "
+								"GROUP BY chunck.id ) AS result "
+								"WHERE result.short_url = '"+sub_category_url+"' ")
 	cursor = connection.cursor()
 	cursor.execute(sql_query_categories)
 	category_db = dictfetchall(cursor)
