@@ -7,7 +7,7 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 # Django settings for osmscraper project.
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -199,8 +199,8 @@ if not DEBUG:
 
 # Cache busting
 from django.template.loader import add_to_builtins
-from cachebuster.detectors import git
+# from cachebuster.detectors import git
 
 add_to_builtins('cachebuster.templatetags.cachebuster')
-CACHEBUSTER_UNIQUE_STRING = git.unique_string(__file__)
+# CACHEBUSTER_UNIQUE_STRING = git.unique_string(__file__)
 CACHEBUSTER_PREPEND_STATIC = False
