@@ -80,3 +80,23 @@ def migrate_monoprix_db():
 		product.dalliz_url = dalliz_url
 		product.save()
 
+@task
+def migrate_categories():
+	import re
+	from osmscraper.utility import dictfetchall
+	from django.db import connection
+	from dalliz.models import Category_sub
+	REGEXP = re.compile(r'\W+')
+
+	sql_query = (" SELECT id, unaccent(lower(name)) as name FROM dalliz_category_sub ")
+
+	cursor = connection.cursor()
+	cursor.execute(sql_query)
+	categories = dictfetchall(cursor)
+	for i in xrange(0,len(categories)):
+		url = '-'.join(REGEXP.split(categories[i]['name']))
+		category = Category_sub.objects.get(id=categories[i]['id'])
+		category.url = url
+		category.save()
+
+

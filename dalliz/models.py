@@ -10,6 +10,7 @@ class Category_main(models.Model):
 class Category_sub(models.Model):
 	name = models.CharField(max_length=100, unique=True)
 	parent_category = models.ForeignKey(Category_main)
+	url = models.CharField(max_length=9999, null=True)
 
 	def __unicode__(self):
 		return self.name
