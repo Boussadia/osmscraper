@@ -35,7 +35,7 @@ def get_product_from_short_url(short_url):
 	return result
 
 def get_product_from_category_id(category_id):
-	sql_query = ("SELECT monoprix_product.id,  monoprix_product.dalliz_url as short_url, monoprix_product.category_id, monoprix_product.title as product_name, monoprix_product.url, monoprix_brand.name as brand_name, LEAST(monoprix_product.price, telemarket_product.price) as price, LEAST(monoprix_product.unit_price, telemarket_product.unit_price) as unit_price, monoprix_product.unit_id, monoprix_product.image_url, monoprix_product.promotion, monoprix_product.category_id, monoprix_product.description, monoprix_product.ingredients, monoprix_product.valeur_nutritionnelle, monoprix_product.conservation, monoprix_product.conseil, monoprix_product.composition "
+	sql_query = ("SELECT monoprix_product.id,  monoprix_product.dalliz_url as short_url, monoprix_product.category_id, monoprix_product.title as product_name, monoprix_product.url, monoprix_brand.name as brand_name, monoprix_brand.id as brand_id, LEAST(monoprix_product.price, telemarket_product.price) as price, LEAST(monoprix_product.unit_price, telemarket_product.unit_price) as unit_price, monoprix_product.unit_id, monoprix_product.image_url, monoprix_product.promotion, monoprix_product.category_id, monoprix_product.description, monoprix_product.ingredients, monoprix_product.valeur_nutritionnelle, monoprix_product.conservation, monoprix_product.conseil, monoprix_product.composition "
 				"FROM monoprix_product "
 				"JOIN telemarket_product ON telemarket_product.monoprix_product_id=monoprix_product.id "
 				"JOIN monoprix_brand ON monoprix_product.brand_id = monoprix_brand.id "
@@ -63,18 +63,8 @@ def get_product_from_category_id(category_id):
 	return result
 
 def get_products_for_sub_category(sub_category_url):
-	if settings.DEBUG:
-		sql_query_categories = ("SELECT * FROM "
-								"(SELECT id, STRING_AGG(chunck.chuncks, '-') as short_url "
-								"FROM ( SELECT regexp_split_to_table(unaccent(lower(name)), '(\W)+') as chuncks, id  FROM dalliz_category_sub) as chunck "
-								"GROUP BY chunck.id ) AS result "
-								"WHERE result.short_url = '"+sub_category_url+"' ")
-	else:
-		sql_query_categories = ("SELECT * FROM "
-								"(SELECT id, STRING_AGG(chunck.chuncks, '-') as short_url "
-								"FROM ( SELECT regexp_split_to_table(unaccent(lower(name)), E'(\\W)+') as chuncks, id  FROM dalliz_category_sub) as chunck "
-								"GROUP BY chunck.id ) AS result "
-								"WHERE result.short_url = '"+sub_category_url+"' ")
+	sql_query_categories = ("SELECT id, name, url as short_url FROM dalliz_category_sub "
+							"WHERE dalliz_category_sub.url = '"+sub_category_url+"' ")
 	cursor = connection.cursor()
 	cursor.execute(sql_query_categories)
 	category_db = dictfetchall(cursor)
