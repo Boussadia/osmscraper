@@ -1,3 +1,15 @@
+<div id="sub_nav" class="navbar navbar-inverse">
+	<div class="navbar-inner">
+		<div class="container">
+			<ul class="nav">
+				{{# categories }}
+					<li><a href="/categorie/{{short_url}}" class="{{#is_current_category}}active{{/is_current_category}}">{{name}}</a></li>
+				{{/ categories }}
+			</ul>
+		</div>
+	</div>
+</div>
+
 <aside class="block" id="brands">
 	<h4>Marques :</h4>
 	<input type="radio" name="brands_options" id="brand_0" value="0" data-id='0' checked>

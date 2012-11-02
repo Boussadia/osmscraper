@@ -26,3 +26,9 @@ class Category(pystache.View):
 	
 	def brands(self):
 		return self.__brands
+
+	def set_categories(self, categories):
+		self.__categories = categories
+	
+	def categories(self):
+		return self.__categories

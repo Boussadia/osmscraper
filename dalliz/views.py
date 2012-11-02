@@ -11,7 +11,7 @@ from django.template import Context, loader
 
 from templates import templates
 
-from osmscraper.utility import get_product_from_short_url, get_products_for_sub_category
+from osmscraper.utility import get_product_from_short_url, get_products_for_sub_category, get_same_level_categories
 
 RENDER_DICT = {'meta_description': "Dalliz est un comparateur de panier entre les différents supermarchés en lignes. Avec Dalliz, gagnez du temps, économisez de l'argent."}
 
@@ -41,15 +41,21 @@ def product(request, name):
 		return render(request, 'dalliz/product.html', RENDER_DICT)
 
 def category(request, sub_category):
-	products, brands = get_products_for_sub_category(sub_category)
+	categories = get_same_level_categories(sub_category)
+	category_names = [cat['name'] for cat in categories if cat['is_current_category']]
 	print sub_category
-	if len(products) == 0:
+	if len(category_names) == 0:
 		raise Http404
 	else:
+		category_name = category_names[0]
+		products, brands = get_products_for_sub_category(sub_category)
 		category_template = templates.Category()
 		category_template.set_products(products)
 		category_template.set_brands(brands)
-		RENDER_DICT.update({u'content':category_template.render()})
+		category_template.set_categories(categories)
+		
+		description = u'Comparer les produits de la catégories '+category_name+u' parmis tous les supermarchés en lignes!'
+		RENDER_DICT.update({u'content':category_template.render(), 'meta_description': description, 'title': category_name})
 		return render(request, 'dalliz/category.html', RENDER_DICT)
 		# return HttpResponse(category_template.render())
 
