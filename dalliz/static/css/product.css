@@ -46,9 +46,9 @@
 
 #product .arrow{
 	background-image: url('../images/product/arrows.png');
-	width: 11px;
+	width: 10px;
 	height: 15px;
-	background-position: 11px;
+	background-position: 10px;
 	display: inline-block;
 	margin-right: 10px;
 }
@@ -59,7 +59,8 @@
 
 #accordion a:not(.collapsed) > .arrow{
 	background-position: 0px;
-
+	width: 12px;
+	height: 14px;
 }
 
 #product .accordion-group {

@@ -1,0 +1,109 @@
+#brands {
+	width: 140px;
+	float: left;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+/* Styling checkbox */
+#brands input[type="radio"] {
+	position: absolute;
+	opacity: 0;
+	z-index: 10;
+}
+
+#brands input[type="radio"] + label::before {
+	content: "";
+	display: inline-block;
+	width: 8px;
+	height: 8px;
+	background: url("../images/category/cases.png") no-repeat 0 0;
+	position: relative;
+	left: -17px;
+	top: -2px;
+}
+
+#brands input[type="radio"]:checked + label::before {
+	background-position: 0 -9px;
+}
+
+#brands label{
+	font-size: 9pt;
+	margin-bottom: -2px;
+}
+
+#category{
+	position: relative;
+	float: left;
+	width: 790px;
+	margin-left: 10px;
+	min-height: 600px;
+}
+
+#category .sorting{
+	height: 32px !important;
+	padding-left: 10px;
+	margin-bottom: 10px;
+}
+
+#category .products{
+	margin-left: -10px;
+	width: 800px;
+}
+
+#category .product{
+	text-align: center;
+	float: left;
+	width: 150px;
+	height: 235px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+}
+
+#category .product img{
+	width: 130px;
+	height: 130px;
+	padding-top: 10px;
+}
+
+#category .product .brand, #brands h4, #category .sorting{
+	font-family: arial;
+	font-weight: bold;
+	font-size: 11pt;
+	color: #212121;
+	height: 20px;
+	overflow-y: hidden;
+}
+
+#category .product .product_name{
+	font-family: arial;
+	font-weight: regular;
+	font-size: 9pt;
+	color: #212121;
+	height: 24px;
+	overflow-y: hidden;
+}
+
+#category .product .price{
+	font-family: arial;
+	font-weight: bold;
+	font-size: 13pt;
+	color: #9E09A8;
+}
+
+#category .sorting *{
+	margin-top: 6px;
+}
+
+#category .dropdown{
+	position: absolute;
+	top: 6px;
+	left: 109px;
+}
+
+#category .dropdown a{
+	font-family: arial;
+	font-weight: regular;
+	color: #8C8C8C;
+	text-decoration: none;
+}

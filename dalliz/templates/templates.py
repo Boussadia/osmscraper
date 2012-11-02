@@ -13,4 +13,16 @@ class Product(pystache.View):
 	
 	def product(self):
 		return self.__product
+
+class Category(pystache.View):
+	def set_products(self, products):
+		self.__products = products
 	
+	def products(self):
+		return self.__products
+
+	def set_brands(self, brands):
+		self.__brands = brands
+	
+	def brands(self):
+		return self.__brands

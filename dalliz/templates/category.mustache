@@ -1,0 +1,38 @@
+<aside class="block" id="brands">
+	<h4>Marques :</h4>
+	<input type="radio" name="brands_options" id="brand_0" value="0" data-id='0' checked>
+	<label class="radio" for="brand_0">Tout</label>
+	{{# brands }}
+		<input type="radio" name="brands_options" id="brand_{{ id }}" value="{{ id }}" data-id='{{ id }}'>
+		<label class="radio" for="brand_{{ id }}">{{ name }}</label>
+	{{/ brands }}
+
+
+</aside>
+
+<section class="container" id="category">
+	<div class="sorting block">
+		<p>Classer Par : </p>
+	</div>
+	<div class="dropdown">
+		<a class="dropdown-toggle" id="text_filter" role="button" data-toggle="dropdown" href="#"> Choisir <b class="caret"></b></a>
+		<ul id="menu_filter" class="dropdown-menu" role="menu" aria-labelledby="drop4">
+			<li><a tabindex="-1" href="#" id="prix_croissant">prix (croissant)</a></li>
+			<li><a tabindex="-1" href="#" id="prix_decroissant">prix (décroissant)</a></li>
+		</ul>
+	</div>
+	<div class="products">
+		{{# products}}
+			<div class="product block" data-brand="{{brand_id}}"  data-price="{{ price }}">
+				<a href="/produit/{{ short_url }}">
+					<img src="http://courses.monoprix.fr{{ image_url }}" id="image_product">
+				</a>
+				<div class="brand">{{ brand_name }}</div>
+				<div class="product_name">{{ product_name }}</div>
+				<div class="price"> A partir de {{ price }} €</div>
+				<div class="add_to_cart"></div>
+			</div>
+		{{/ products}}
+	</div>
+
+</section>

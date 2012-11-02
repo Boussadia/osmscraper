@@ -1,6 +1,9 @@
 {% extends "dalliz/base.html" %}
 
+{% block title%}
+	{{brand}} - {{ title }}
+{% endblock %}
+
 {% block css%}
 <link rel="stylesheet" type="text/css" href="{% static css/product.css %}">
 {% endblock %}
-
