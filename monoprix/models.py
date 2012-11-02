@@ -86,3 +86,7 @@ class Product(models.Model):
 
 	def __unicode__(self):
 		return self.title
+
+class Cart(models.Model):
+	session_key = models.CharField(max_length=1000, unique= True)
+	products = models.ManyToManyField(Product)

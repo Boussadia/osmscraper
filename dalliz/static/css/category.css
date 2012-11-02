@@ -144,3 +144,7 @@
 	color: #8C8C8C;
 	text-decoration: none;
 }
+
+.product .add_to_cart .text{
+	font-size: 10pt;
+}

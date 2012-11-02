@@ -62,8 +62,12 @@
 					<a href="/"></a>
 				</div>
 				
-				<div class="user menu">
+				<div class="user">
 					<div class="cart"></div>
+					<div class="quantity" data-quantity='{{cart.quantity}}'>{{cart.quantity}}</div>
+					<!-- {% for key in cart%}
+						<p>{{key}}</p>
+					{% endfor %} -->
 					<div class="acount"></div>
 				</div>
 			</div>
@@ -169,6 +173,7 @@
 		<!-- Bootstrap JS -->
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/bootstrap.min.js"></script>
 
+		<script type="text/javascript" src="{% static js/cart.js%}"></script>
 		<!-- Custom Javascript Import -->
 		{% block javascript%}
 		{% endblock%}

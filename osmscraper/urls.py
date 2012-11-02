@@ -40,6 +40,7 @@ urlpatterns = patterns('',
     url(r'^partenariat/?$', 'dalliz.views.partenariat'),
     url(r'produit/(?P<name>((\w)+-?)+)/?$','dalliz.views.product'),
     url(r'categorie/(?P<sub_category>((\w)+-?)+)/?$','dalliz.views.category'),
+    url(r'add/cart/?$','dalliz.views.add_to_cart'),
 )
 
 

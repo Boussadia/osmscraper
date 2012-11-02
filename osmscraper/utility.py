@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from django.db import connection
+from monoprix.models import Cart
+from monoprix.models import Product
 
 
 def dictfetchall(cursor):
@@ -90,3 +92,23 @@ def get_same_level_categories(sub_category_url):
 	cursor.execute(sql_query_categories)
 	category_db = dictfetchall(cursor)
 	return category_db
+
+def get_cart_for_session_key(session_key):
+	cart = Cart.objects.get(session_key=session_key)
+	products_db = cart.products.all()
+	result = {}
+	result['quantity'] = len(products_db)
+	result['products'] = []
+	for i in xrange(0, len(products_db)):
+		result['products'].append({'image_url': products_db[i].image_url, 'id': products_db[i].id})
+	return result
+
+def add_cart(session_key):
+	cart = Cart(session_key =session_key)
+	cart.save()
+
+def add_product_to_cart(session_key, product_id):
+	if len(Cart.objects.filter(session_key = session_key, products = product_id)) == 0:
+		cart = Cart.objects.get(session_key = session_key)
+		product = Product.objects.get(id=product_id)
+		cart.products.add(product)

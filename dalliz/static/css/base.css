@@ -74,6 +74,10 @@ header .logo a{
 	height: inherit;
 }
 
+header .container{
+	height: 32px;
+}
+
 /* Menu */
 nav{
 	position: fixed;
@@ -365,3 +369,59 @@ footer .separator{
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-8 */
 
 }
+
+.add_to_cart{
+	cursor: pointer;
+}
+
+.add_to_cart .plus{
+	background-image: url(../images/product/etoile_sprits.png);
+	height: 15px;
+	width: 15px;
+	vertical-align: text-top;
+	display: inline-block;
+}
+
+.add_to_cart .text{
+	font-family: arial;
+	font-weight: bold;
+	font-size:  14pt;
+	color: #81E923;
+	display: inline-block;
+	line-height: 21px;
+}
+
+.user{
+	width: 200px;
+	display: inline-block;
+	position: relative;
+	top: -34px;
+	float: right;
+}
+
+.user .cart{
+	background-image: url(../images/header/cart.png);
+	height: 32px;
+	width: 34px;
+	display: inline-block;
+}
+
+.user .quantity{
+	width: 16px;
+	height: 16px;
+	background-color: #81E923;
+	color: white;
+	text-align: center;
+	font-weight: bold;
+	border-radius: 17px;
+	border-color: white;
+	border-style: solid;
+	border-width: 3px;
+	display: inline-block;
+	position: relative;
+	top: -23px;
+	left: -17px;
+	line-height: 15px;
+	cursor: pointer;
+}
+
