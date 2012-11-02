@@ -77,6 +77,8 @@ class Product(models.Model):
 	conseil = models.TextField(null=True)
 	composition = models.TextField(null=True)
 
+	dalliz_url = models.CharField(max_length=9999, null=True)
+
 
 	class Meta:
 		unique_together = ("title", "url", "category")

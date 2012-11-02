@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from celery.task.schedules import crontab
-from celery.task import periodic_task
+from celery.task import periodic_task, task
 
 from django.conf import settings
 from celery import Celery
@@ -61,3 +61,22 @@ def perform_scraping():
 		print "Aborting after error while executing coursengo scraper"
 	else:
 		print "Coursengo scraper executed properly"
+
+@task
+def migrate_monoprix_db():
+	import re
+	from osmscraper.utility import dictfetchall
+	from django.db import connection
+	REGEXP = re.compile(r'\W+')
+
+	sql_query = (" SELECT id, unaccent(lower(title)) as title FROM monoprix_product ")
+
+	cursor = connection.cursor()
+	cursor.execute(sql_query)
+	products = dictfetchall(cursor)
+	for i in xrange(0,len(products)):
+		dalliz_url = '-'.join(REGEXP.split(products[i]['title']))
+		product = monoprix.models.Product.objects.get(id=products[i]['id'])
+		product.dalliz_url = dalliz_url
+		product.save()
+
