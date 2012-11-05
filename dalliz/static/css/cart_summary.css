@@ -10,6 +10,7 @@
 #cart .head h6{
 	font-family: arial;
 	color: #8C8C8C;
+	margin-top: 16px;
 }
 
 #cart .products > div{
@@ -44,7 +45,7 @@
 	display: inline-block;
 	position: absolute;
 	top: 0px;
-	right: 9px;
+	right: 5px;
 	cursor: pointer;
 }
 
@@ -76,17 +77,22 @@
 	position: relative;
 	padding-left: 5px;
 	padding-right: 5px;
+	font-size: 12px;
 }
 
 #cart .summary .title{
 	text-align: center;
 	border-bottom: 1px dashed #8C8C8C;
+	font-weight: bold;
+	font-size: initial !important;
+	margin-top: 5px;
+	padding-bottom: 5px;
 }
 
 #cart .summary .sous-total, #cart .summary .prix-livraison{
 	border-bottom: 1px dashed #8C8C8C;
-	margin-top: 10px;
-	padding-bottom: 10px;
+	margin-top: 3px;
+	padding-bottom: 3px;
 }
 
 #cart .summary .total{
@@ -125,10 +131,11 @@
 	font-size: 11px;
 	display: table-cell;
 	vertical-align: middle;
-	background-position: 10px;
+	background-position: 14px;
 	padding-left: 23px;
 	position: relative;
 	top: 20px;
+	font-weight: bold;
 }
 
 #cart .summary .explanation{
@@ -152,8 +159,9 @@
 
 #cart .summary .footnote{
 	position: absolute;
-	bottom: 0px;
-	font-size: 8px;
+	bottom: 2px;
+	font-size: 9px;
+	line-height: 12px;
 }
 
 #cart .comparaison.row{
@@ -250,7 +258,7 @@
 	font-size: 10px;
 	color: #9E09A8;
 	cursor: pointer;
-
+	margin-left: 10px;
 }
 
 /*General elements*/
@@ -282,9 +290,14 @@
 	font-family: arial;
 }
 
+.progress div:after{
+	content: "\00a0";
+}
+
 .telemarket .middle{
 	background-image: url(../images/bars/fill-rouge.png);
 	border: 1px solid #d17a6c;
+	color: #773631;
 }
 
 .place_du_marche .middle{
@@ -295,6 +308,7 @@
 .monoprix .middle{
 	background-image: url(../images/bars/fill-blanc.png);
 	border: 1px solid #c4c4c4;
+	color: #666666;
 }
 
 .ooshop .middle{

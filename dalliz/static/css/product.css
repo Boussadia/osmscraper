@@ -103,3 +103,12 @@
 	font-size: 8pt;
 	color: #9E09A8;
 }
+
+#product .copyright{
+	font-size: 9px;
+	font-family: arial;
+	color: #8c8c8c;
+	display: inline-block;
+	position: relative;
+	left: 324px;
+}

@@ -62,4 +62,16 @@ $(document).ready(function(){
 		products = filter_by_price_high_to_low(products);
 		products.each(function(){$('.products').append($(this))})
 	});
+
+	// Number of products init
+	$("input[id^='brand_']").each(function(){
+		var id = $(this).data('id');
+		if (id===0){
+			var count = $('.product').length
+			$(this).find("+label").html($(this).find("+label").text()+' <span>('+count+')</span>');			
+		}else{
+			var count = $('div[data-brand='+id+']').length
+			$(this).find("+label").html($(this).find("+label").text()+' <span>('+count+')</span>');
+		}
+	})
 });
