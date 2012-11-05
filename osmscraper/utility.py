@@ -93,6 +93,24 @@ def get_same_level_categories(sub_category_url):
 	category_db = dictfetchall(cursor)
 	return category_db
 
+def get_parent_category(sub_category_url):
+	sql = "SELECT parent_category_id FROM dalliz_category_sub WHERE url='"+sub_category_url+"';";
+	cursor = connection.cursor()
+	cursor.execute(sql)
+	parent_category_db = dictfetchall(cursor)
+	if len(parent_category_db)>0:
+		parent_category_id = parent_category_db[0]['parent_category_id']
+		if parent_category_id == 1:
+			return 'entretien'
+		elif parent_category_id == 2:
+			return 'alimentaire'
+		else:
+			return 'hygiene'
+	else:
+		return None
+
+
+
 def get_cart_for_session_key(session_key):
 	cart = Cart.objects.get(session_key=session_key)
 	products_db = cart.products.all()

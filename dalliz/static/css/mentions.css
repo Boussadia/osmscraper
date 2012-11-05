@@ -5,9 +5,15 @@
 }
 
 #mentions h1, #mentions h3{
-	font-family: BPreplay;
+	font-family: Arial;
+	font-weight: bold;
+	margin-bottom: 30px;
 }
 
 #mentions p{
 	margin-left: 10px;
+}
+
+#mentions p em{
+	font-weight: bold;
 }

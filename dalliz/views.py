@@ -76,10 +76,12 @@ def category(request, sub_category):
 	else:
 		category_name = category_names[0]
 		products, brands = get_products_for_sub_category(sub_category)
+		parent_category = get_parent_category(sub_category)
 		category_template = templates.Category()
 		category_template.set_products(products)
 		category_template.set_brands(brands)
 		category_template.set_categories(categories)
+		category_template.set_parent_category(parent_category)
 		
 		description = u'Comparer les produits de la catégories '+category_name+u' parmis tous les supermarchés en lignes!'
 		render_dict = {u'content':category_template.render(), 'meta_description': description, 'title': category_name}

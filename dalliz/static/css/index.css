@@ -2,6 +2,12 @@
 	margin-bottom: 5px;
 }
 
+.explanation .text{
+	width: 158px;
+	left: 34px;
+	position: relative;
+}
+
 /* Slide Show block */
 #slide_show{
 	position: relative;

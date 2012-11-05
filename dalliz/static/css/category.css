@@ -16,7 +16,7 @@
 
 #sub_nav a{
 	color: white;
-	font-size: 12px;
+	font-size: 11px;
 	line-height: 23px;
 	text-align: center;
 }
@@ -25,7 +25,7 @@
 	color: #C97DCE;
 }
 #sub_nav li{
-	max-width: 112px;
+	/*max-width: 112px;*/
 	height: 32px;
 	overflow: hidden;
 }

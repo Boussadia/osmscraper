@@ -31,6 +31,10 @@
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#212121', endColorstr='#101010',GradientType=0 ); /* IE6-8 */
 }
 
+#erreur p{
+	font-family: BPreplay;
+}
+
 #erreur p.first{
 	position: relative;
 	top: 35px;

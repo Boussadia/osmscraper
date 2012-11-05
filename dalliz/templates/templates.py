@@ -33,6 +33,12 @@ class Category(pystache.View):
 	def categories(self):
 		return self.__categories
 
+	def set_parent_category(self, parent_category):
+		self.__parent_category = parent_category
+
+	def parent_category(self):
+		return self.__parent_category
+
 class Cart(pystache.View):
 	def set_cart(self, cart):
 		self.__cart = cart

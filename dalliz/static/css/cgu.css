@@ -4,9 +4,14 @@
 }
 
 #cgu h1, #cgu h3{
-	font-family: BPreplay;
+	font-family: Arial;
+	font-weight: bold;
 }
 
-#cgu p{
-	margin-left: 10px;
+#cgu ol{
+	margin-top: 30px;
+}
+
+#cgu li{
+	font-weight: bold;
 }

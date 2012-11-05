@@ -57,7 +57,7 @@ header .beta{
 	display: inline-block;
 	position: absolute;
 	top: 8px;
-	left: 70px;
+	left: 50px;
 	z-index: 9999;
 }
 header .logo{
@@ -87,6 +87,7 @@ nav{
     height: 32px;
 
 }
+
 .navbar{
 	margin-bottom: 0px;
 }
@@ -143,6 +144,7 @@ nav{
 
 form.navbar-search{
 	margin: 0px;
+	visibility: hidden;
 }
 
 /* Social links*/
@@ -266,6 +268,8 @@ footer .top .container > div{
 
 footer .container{
 	height: 100%;
+	position: relative;
+	top: -6px;
 }
 
 footer .bottom span:last-child{
