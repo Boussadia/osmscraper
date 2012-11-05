@@ -2,6 +2,27 @@
 	margin-bottom: 5px;
 }
 
+.explanation{
+	color: #d82121;
+	font-family: brankovic;
+	text-align: center;
+	width: 150px;
+	position: absolute;
+	top: 0px;
+	left: -140px;
+}
+
+.explanation .arrow{
+	background-image: url(../images/home/fleche.png);
+	width: 79px;
+	height: 71px;
+	float: right;
+}
+
+.explanation .text{
+	width: 150px;
+}
+
 /* Slide Show block */
 #slide_show{
 	position: relative;
@@ -79,6 +100,7 @@
 /* Online Supermarkets*/
 #osms{
 	height: 160px;
+	position: relative;
 }
 
 #osms .row div{
@@ -136,6 +158,11 @@
 	height: 380px;
 	margin-bottom: 0px;
 	text-shadow: 0 1px 0 white;
+	position: relative;
+}
+
+#pitch .explanation{
+	top: 75px;
 }
 
 #pitch .image_bloc{
