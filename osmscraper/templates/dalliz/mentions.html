@@ -1,0 +1,26 @@
+{% extends "dalliz/base.html" %}
+
+{% block title %}
+Mentions légales
+{% endblock %}
+
+{% block css%}
+<link rel="stylesheet" type="text/css" href="{% static css/mentions.css %}">
+{% endblock %}
+
+{% block content %}
+
+<section id="mentions" class="block container">
+	<h1>Mentions légales</h1>
+	<p><em>Le site Dalliz est édité par :</em></p>
+	<p>Ahmed Boussadia<br>
+	54,56 avenue Cousin de Méricourt - 94230 Cachan<br>
+	<a href="mailto:ahmed@dalliz.com">ahmed@dalliz.com</a><br>
+	<p><em>Le site dalliz.com est hébergé par la société :</em></p>
+	<p>Heroku, Inc.<br>
+	321 11th Street<br>
+	San Francisco, CA 94103, United States</p>
+
+</section>
+
+{% endblock %}

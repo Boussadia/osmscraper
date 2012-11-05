@@ -1,0 +1,13 @@
+#mentions{
+	height: 600px;
+	width: 920px;
+	padding: 20px;
+}
+
+#mentions h1, #mentions h3{
+	font-family: BPreplay;
+}
+
+#mentions p{
+	margin-left: 10px;
+}

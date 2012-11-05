@@ -1,0 +1,12 @@
+#cgu{
+	width: 920px;
+	padding: 20px;
+}
+
+#cgu h1, #cgu h3{
+	font-family: BPreplay;
+}
+
+#cgu p{
+	margin-left: 10px;
+}

@@ -119,3 +119,13 @@ def remove_from_cart(request):
 			return HttpResponse(json.dumps({'status':500}))	
 	else:
 		return HttpResponse(json.dumps({'status':500}))
+
+
+@user
+def cgu(request):
+	return 'dalliz/cgu.html', {}
+
+@user
+def mentions(request):
+	return 'dalliz/mentions.html', {}
+	
