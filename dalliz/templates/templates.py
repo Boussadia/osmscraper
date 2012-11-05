@@ -32,3 +32,16 @@ class Category(pystache.View):
 	
 	def categories(self):
 		return self.__categories
+
+class Cart(pystache.View):
+	def set_cart(self, cart):
+		self.__cart = cart
+	
+	def cart(self):
+		return self.__cart
+
+	def set_totals(self, totals):
+		self.__totals = totals
+	
+	def totals(self):
+		return self.__totals

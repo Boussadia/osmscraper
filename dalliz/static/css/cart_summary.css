@@ -1,0 +1,308 @@
+#cart{
+	position: relative;
+}
+
+#cart .head{
+	border-bottom: 1px solid #8C8C8C;
+	height: 52px;
+}
+
+#cart .head h6{
+	font-family: arial;
+	color: #8C8C8C;
+}
+
+#cart .products > div{
+	height: 480px;
+}
+
+#cart .products .cart{
+	overflow-y: scroll; 
+}
+
+#cart .products .product{
+	width: 150px;
+	height: 187.5px;
+	position: relative;
+	float: left;
+	text-align: center;
+	margin-bottom: 40px;
+	margin-top: 10px;
+	padding-right: 6px;
+}
+
+#cart .products .product img{
+	width: 150px;
+	height: 150px;
+	border: 1px solid #8C8C8C;
+}
+
+#cart .products .product .delete{
+	background-image: url('../images/cart/cross.png');
+	width: 18px;
+	height: 18px;
+	display: inline-block;
+	position: absolute;
+	top: 0px;
+	right: 9px;
+	cursor: pointer;
+}
+
+#cart .products .product .brand{
+	font-family: arial;
+	font-weight: bold;
+	font-size: 11pt;
+	color: #212121;
+	height: 20px;
+	overflow-y: hidden;
+}
+
+#cart .products .product .title{
+	font-family: arial;
+	font-size: 9pt;
+	color: #212121;
+	height: 24px;
+	overflow-y: hidden;
+}
+
+#cart .summary{
+	background-color: #212121;
+	margin-left: 0px;
+	width: 160px;
+	color: white;
+	position: relative;
+}
+#cart .summary > div{
+	position: relative;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+#cart .summary .title{
+	text-align: center;
+	border-bottom: 1px dashed #8C8C8C;
+}
+
+#cart .summary .sous-total, #cart .summary .prix-livraison{
+	border-bottom: 1px dashed #8C8C8C;
+	margin-top: 10px;
+	padding-bottom: 10px;
+}
+
+#cart .summary .total{
+	color: #9E09A8;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 20px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#cart .summary .amount{
+	display: inline-block;
+	position: absolute;
+	right: 5px;
+	top: 0px;
+}
+
+#cart .summary .economie{
+	text-align: center;
+	margin-top: 10px;
+	font-family: brankovic;
+	font-size: 17px;
+	line-height: 33px;	
+}
+
+#cart .summary .economie .amount{
+	position: initial;
+}
+
+#cart .summary .commander{
+	background-image: url(/static/images/cart/bouton.png);
+	background-repeat: no-repeat;
+	height: 40px;
+	width: 135px;
+	font-size: 11px;
+	display: table-cell;
+	vertical-align: middle;
+	background-position: 10px;
+	padding-left: 23px;
+	position: relative;
+	top: 20px;
+}
+
+#cart .summary .explanation{
+	left: 0px;
+	top: 40px;
+}
+
+#cart .summary .explanation .arrow{
+	background-image: url(../images/cart/fleche-left-top.png);
+	width: 51px;
+	height: 93px;
+	left: 20px;
+}
+
+#cart .summary .explanation .text{
+	width: 80px;
+	position: relative;
+	left: 51px;
+	top: 42px;
+}
+
+#cart .summary .footnote{
+	position: absolute;
+	bottom: 0px;
+	font-size: 8px;
+}
+
+#cart .comparaison.row{
+	border-top: 1px dashed #8C8C8C;
+	height: 180px;
+	position: relative;
+}
+
+#cart .comparaison.row .row{
+	margin-bottom: 1px;
+}
+
+#cart .comparaison.row .left{
+	margin-bottom: 50px;
+	padding-top: 35px;
+	margin-left: 0px;
+}
+
+#cart .comparaison.row .osm{
+	font-family: arial;
+	font-weight: bold;
+	color: #212121;
+	height: 46px;
+	line-height: 46px;
+}
+
+#cart .comparaison.row .min .osm{
+	color: #9E09A8;
+}
+
+#cart .comparaison .price{
+	background-image: url(../images/cart/bande-noire.png);
+	background-repeat: no-repeat;
+	display: table;
+	height: 46px;
+	width: 131px;
+}
+
+#cart .comparaison.row .min .price{
+	background-image: url(../images/cart/bande-violet.png);
+	width: 151px;
+	margin-left: 0px;
+}
+
+#cart .comparaison.row .price p{
+	display: table-cell;
+	vertical-align: middle;
+	color: white;
+	font-size: 10px;
+	font-weight: bold;
+}
+
+#cart .comparaison.row .min .price p{
+	font-size: 16px;
+}
+
+#cart .comparaison.row .right{
+	background-color: black;
+	color: white;
+	height: 100%;
+	margin-left: 0px;
+	width: 340px;
+}
+
+#cart .comparaison.row .right{
+	opacity: .4;
+}
+
+#cart .comparaison.row .right .title{
+	text-align: center;
+	border-bottom: 1px dashed white;
+}
+
+#cart .comparaison.row .right .body .span3 {
+	margin-top: 5px;
+	margin-left: 5px;
+	width: 93%;
+	font-size: 10px;
+}
+
+#cart .comparaison.row .right .case{
+	background-image: url(../images/cart/case.png);
+	width: 21px;
+	height: 20px;
+	display: inline-block;
+	position: relative;
+	top: 5px;
+}
+
+#cart .livraison{
+	position: absolute;
+	bottom: 0px;
+	font-family: arial;
+	font-size: 10px;
+	color: #9E09A8;
+	cursor: pointer;
+
+}
+
+/*General elements*/
+.explanation{
+	left: 470px;
+}
+.explanation .arrow{
+	background-image: url(../images/cart/fleche-top.png);
+	width: 100px;
+	height: 36px;
+	background-repeat: no-repeat;
+	position: absolute;
+	top: -29px;
+	right: -58px;
+}
+.progress{
+	margin-top: 13px;
+	margin-bottom: 13px;
+}
+
+.progress div{
+	width: 5px;
+	max-width: 99.5%;
+	height: 91%;
+	display: inline-block;
+	border-radius: 4px;
+	text-align: right;
+	font-weight: bold;
+	font-family: arial;
+}
+
+.telemarket .middle{
+	background-image: url(../images/bars/fill-rouge.png);
+	border: 1px solid #d17a6c;
+}
+
+.place_du_marche .middle{
+	background-image: url(../images/bars/fill-vert.png);
+	border: 1px solid #94B662;
+}
+
+.monoprix .middle{
+	background-image: url(../images/bars/fill-blanc.png);
+	border: 1px solid #c4c4c4;
+}
+
+.ooshop .middle{
+	background-image: url(../images/bars/fill-bleu.png);
+	border: 1px solid #7aaecd;
+}
+
+.coursengo .middle{
+	background-image: url(../images/fill-orange.png);
+	border: 1px solid #d0ad50;
+}

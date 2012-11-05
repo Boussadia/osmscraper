@@ -2,27 +2,6 @@
 	margin-bottom: 5px;
 }
 
-.explanation{
-	color: #d82121;
-	font-family: brankovic;
-	text-align: center;
-	width: 150px;
-	position: absolute;
-	top: 0px;
-	left: -140px;
-}
-
-.explanation .arrow{
-	background-image: url(../images/home/fleche.png);
-	width: 79px;
-	height: 71px;
-	float: right;
-}
-
-.explanation .text{
-	width: 150px;
-}
-
 /* Slide Show block */
 #slide_show{
 	position: relative;

@@ -38,9 +38,10 @@ urlpatterns = patterns('',
     url(r'^/?$', 'dalliz.views.index'),
     url(r'^a-propos-de-dalliz/?$', 'dalliz.views.a_propos'),
     url(r'^partenariat/?$', 'dalliz.views.partenariat'),
-    url(r'produit/(?P<name>((\w)+-?)+)/?$','dalliz.views.product'),
-    url(r'categorie/(?P<sub_category>((\w)+-?)+)/?$','dalliz.views.category'),
-    url(r'add/cart/?$','dalliz.views.add_to_cart'),
+    url(r'^produit/(?P<name>((\w)+-?)+)/?$','dalliz.views.product'),
+    url(r'^categorie/(?P<sub_category>((\w)+-?)+)/?$','dalliz.views.category'),
+    url(r'^panier/?$','dalliz.views.cart'),
+    url(r'^add/cart/?$','dalliz.views.add_to_cart'),
 )
 
 

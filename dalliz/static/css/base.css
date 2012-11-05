@@ -425,3 +425,27 @@ footer .separator{
 	cursor: pointer;
 }
 
+.user .quantity[data-quantity="0"], .user .quantity[data-quantity=""]{
+	display: none;
+}
+
+.explanation{
+	color: #d82121;
+	font-family: brankovic;
+	text-align: center;
+	width: 150px;
+	position: absolute;
+	top: 0px;
+	left: -140px;
+}
+
+.explanation .arrow{
+	background-image: url(../images/home/fleche.png);
+	width: 79px;
+	height: 71px;
+	float: right;
+}
+
+.explanation .text{
+	width: 150px;
+}

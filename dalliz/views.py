@@ -11,7 +11,7 @@ from django.template import Context, loader
 
 from templates import templates
 
-from osmscraper.utility import get_product_from_short_url, get_products_for_sub_category, get_same_level_categories, get_cart_for_session_key, add_cart, add_product_to_cart
+from osmscraper.utility import *
 
 RENDER_DICT = {'meta_description': "Dalliz est un comparateur de panier entre les différents supermarchés en lignes. Avec Dalliz, gagnez du temps, économisez de l'argent."}
 
@@ -33,7 +33,6 @@ def user(function):
 			else:
 				print 'Retrieving cart information from datastore'
 				cart = get_cart_for_session_key(session_key)
-				print cart
 				RENDER_DICT.update({'cart':cart})
 		return render(request, template_path, RENDER_DICT)
 	return wrapper
@@ -86,9 +85,37 @@ def category(request, sub_category):
 		render_dict = {u'content':category_template.render(), 'meta_description': description, 'title': category_name}
 		return 'dalliz/category.html', render_dict
 
+@user
+def cart(request):
+	if request.session.session_key is not None:
+		totals = get_cart_price(request.session.session_key)
+		cart = get_cart_for_session_key(request.session.session_key)
+		cart_template = templates.Cart()
+		cart_template.set_cart(cart)
+		cart_template.set_totals(totals)
+
+		render_dict = {u'content': cart_template.render()}
+		return 'dalliz/cart.html', render_dict
+
+
 def add_to_cart(request):
 	if request.method == 'POST':
 		product_id = request.POST['product_id']
-		if request.session.session_key is not None:
+		if request.session.session_key is not None and product_id is not None:
 			add_product_to_cart(request.session.session_key, product_id)
-		return HttpResponse(json.dumps({'status':200}))
+			return HttpResponse(json.dumps({'status':200}))
+		else:
+			return HttpResponse(json.dumps({'status':500}))	
+	else:
+		return HttpResponse(json.dumps({'status':500}))
+
+def remove_from_cart(request):
+	if request.method == 'POST':
+		product_id = request.POST['product_id']
+		if request.session.session_key is not None and product_id is not None:
+			remove_product_to_cart(request.session.session_key, product_id)
+			return HttpResponse(json.dumps({'status':200}))
+		else:
+			return HttpResponse(json.dumps({'status':500}))	
+	else:
+		return HttpResponse(json.dumps({'status':500}))

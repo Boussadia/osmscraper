@@ -1,0 +1,77 @@
+<section id="cart" class="container block">
+	<div class="head row">
+		<div class="span12">
+			<h6>Mon panier :</h6>
+		</div>
+	</div>
+
+	<div class="products row">
+		<div class="span10 cart">
+			{{# cart}}
+				{{# products}}
+					<div class="product">
+						<img src="http://courses.monoprix.fr{{ image_url }}">
+						<div class="delete"></div>
+						<div class="brand">{{brand_name}}</div>
+						<div class="title">{{title}}</div>
+					</div>
+				{{/ products}}
+			{{/ cart}}
+		</div>
+		<div class="span2 summary">
+			<div class="title">Votre panier</div>
+			{{#totals}}
+				{{#is_min}}
+					<div class="sous-total"> Sous Total <div class="amount"> {{price}}€</div></div>
+					<div class="prix-livraison"> Livraison <div class="amount">{{livraison}}€</div></div>
+					<div class="total">Total <div class="amount">{{total}}€</div></div>
+					<div class="economie"> <sup>*</sup> Vous economisez <div class="amount">{{difference}}€</div> !</div>
+				{{/is_min}}
+			{{/totals}}
+
+			<div class="commander">Je passe commande !</div>
+			<div class="explanation">
+				<div class="text"> bientot disponible !</div>
+				<div class="arrow"></div>
+			</div>
+
+			<div class="footnote"><sup>*</sup>différence entre le super marché le plus cher et le moins cher</div>
+		</div>
+	</div>
+
+	<div class="comparaison row">
+		<div class="span8 left">
+			{{#totals}}
+			<div class="row {{class}} {{#is_min}}min{{/is_min}}">
+				<div class="span2 osm">{{name}}</div>
+				<div class="span2 price"> <p> <sup>€</sup>{{total}} </p> </div>
+				<div class="span3 comparaison">
+					<div class="progress">
+						<div class="middle" style="width: {{percent}}%;">{{total}} €</div>
+					</div>
+				</div>
+			</div>
+			{{/totals}}
+		</div>
+		<div class="explanation">
+			<div class="text"> bientot disponible !</div>
+			<div class="arrow"></div>
+		</div>
+		<div class="span4 right">
+			<div>
+				<div class="title">Je veux être prévenu !</div>
+				<div class="body">
+					<div class="row">
+						<div class="span3"> <div class="case"></div> Je veux suivre le prix de mon panier tous les <strong>jours</strong></div>
+					</div>
+					<div class="row">
+						<div class="span3"> <div class="case"></div> Je veux savoir quand le prix de mon panier passe sous <strong>35 €</strong></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="livraison">Condition de livraison</div>
+
+</section>

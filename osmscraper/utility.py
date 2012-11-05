@@ -100,8 +100,69 @@ def get_cart_for_session_key(session_key):
 	result['quantity'] = len(products_db)
 	result['products'] = []
 	for i in xrange(0, len(products_db)):
-		result['products'].append({'image_url': products_db[i].image_url, 'id': products_db[i].id})
+		result['products'].append({'dalliz_url': products_db[i].dalliz_url, 'image_url': products_db[i].image_url, 'id': products_db[i].id, 'title': products_db[i].title, 'brand_name':products_db[i].brand.name})
 	return result
+
+def get_cart_price(session_key):
+	sql_telemarket = ("SELECT telemarket_product.price,monoprix_product.id "
+					"FROM monoprix_cart_products "
+					"JOIN monoprix_product ON monoprix_cart_products.product_id = monoprix_product.id "
+					"JOIN telemarket_product ON telemarket_product.monoprix_product_id = monoprix_product.id "
+					"JOIN monoprix_cart ON monoprix_cart.id = monoprix_cart_products.cart_id "
+					"WHERE monoprix_cart.session_key = '"+session_key+"';")
+	sql_monoprix = ("select monoprix_product.price,monoprix_product.id "
+					"FROM monoprix_cart_products "
+					"JOIN monoprix_product ON monoprix_cart_products.product_id = monoprix_product.id "
+					"JOIN monoprix_cart ON monoprix_cart.id = monoprix_cart_products.cart_id "
+					"WHERE monoprix_cart.session_key = '"+session_key+"';")
+
+	cursor = connection.cursor()
+	cursor.execute(sql_telemarket)
+	telemarket_db = dictfetchall(cursor)
+	telemarket = {'name':'Telemaket','class':'telemarket', 'price': sum( (product['price'] for product in telemarket_db) )}
+	telemarket['livraison'] = get_livraison_telemarket(telemarket['price'])
+	telemarket['total'] = telemarket['livraison'] + telemarket['price']
+
+	cursor = connection.cursor()
+	cursor.execute(sql_monoprix)
+	monoprix_db = dictfetchall(cursor)
+	monoprix = {'name':'Monoprix','class':'monoprix', 'price': sum( (product['price'] for product in monoprix_db) )}
+	monoprix['livraison'] = get_livraison_monoprix(monoprix['price'])
+	monoprix['total'] = monoprix['livraison'] + monoprix['price']
+	
+	if telemarket['total'] > monoprix['total']:
+		monoprix['is_min'] = True
+		monoprix['percent'] = monoprix['total']/telemarket['total']*100
+		telemarket['percent'] = 100.0
+		monoprix['difference'] = telemarket['total'] - monoprix['total']
+	else:
+		telemarket['is_min'] = True
+		telemarket['percent'] = telemarket['total']/monoprix['total']*100
+		monoprix['percent'] = 100.0
+		telemarket['difference'] = monoprix['total'] - telemarket['total']
+
+	# print monoprix
+	# print telemarket
+
+	return [monoprix, telemarket]
+
+def get_livraison_monoprix(amount):
+	price = 0.0
+	if amount<149:
+		price = 9
+	elif amount<189:
+		price = 5
+	return price
+
+def get_livraison_telemarket(amount):
+	price = 0.0
+	if amount<150:
+		price = 9.90
+	elif amount<180:
+		price = 5.90
+	elif amount<190:
+		price = 2.90
+	return price
 
 def add_cart(session_key):
 	cart = Cart(session_key =session_key)
@@ -112,3 +173,9 @@ def add_product_to_cart(session_key, product_id):
 		cart = Cart.objects.get(session_key = session_key)
 		product = Product.objects.get(id=product_id)
 		cart.products.add(product)
+
+def remove_product_to_cart(session_key, product_id):
+	if len(Cart.objects.filter(session_key = session_key, products = product_id)) == 0:
+		cart = Cart.objects.get(session_key = session_key)
+		product = Product.objects.get(id=product_id)
+		cart.products.remove(product)
