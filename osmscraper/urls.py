@@ -42,6 +42,7 @@ urlpatterns = patterns('',
     url(r'^categorie/(?P<sub_category>((\w)+-?)+)/?$','dalliz.views.category'),
     url(r'^panier/?$','dalliz.views.cart'),
     url(r'^add/cart/?$','dalliz.views.add_to_cart'),
+    url(r'^remove/cart/?$','dalliz.views.remove_from_cart'),
 )
 
 

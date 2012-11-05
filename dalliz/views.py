@@ -113,7 +113,7 @@ def remove_from_cart(request):
 	if request.method == 'POST':
 		product_id = request.POST['product_id']
 		if request.session.session_key is not None and product_id is not None:
-			remove_product_to_cart(request.session.session_key, product_id)
+			remove_product_from_cart(request.session.session_key, product_id)
 			return HttpResponse(json.dumps({'status':200}))
 		else:
 			return HttpResponse(json.dumps({'status':500}))	

@@ -174,8 +174,8 @@ def add_product_to_cart(session_key, product_id):
 		product = Product.objects.get(id=product_id)
 		cart.products.add(product)
 
-def remove_product_to_cart(session_key, product_id):
-	if len(Cart.objects.filter(session_key = session_key, products = product_id)) == 0:
+def remove_product_from_cart(session_key, product_id):
+	if len(Cart.objects.filter(session_key = session_key, products = product_id)) > 0:
 		cart = Cart.objects.get(session_key = session_key)
 		product = Product.objects.get(id=product_id)
 		cart.products.remove(product)
