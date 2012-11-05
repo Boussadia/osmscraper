@@ -118,7 +118,7 @@
 }
 
 #cart .summary .commander{
-	background-image: url(/static/images/cart/bouton.png);
+	background-image: url(../images/cart/bouton.png);
 	background-repeat: no-repeat;
 	height: 40px;
 	width: 135px;
