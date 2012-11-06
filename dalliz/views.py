@@ -23,6 +23,7 @@ def user(function):
 
 		# Getting informations about user
 		session_key = request.session.session_key
+		print request.session
 		if session_key is None:
 			request.session.set_test_cookie()
 		else:
@@ -130,4 +131,17 @@ def cgu(request):
 @user
 def mentions(request):
 	return 'dalliz/mentions.html', {}
-	
+
+@user
+def login(request):
+	if request.method == 'GET':
+		login_template = templates.Login()
+		render_dict = {u'content': login_template.render()}
+
+		return 'dalliz/login.html', render_dict
+	else:
+		if 'create' in request.POST:
+			print 'New User'
+		elif 'connect' in request.POST:
+			print 'Connexion'
+		return 'dalliz/login.html', {}

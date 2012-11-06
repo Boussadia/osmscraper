@@ -14,6 +14,7 @@ class Product(pystache.View):
 	def product(self):
 		return self.__product
 
+
 class Category(pystache.View):
 	def set_products(self, products):
 		self.__products = products
@@ -39,6 +40,7 @@ class Category(pystache.View):
 	def parent_category(self):
 		return self.__parent_category
 
+
 class Cart(pystache.View):
 	def set_cart(self, cart):
 		self.__cart = cart
@@ -51,3 +53,6 @@ class Cart(pystache.View):
 	
 	def totals(self):
 		return self.__totals
+
+class Login(pystache.View):
+	pass

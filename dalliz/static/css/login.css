@@ -1,0 +1,77 @@
+#login{
+	height: 600px;
+}
+
+#login h1, #login h3{
+	font-family: BPreplay;
+}
+
+#login strong{
+	color: #9E09A9;
+	text-shadow: 0px -1px 0px #690670;
+}
+
+.login{
+	width: 350px;
+	margin: auto;
+	border: 4px solid #B2B2B2;
+	border-radius: 8px;
+}
+
+.login .form_content{
+	width: 313px;
+	padding-left: 20px;
+	padding-right: 20px;
+	margin: auto;
+}
+
+.login .header{
+	height: 42px;
+	margin-bottom: 20px;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	text-align: center;
+	line-height: 38px;
+}
+
+.login .inputs, .login .submits{
+	display: inline-block;
+	width: 313px;
+/*	margin-left: 20px;
+	margin-right: 20px;*/
+}
+
+.login .inputs input {
+	width: 256px;
+	height: 12px;
+	padding: 15px;
+	padding-right: 39px;
+	background-repeat: no-repeat;
+	background-position: 271px 12px;
+	margin-bottom: 20px;
+}
+
+.login .mail{
+	background-image: url(../images/login/user.png);
+}
+
+.login .password{
+	background-image: url(../images/login/lock.png);	
+}
+
+.login .submits input{
+	width: 136px;
+	height: 40px;
+}
+
+.login .connect{
+    margin-right: 37px;
+}
+
+.login .forgot a{
+	text-decoration: none;
+	font-family: arial;
+	font-size: 10px;
+	color: #8C8C8C;
+	margin-left: 10px
+}

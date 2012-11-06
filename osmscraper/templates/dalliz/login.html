@@ -1,0 +1,36 @@
+{% extends "dalliz/base.html" %}
+
+{% block meta_robots %}
+<meta name="robots" content="noindex, nofollow" >
+{% endblock %}
+
+{% block css%}
+<link rel="stylesheet" type="text/css" href="{% static css/login.css %}">
+{% endblock %}
+
+{% block title %}
+Connexion
+{% endblock %}
+
+{% block javascript%}
+<!-- <script type="text/javascript" src="{% static js/cart_summary.js %}"></script> -->
+{% endblock%}
+
+{% block content %}
+
+<section id="login" class="block containere">
+	<div class="row">
+		<div class="span12">
+			<h1>
+				{% block title_page %}
+					<strong>Connexion</strong>
+				{% endblock %}
+			</h1>
+		</div>
+	</div>
+	{% autoescape off %}
+		{{content}}
+	{% endautoescape %}
+</section>
+
+{% endblock %}

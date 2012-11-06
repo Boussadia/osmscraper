@@ -353,6 +353,28 @@ footer .separator{
 	background-color: #60AE1A;
 }
 
+.btn-dalliz {
+	color: white;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	background-color: #8D6590;
+	background-image: -webkit-gradient(linear,0 0,0 100%,from(#9d09a7),to(#610667));
+	background-image: -webkit-linear-gradient(top,#9d09a7,#610667);
+	background-image: -o-linear-gradient(top,#9d09a7,#610667);
+	background-image: linear-gradient(to bottom,#9d09a7,#610667);
+	background-image: -moz-linear-gradient(top,#9d09a7,#610667);
+	background-repeat: repeat-x;
+	border-color: #610667 #610667 #387038;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ff62c462',endColorstr='#ff51a351',GradientType=0);
+	filter: progid:dximagetransform.microsoft.gradient(enabled=false);
+	font-weight: bold;
+}
+
+.btn-dalliz:hover, .btn-dalliz:active, .btn-dalliz.active, .btn-dalliz.disabled, .btn-dalliz[disabled] {
+	color: white;
+	background-color: #610667;
+}
+
 .separation_verticale{
 	width: 1px;
 	height: 270px;
@@ -401,6 +423,13 @@ footer .separator{
 	position: relative;
 	top: -34px;
 	float: right;
+	display: table;
+}
+
+.user a{
+	display: table-cell;
+	vertical-align: top;
+	text-decoration: none;
 }
 
 .user .cart{
@@ -431,6 +460,12 @@ footer .separator{
 
 .user .quantity[data-quantity="0"], .user .quantity[data-quantity=""]{
 	display: none;
+}
+
+.user .account{
+	font-family: arial;
+	font-weight: bold;
+	color: white;
 }
 
 .explanation{
