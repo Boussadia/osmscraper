@@ -14,7 +14,6 @@
 		<meta name="author" content="dalliz.com" >
 		<meta name="description" content="{{ meta_description }}">
 		<meta name="keywords" content="dalliz, gagner du temps, économiser de l'argent, comparateur de panier, supermarchés en ligne, courses moins chères">
-		<meta name="robots" content="all" />
 
 
 		<!-- Open graph meta tags -->
@@ -26,6 +25,10 @@
 		<meta property="og:description" content="{{ meta_description }}">
 		<meta property="og:image" content="{% static images/logo_og.png %}">
 		<meta property="fb:admins" content="1478671803" />
+
+		{% block meta_robots %}
+			<meta name="robots" content="all" />
+		{% endblock %}
 
 		<!-- Favico -->
 		<link href="{% static images/favicon.ico %}" rel="icon" type="image/x-icon" />
@@ -63,12 +66,14 @@
 				</div>
 				
 				<div class="user">
-					<a href="/panier"><div class="cart"></div></a>
+					<a href="/panier" rel="nofollow"><div class="cart"></div></a>
 					<div class="quantity" data-quantity='{{cart.quantity}}'>{{cart.quantity}}</div>
 					<!-- {% for key, val in cart.iteritems %}
 						<p>{{val}}</p>
 					{% endfor %} -->
-					<div class="acount"></div>
+					<div class="acount">
+
+					</div>
 				</div>
 			</div>
 
@@ -186,6 +191,21 @@
 				var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
 				uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/JrMr2PkknuAg7ITkaUHIQ.js';
 				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+			})();
+		</script>
+
+		<!-- Google Analytics -->
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-33426317-3']);
+			_gaq.push(['_setDomainName', 'dalliz.com']);
+			_gaq.push(['_setAllowLinker', true]);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 			})();
 		</script>
 
