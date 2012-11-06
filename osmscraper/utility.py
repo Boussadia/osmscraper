@@ -3,6 +3,7 @@
 from django.db import connection
 from monoprix.models import Cart
 from monoprix.models import Product
+from monoprix.models import User
 
 
 def dictfetchall(cursor):
@@ -112,14 +113,37 @@ def get_parent_category(sub_category_url):
 
 
 def get_cart_for_session_key(session_key):
-	cart = Cart.objects.get(session_key=session_key)
-	products_db = cart.products.all()
-	result = {}
-	result['quantity'] = len(products_db)
-	result['products'] = []
-	for i in xrange(0, len(products_db)):
-		result['products'].append({'dalliz_url': products_db[i].dalliz_url, 'image_url': products_db[i].image_url, 'id': products_db[i].id, 'title': products_db[i].title, 'brand_name':products_db[i].brand.name})
-	return result
+	carts = Cart.objects.all().filter(session_key=session_key)
+	if len(carts)>0:
+		cart = carts[0]
+		products_db = cart.products.all()
+		result = {}
+		result['quantity'] = len(products_db)
+		result['products'] = []
+		for i in xrange(0, len(products_db)):
+			result['products'].append({'dalliz_url': products_db[i].dalliz_url, 'image_url': products_db[i].image_url, 'id': products_db[i].id, 'title': products_db[i].title, 'brand_name':products_db[i].brand.name})
+		return result
+	else:
+		return None
+
+def get_cart_for_token(token):
+	users = User.objects.all().filter(token=token)
+	if len(users)>0:
+		user_db = users[0]
+		cart = user_db.cart
+		products_db = cart.products.all()
+		result = {}
+		result['quantity'] = len(products_db)
+		result['products'] = []
+		for i in xrange(0, len(products_db)):
+			result['products'].append({'dalliz_url': products_db[i].dalliz_url, 'image_url': products_db[i].image_url, 'id': products_db[i].id, 'title': products_db[i].title, 'brand_name':products_db[i].brand.name})
+
+		user = {'name':user_db.first_name}
+		if user['name'] == "":
+			user['name'] = 'Compte'
+		return user, result
+	else:
+		return None, None
 
 def get_cart_price(session_key):
 	sql_telemarket = ("SELECT telemarket_product.price,monoprix_product.id "
@@ -185,6 +209,7 @@ def get_livraison_telemarket(amount):
 def add_cart(session_key):
 	cart = Cart(session_key =session_key)
 	cart.save()
+	return cart
 
 def add_product_to_cart(session_key, product_id):
 	if len(Cart.objects.filter(session_key = session_key, products = product_id)) == 0:
@@ -197,3 +222,10 @@ def remove_product_from_cart(session_key, product_id):
 		cart = Cart.objects.get(session_key = session_key)
 		product = Product.objects.get(id=product_id)
 		cart.products.remove(product)
+
+def remove_product_from_cart(session_key, product_id):
+	if len(Cart.objects.filter(session_key = session_key, products = product_id)) > 0:
+		cart = Cart.objects.get(session_key = session_key)
+		product = Product.objects.get(id=product_id)
+		cart.products.remove(product)
+

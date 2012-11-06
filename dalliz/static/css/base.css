@@ -463,9 +463,63 @@ footer .separator{
 }
 
 .user .account{
+	height: 40px;
+}
+.user .account, .user ul.hoverbox a{
 	font-family: arial;
 	font-weight: bold;
 	color: white;
+}
+
+.user .iconuser{
+	background-image: url(../images/header/user-icon.png);
+	width: 14px;
+	height: 16px;
+	display: inline-block;
+	position: absolute;
+	left: 43px;
+	top: 4px;
+}
+
+.user .arrowdown{
+	background-image: url(../images/header/icon-fleche.png);
+	width: 15px;
+	height: 9px;
+	display: inline-block;
+	position: absolute;
+	right: 7px;
+	top: 8px;
+}
+
+.user .username{
+	height: 21px;
+	overflow: hidden;
+	display: inline-block;
+	width: 90px;
+	position: relative;
+	left: 10px;
+	text-align: center;
+}
+
+.user ul.hoverbox{
+	display: none;
+	position: absolute;
+	left: 39px;
+	top: 23px;
+	list-style: none;
+	text-decoration: none;
+	background-color: #212121;
+	width: 120px;
+	height: 60px;
+}
+
+.user ul.hoverbox li{
+	font-size: 12px;
+	padding-left: 12px;
+}
+
+.account:hover >  ul.hoverbox{
+	display: block;
 }
 
 .explanation{

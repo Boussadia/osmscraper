@@ -3,27 +3,26 @@
 
 import pystache
 import simplejson as json
+import hashlib
+from time import time
 
 from django.http import HttpResponse
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import Context, loader
 
 from templates import templates
 
 from osmscraper.utility import *
 
-RENDER_DICT = {'meta_description': "Dalliz est un comparateur de panier entre les différents supermarchés en lignes. Avec Dalliz, gagnez du temps, économisez de l'argent."}
+from monoprix.models import User
 
 def user(function):
 	def wrapper(request, *args, **kwargs):
 		# Getting information of called method and updating dict
-		template_path, render_dict = function(request, *args, **kwargs)
-		RENDER_DICT.update(render_dict)
-
+		RENDER_DICT = {'meta_description': "Dalliz est un comparateur de panier entre les différents supermarchés en lignes. Avec Dalliz, gagnez du temps, économisez de l'argent.", 'user_set': False}
 		# Getting informations about user
 		session_key = request.session.session_key
-		print request.session
 		if session_key is None:
 			request.session.set_test_cookie()
 		else:
@@ -32,10 +31,31 @@ def user(function):
 				print 'Test cookie set correctly, removing it!'
 				add_cart(session_key)
 			else:
-				print 'Retrieving cart information from datastore'
-				cart = get_cart_for_session_key(session_key)
-				RENDER_DICT.update({'cart':cart})
+				if 'token' in request.session:
+					print "Getting user with token : "+request.session['token']
+					user, cart = get_cart_for_token(request.session['token'])
+					if user is not None and cart is not None:
+						print "Cart an user retrieved from datastore."
+						RENDER_DICT.update({'user': user, 'user_set': True})
+						RENDER_DICT.update({'cart':cart})
+					else:
+						print "Removing session from session"
+						del request.session['token']
+				else:
+					print 'Retrieving cart information from datastore'
+					cart = get_cart_for_session_key(session_key)
+					if cart is not None:
+						RENDER_DICT.update({'cart':cart})
+
+		template_path, render_dict = function(request, *args, **kwargs)
+		RENDER_DICT.update(render_dict)
+
+		if 'token' in RENDER_DICT:
+			request.session['token'] = RENDER_DICT['token']
+			request.session.modified = True
+
 		return render(request, template_path, RENDER_DICT)
+
 	return wrapper
 
 
@@ -90,9 +110,15 @@ def category(request, sub_category):
 
 @user
 def cart(request):
-	if request.session.session_key is not None:
-		totals = get_cart_price(request.session.session_key)
-		cart = get_cart_for_session_key(request.session.session_key)
+	token = None
+	if 'token' in request.session :
+		token = request.session['token']
+	elif request.session.session_key is not None:
+		token = request.session.session_key
+
+	if token is not None:
+		totals = get_cart_price(token)
+		cart = get_cart_for_session_key(token)
 		cart_template = templates.Cart()
 		cart_template.set_cart(cart)
 		cart_template.set_totals(totals)
@@ -104,7 +130,10 @@ def cart(request):
 def add_to_cart(request):
 	if request.method == 'POST':
 		product_id = request.POST['product_id']
-		if request.session.session_key is not None and product_id is not None:
+		if 'token' in request.session and product_id is not None:
+			add_product_to_cart(request.session['token'], product_id)
+			return HttpResponse(json.dumps({'status':200}))
+		elif request.session.session_key is not None and product_id is not None:
 			add_product_to_cart(request.session.session_key, product_id)
 			return HttpResponse(json.dumps({'status':200}))
 		else:
@@ -115,6 +144,9 @@ def add_to_cart(request):
 def remove_from_cart(request):
 	if request.method == 'POST':
 		product_id = request.POST['product_id']
+		if 'token' in request.session and product_id is not None:
+			remove_product_from_cart(request.session['token'], product_id)
+			return HttpResponse(json.dumps({'status':200}))
 		if request.session.session_key is not None and product_id is not None:
 			remove_product_from_cart(request.session.session_key, product_id)
 			return HttpResponse(json.dumps({'status':200}))
@@ -134,14 +166,56 @@ def mentions(request):
 
 @user
 def login(request):
-	if request.method == 'GET':
-		login_template = templates.Login()
-		render_dict = {u'content': login_template.render()}
+	login_template = templates.Login()
+	render_dict = {}
+	template_path = 'dalliz/login.html'
 
-		return 'dalliz/login.html', render_dict
-	else:
+	if request.method == 'POST':
+		email = request.POST['email']
+		password = request.POST['password']
+		users = User.objects.all().filter(email = email)
+		exists = len(users) > 0
+		salt = 'MaBaAb12!'
 		if 'create' in request.POST:
-			print 'New User'
+			if exists:
+				print "User already exists" 
+			elif len(password)>5:
+				print 'New User with email : '+email
+				timestamp = time()
+				hashpass = hashlib.md5(salt+password+str(time())).hexdigest()
+				token = hashlib.md5(salt+email+str(time())).hexdigest()
+				print token
+				render_dict['token'] = token
+				cart = add_cart(token)
+				user = User(email=email, password = hashpass, token = token, cart=cart)
+				user.save()
+				render_dict['user'] = user
 		elif 'connect' in request.POST:
-			print 'Connexion'
-		return 'dalliz/login.html', {}
+			if exists:
+				user = users[0]
+				print 'Connecting '+user.email
+				token = hashlib.md5(salt+email+str(time())).hexdigest()
+				render_dict['token'] = token
+				user.token = token
+				user.cart.session_key = token
+				user.cart.save()
+				user.save()
+
+	render_dict[u'content'] = login_template.render()
+	return template_path, render_dict
+
+
+def logout(request):
+	if 'token' in request.session:
+		users = User.objects.all().filter(token = request.session['token'])
+		if len(users)>0:
+			users[0].token = ''
+			users[0].save()
+	request.session.flush()
+	response = redirect('/')
+	# response.delete_cookie('sessionid')
+	return response
+
+
+
+

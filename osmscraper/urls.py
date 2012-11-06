@@ -46,6 +46,7 @@ urlpatterns = patterns('',
     url(r'^conditions-generale-d-utilisation$','dalliz.views.cgu'),
     url(r'^mentions-legales/$','dalliz.views.mentions'),
     url(r'^login/?$','dalliz.views.login'),
+    url(r'^logout/?$','dalliz.views.logout'),
 )
 
 
