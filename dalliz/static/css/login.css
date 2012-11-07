@@ -75,3 +75,16 @@
 	color: #8C8C8C;
 	margin-left: 10px
 }
+
+.errormessage{
+	color: red;
+	font-weight: bold;
+	position: relative;
+	top: -10px;
+}
+
+.successmessage{
+	color: #38D638;
+	font-weight: bold;
+	margin-bottom: 10px;
+}

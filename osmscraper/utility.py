@@ -1,9 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from django.db import connection
-from monoprix.models import Cart
-from monoprix.models import Product
-from monoprix.models import User
+from monoprix.models import Cart, Product, User, Cart_content
 
 
 def dictfetchall(cursor):
@@ -115,14 +113,7 @@ def get_parent_category(sub_category_url):
 def get_cart_for_session_key(session_key):
 	carts = Cart.objects.all().filter(session_key=session_key)
 	if len(carts)>0:
-		cart = carts[0]
-		products_db = cart.products.all()
-		result = {}
-		result['quantity'] = len(products_db)
-		result['products'] = []
-		for i in xrange(0, len(products_db)):
-			result['products'].append({'dalliz_url': products_db[i].dalliz_url, 'image_url': products_db[i].image_url, 'id': products_db[i].id, 'title': products_db[i].title, 'brand_name':products_db[i].brand.name})
-		return result
+		return get_cart(carts[0])
 	else:
 		return None
 
@@ -131,13 +122,7 @@ def get_cart_for_token(token):
 	if len(users)>0:
 		user_db = users[0]
 		cart = user_db.cart
-		products_db = cart.products.all()
-		result = {}
-		result['quantity'] = len(products_db)
-		result['products'] = []
-		for i in xrange(0, len(products_db)):
-			result['products'].append({'dalliz_url': products_db[i].dalliz_url, 'image_url': products_db[i].image_url, 'id': products_db[i].id, 'title': products_db[i].title, 'brand_name':products_db[i].brand.name})
-
+		result = get_cart(cart)
 		user = {'name':user_db.first_name}
 		if user['name'] == "":
 			user['name'] = 'Compte'
@@ -145,30 +130,45 @@ def get_cart_for_token(token):
 	else:
 		return None, None
 
+def get_cart(cart):
+	product_in_carts = Cart_content.objects.filter(cart=cart)
+	if len(product_in_carts)>0:
+		products_db = [ {'product':p_in_c.product, 'quantity':p_in_c.quantity} for p_in_c in product_in_carts]
+		result = {}
+		result['quantity'] = sum( [p['quantity'] for p in products_db] )
+		result['products'] = []
+		for i in xrange(0, len(products_db)):
+			for j in xrange(0,products_db[i]['quantity']):
+				result['products'].append({'dalliz_url': products_db[i]['product'].dalliz_url, 'image_url': products_db[i]['product'].image_url, 'id': products_db[i]['product'].id, 'title': products_db[i]['product'].title, 'brand_name':products_db[i]['product'].brand.name})
+		return result
+	else:
+		return None
+
 def get_cart_price(session_key):
-	sql_telemarket = ("SELECT telemarket_product.price,monoprix_product.id "
-					"FROM monoprix_cart_products "
-					"JOIN monoprix_product ON monoprix_cart_products.product_id = monoprix_product.id "
+	sql_telemarket = ("SELECT telemarket_product.price as price, monoprix_cart_content.quantity as quantity, monoprix_product.id "
+					"FROM monoprix_cart_content "
+					"JOIN monoprix_product ON monoprix_cart_content.product_id = monoprix_product.id "
 					"JOIN telemarket_product ON telemarket_product.monoprix_product_id = monoprix_product.id "
-					"JOIN monoprix_cart ON monoprix_cart.id = monoprix_cart_products.cart_id "
+					"JOIN monoprix_cart ON monoprix_cart.id = monoprix_cart_content.cart_id "
 					"WHERE monoprix_cart.session_key = '"+session_key+"';")
-	sql_monoprix = ("select monoprix_product.price,monoprix_product.id "
-					"FROM monoprix_cart_products "
-					"JOIN monoprix_product ON monoprix_cart_products.product_id = monoprix_product.id "
-					"JOIN monoprix_cart ON monoprix_cart.id = monoprix_cart_products.cart_id "
+
+	sql_monoprix = ("SELECT monoprix_product.price AS price ,monoprix_cart_content.quantity AS quantity,monoprix_product.id "
+					"FROM monoprix_cart_content "
+					"JOIN monoprix_product ON monoprix_cart_content.product_id = monoprix_product.id "
+					"JOIN monoprix_cart ON monoprix_cart.id = monoprix_cart_content.cart_id "
 					"WHERE monoprix_cart.session_key = '"+session_key+"';")
 
 	cursor = connection.cursor()
 	cursor.execute(sql_telemarket)
 	telemarket_db = dictfetchall(cursor)
-	telemarket = {'name':'Telemaket','class':'telemarket', 'price': sum( (product['price'] for product in telemarket_db) )}
+	telemarket = {'name':'Telemaket','class':'telemarket', 'price': sum( (product['price']*product['quantity'] for product in telemarket_db) )}
 	telemarket['livraison'] = get_livraison_telemarket(telemarket['price'])
 	telemarket['total'] = telemarket['livraison'] + telemarket['price']
 
 	cursor = connection.cursor()
 	cursor.execute(sql_monoprix)
 	monoprix_db = dictfetchall(cursor)
-	monoprix = {'name':'Monoprix','class':'monoprix', 'price': sum( (product['price'] for product in monoprix_db) )}
+	monoprix = {'name':'Monoprix','class':'monoprix', 'price': sum( (product['price']*product['quantity'] for product in monoprix_db) )}
 	monoprix['livraison'] = get_livraison_monoprix(monoprix['price'])
 	monoprix['total'] = monoprix['livraison'] + monoprix['price']
 	
@@ -212,20 +212,52 @@ def add_cart(session_key):
 	return cart
 
 def add_product_to_cart(session_key, product_id):
-	if len(Cart.objects.filter(session_key = session_key, products = product_id)) == 0:
-		cart = Cart.objects.get(session_key = session_key)
-		product = Product.objects.get(id=product_id)
-		cart.products.add(product)
+	products = Product.objects.filter(id=product_id)
+	if len(products)==0:
+		return
+	else:
+		product = products[0]
+
+	carts = Cart.objects.filter(session_key = session_key)
+
+	if len(carts) == 0:
+		cart = add_cart(session_key)
+	else:
+		cart = carts[0]
+
+	product_in_carts = Cart_content.objects.filter(cart=cart, product = product)
+
+	if len(product_in_carts)>0:
+		product_in_cart = product_in_carts[0]
+	else:
+		product_in_cart = Cart_content(cart=cart, product = product)
+	try:
+		product_in_cart.quantity = product_in_cart.quantity + 1
+		product_in_cart.save()
+	except Exception, e:
+		print 'Something went wrong in add cart. session_key : '+session_key+' and product_id = '+str(product_id)
 
 def remove_product_from_cart(session_key, product_id):
-	if len(Cart.objects.filter(session_key = session_key, products = product_id)) > 0:
-		cart = Cart.objects.get(session_key = session_key)
-		product = Product.objects.get(id=product_id)
-		cart.products.remove(product)
+	products = Product.objects.filter(id=product_id)
+	if len(products)==0:
+		return
+	else:
+		product = products[0]
 
-def remove_product_from_cart(session_key, product_id):
-	if len(Cart.objects.filter(session_key = session_key, products = product_id)) > 0:
-		cart = Cart.objects.get(session_key = session_key)
-		product = Product.objects.get(id=product_id)
-		cart.products.remove(product)
+	carts = Cart.objects.filter(session_key = session_key)
+
+	if len(carts) == 0:
+		cart = add_cart(session_key)
+	else:
+		cart = carts[0]
+
+	product_in_carts = Cart_content.objects.filter(cart=cart, product = product)
+
+	if len(product_in_carts)>0:
+		product_in_cart = product_in_carts[0]
+		if product_in_cart.quantity>1:
+			product_in_cart.quantity = product_in_cart.quantity - 1
+			product_in_cart.save()
+		elif product_in_cart.quantity<=1:
+			product_in_cart.delete()
 

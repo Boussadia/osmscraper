@@ -4,8 +4,35 @@
 		<div class="form_content">
 
 			<div class="inputs">
+				{{#success}}
+					{{#create}}
+						<div class="successmessage"> La création de votre compte a été effectuée avec succès !</div>
+					{{/create}}
+					{{#signin}}
+						<div class="successmessage"> Vous vous êtes connecté au service avec succès ! </div>
+					{{/signin}}
+				{{/success}}
 				<input type="email" name="email" class="mail" placeholder="Email" ></input>
+				{{# errors }}
+					{{#mail_not_available}}
+						<div class="errormessage"> Email non disponible </div>
+					{{/mail_not_available}}
+					{{#mail_not_valid}}
+						<div class="errormessage"> Email non valide </div>
+					{{/mail_not_valid}}
+					{{#email_not_valid}}
+						<div class="errormessage"> L'email ne semble pas correcte. </div>
+					{{/email_not_valid}}
+				{{/ errors }}
 				<input type="password" name="password" class="password" placeholder="Mot de passe" ></input>
+				{{# errors }}
+					{{#passwordshort}}
+						<div class="errormessage"> Le mot de passe doit comporter au moins 6 caractères </div>
+					{{/passwordshort}}
+					{{#pass_not_valid}}
+						<div class="errormessage"> Mot de passe incorrecte </div>
+					{{/pass_not_valid}}
+				{{/ errors }}
 			</div>
 			<div class="submits">
 				<input type="submit" name="connect" class="connect btn btn-dalliz" value="Se connecter"></input>

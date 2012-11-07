@@ -55,4 +55,14 @@ class Cart(pystache.View):
 		return self.__totals
 
 class Login(pystache.View):
-	pass
+	def set_errors(self, errors):
+		self.__errors = errors
+
+	def errors(self):
+		return self.__errors
+
+	def set_success(self, success):
+		self.__success = success
+
+	def success(self):
+		return self.__success

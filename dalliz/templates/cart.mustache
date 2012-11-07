@@ -11,7 +11,9 @@
 				{{# products}}
 					<div class="product">
 						<img src="http://courses.monoprix.fr{{ image_url }}" alt="Image produit en provenance de Monoprix.fr">
-						<div class="delete" data-product-id="{{id}}"></div>
+						<form action="/remove/cart" method="post">
+							<input type="submit" class="delete" name="product_id" data-product-id="{{id}}" value="{{id}}">
+						</form>
 						<div class="brand">{{brand_name}}</div>
 						<div class="title">{{title}}</div>
 					</div>

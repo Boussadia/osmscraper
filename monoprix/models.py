@@ -89,7 +89,15 @@ class Product(models.Model):
 
 class Cart(models.Model):
 	session_key = models.CharField(max_length=1000, unique= True)
-	products = models.ManyToManyField(Product)
+	products = models.ManyToManyField(Product, through='Cart_content')
+
+class Cart_content(models.Model):
+	cart = models.ForeignKey(Cart)
+	product = models.ForeignKey(Product)
+	quantity = models.IntegerField(default=0)
+
+	class Meta:
+		unique_together = ("cart", "product")
 
 class User(models.Model):
 	first_name = models.CharField(max_length=1000, default='')

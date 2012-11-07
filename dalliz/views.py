@@ -5,8 +5,9 @@ import pystache
 import simplejson as json
 import hashlib
 from time import time
+import re
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.template import Context, loader
@@ -131,29 +132,23 @@ def add_to_cart(request):
 	if request.method == 'POST':
 		product_id = request.POST['product_id']
 		if 'token' in request.session and product_id is not None:
+			print 'token'
 			add_product_to_cart(request.session['token'], product_id)
-			return HttpResponse(json.dumps({'status':200}))
+			return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
 		elif request.session.session_key is not None and product_id is not None:
+			print 'session'
 			add_product_to_cart(request.session.session_key, product_id)
-			return HttpResponse(json.dumps({'status':200}))
-		else:
-			return HttpResponse(json.dumps({'status':500}))	
-	else:
-		return HttpResponse(json.dumps({'status':500}))
+			return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
 
 def remove_from_cart(request):
 	if request.method == 'POST':
 		product_id = request.POST['product_id']
 		if 'token' in request.session and product_id is not None:
 			remove_product_from_cart(request.session['token'], product_id)
-			return HttpResponse(json.dumps({'status':200}))
+			return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
 		if request.session.session_key is not None and product_id is not None:
 			remove_product_from_cart(request.session.session_key, product_id)
-			return HttpResponse(json.dumps({'status':200}))
-		else:
-			return HttpResponse(json.dumps({'status':500}))	
-	else:
-		return HttpResponse(json.dumps({'status':500}))
+			return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
 
 
 @user
@@ -168,6 +163,8 @@ def mentions(request):
 def login(request):
 	login_template = templates.Login()
 	render_dict = {}
+	errors = {}
+	success = {}
 	template_path = 'dalliz/login.html'
 
 	if request.method == 'POST':
@@ -176,31 +173,48 @@ def login(request):
 		users = User.objects.all().filter(email = email)
 		exists = len(users) > 0
 		salt = 'MaBaAb12!'
+
 		if 'create' in request.POST:
 			if exists:
 				print "User already exists" 
+				errors[u'mail_not_available'] = True
+			elif not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+				errors[u'mail_not_valid'] = True
 			elif len(password)>5:
 				print 'New User with email : '+email
 				timestamp = time()
-				hashpass = hashlib.md5(salt+password+str(time())).hexdigest()
-				token = hashlib.md5(salt+email+str(time())).hexdigest()
+				hashpass = hashlib.md5(salt+password).hexdigest()
+				token = hashlib.md5(salt+email).hexdigest()
 				print token
 				render_dict['token'] = token
 				cart = add_cart(token)
 				user = User(email=email, password = hashpass, token = token, cart=cart)
 				user.save()
 				render_dict['user'] = user
+				success['create'] = True
+			else:
+				errors [u'passwordshort'] = True
 		elif 'connect' in request.POST:
 			if exists:
 				user = users[0]
-				print 'Connecting '+user.email
-				token = hashlib.md5(salt+email+str(time())).hexdigest()
-				render_dict['token'] = token
-				user.token = token
-				user.cart.session_key = token
-				user.cart.save()
-				user.save()
+				# Verifying password
+				hashpass = hashlib.md5(salt+password).hexdigest()
+				if hashpass == user.password:
+					print 'Connecting '+user.email
+					token = hashlib.md5(salt+email+str(time())).hexdigest()
+					render_dict['token'] = token
+					user.token = token
+					user.cart.session_key = token
+					user.cart.save()
+					user.save()
+					success['signin'] = True
+				else:
+					errors['pass_not_valid'] = True
+			else:
+				errors['email_not_valid'] = True
 
+	login_template.set_errors(errors)
+	login_template.set_success(success)
 	render_dict[u'content'] = login_template.render()
 	return template_path, render_dict
 
@@ -213,7 +227,6 @@ def logout(request):
 			users[0].save()
 	request.session.flush()
 	response = redirect('/')
-	# response.delete_cookie('sessionid')
 	return response
 
 

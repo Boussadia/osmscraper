@@ -14,8 +14,11 @@
 				<div class="product_name">{{ product_name }}</div>
 				<div class="price"> A partir de {{ price }} € <sup>*</sup></div>
 				<div class="add_to_cart" data-product-id="{{id}}">
-					<div class="plus"></div>
-					<div class="text">Ajouter au panier</div>
+					<!-- <div class="plus"></div> -->
+					<form action="/add/cart" method="post">
+						<input type="hidden" name="product_id" value="{{id}}">
+						<input type="submit" class="text" value="Ajouter au panier">
+					</form>
 				</div>
 			</div>
 			<div class="accordion sub_container" id="accordion">
