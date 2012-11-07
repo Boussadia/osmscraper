@@ -46,7 +46,7 @@
 	</div>
 
 	<div class="comparaison row">
-		<div class="span8 left">
+		<div class="span8 left" {{#totals}}{{#is_min}}{{#thereshold_not_ok}} style="opacity: .1; "{{/thereshold_not_ok}} {{/is_min}} {{/totals}}>
 			{{#totals}}
 			<div class="row {{class}} {{#is_min}}min{{/is_min}}">
 				<div class="span2 osm">{{name}}</div>
@@ -59,6 +59,10 @@
 			</div>
 			{{/totals}}
 		</div>
+		<div class="span8 left message_error" {{#totals}}{{#is_min}}{{#thereshold_not_ok}} style="position: absolute; "{{/thereshold_not_ok}}{{#thereshold_ok}} style="display: none; "{{/thereshold_ok}} {{/is_min}} {{/totals}}>
+			Le minimum de commande n'est pas atteint !
+		</div>
+
 		<div class="explanation">
 			<div class="text"> bientot disponible !</div>
 			<div class="arrow"></div>

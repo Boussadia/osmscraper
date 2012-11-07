@@ -1,7 +1,15 @@
 $(document).ready(function(){
 	// Filter by brand
 	$("input:checkbox[name=brands_options]").click(function() {
+		if (parseInt($(this).val()) === 0) {
+			if($(this).is(':checked')){
+				$("input:checkbox[name=brands_options]:not([id='brand_0'])").prop('checked',false);
+			}
+		}else{
+			$($("input:checkbox[name=brands_options][id='brand_0']")[0]).prop('checked',false);
+		}
 		var all_is_checked = $($("input:checkbox[name=brands_options][id='brand_0']")[0]).is(':checked');
+		// var brands_checked = $("input:checkbox[name=brands_options]:checked:not([id='brand_0'])").length;
 		if (all_is_checked) {
 			$('.product').show()
 		}else{

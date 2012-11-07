@@ -98,6 +98,14 @@
 
 #cart .summary .minimum-livraison .text{
 	width: 112px;
+	font-family: brankovic;
+	color: #9E09A8;
+}
+
+#cart .summary .minimum-livraison .amount{
+	position: relative;
+	top: -18px;
+	right: -111px;
 }
 
 #cart .summary .total{
@@ -266,6 +274,17 @@
 	margin-left: 10px;
 }
 
+
+.message_error{
+	position: absolute;
+	font-family: Arial;
+	color: red;
+	font-weight: bold;
+	padding-left: 130px;
+	width: 322px;
+	text-align: center;
+	line-height: 94px;
+}
 /*General elements*/
 .explanation{
 	left: 470px;

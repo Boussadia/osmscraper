@@ -187,11 +187,11 @@ def get_cart_price(session_key):
 		telemarket['percent'] = telemarket['total']/monoprix['total']*100
 		monoprix['percent'] = 100.0
 		telemarket['difference'] = monoprix['total'] - telemarket['total']
-		if telemarket['price']>=80:
+		if telemarket['price']>=40:
 			telemarket["thereshold_ok"] = True
 		else:
 			telemarket['thereshold_not_ok'] = True
-			telemarket["thereshold"] = 80-telemarket['price']
+			telemarket["thereshold"] = 40-telemarket['price']
 
 
 	return monoprix, telemarket
@@ -206,7 +206,9 @@ def get_livraison_monoprix(amount):
 
 def get_livraison_telemarket(amount):
 	price = 0.0
-	if amount<150:
+	if amount<80:
+		price = 14.90
+	elif amount<150:
 		price = 9.90
 	elif amount<180:
 		price = 5.90
