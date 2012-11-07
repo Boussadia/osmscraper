@@ -25,17 +25,21 @@
 			{{#totals}}
 				{{#is_min}}
 					<div class="sous-total"> Sous Total <div class="amount"> {{price}} €</div></div>
-					<div class="prix-livraison"> Livraison <div class="amount">{{livraison}} €</div></div>
-					<div class="total">Total <div class="amount">{{total}} €</div></div>
-					<div class="economie"> <sup>*</sup> Vous économisez <div class="amount">{{difference}} €</div> !</div>
+					{{#thereshold_ok}}
+						<div class="prix-livraison" > Livraison <div class="amount">{{livraison}} €</div></div>
+						<div class="total">Total <div class="amount">{{total}} €</div></div>
+						<div class="economie"> <sup>*</sup> Vous économisez <div class="amount">{{difference}} €</div> !</div>
+						<div class="commander">Je passe commande !</div>
+						<div class="explanation">
+							<div class="text"> bientot disponible !</div>
+							<div class="arrow"></div>
+						</div>
+					{{/thereshold_ok}}
+					{{#thereshold_not_ok}}
+						<div class="minimum-livraison" > <div class="text">Minimum de livraison non atteint, il vous manque : </div><div class="amount">{{thereshold}} €</div></div>
+					{{/thereshold_not_ok}}
 				{{/is_min}}
 			{{/totals}}
-
-			<div class="commander">Je passe commande !</div>
-			<div class="explanation">
-				<div class="text"> bientot disponible !</div>
-				<div class="arrow"></div>
-			</div>
 
 			<div class="footnote"><sup>*</sup>différence entre le supermarché le plus cher et le moins cher</div>
 		</div>

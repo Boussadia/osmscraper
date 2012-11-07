@@ -96,6 +96,10 @@
 	padding-bottom: 3px;
 }
 
+#cart .summary .minimum-livraison .text{
+	width: 112px;
+}
+
 #cart .summary .total{
 	color: #9E09A8;
 	text-transform: uppercase;

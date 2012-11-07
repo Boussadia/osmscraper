@@ -1,12 +1,19 @@
 $(document).ready(function(){
 	// Filter by brand
-	$("input:radio[name=brands_options]").click(function() {
-		var id_brand = $(this).val();
-		if (id_brand >0){
-			$('.product').hide();
-			$('.product[data-brand='+id_brand+']').show();
+	$("input:checkbox[name=brands_options]").click(function() {
+		var all_is_checked = $($("input:checkbox[name=brands_options][id='brand_0']")[0]).is(':checked');
+		if (all_is_checked) {
+			$('.product').show()
 		}else{
-			$('.product').show();
+			$('.product').hide();
+			$("input:checkbox[name=brands_options]:not([id='brand_0'])").each(function(){
+				var id_brand = $(this).val();
+				if ($(this).is(':checked')) {
+					$('.product[data-brand='+id_brand+']').show();
+				}else{
+					$('.product[data-brand='+id_brand+']').hide();
+				}
+			})
 		}
 	});
 

@@ -412,7 +412,7 @@ footer .separator{
 	font-family: arial;
 	font-weight: bold;
 	display: inline-block;
-	background-image: url(/static/images/add-cart-sprits.png);
+	background-image: url(../images/add-cart-sprits.png);
 	height: 22px;
 	color: white;
 	line-height: 13px;

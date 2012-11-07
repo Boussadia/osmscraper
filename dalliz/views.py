@@ -13,9 +13,7 @@ from django.shortcuts import render, redirect
 from django.template import Context, loader
 
 from templates import templates
-
 from osmscraper.utility import *
-
 from monoprix.models import User, Cart
 
 def user(function):

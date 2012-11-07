@@ -43,13 +43,13 @@
 }
 
 /* Styling checkbox */
-#brands input[type="radio"] {
+#brands input[type="checkbox"] {
 	position: absolute;
 	opacity: 0;
 	z-index: 10;
 }
 
-#brands input[type="radio"] + label::before {
+#brands input[type="checkbox"] + label::before {
 	content: "";
 	display: inline-block;
 	width: 8px;
@@ -62,7 +62,7 @@
 	top: -2px;
 }
 
-#brands input[type="radio"]:checked + label::before {
+#brands input[type="checkbox"]:checked + label::before {
 	background-position: 0 -9px;
 }
 

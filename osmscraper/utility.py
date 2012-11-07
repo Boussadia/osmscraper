@@ -42,7 +42,8 @@ def get_product_from_category_id(category_id):
 				"JOIN monoprix_brand ON monoprix_product.brand_id = monoprix_brand.id "
 				"JOIN monoprix_category_final_dalliz_category ON monoprix_category_final_dalliz_category.category_final_id =monoprix_product.category_id "
 				"JOIN dalliz_category_sub ON dalliz_category_sub.id = monoprix_category_final_dalliz_category.category_sub_id "
-				"WHERE dalliz_category_sub.id = "+str(category_id)+" ")
+				"WHERE telemarket_product.monoprix_product_id is not null and dalliz_category_sub.id = "+str(category_id)+" "
+				"ORDER BY monoprix_brand.name")
 	cursor = connection.cursor()
 	cursor.execute(sql_query)
 	result_db = dictfetchall(cursor)
@@ -75,13 +76,12 @@ def get_products_for_sub_category(sub_category_url):
 		category_id = category_db[0]['id']
 		result = get_product_from_category_id(category_id)
 		products = result
-		brands_temp = {}
-		for i in xrange(0,len(result)):
-			brands_temp[result[i]['brand_id']] = result[i]['brand_name']
-
 		brands = []
-		for id, name in brands_temp.iteritems():
-			brands.append({"id":id, "name": name})
+		for i in xrange(0,len(result)):
+			if len(brands)==0:
+				brands.append({"id":result[i]['brand_id'], "name": result[i]['brand_name']})
+			elif brands[-1]["id"] != result[i]['brand_id']:
+				brands.append({"id":result[i]['brand_id'], "name": result[i]['brand_name']})
 	return products, brands
 
 def get_same_level_categories(sub_category_url):
@@ -171,22 +171,30 @@ def get_cart_price(session_key):
 	monoprix = {'name':'Monoprix','class':'monoprix', 'price': sum( (product['price']*product['quantity'] for product in monoprix_db) )}
 	monoprix['livraison'] = get_livraison_monoprix(monoprix['price'])
 	monoprix['total'] = monoprix['livraison'] + monoprix['price']
-	
+
 	if telemarket['total'] > monoprix['total']:
 		monoprix['is_min'] = True
 		monoprix['percent'] = monoprix['total']/telemarket['total']*100
 		telemarket['percent'] = 100.0
 		monoprix['difference'] = telemarket['total'] - monoprix['total']
+		if monoprix['price']>= 70:
+			monoprix['thereshold_ok'] = True
+		else:
+			monoprix['thereshold_not_ok'] = True
+			monoprix['thereshold'] = 70-monoprix['price']
 	else:
 		telemarket['is_min'] = True
 		telemarket['percent'] = telemarket['total']/monoprix['total']*100
 		monoprix['percent'] = 100.0
 		telemarket['difference'] = monoprix['total'] - telemarket['total']
+		if telemarket['price']>=80:
+			telemarket["thereshold_ok"] = True
+		else:
+			telemarket['thereshold_not_ok'] = True
+			telemarket["thereshold"] = 80-telemarket['price']
 
-	# print monoprix
-	# print telemarket
 
-	return [monoprix, telemarket]
+	return monoprix, telemarket
 
 def get_livraison_monoprix(amount):
 	price = 0.0

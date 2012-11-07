@@ -19,10 +19,10 @@
 
 <aside class="block" id="brands">
 	<h4>Marques :</h4>
-	<input type="radio" name="brands_options" id="brand_0" value="0" data-id='0' checked>
+	<input type="checkbox" name="brands_options" id="brand_0" value="0" data-id='0' checked>
 	<label class="radio" for="brand_0">Tout</label>
 	{{# brands }}
-		<input type="radio" name="brands_options" id="brand_{{ id }}" value="{{ id }}" data-id='{{ id }}'>
+		<input type="checkbox" name="brands_options" id="brand_{{ id }}" value="{{ id }}" data-id='{{ id }}'>
 		<label class="radio" for="brand_{{ id }}">{{ name }}</label>
 	{{/ brands }}
 
