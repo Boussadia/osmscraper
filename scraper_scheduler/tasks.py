@@ -25,7 +25,7 @@ def perform_scraping():
 	
 	try:
 		print "Step 1 : Telemarket"
-		# telemarket.tasks.perform_scraping()
+		telemarket.tasks.perform_scraping()
 	except Exception as e :
 		print e
 		print "Aborting after error while executing telemarket scraper"
@@ -35,7 +35,7 @@ def perform_scraping():
 	
 	try:
 		print "Step 2 : Monoprix"
-		# monoprix.tasks.perform_scraping()
+		monoprix.tasks.perform_scraping()
 	except Exception as e :
 		print e
 		print "Aborting after error while executing monoprix scraper"
@@ -55,7 +55,7 @@ def perform_scraping():
 
 	try:
 		print "Step 4 : Coursengo"
-		coursengo.tasks.perform_scraping()		
+		# coursengo.tasks.perform_scraping()		
 	except Exception as e :
 		print e
 		print "Aborting after error while executing coursengo scraper"

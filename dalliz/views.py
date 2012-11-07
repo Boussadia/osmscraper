@@ -16,7 +16,7 @@ from templates import templates
 
 from osmscraper.utility import *
 
-from monoprix.models import User
+from monoprix.models import User, Cart
 
 def user(function):
 	def wrapper(request, *args, **kwargs):
@@ -185,9 +185,18 @@ def login(request):
 				timestamp = time()
 				hashpass = hashlib.md5(salt+password).hexdigest()
 				token = hashlib.md5(salt+email).hexdigest()
-				print token
 				render_dict['token'] = token
-				cart = add_cart(token)
+				if request.session.session_key is not None:
+					cart = get_cart_for_session_key(request.session.session_key)
+					if cart is None:
+						cart = add_cart(token)
+					else:
+						cart = Cart.objects.get(session_key = request.session.session_key)
+						cart.session_key = token
+						cart.save()
+
+				else:
+					cart = add_cart(token)
 				user = User(email=email, password = hashpass, token = token, cart=cart)
 				user.save()
 				render_dict['user'] = user
