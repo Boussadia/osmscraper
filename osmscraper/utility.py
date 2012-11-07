@@ -212,6 +212,7 @@ def add_cart(session_key):
 	return cart
 
 def add_product_to_cart(session_key, product_id):
+	print 'In add  cart. session_key : '+session_key+' and product_id = '+str(product_id)
 	products = Product.objects.filter(id=product_id)
 	if len(products)==0:
 		return
@@ -231,6 +232,7 @@ def add_product_to_cart(session_key, product_id):
 		product_in_cart = product_in_carts[0]
 	else:
 		product_in_cart = Cart_content(cart=cart, product = product)
+
 	try:
 		product_in_cart.quantity = product_in_cart.quantity + 1
 		product_in_cart.save()
