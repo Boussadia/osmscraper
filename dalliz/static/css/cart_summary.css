@@ -46,7 +46,8 @@
 	position: absolute;
 	top: 0px;
 	right: 5px;
-	cursor: pointer;
+	border: none;
+	color: transparent;
 }
 
 #cart .products .product .brand{

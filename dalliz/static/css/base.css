@@ -411,10 +411,20 @@ footer .separator{
 .add_to_cart .text{
 	font-family: arial;
 	font-weight: bold;
-	font-size:  14pt;
-	color: #81E923;
 	display: inline-block;
-	line-height: 21px;
+	background-image: url(/static/images/add-cart-sprits.png);
+	height: 22px;
+	color: white;
+	line-height: 13px;
+	border: none;
+}
+
+.add_to_cart .text:hover{
+	background-position: 0px -24px;
+}
+
+.add_to_cart .text:active{
+	background-position: 0px -48px;
 }
 
 .user{
