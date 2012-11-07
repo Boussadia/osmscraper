@@ -29,7 +29,7 @@ $(document).ready(function(){
 				// console.log(($(products[i]).attr('data-price')));
 				// console.log(($(products[i+1]).attr('data-price')));
 
-				if(($(products[i]).attr('data-price'))>($(products[i+1]).attr('data-price'))){
+				if( parseFloat( $(products[i]).attr('data-price') ) > parseFloat( $(products[i+1]).attr('data-price') ) ) {
 					temp_i = products[i];
 					temp_i1 = products[i+1];
 					sorted_products[i] = temp_i1;
