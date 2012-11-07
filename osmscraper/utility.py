@@ -123,9 +123,9 @@ def get_cart_for_token(token):
 		user_db = users[0]
 		cart = user_db.cart
 		result = get_cart(cart)
-		user = {'name':user_db.first_name}
+		user = {'name':user_db.first_name, 'first_name':user_db.first_name ,'last_name':user_db.last_name, 'email': user_db.email, 'sex': user_db.sex  }
 		if user['name'] == "":
-			user['name'] = 'Compte'
+			user['name'] = user['email'].split('@')[0]
 		return user, result
 	else:
 		return None, None
@@ -262,4 +262,3 @@ def remove_product_from_cart(session_key, product_id):
 			product_in_cart.save()
 		elif product_in_cart.quantity<=1:
 			product_in_cart.delete()
-

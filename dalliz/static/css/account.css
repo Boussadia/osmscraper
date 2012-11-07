@@ -1,0 +1,63 @@
+#account{
+	height: 600px;
+}
+
+#account .title{
+	margin-bottom: 20px;
+}
+
+#account aside{
+	width: 170px;
+	float: left;
+	height: 400px;
+	border-right: 1px solid #bdbdbd;
+}
+
+#account li{
+	list-style: none;
+	display: table;
+}
+
+#account .profil .icon{
+	background-image: url(../images/account/icon-profile.png);
+	width: 19px;
+	height: 21px;
+	display: table-cell;
+}
+
+#account .edit{
+	background-image: url(../images/account/icon-pen.png);
+	width: 13px;
+	height: 15px;
+	margin-left: 10px;
+	position: relative;
+	top: -6px;
+}
+
+#account .profil .text{
+	display: table-cell;
+	vertical-align: middle;
+	padding-left: 20px;
+	font-family: arial;
+	font-weight: bold;
+	color: #9E09A8;
+	font-size: 17px;
+}
+
+#account label{
+	margin-left: 30px;
+	width: 140px;
+	font-family: arial;
+	color: #212121;
+	font-size: 16px;
+}
+
+#account input{
+	font-size: 12px;
+	border: none;
+}
+
+#account .submit_btn{
+	margin-left: 30px;
+	margin-top: 100px;
+}

@@ -1,0 +1,63 @@
+{% extends "dalliz/base.html" %}
+
+{% block title %}
+Mon Compte
+{% endblock %}
+
+{% block meta_robots %}
+<meta name="robots" content="noindex, nofollow" >
+{% endblock %}
+
+{% block css%}
+<link rel="stylesheet" type="text/css" href="{% static css/account.css %}">
+{% endblock %}
+
+{% block content %}
+<section class="container block" id="account">
+	<div class="row title">
+		<div class="span12">
+			<h1>
+				{% block title_page %}
+					<strong>Mon compte</strong>
+				{% endblock %}
+			</h1>
+		</div>
+	</div>
+
+	<aside>
+		<ul>
+			<li class="profil"> <div class="icon"></div> <div class="text">Mon profil</div> </li>
+		</ul>
+	</aside>
+
+	<div class="content">
+		<form action="/compte" method="post">
+			<table>
+				<tr>
+					<td><label for="email">Adresse e-mail</label></td>
+					<td> <input type='text' name="email" value="{{ user.email}}" readonly> </td>
+					<td><div class="edit" style="display: none"></div></td>
+				</tr>
+				<tr>
+					<td><label for="first_name">Prénom</label></td>
+					<td><input type='text' name="first_name" value="{{user.first_name}}"></td>
+					<td><div class="edit"></div></td>
+				</tr>
+				<tr>
+					<td><label for="last_name">Nom</label></td>
+					<td><input type='text' name="last_name" value="{{user.last_name}}"></td>
+					<td><div class="edit"></div></td>
+				</tr>
+			</table>
+
+			<input type="submit" value="Enregistrer les modifications" class="btn btn-success submit_btn">
+
+		</form>
+	</div>
+
+</section>
+
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

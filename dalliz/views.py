@@ -22,6 +22,13 @@ def user(function):
 	def wrapper(request, *args, **kwargs):
 		# Getting information of called method and updating dict
 		RENDER_DICT = {'meta_description': "Dalliz est un comparateur de panier entre les différents supermarchés en lignes. Avec Dalliz, gagnez du temps, économisez de l'argent.", 'user_set': False}
+		template_path, render_dict = function(request, *args, **kwargs)
+		RENDER_DICT.update(render_dict)
+
+		if 'token' in RENDER_DICT:
+			request.session['token'] = RENDER_DICT['token']
+			request.session.modified = True
+
 		# Getting informations about user
 		session_key = request.session.session_key
 		if session_key is None:
@@ -39,8 +46,10 @@ def user(function):
 						print "Cart an user retrieved from datastore."
 						RENDER_DICT.update({'user': user, 'user_set': True})
 						RENDER_DICT.update({'cart':cart})
+					elif user is not None:
+						RENDER_DICT.update({'user': user, 'user_set': True})
 					else:
-						print "Removing session from session"
+						print "Removing token from session"
 						del request.session['token']
 				else:
 					print 'Retrieving cart information from datastore'
@@ -48,15 +57,17 @@ def user(function):
 					if cart is not None:
 						RENDER_DICT.update({'cart':cart})
 
-		template_path, render_dict = function(request, *args, **kwargs)
-		RENDER_DICT.update(render_dict)
-
-		if 'token' in RENDER_DICT:
-			request.session['token'] = RENDER_DICT['token']
-			request.session.modified = True
-
 		return render(request, template_path, RENDER_DICT)
 
+	return wrapper
+
+
+def logged(function):
+	def wrapper(request, *args, **kwargs):
+		if 'token' in request.session:
+			return user(function)(request, *args, **kwargs)
+		else:
+			return redirect('/login')
 	return wrapper
 
 
@@ -240,4 +251,19 @@ def logout(request):
 
 
 
+@logged
+def account(request):
+	render_dict = {}
+	if request.method == 'POST':
+		email = request.POST['email']
+		first_name = request.POST['first_name']
+		last_name = request.POST['last_name']
+		users = User.objects.filter(email = email)
+		if len(users) >0:
+			user = users[0]
+			user.first_name = first_name
+			user.last_name = last_name
+			user.save()
+
+	return 'dalliz/account.html',render_dict
 
