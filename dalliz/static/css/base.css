@@ -92,14 +92,11 @@ nav{
 	margin-bottom: 0px;
 }
 
-.navbar .nav > li > a{
-	text-transform: uppercase;
-}
-
 .navbar .nav{
-	margin: auto;
+/*	margin: auto;*/
 	position: initial;
-	float: initial;
+	display: inline-block;
+    float: none;
 }
 
 .navbar-inverse .navbar-inner{
@@ -124,6 +121,7 @@ nav{
 	margin-top: 1px;
 	margin-bottom: 1px;
 	height: 32px;
+	text-align: center;
 }
 
 .navbar-search .search-query{
@@ -140,11 +138,12 @@ nav{
 	padding-top: 5px;
 	padding-bottom: 5px;
 	font-weight: bold;
+	text-transform: uppercase;
 }
 
 form.navbar-search{
 	margin: 0px;
-	visibility: hidden;
+	display: none;
 }
 
 /* Social links*/

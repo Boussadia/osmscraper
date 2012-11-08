@@ -11,7 +11,8 @@
 }
 
 #sub_nav .nav{
-	width: 100%;
+	/*width: 100%;*/
+	display: inline;
 }
 
 #sub_nav a{
@@ -33,6 +34,7 @@
 
 .content{
 	margin-top: 112px;
+	height: 1px; /*Nasty hack for firefox*/
 }
 #brands {
 	width: 140px;
