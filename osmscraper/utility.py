@@ -86,7 +86,8 @@ def get_products_for_sub_category(sub_category_url):
 
 def get_same_level_categories(sub_category_url):
 	sql_query_categories = ("SELECT  (t.id = dalliz_category_sub.id ) as is_current_category ,dalliz_category_sub.id, name, url as short_url FROM dalliz_category_sub "
-							"JOIN (SELECT parent_category_id, id FROM dalliz_category_sub WHERE url = '"+sub_category_url+"') AS t ON t.parent_category_id = dalliz_category_sub.parent_category_id")
+							"JOIN (SELECT parent_category_id, id FROM dalliz_category_sub WHERE url = '"+sub_category_url+"') AS t ON t.parent_category_id = dalliz_category_sub.parent_category_id "
+							"ORDER BY position")
 	cursor = connection.cursor()
 	cursor.execute(sql_query_categories)
 	category_db = dictfetchall(cursor)
