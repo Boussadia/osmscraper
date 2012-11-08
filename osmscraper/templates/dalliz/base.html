@@ -75,14 +75,32 @@
 					{% endfor %} -->
 					{% if user_set %}
 							<div class="account">
-								<span class="iconuser"></span>
+								<!-- <span class="arrowdown"></span>
 								<span class='username'> {{user.name}}</span>
-								<span class="arrowdown"></span>
+								<span class="iconuser"></span>
 								<ul class="hoverbox">
 									<li><a href="/compte" rel="nofollow"> Mon compte</a></li>
 									<li><a href="/a-propos-de-dalliz"> A propos</a></li>
 									<li><a href="/logout" rel="nofollow"> Deconnexion</a></li>
-								</div>
+								</div> -->
+								<table>
+									<tbody>
+										<tr>
+											<td><span class="arrowdown"></span></td>
+											<td><span class='username'> {{user.name}}</span></td>
+											<td><span class="iconuser"></span></td>
+										</tr>
+										<tr>
+											<td>
+												<ul class="hoverbox">
+													<li><a href="/compte" rel="nofollow"> Mon compte</a></li>
+													<li><a href="/a-propos-de-dalliz"> A propos</a></li>
+													<li><a href="/logout" rel="nofollow"> Deconnexion</a></li>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
 							</div>
 					{% else %}
 						<a href="/login" rel="nofollow">
@@ -94,7 +112,7 @@
 				</div>
 			</div>
 
-			<div class="beta"></div>
+			<div class="alpha"></div>
 
 		</header>
 		{% endblock%}

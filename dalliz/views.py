@@ -140,23 +140,30 @@ def cart(request):
 def add_to_cart(request):
 	if request.method == 'POST':
 		product_id = request.POST['product_id']
-		if 'token' in request.session and product_id is not None:
+		quantity = int(request.POST['quantity'])
+		if 'token' in request.session and product_id is not None and quantity is not None and quantity>0: 
 			print 'token'
-			add_product_to_cart(request.session['token'], product_id)
+			add_product_to_cart(request.session['token'], product_id, quantity)
 			return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
 		elif request.session.session_key is not None and product_id is not None:
 			print 'session'
-			add_product_to_cart(request.session.session_key, product_id)
+			add_product_to_cart(request.session.session_key, product_id, quantity)
 			return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
 
 def remove_from_cart(request):
 	if request.method == 'POST':
-		product_id = request.POST['product_id']
-		if 'token' in request.session and product_id is not None:
-			remove_product_from_cart(request.session['token'], product_id)
+		product_id = None
+		empty = None
+
+		if 'product_id' in request.POST:
+			product_id = request.POST['product_id']
+		if 'empty' in request.POST:
+			empty = request.POST['empty']
+		if 'token' in request.session:
+			remove_product_from_cart(request.session['token'], product_id, empty)
 			return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
-		if request.session.session_key is not None and product_id is not None:
-			remove_product_from_cart(request.session.session_key, product_id)
+		if request.session.session_key is not None:
+			remove_product_from_cart(request.session.session_key, product_id, empty)
 			return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
 
 

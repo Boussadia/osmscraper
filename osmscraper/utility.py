@@ -10,7 +10,7 @@ def dictfetchall(cursor):
 		return [ dict(zip([col[0] for col in desc], row)) for row in cursor.fetchall() ]
 
 def get_product_from_short_url(short_url):
-	sql_query = ("SELECT monoprix_product.id, monoprix_product.title as product_name, monoprix_product.url, monoprix_brand.name as brand_name, LEAST(monoprix_product.price, telemarket_product.price) as price, LEAST(monoprix_product.unit_price, telemarket_product.unit_price) as unit_price, monoprix_product.unit_id, monoprix_product.image_url, monoprix_product.promotion, monoprix_product.category_id, monoprix_product.description, monoprix_product.ingredients, monoprix_product.valeur_nutritionnelle, monoprix_product.conservation, monoprix_product.conseil, monoprix_product.composition "
+	sql_query = ("SELECT monoprix_product.id, monoprix_product.title as product_name, monoprix_product.url, monoprix_brand.name as brand_name, LEAST(monoprix_product.price*(1.0-CAST(monoprix_product.promotion AS FLOAT)), telemarket_product.price) as price, LEAST(monoprix_product.unit_price*(1-CAST(monoprix_product.promotion AS FLOAT)), telemarket_product.unit_price) as unit_price, monoprix_product.unit_id, monoprix_product.image_url, monoprix_product.promotion, monoprix_product.category_id, monoprix_product.description, monoprix_product.ingredients, monoprix_product.valeur_nutritionnelle, monoprix_product.conservation, monoprix_product.conseil, monoprix_product.composition "
 				"FROM monoprix_product "
 				"JOIN telemarket_product ON telemarket_product.monoprix_product_id=monoprix_product.id "
 				"JOIN monoprix_brand ON monoprix_product.brand_id = monoprix_brand.id "
@@ -36,7 +36,7 @@ def get_product_from_short_url(short_url):
 	return result
 
 def get_product_from_category_id(category_id):
-	sql_query = ("SELECT monoprix_product.id,  monoprix_product.dalliz_url as short_url, monoprix_product.category_id, monoprix_product.title as product_name, monoprix_product.url, monoprix_brand.name as brand_name, monoprix_brand.id as brand_id, LEAST(monoprix_product.price, telemarket_product.price) as price, LEAST(monoprix_product.unit_price, telemarket_product.unit_price) as unit_price, monoprix_product.unit_id, monoprix_product.image_url, monoprix_product.promotion, monoprix_product.category_id, monoprix_product.description, monoprix_product.ingredients, monoprix_product.valeur_nutritionnelle, monoprix_product.conservation, monoprix_product.conseil, monoprix_product.composition "
+	sql_query = ("SELECT monoprix_product.id,  monoprix_product.dalliz_url as short_url, monoprix_product.category_id, monoprix_product.title as product_name, monoprix_product.url, monoprix_brand.name as brand_name, monoprix_brand.id as brand_id, LEAST(monoprix_product.price*(1-CAST(monoprix_product.promotion AS FLOAT)), telemarket_product.price) as price, LEAST(monoprix_product.unit_price, telemarket_product.unit_price) as unit_price, monoprix_product.unit_id, monoprix_product.image_url, monoprix_product.promotion, monoprix_product.category_id, monoprix_product.description, monoprix_product.ingredients, monoprix_product.valeur_nutritionnelle, monoprix_product.conservation, monoprix_product.conseil, monoprix_product.composition "
 				"FROM monoprix_product "
 				"JOIN telemarket_product ON telemarket_product.monoprix_product_id=monoprix_product.id "
 				"JOIN monoprix_brand ON monoprix_product.brand_id = monoprix_brand.id "
@@ -153,7 +153,7 @@ def get_cart_price(session_key):
 					"JOIN monoprix_cart ON monoprix_cart.id = monoprix_cart_content.cart_id "
 					"WHERE monoprix_cart.session_key = '"+session_key+"';")
 
-	sql_monoprix = ("SELECT monoprix_product.price AS price ,monoprix_cart_content.quantity AS quantity,monoprix_product.id "
+	sql_monoprix = ("SELECT monoprix_product.price*(1-CAST(monoprix_product.promotion AS FLOAT)) AS price ,monoprix_cart_content.quantity AS quantity,monoprix_product.id "
 					"FROM monoprix_cart_content "
 					"JOIN monoprix_product ON monoprix_cart_content.product_id = monoprix_product.id "
 					"JOIN monoprix_cart ON monoprix_cart.id = monoprix_cart_content.cart_id "
@@ -222,7 +222,7 @@ def add_cart(session_key):
 	cart.save()
 	return cart
 
-def add_product_to_cart(session_key, product_id):
+def add_product_to_cart(session_key, product_id, quantity=1):
 	print 'In add  cart. session_key : '+session_key+' and product_id = '+str(product_id)
 	products = Product.objects.filter(id=product_id)
 	if len(products)==0:
@@ -245,31 +245,38 @@ def add_product_to_cart(session_key, product_id):
 		product_in_cart = Cart_content(cart=cart, product = product)
 
 	try:
-		product_in_cart.quantity = product_in_cart.quantity + 1
+		product_in_cart.quantity = product_in_cart.quantity + quantity
 		product_in_cart.save()
 	except Exception, e:
 		print 'Something went wrong in add cart. session_key : '+session_key+' and product_id = '+str(product_id)
 
-def remove_product_from_cart(session_key, product_id):
-	products = Product.objects.filter(id=product_id)
-	if len(products)==0:
-		return
-	else:
-		product = products[0]
+def remove_product_from_cart(session_key, product_id, empty):
+	if product_id is not None:
+		products = Product.objects.filter(id=product_id)
+		if len(products)==0:
+			return
+		else:
+			product = products[0]
 
-	carts = Cart.objects.filter(session_key = session_key)
+		carts = Cart.objects.filter(session_key = session_key)
 
-	if len(carts) == 0:
-		cart = add_cart(session_key)
-	else:
-		cart = carts[0]
+		if len(carts) == 0:
+			cart = add_cart(session_key)
+		else:
+			cart = carts[0]
 
-	product_in_carts = Cart_content.objects.filter(cart=cart, product = product)
+		product_in_carts = Cart_content.objects.filter(cart=cart, product = product)
 
-	if len(product_in_carts)>0:
-		product_in_cart = product_in_carts[0]
-		if product_in_cart.quantity>1:
-			product_in_cart.quantity = product_in_cart.quantity - 1
-			product_in_cart.save()
-		elif product_in_cart.quantity<=1:
-			product_in_cart.delete()
+		if len(product_in_carts)>0:
+			product_in_cart = product_in_carts[0]
+			if product_in_cart.quantity>1:
+				product_in_cart.quantity = product_in_cart.quantity - 1
+				product_in_cart.save()
+			elif product_in_cart.quantity<=1:
+				product_in_cart.delete()
+	elif empty is not None:
+		carts = Cart.objects.filter(session_key = session_key)
+
+		if len(carts) > 0:
+			cart = carts[0]
+			Cart_content.objects.filter(cart=cart).delete()

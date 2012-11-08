@@ -17,6 +17,10 @@
 					<!-- <div class="plus"></div> -->
 					<form action="/add/cart" method="post">
 						<input type="hidden" name="product_id" value="{{id}}">
+						<div class="remove_one tocart">-</div>
+						<input type="hidden" class="quantity" name="quantity" value="1">
+						<div class="value_quantity">1</div>
+						<div class="add_one tocart">+</div>
 						<input type="submit" class="text" value="Ajouter au panier">
 					</form>
 				</div>

@@ -2,6 +2,11 @@
 	<div class="head row">
 		<div class="span12">
 			<h6>Mon panier :</h6>
+			<form action='/remove/cart' method='POST'>
+				<input type="hidden" value="true" name="empty">
+				<label for="bin"> Vider mon panier</label>
+				<input class="bin" name="bin" type="submit" value = "">
+			</form>
 		</div>
 	</div>
 

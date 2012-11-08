@@ -49,8 +49,8 @@ header{
 	z-index: 99;
 }
 
-header .beta{
-	background-image: url(../images/header/ruban.png);
+header .alpha{
+	background-image: url(../images/header/ruban-alpha.png);
 	background-repeat: no-repeat;
 	width: 52px;
 	height: 105px;
@@ -60,6 +60,7 @@ header .beta{
 	left: 50px;
 	z-index: 9999;
 }
+
 header .logo{
 	background-image: url(../images/logo.png);
 	background-repeat:  no-repeat;
@@ -410,20 +411,51 @@ footer .separator{
 .add_to_cart .text{
 	font-family: arial;
 	font-weight: bold;
+	font-size: 11px;
 	display: inline-block;
 	background-image: url(../images/add-cart-sprits.png);
 	height: 22px;
+	width: 103px;
 	color: white;
 	line-height: 13px;
 	border: none;
 }
 
-.add_to_cart .text:hover{
+.add_to_cart .text:hover, .add_to_cart .tocart:hover{
 	background-position: 0px -24px;
 }
 
-.add_to_cart .text:active{
+.add_to_cart .text:active, .add_to_cart .tocart:active{
 	background-position: 0px -48px;
+}
+
+.add_to_cart .quantity{
+	width: 22px;
+	height: 14px;
+	line-height: 14px;
+}
+
+.add_to_cart .tocart{
+	width: 10px;
+	display: inline-block;
+	background-image: url(../images/add-cart-sprits.png);
+	color: white;
+	font-size: 11px;
+	font-weight: bold;
+	height: 22px;
+	position: relative;
+	top: -1px;
+}
+
+.add_to_cart .value_quantity{
+	width: 12px;
+	display: inline-block;
+	color: #81E923;
+	font-weight: bold;
+}
+
+.add_to_cart .add_one{
+	margin-right: -1px;
 }
 
 .user{
@@ -465,6 +497,7 @@ footer .separator{
 	left: 21px;
 	line-height: 15px;
 	cursor: pointer;
+	font-size: 12px;
 }
 
 .user .quantity[data-quantity="0"], .user .quantity[data-quantity=""]{
@@ -473,62 +506,90 @@ footer .separator{
 
 .user .account{
 	height: 40px;
+	position: relative;
+	width: 196px;
+	margin-left: 10px;
 }
+
+.user .account table{
+	position: relative;
+	top: -10px;
+}
+
 .user .account, .user ul.hoverbox a{
 	font-family: arial;
 	font-weight: bold;
 	color: white;
+	direction: rtl;
 }
 
 .user .iconuser{
 	background-image: url(../images/header/user-icon.png);
-	width: 14px;
-	height: 16px;
+	width: 26px;
+	height: 28px;
 	display: inline-block;
-	position: absolute;
+	margin-left: 5px;
+	margin-top: 10px;
+/*	position: absolute;
 	left: 43px;
-	top: 4px;
+	top: 4px;*/
 }
 
 .user .arrowdown{
 	background-image: url(../images/header/icon-fleche.png);
+	background-repeat: no-repeat;
+	background-position: 0px 21px;
 	width: 15px;
-	height: 9px;
+	height: 40px;
 	display: inline-block;
-	position: absolute;
-	right: 7px;
-	top: 8px;
+	position: relative;
+	margin-right: 5px;
 }
 
 .user .username{
 	height: 21px;
 	overflow: hidden;
 	display: inline-block;
-	width: 90px;
-	position: relative;
-	left: 10px;
 	text-align: center;
+	margin-left: 10px;
+	margin-right: 10px;
+	position: relative;
+	max-width: 125px;
 }
 
 .user ul.hoverbox{
 	display: none;
 	position: absolute;
-	left: 39px;
-	top: 23px;
+	top: 47px;
+	left: -25px;
 	list-style: none;
 	text-decoration: none;
-	background-color: #212121;
-	width: 120px;
+	background-color: rgba(33, 33, 33, .90);
+	width: 100%;
 	height: 60px;
+	text-align: left;
+	border-top: 1px inset black;
 }
 
 .user ul.hoverbox li{
 	font-size: 12px;
 	padding-left: 12px;
+	direction: ltr;
 }
 
-.account:hover >  ul.hoverbox{
+.user ul.hoverbox a{
+	font-weight: normal;
+}
+
+.account:hover ul.hoverbox{
 	display: block;
+}
+
+.account:hover table{
+	background-color: rgba(33, 33, 33, .90);
+	/*border: 1px inset black;*/
+	/*top:-11px;*/
+	/*right: -1px;*/
 }
 
 .explanation{
@@ -551,3 +612,16 @@ footer .separator{
 .explanation .text{
 	width: 150px;
 }
+
+/* Tiny Scrollbar */
+#scrollbar1 { width: 520px; margin: 20px 0 10px; }
+#scrollbar1 .viewport { width: 500px; height: 200px; overflow: hidden; position: relative; }
+#scrollbar1 .overview { list-style: none; position: absolute; left: 0; top: 0; padding: 0; margin: 0; }
+#scrollbar1 .scrollbar{ background: transparent url(../images/bg-scrollbar-track-y.png) no-repeat 0 0; position: relative; background-position: 0 0; float: right; width: 15px; }
+#scrollbar1 .track { background: transparent url(../images/bg-scrollbar-trackend-y.png) no-repeat 0 100%; height: 100%; width:13px; position: relative; padding: 0 1px; }
+#scrollbar1 .thumb { background: transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 100%; height: 20px; width: 25px; cursor: pointer; overflow: hidden; position: absolute; top: 0; left: -5px; }
+#scrollbar1 .thumb .end { background: transparent url(../images/bg-scrollbar-thumb-y.png) no-repeat 50% 0; overflow: hidden; height: 5px; width: 25px; }
+#scrollbar1 .disable { display: none; }
+.noSelect { user-select: none; -o-user-select: none; -moz-user-select: none; -khtml-user-select: none; -webkit-user-select: none; }
+
+

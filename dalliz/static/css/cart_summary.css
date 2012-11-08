@@ -3,14 +3,37 @@
 }
 
 #cart .head{
-	border-bottom: 1px solid #8C8C8C;
+	border-bottom: 1px dashed #B1B1B1;
 	height: 52px;
 }
 
-#cart .head h6{
+#cart .head h6, #cart .head label{
 	font-family: arial;
 	color: #8C8C8C;
 	margin-top: 16px;
+}
+
+#cart .head form{
+	display: inline-block;
+	position: absolute;
+	right: 162px;
+	top: 10px;
+}
+
+#cart .head label{
+	display: inline-block;
+	margin-right: 10px;
+	position: relative;
+	top: 1px;
+	cursor: pointer;
+}
+
+#cart .head .bin{
+	border: none;
+	background: none;
+	background-image: url(../images/cart/bin.png);
+	width: 17px;
+	height: 17px;
 }
 
 #cart .products > div{
@@ -35,7 +58,7 @@
 #cart .products .product img{
 	width: 150px;
 	height: 150px;
-	border: 1px solid #8C8C8C;
+	border: 1px solid #B1B1B1;
 }
 
 #cart .products .product .delete{
