@@ -75,6 +75,7 @@ class Promotion(models.Model):
 class Product(models.Model):
 	title = models.CharField(max_length=1000)
 	url = models.CharField(max_length=9999)
+	reference = models.CharField(max_length=9999, null=True)
 	# brand = models.ForeignKey(Brand)
 	# full_text = models.TextField()
 	price = models.FloatField()

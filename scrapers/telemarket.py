@@ -124,9 +124,10 @@ class Telemarket(OSMScraper):
 		return products
 
 	def extract_product(self, product):
-		image_url = self.convert_imae_url(product.find("div",{"class":"imageProduit"}).find("img").get("src"))
+		image_url = self.convert_image_url(product.find("div",{"class":"imageProduit"}).find("img").get("src"))
 		title = product.find("div",{"class":"blocDescriptionProduit"}).find("span").find(text=True)
 		url = product.find("div",{"class":"imageProduit"}).find("a").get("href")
+		reference = url.split('/')[-1].split('-')[0]
 		if product.find("div",{"class":"blocTarifProduit"}).find(text=True) is not None:
 			price = self.convert_price_to_float(product.find("div",{"class":"blocTarifProduit"}).find(text=True)[:-2])
 		else:
@@ -152,6 +153,7 @@ class Telemarket(OSMScraper):
 				type_promotion = label_promoation.find("span").find(text=True)
 
 		return { 
+					"reference": reference,
 					"url": url,
 					"title": title,
 					"price": price,
@@ -162,5 +164,5 @@ class Telemarket(OSMScraper):
 					"type_promotion": type_promotion,
 				}
 
-	def convert_imae_url(self, image_url):
+	def convert_image_url(self, image_url):
 		return image_url[:-6]+"t0.jpg" 

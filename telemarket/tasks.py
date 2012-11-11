@@ -90,3 +90,13 @@ def perform_scraping():
 	telemarket.get_menu()
 	categories = telemarket.get_categories()
 	save_categories(categories)
+
+def set_references():
+	products = Product.objects.all()
+	for product in products:
+		url = product.url
+		reference = url.split('/')[-1].split('-')[0]
+		print reference
+		product.reference = reference
+		product.save()
+
