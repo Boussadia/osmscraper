@@ -59,6 +59,7 @@ def save_products(url_sub_category, category_final):
 		product = products[product_name]
 		title = product["title"]
 		url = product["url"]
+		reference = product['url']
 		price = product["price"]
 		unit_str = product["unit"]
 		unit_price = product["unit_price"]
@@ -73,7 +74,7 @@ def save_products(url_sub_category, category_final):
 		unit, created_unit = Unit.objects.get_or_create(name = unit_str)
 
 		print "Saving product "+ title+" to database..."
-		product_object, created = Product.objects.get_or_create(category = category_final ,title = unicode(title), url= unicode(url), defaults= {"price" : price, "unit_price" : unit_price, "unit" : unit, "image_url" : unicode(image_url), "promotion" : promotion})
+		product_object, created = Product.objects.get_or_create(reference = unicode(reference), defaults= {"category": category_final, "title": unicode(title), "url": unicode(url),"price" : price, "unit_price" : unit_price, "unit" : unit, "image_url" : unicode(image_url), "promotion" : promotion})
 
 		if not created:
 			if product_object.title != unicode(title) or product_object.category != category_final or product_object.price != price or product_object.unit_price != unit_price or product_object.unit != unit or product_object.image_url != unicode(image_url) or product_object.promotion != promotion:
@@ -104,12 +105,10 @@ def set_references():
 		product.save()
 
 def set_unique_products():
-	sql_query = ("SELECT * FROM "
-					"(SELECT COUNT(*)/2 AS count, t1.reference "
+	sql_query = ("SELECT COUNT(*)/2 AS count, t1.reference AS reference "
 					"FROM telemarket_product AS t1, telemarket_product AS t2 "
 					"WHERE t1.id <> t2.id AND t1.reference = t2.reference "
-					"GROUP BY t1.reference ORDER BY t1.reference ASC) AS result "
-				"WHERE result.count >1;");
+					"GROUP BY t1.reference ORDER BY t1.reference ASC ;");
 	cursor = connection.cursor()
 	cursor.execute(sql_query)
 	result_db = dictfetchall(cursor)

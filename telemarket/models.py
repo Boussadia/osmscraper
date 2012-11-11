@@ -75,7 +75,7 @@ class Promotion(models.Model):
 class Product(models.Model):
 	title = models.CharField(max_length=1000)
 	url = models.CharField(max_length=9999)
-	reference = models.CharField(max_length=9999, null=True)
+	reference = models.CharField(max_length=9999, unique=True, null = True)
 	# brand = models.ForeignKey(Brand)
 	# full_text = models.TextField()
 	price = models.FloatField()
@@ -85,10 +85,6 @@ class Product(models.Model):
 	promotion = models.ForeignKey(Promotion)
 	category = models.ForeignKey(Category_final)
 	monoprix_product = models.ForeignKey(Product_monoprix, null=True)
-
-
-	class Meta:
-		unique_together = ("title", "url", "category")
 
 	def __unicode__(self):
 		return self.title
