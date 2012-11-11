@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
+from django.db import connection
 
 from scrapers.telemarket import Telemarket
 from models import *
+
+from osmscraper.utility import dictfetchall
 
 telemarket = Telemarket()
 
@@ -100,3 +103,22 @@ def set_references():
 		product.reference = reference
 		product.save()
 
+def set_unique_products():
+	sql_query = ("SELECT * FROM "
+					"(SELECT COUNT(*)/2 AS count, t1.reference "
+					"FROM telemarket_product AS t1, telemarket_product AS t2 "
+					"WHERE t1.id <> t2.id AND t1.reference = t2.reference "
+					"GROUP BY t1.reference ORDER BY t1.reference ASC) AS result "
+				"WHERE result.count >1;");
+	cursor = connection.cursor()
+	cursor.execute(sql_query)
+	result_db = dictfetchall(cursor)
+	for i in xrange(0, len(result_db)):
+		reference = result_db[i]['reference']
+		products = Product.objects.filter(reference = reference)
+		product_to_save = products[0]
+		for product in products:
+			if product.monoprix_product_id is not None:
+				product_to_save.monoprix_product_id = product.monoprix_product_id
+			product.delete()
+		product_to_save.save()
