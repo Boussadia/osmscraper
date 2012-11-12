@@ -25,7 +25,8 @@ def suggestions(request, id):
 		result['product'] = product_json
 
 		# Fetching categories of product:
-		categories = product.category.dalliz_category.all()
+		telemarket_categories = product.category.all()[0]
+		categories = telemarket_categories.dalliz_category.all()
 		categories_json = [ element['fields'] for element in json.loads(serializers.serialize("json", categories))]
 		result['product']['categories'] = categories_json
 

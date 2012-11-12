@@ -107,6 +107,9 @@ def save_product(product, sub_category_final):
 
 		title = product["title"]
 		url = product["url"].split(";jsessionid")[0]
+		reference = url.split('/')[-1].split('-')[-1]
+		if 'LV' in reference:
+			reference = reference.split('_')[1]
 		price = product["price"]
 		unit_price = product["unit_price"]
 		image_url = product["image_url"]
@@ -138,7 +141,7 @@ def save_product(product, sub_category_final):
 		if "Conseil" in product.keys():
 			conseil = unicode(product["Conseil"])
 
-		product_db, created = Product.objects.get_or_create(title = unicode(title), url = unicode(url), category=sub_category_final, defaults={"price":price, "brand":brand, "unit":unit, "unit_price":unit_price, "image_url":unicode(image_url), "promotion":promotion, "description":description, "valeur_nutritionnelle":valeur_nutritionnelle, "conservation":conservation, "composition":composition, "conseil":conseil, "ingredients":ingredients })
+		product_db, created = Product.objects.get_or_create(title = unicode(title), url = unicode(url), category=sub_category_final, defaults={"reference": reference, "price":price, "brand":brand, "unit":unit, "unit_price":unit_price, "image_url":unicode(image_url), "promotion":promotion, "description":description, "valeur_nutritionnelle":valeur_nutritionnelle, "conservation":conservation, "composition":composition, "conseil":conseil, "ingredients":ingredients })
 		print "saving product "+title
 		# product_db = Product(title = title, url = url, category=sub_category_final, price=price, brand=brand, unit=unit, unit_price=unit_price, image_url=image_url, promotion=promotion, description=description, valeur_nutritionnelle=valeur_nutritionnelle, conservation=conservation, composition=composition, conseil=conseil, ingredients=ingredients )
 		# product_db.save()
@@ -220,3 +223,9 @@ def set_references():
 		except Exception, e:
 			print reference
 			print e
+
+def set_unique_references():
+	products = Product.objects.raw("select distinct monoprix_product.id from (select monoprix_product.id, monoprix_product.reference from (select monoprix_product.reference, count(*) as count from monoprix_product group by reference order by count desc) as m join monoprix_product on m.reference = monoprix_product.reference join telemarket_product on telemarket_product.monoprix_product_id = monoprix_product.id where count > 1) as m join monoprix_product on monoprix_product.reference = m.reference and m.id <> monoprix_product.id order by monoprix_product.id")
+	for product in products:
+		print "Deleting "+product.title+" "+str(product.id)
+		product.delete()		
