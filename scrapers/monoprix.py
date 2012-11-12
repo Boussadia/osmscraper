@@ -224,8 +224,6 @@ class Monoprix(OSMScraper):
 					product["promotion_html"] =  "".join([unicode(element) for element in product_section.find("p",{"class","Style05"}).contents])
 					product["promotion"] = 1-(self.convert_price_to_float(product_section.find("p",{"class","promoPriceBox"}).find("del").find(text=True)))/(product["price"])
 
-				print 
-
 				if len(self.strip_string(product_section.find("p",{"class":"Style06"}).find(text=True)).split(" / ")) > 1:
 					product["unit_price"], product["unit"] = self.strip_string(product_section.find("p",{"class":"Style06"}).find(text=True)).split(" / ")
 					product["unit_price"] = self.convert_price_to_float(product["unit_price"])

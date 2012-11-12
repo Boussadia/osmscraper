@@ -206,8 +206,17 @@ def perform_scraping():
 	sub_categories_final_list = save_categories(categories)
 	get_product_list(sub_categories_final_list)
 
-def match_brands():
-	brands = Brand.objects.raw("SELECT * FROM monoprix_brand ORDER BY length(monoprix_brand.name) DESC")
-	for b in brands:
-		print b
 
+def set_references():
+	products = Product.objects.all()
+
+	for product in products:
+		reference = product.url.split('/')[-1].split('-')[-1]
+		if 'LV' in reference:
+			reference = reference.split('_')[1]
+		product.reference = reference
+		try:
+			product.save()
+		except Exception, e:
+			print reference
+			print e
