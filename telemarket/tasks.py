@@ -73,7 +73,7 @@ def save_products(url_sub_category, category_final):
 		# Unit
 		unit, created_unit = Unit.objects.get_or_create(name = unit_str)
 
-		product_object, created = Product.objects.get_or_create(reference = unicode(reference), defaults= {"category": category_final, "title": unicode(title), "url": unicode(url),"price" : price, "unit_price" : unit_price, "unit" : unit, "image_url" : unicode(image_url), "promotion" : promotion})
+		product_object, created = Product.objects.get_or_create(reference = unicode(reference), defaults= {"category": category_final, "title": unicode(title), "url": unicode(url),"image_url" : unicode(image_url)})
 
 		if created:
 			print "Saving new product "+ title+" to database..."
@@ -131,6 +131,6 @@ def set_categories_to_m2m():
 	products = Product.objects.all()
 
 	for product in products:
-		category = product.category
-		product.product_category.add(category)
-
+		categories = product.product_category.all()
+		for category in categories:
+			product.category.add(category)
