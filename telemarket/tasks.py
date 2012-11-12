@@ -126,3 +126,11 @@ def set_history():
 		history = Product_history(telemarket_product = product, price = price, unit_price=unit_price, unit= unit, promotion=promotion)
 		history.save()
 		print history
+
+def set_categories_to_m2m():
+	products = Product.objects.all()
+
+	for product in products:
+		category = product.category
+		product.product_category.add(category)
+

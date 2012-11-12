@@ -76,14 +76,9 @@ class Product(models.Model):
 	title = models.CharField(max_length=1000)
 	url = models.CharField(max_length=9999)
 	reference = models.CharField(max_length=9999, unique=True, null = True)
-	# brand = models.ForeignKey(Brand)
-	# full_text = models.TextField()
-	# price = models.FloatField()
-	# unit_price = models.FloatField()
-	# unit = models.ForeignKey(Unit)
 	image_url = models.CharField(max_length=9999)
-	# promotion = models.ForeignKey(Promotion)
 	category = models.ForeignKey(Category_final)
+	product_category = models.ManyToManyField(Category_final, related_name="product_category_temp")
 	monoprix_product = models.ForeignKey(Product_monoprix, null=True)
 
 	def __unicode__(self):
