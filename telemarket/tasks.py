@@ -73,13 +73,18 @@ def save_products(url_sub_category, category_final):
 		# Unit
 		unit, created_unit = Unit.objects.get_or_create(name = unit_str)
 
-		product_object, created = Product.objects.get_or_create(reference = unicode(reference), defaults= {"category": category_final, "title": unicode(title), "url": unicode(url),"image_url" : unicode(image_url)})
-
+		product_object, created = Product.objects.get_or_create(reference = unicode(reference), defaults= {"title": unicode(title), "url": unicode(url),"image_url" : unicode(image_url)})
 		if created:
 			print "Saving new product "+ title+" to database..."
 		else:
 			print "Updating product "+ title+" to database..."
+			
+		categories = product_object.category.filter(id = category_final.id)
+		if len(categories) == 0:
+			product_object.category.add(category_final)
+			print "Adding new category "+unicode(category_final)
 
+		# Saving record
 		history = Product_history(telemarket_product = product_object, price = price, unit_price=unit_price, unit= unit, promotion=promotion)
 		history.save()
 
@@ -88,49 +93,4 @@ def perform_scraping():
 	categories = telemarket.get_categories()
 	save_categories(categories)
 
-def set_references():
-	products = Product.objects.all()
-	for product in products:
-		url = product.url
-		reference = url.split('/')[-1].split('-')[0]
-		print reference
-		product.reference = reference
-		product.save()
 
-def set_unique_products():
-	sql_query = ("SELECT COUNT(*)/2 AS count, t1.reference AS reference "
-					"FROM telemarket_product AS t1, telemarket_product AS t2 "
-					"WHERE t1.id <> t2.id AND t1.reference = t2.reference "
-					"GROUP BY t1.reference ORDER BY t1.reference ASC ;");
-	cursor = connection.cursor()
-	cursor.execute(sql_query)
-	result_db = dictfetchall(cursor)
-	for i in xrange(0, len(result_db)):
-		reference = result_db[i]['reference']
-		products = Product.objects.filter(reference = reference)
-		product_to_save = products[0]
-		for product in products:
-			if product.monoprix_product_id is not None:
-				product_to_save.monoprix_product_id = product.monoprix_product_id
-			product.delete()
-		product_to_save.save()
-
-def set_history():
-	products = Product.objects.all()
-
-	for product in products:
-		price = product.price
-		unit_price = product.unit_price
-		unit = product.unit
-		promotion = product.promotion
-		history = Product_history(telemarket_product = product, price = price, unit_price=unit_price, unit= unit, promotion=promotion)
-		history.save()
-		print history
-
-def set_categories_to_m2m():
-	products = Product.objects.all()
-
-	for product in products:
-		categories = product.product_category.all()
-		for category in categories:
-			product.category.add(category)

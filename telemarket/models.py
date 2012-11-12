@@ -78,7 +78,6 @@ class Product(models.Model):
 	reference = models.CharField(max_length=9999, unique=True, null = True)
 	image_url = models.CharField(max_length=9999)
 	category = models.ManyToManyField(Category_final)
-	product_category = models.ManyToManyField(Category_final, related_name="product_category_temp")
 	monoprix_product = models.ForeignKey(Product_monoprix, null=True)
 
 	def __unicode__(self):
