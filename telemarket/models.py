@@ -75,7 +75,7 @@ class Promotion(models.Model):
 class Product(models.Model):
 	title = models.CharField(max_length=1000)
 	url = models.CharField(max_length=9999)
-	reference = models.CharField(max_length=9999, unique=True, null = True)
+	reference = models.CharField(max_length=9999, unique=True)
 	image_url = models.CharField(max_length=9999)
 	category = models.ManyToManyField(Category_final)
 	monoprix_product = models.ForeignKey(Product_monoprix, null=True)
