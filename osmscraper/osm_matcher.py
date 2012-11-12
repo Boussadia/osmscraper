@@ -100,19 +100,23 @@ class Dalliz_matcher(OSM_matcher):
 
 			print str(id_other_product)+' : '+str(id_max)+' -> '+str(score_max)
 
-
-
-
-
-
 class Telemarket_matcher(OSM_matcher):
 	def __init__(self): 
 		super(Telemarket_matcher, self).__init__(
-			("SELECT telemarket_product.id, unaccent(lower(title)) as content, telemarket_unit_dalliz_unit.to_unit_id as unit, telemarket_product.category_id as category "
+			("SELECT telemarket_product.id, unaccent(lower(title)) as content, telemarket_unit_dalliz_unit.to_unit_id as unit "
 			"FROM telemarket_product "
-			"JOIN telemarket_product_history ON telemarket_product.id = telemarket_product_history.telemarket_product_id "
-			"JOIN telemarket_unit_dalliz_unit ON telemarket_product_history.unit_id = telemarket_unit_dalliz_unit.from_unit_id "
-			"ORDER BY length(title)"), Product_engine)
+			"JOIN ( SELECT tph.*, groupedtph.monoprix_product_id "
+							"FROM telemarket_product_history AS tph "
+							"INNER JOIN( SELECT telemarket_product_id, max(timestamp) AS max_timestamp, telemarket_product.monoprix_product_id AS monoprix_product_id "
+											"FROM telemarket_product_history "
+											"JOIN telemarket_product ON telemarket_product.id = telemarket_product_history.telemarket_product_id "
+											"GROUP BY telemarket_product_id, telemarket_product.monoprix_product_id "
+										") groupedtph ON tph.telemarket_product_id = groupedtph.telemarket_product_id AND tph.timestamp = groupedtph.max_timestamp "
+							"WHERE tph.price>0 "
+							"ORDER BY tph.telemarket_product_id "
+							") AS tph ON tph.telemarket_product_id = telemarket_product.id  "
+			"JOIN telemarket_unit_dalliz_unit ON tph.unit_id = telemarket_unit_dalliz_unit.from_unit_id "
+			"ORDER BY length(title) DESC"), Product_engine)
 
 	def get_categories(self, sql_categories):
 		cursor = connection.cursor()
@@ -124,9 +128,11 @@ class Telemarket_matcher(OSM_matcher):
 		categories = list(self.get_categories("SELECT category_final_id as telemarket_category, category_sub_id as category FROM telemarket_category_final_dalliz_category"))
 		for product in products_from_db:
 			product['categories'] = []
+			product_telemarket_ctegories = [ category.id for category in Telemarket_product.objects.get(id=product['id']).category.all()]
 			for j in xrange(0,len(categories)):
-				if categories[j]['telemarket_category'] == product['category']:
-					product['categories'].append(categories[j]['category'])
+				for category_telemarket in product_telemarket_ctegories:
+					if categories[j]['telemarket_category'] == category_telemarket and categories[j]['category'] not in product['categories']:
+						product['categories'].append(categories[j]['category'])
 			yield product
 
 	def make_index(self):
@@ -184,7 +190,4 @@ class Monoprix_matcher(OSM_matcher):
 				relation.score = score
 				relation.save()
 		except Exception, e:
-			print e 
-
-
-
+			print e

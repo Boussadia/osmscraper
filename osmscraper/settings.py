@@ -204,3 +204,10 @@ from django.template.loader import add_to_builtins
 add_to_builtins('cachebuster.templatetags.cachebuster')
 # CACHEBUSTER_UNIQUE_STRING = git.unique_string(__file__)
 CACHEBUSTER_PREPEND_STATIC = False
+
+# Sendgrid configuration
+EMAIL_HOST_USER = 'app8267344@heroku.com'
+EMAIL_HOST= 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_PASSWORD = 'ihj4wr91'
