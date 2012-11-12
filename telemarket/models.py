@@ -89,6 +89,17 @@ class Product(models.Model):
 	def __unicode__(self):
 		return self.title
 
+class Product_history(models.Model):
+	telemarket_product = models.ForeignKey(Product)
+	timestamp = models.DateTimeField(auto_now_add=True)
+	price = models.FloatField()
+	unit_price = models.FloatField()
+	unit = models.ForeignKey(Unit)
+	promotion = models.ForeignKey(Promotion)
+
+	def __unicode__(self):
+		return self.telemarket_product.title+' - '+str(self.timestamp)+' - '+str(self.price)
+
 
 class Monoprix_matching(models.Model):
 	telemarket_product = models.ForeignKey(Product)

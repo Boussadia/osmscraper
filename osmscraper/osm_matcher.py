@@ -107,7 +107,12 @@ class Dalliz_matcher(OSM_matcher):
 
 class Telemarket_matcher(OSM_matcher):
 	def __init__(self): 
-		super(Telemarket_matcher, self).__init__("SELECT telemarket_product.id, unaccent(lower(title)) as content, telemarket_unit_dalliz_unit.to_unit_id as unit, telemarket_product.category_id as category FROM telemarket_product JOIN telemarket_unit_dalliz_unit ON telemarket_product.unit_id = telemarket_unit_dalliz_unit.from_unit_id ORDER BY length(title)", Product_engine)
+		super(Telemarket_matcher, self).__init__(
+			("SELECT telemarket_product.id, unaccent(lower(title)) as content, telemarket_unit_dalliz_unit.to_unit_id as unit, telemarket_product.category_id as category "
+			"FROM telemarket_product "
+			"JOIN telemarket_product_history ON telemarket_product.id = telemarket_product_history.telemarket_product_id "
+			"JOIN telemarket_unit_dalliz_unit ON telemarket_product_history.unit_id = telemarket_unit_dalliz_unit.from_unit_id "
+			"ORDER BY length(title)"), Product_engine)
 
 	def get_categories(self, sql_categories):
 		cursor = connection.cursor()

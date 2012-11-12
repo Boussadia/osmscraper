@@ -146,10 +146,19 @@ def get_cart(cart):
 		return None
 
 def get_cart_price(session_key):
-	sql_telemarket = ("SELECT telemarket_product.price as price, monoprix_cart_content.quantity as quantity, monoprix_product.id "
-					"FROM monoprix_cart_content "
-					"JOIN monoprix_product ON monoprix_cart_content.product_id = monoprix_product.id "
-					"JOIN telemarket_product ON telemarket_product.monoprix_product_id = monoprix_product.id "
+	sql_telemarket =("SELECT  tph.price AS price, monoprix_cart_content.quantity AS quantity, monoprix_product.id "
+					"FROM( SELECT tph.*, groupedtph.monoprix_product_id "
+							"FROM telemarket_product_history AS tph "
+							"INNER JOIN( SELECT telemarket_product_id, max(timestamp) AS max_timestamp, telemarket_product.monoprix_product_id AS monoprix_product_id "
+											"FROM telemarket_product_history "
+											"JOIN telemarket_product ON telemarket_product.id = telemarket_product_history.telemarket_product_id "
+											"GROUP BY telemarket_product_id, telemarket_product.monoprix_product_id "
+										") groupedtph ON tph.telemarket_product_id = groupedtph.telemarket_product_id AND tph.timestamp = groupedtph.max_timestamp "
+							"WHERE tph.price>0 "
+							"ORDER BY tph.telemarket_product_id "
+							") AS tph "
+					"JOIN monoprix_product ON tph.monoprix_product_id = monoprix_product.id "
+					"JOIN monoprix_cart_content ON monoprix_cart_content.product_id = monoprix_product.id "
 					"JOIN monoprix_cart ON monoprix_cart.id = monoprix_cart_content.cart_id "
 					"WHERE monoprix_cart.session_key = '"+session_key+"';")
 

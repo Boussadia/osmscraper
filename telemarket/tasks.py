@@ -59,7 +59,7 @@ def save_products(url_sub_category, category_final):
 		product = products[product_name]
 		title = product["title"]
 		url = product["url"]
-		reference = product['url']
+		reference = product['reference']
 		price = product["price"]
 		unit_str = product["unit"]
 		unit_price = product["unit_price"]
@@ -73,22 +73,15 @@ def save_products(url_sub_category, category_final):
 		# Unit
 		unit, created_unit = Unit.objects.get_or_create(name = unit_str)
 
-		print "Saving product "+ title+" to database..."
 		product_object, created = Product.objects.get_or_create(reference = unicode(reference), defaults= {"category": category_final, "title": unicode(title), "url": unicode(url),"price" : price, "unit_price" : unit_price, "unit" : unit, "image_url" : unicode(image_url), "promotion" : promotion})
 
-		if not created:
-			if product_object.title != unicode(title) or product_object.category != category_final or product_object.price != price or product_object.unit_price != unit_price or product_object.unit != unit or product_object.image_url != unicode(image_url) or product_object.promotion != promotion:
-				print "Product changed, saving again"
-				product_object.title = unicode(title)
-				product_object.category = category_final
-				product_object.price = price
-				product_object.unit_price = unit_price
-				product_object.unit = unit
-				product_object.image_url = unicode(image_url)
-				product_object.promotion = promotion
-				product_object.save()
-			else:
-				print "Product did not change"
+		if created:
+			print "Saving new product "+ title+" to database..."
+		else:
+			print "Updating product "+ title+" to database..."
+
+		history = Product_history(telemarket_product = product_object, price = price, unit_price=unit_price, unit= unit, promotion=promotion)
+		history.save()
 
 def perform_scraping():
 	telemarket.get_menu()
@@ -121,3 +114,15 @@ def set_unique_products():
 				product_to_save.monoprix_product_id = product.monoprix_product_id
 			product.delete()
 		product_to_save.save()
+
+def set_history():
+	products = Product.objects.all()
+
+	for product in products:
+		price = product.price
+		unit_price = product.unit_price
+		unit = product.unit
+		promotion = product.promotion
+		history = Product_history(telemarket_product = product, price = price, unit_price=unit_price, unit= unit, promotion=promotion)
+		history.save()
+		print history
