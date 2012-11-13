@@ -70,6 +70,7 @@ class Product(models.Model):
 	image_url = models.CharField(max_length=9999)
 	promotion = models.CharField(max_length=9999)
 	category = models.ForeignKey(Category_final)
+	product_categpry = models.ManyToManyField(Category_final, related_name='product_category')
 
 	description = models.TextField(null=True)
 	ingredients = models.TextField(null=True)

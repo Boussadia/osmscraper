@@ -207,38 +207,9 @@ def perform_scraping():
 	get_product_list(sub_categories_final_list)
 
 
-def set_references():
+def set_m2m_categories():
 	products = Product.objects.all()
 
 	for product in products:
-		reference = product.url.split('/')[-1].split('-')[-1]
-		if 'LV' in reference:
-			reference = reference.split('_')[1]
-		product.reference = reference
-		try:
-			product.save()
-		except Exception, e:
-			print reference
-			print e
+		product.product_categpry.add(product.category)
 
-def set_unique_references():
-	from osmscraper.utility import dictfetchall
-	from django.db import connection
-	from telemarket.models import Product as Telemarket_product
-	sql_query = ("select m.reference from (select monoprix_product.reference, count(*) as count from monoprix_product group by reference order by count desc) as m where m.count>1")
-	cursor = connection.cursor()
-	cursor.execute(sql_query)
-	result_db = dictfetchall(cursor)
-	
-	for result in result_db:
-		print 'Working on reference '+result['reference']
-		products = Product.objects.raw("SELECT * from monoprix_product where reference = '%s'"%( result['reference']))
-		product_to_save = products[0]
-		telemarket_products_matching = Telemarket_product.objects.raw("select * from telemarket_product join monoprix_product on monoprix_product.id = telemarket_product.monoprix_product_id where monoprix_product.reference = '%s'"%(result['reference']))
-		for match in telemarket_products_matching:
-			match.monoprix_product_id = product_to_save.id
-			match.save()
-
-		for product in  products:
-			product.delete()
-		product_to_save.save()
