@@ -20,18 +20,18 @@ import time
 
 # Telemarket
 
-# telemarket = Telemarket()
+telemarket = Telemarket()
 # telemarket.get_menu()
 # print telemarket.get_categories()
-# print telemarket.extract_product_list("http://www.telemarket.fr/dynv6/listeProduitsCategorie/0060002000200-Laits-de-croissance.shtml?module=&path=/listeProduitsCategorie/006002000001000030-Bavoirs-et-Vaisselle")
+# print telemarket.extract_product_list("http://www.telemarket.fr/dynv6/listeProduitsCategorie/0015000100006-Lapin.shtml?module=&path=/categorie/0015-03--Boucherie-Volaille")
 
 # Monoprix
 
-monoprix = Monoprix()
+# monoprix = Monoprix()
 # monoprix.get_menu()
 # print monoprix.get_categories()
 # print monoprix.extract_product_list("http://courses.monoprix.fr/RIDD/Croquettes-Friandises-8594010")
-print monoprix.extract_product("http://courses.monoprix.fr/RIDE/Sensitive-2-rasoirs-jetables-1279753;jsessionid=EEA267656D5C486339E3B807C85ACF1E.00CD104B10C7166617D2084911CB550B10")
+# print monoprix.extract_product("http://courses.monoprix.fr/RIDE/Sensitive-2-rasoirs-jetables-1279753;jsessionid=EEA267656D5C486339E3B807C85ACF1E.00CD104B10C7166617D2084911CB550B10")
 
 # Coursengo
 # coursengo = Coursengo()

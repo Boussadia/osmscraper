@@ -141,27 +141,16 @@ def save_product(product, sub_category_final):
 		if "Conseil" in product.keys():
 			conseil = unicode(product["Conseil"])
 
-		product_db, created = Product.objects.get_or_create(reference = reference, defaults={"title": unicode(title), "url": unicode(url), "category":sub_category_final, "price":price, "brand":brand, "unit":unit, "unit_price":unit_price, "image_url":unicode(image_url), "promotion":promotion, "description":description, "valeur_nutritionnelle":valeur_nutritionnelle, "conservation":conservation, "composition":composition, "conseil":conseil, "ingredients":ingredients })
-		print "saving product "+title
-		if not created:
-			if product_db.title != unicode(title) or product_db.category != sub_category_final or product_db.brand != brand or product_db.price != price or product_db.unit_price != unit_price or product_db.unit != unit or product_db.image_url != unicode(image_url) or product_db.promotion != promotion  or product_db.description != description or product_db.valeur_nutritionnelle != valeur_nutritionnelle or product_db.conservation != conservation or product_db.composition != composition or product_db.conseil != conseil or product_db.ingredients != ingredients:
-				print "Product changed, saving again"
-				product_db.title = unicode(title)
-				product_db.category = sub_category_final
-				product_db.brand = brand
-				product_db.price = price
-				product_db.unit_price = unit_price
-				product_db.unit = unit
-				product_db.image_url = unicode(image_url)
-				product_db.promotion = promotion
-				product_db.conseil = conseil
-				product_db.conservation = conservation
-				product_db.description = description
-				product_db.valeur_nutritionnelle = valeur_nutritionnelle
-				product_db.ingredients = ingredients
-				product_db.save()
-			else:
-				print "Product did not change"
+		product_db, created = Product.objects.get_or_create(reference = reference, defaults={"title": unicode(title), "url": unicode(url), "price":price, "brand":brand, "unit":unit, "unit_price":unit_price, "image_url":unicode(image_url), "promotion":promotion, "description":description, "valeur_nutritionnelle":valeur_nutritionnelle, "conservation":conservation, "composition":composition, "conseil":conseil, "ingredients":ingredients })
+		if created:
+			print "Saving new product "+ title+" to database..."
+		else:
+			print "Updating product "+ title+" to database..."
+			
+		categories = product_db.category.filter(id = sub_category_final.id)
+		if len(categories) == 0:
+			product_db.category.add(sub_category_final)
+			print "Adding new category "+unicode(sub_category_final)
 
 	elif product["status"] == 404:
 		print "Product not found, removing if exists in database"

@@ -10,7 +10,7 @@ def dictfetchall(cursor):
 		return [ dict(zip([col[0] for col in desc], row)) for row in cursor.fetchall() ]
 
 def get_product_from_short_url(short_url):
-	sql_query = ("SELECT monoprix_product.id, monoprix_product.title as product_name, monoprix_product.url, monoprix_brand.name as brand_name, LEAST(monoprix_product.price*(1.0-CAST(monoprix_product.promotion AS FLOAT)), tph.price) as price, LEAST(monoprix_product.unit_price*(1-CAST(monoprix_product.promotion AS FLOAT)), tph.unit_price) as unit_price, monoprix_product.unit_id, monoprix_product.image_url, monoprix_product.promotion, monoprix_product.category_id, monoprix_product.description, monoprix_product.ingredients, monoprix_product.valeur_nutritionnelle, monoprix_product.conservation, monoprix_product.conseil, monoprix_product.composition "
+	sql_query = ("SELECT monoprix_product.id, monoprix_product.title as product_name, monoprix_product.url, monoprix_brand.name as brand_name, LEAST(monoprix_product.price*(1.0-CAST(monoprix_product.promotion AS FLOAT)), tph.price) as price, LEAST(monoprix_product.unit_price*(1-CAST(monoprix_product.promotion AS FLOAT)), tph.unit_price) as unit_price, monoprix_product.unit_id, monoprix_product.image_url, monoprix_product.promotion, monoprix_product.description, monoprix_product.ingredients, monoprix_product.valeur_nutritionnelle, monoprix_product.conservation, monoprix_product.conseil, monoprix_product.composition "
 				"FROM monoprix_product "
 				"JOIN telemarket_product ON telemarket_product.monoprix_product_id=monoprix_product.id "
 				"JOIN ( SELECT tph.*, groupedtph.monoprix_product_id "
@@ -46,7 +46,7 @@ def get_product_from_short_url(short_url):
 	return result
 
 def get_product_from_category_id(category_id):
-	sql_query = ("SELECT monoprix_product.id,  monoprix_product.dalliz_url as short_url, monoprix_product.category_id, monoprix_product.title as product_name, monoprix_product.url, monoprix_brand.name as brand_name, monoprix_brand.id as brand_id, LEAST(monoprix_product.price*(1-CAST(monoprix_product.promotion AS FLOAT)), tph.price) as price, LEAST(monoprix_product.unit_price, tph.unit_price) as unit_price, monoprix_product.unit_id, monoprix_product.image_url, monoprix_product.promotion, monoprix_product.category_id, monoprix_product.description, monoprix_product.ingredients, monoprix_product.valeur_nutritionnelle, monoprix_product.conservation, monoprix_product.conseil, monoprix_product.composition "
+	sql_query = ("SELECT monoprix_product.id,  monoprix_product.dalliz_url as short_url, monoprix_product.title as product_name, monoprix_product.url, monoprix_brand.name as brand_name, monoprix_brand.id as brand_id, LEAST(monoprix_product.price*(1-CAST(monoprix_product.promotion AS FLOAT)), tph.price) as price, LEAST(monoprix_product.unit_price, tph.unit_price) as unit_price, monoprix_product.unit_id, monoprix_product.image_url, monoprix_product.promotion, monoprix_product.description, monoprix_product.ingredients, monoprix_product.valeur_nutritionnelle, monoprix_product.conservation, monoprix_product.conseil, monoprix_product.composition "
 				"FROM monoprix_product "
 				"JOIN telemarket_product ON telemarket_product.monoprix_product_id=monoprix_product.id "
 				"JOIN ( SELECT tph.*, groupedtph.monoprix_product_id "
@@ -60,7 +60,8 @@ def get_product_from_category_id(category_id):
 							"ORDER BY tph.telemarket_product_id "
 							") AS tph ON tph.telemarket_product_id = telemarket_product.id  "
 				"JOIN monoprix_brand ON monoprix_product.brand_id = monoprix_brand.id "
-				"JOIN monoprix_category_final_dalliz_category ON monoprix_category_final_dalliz_category.category_final_id =monoprix_product.category_id "
+				"JOIN monoprix_product_category ON monoprix_product_category.product_id = monoprix_product.id "
+				"JOIN monoprix_category_final_dalliz_category ON monoprix_category_final_dalliz_category.category_final_id = monoprix_product_category.category_final_id "
 				"JOIN dalliz_category_sub ON dalliz_category_sub.id = monoprix_category_final_dalliz_category.category_sub_id "
 				"WHERE telemarket_product.monoprix_product_id is not null and dalliz_category_sub.id = "+str(category_id)+" "
 				"ORDER BY monoprix_brand.name")

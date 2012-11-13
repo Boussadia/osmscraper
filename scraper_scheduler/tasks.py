@@ -7,6 +7,8 @@ from celery.task import periodic_task, task
 from django.conf import settings
 from celery import Celery
 
+from osmscraper.telemarket_matching import *
+
 from scrapers.monoprix import Monoprix
 from scrapers.telemarket import Telemarket
 from scrapers.place_du_marche import Place_du_marche
@@ -25,7 +27,7 @@ def perform_scraping():
 	
 	try:
 		print "Step 1 : Telemarket"
-		telemarket.tasks.perform_scraping()
+		# telemarket.tasks.perform_scraping()
 	except Exception as e :
 		print e
 		print "Aborting after error while executing telemarket scraper"
@@ -41,7 +43,6 @@ def perform_scraping():
 		print "Aborting after error while executing monoprix scraper"
 	else:
 		print "Monoprix scraper executed properly"
-		
 
 	try:
 		print "Step 3 : Place du Marche"
@@ -61,6 +62,11 @@ def perform_scraping():
 		print "Aborting after error while executing coursengo scraper"
 	else:
 		print "Coursengo scraper executed properly"
+
+	print "Performing matching"
+	# perform_monoprix_telemarket_matching()
+
+
 
 @task
 def migrate_monoprix_db():
