@@ -84,6 +84,17 @@ class Product(models.Model):
 	def __unicode__(self):
 		return self.title
 
+class Product_history(models.Model):
+	product = models.ForeignKey(Product)
+	timestamp = models.DateTimeField(auto_now_add=True)
+	price = models.FloatField()
+	unit_price = models.FloatField()
+	unit = models.ForeignKey(Unit)
+	promotion = models.CharField(max_length=9999)
+
+	def __unicode__(self):
+		return self.telemarket_product.title+' - '+str(self.timestamp)+' - '+str(self.price)
+
 class Cart(models.Model):
 	session_key = models.CharField(max_length=1000, unique= True)
 	products = models.ManyToManyField(Product, through='Cart_content')
