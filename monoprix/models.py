@@ -60,7 +60,7 @@ class Unit(models.Model):
 		return self.name
 
 class Product(models.Model):
-	reference = models.CharField(max_length=9999, null=True)
+	reference = models.CharField(max_length=9999, unique=True)
 	title = models.CharField(max_length=1000)
 	url = models.CharField(max_length=9999)
 	brand = models.ForeignKey(Brand)
