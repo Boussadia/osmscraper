@@ -81,10 +81,6 @@ class Product(models.Model):
 	dalliz_url = models.CharField(max_length=9999, null=True)
 
 
-	class Meta:
-		unique_together = ("title", "url", "category")
-
-
 	def __unicode__(self):
 		return self.title
 

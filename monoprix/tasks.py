@@ -141,10 +141,8 @@ def save_product(product, sub_category_final):
 		if "Conseil" in product.keys():
 			conseil = unicode(product["Conseil"])
 
-		product_db, created = Product.objects.get_or_create(title = unicode(title), url = unicode(url), category=sub_category_final, defaults={"reference": reference, "price":price, "brand":brand, "unit":unit, "unit_price":unit_price, "image_url":unicode(image_url), "promotion":promotion, "description":description, "valeur_nutritionnelle":valeur_nutritionnelle, "conservation":conservation, "composition":composition, "conseil":conseil, "ingredients":ingredients })
+		product_db, created = Product.objects.get_or_create(reference = reference, defaults={"title": unicode(title), "url": unicode(url), "category":sub_category_final, "price":price, "brand":brand, "unit":unit, "unit_price":unit_price, "image_url":unicode(image_url), "promotion":promotion, "description":description, "valeur_nutritionnelle":valeur_nutritionnelle, "conservation":conservation, "composition":composition, "conseil":conseil, "ingredients":ingredients })
 		print "saving product "+title
-		# product_db = Product(title = title, url = url, category=sub_category_final, price=price, brand=brand, unit=unit, unit_price=unit_price, image_url=image_url, promotion=promotion, description=description, valeur_nutritionnelle=valeur_nutritionnelle, conservation=conservation, composition=composition, conseil=conseil, ingredients=ingredients )
-		# product_db.save()
 		if not created:
 			if product_db.title != unicode(title) or product_db.category != sub_category_final or product_db.brand != brand or product_db.price != price or product_db.unit_price != unit_price or product_db.unit != unit or product_db.image_url != unicode(image_url) or product_db.promotion != promotion  or product_db.description != description or product_db.valeur_nutritionnelle != valeur_nutritionnelle or product_db.conservation != conservation or product_db.composition != composition or product_db.conseil != conseil or product_db.ingredients != ingredients:
 				print "Product changed, saving again"
