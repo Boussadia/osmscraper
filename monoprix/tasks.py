@@ -105,7 +105,7 @@ def save_product(product, sub_category_final):
 		# Saving Unit
 		unit = save_unit(product["unit"])
 
-		title = "à".join("e".join(product["title"].split('{')).split("@"))
+		title = "a".join("e".join(product["title"].split('{')).split("@"))
 		url = product["url"].split(";jsessionid")[0]
 		reference = url.split('/')[-1].split('-')[-1]
 		if 'LV' in reference:
@@ -205,4 +205,50 @@ def set_history():
 	for product in products:
 		history = Product_history(product = product, price = product.price, unit_price = product.unit_price, unit = product.unit, promotion = product.promotion )
 		history.save()
+
+def migrate_to_dalliz_model():
+	from dalliz.models import Product as Dalliz_product
+	from telemarket.models import Product as Telemarket_product
+	from osmscraper.unaccent import unaccent
+	telemarket_products = Telemarket_product.objects.filter(monoprix_product_id__isnull = False).filter(dalliz_product_id__isnull = True)
+
+	for telemarket_product in telemarket_products:
+		print telemarket_product.id
+		print telemarket_product.monoprix_product.reference
+		dalliz_brand = telemarket_product.monoprix_product.brand.dalliz_brand
+		if dalliz_brand is not None:
+			brand_name_url = unaccent(u"-".join(dalliz_brand.name.lower().split(' ')))
+			brand_name_url = u'-'.join(brand_name_url.split("'"))
+			url = brand_name_url+"-"+telemarket_product.monoprix_product.dalliz_url
+			print url
+			dalliz_product = Dalliz_product(url = url, brand = dalliz_brand)
+			dalliz_product.save()
+			telemarket_product.dalliz_product = dalliz_product
+			telemarket_product.save()
+			telemarket_product.monoprix_product.dalliz_product = dalliz_product
+			telemarket_product.monoprix_product.save()
+			for cat in  telemarket_product.category.all():
+				for c in cat.dalliz_category.all():
+					try:
+						dalliz_product.product_categories.add(c)
+					except Exception, e:
+						print e
+
+			print 
+
+def rollback_migration():
+	from telemarket.models import Product as Telemarket_product
+	from dalliz.models import Product as Dalliz_product
+
+	for product in Telemarket_product.objects.filter(monoprix_product_id__isnull = False).filter(dalliz_product_id__isnull = False):
+		product.dalliz_product = None
+		product.monoprix_product.dalliz_product = None
+		product.save()
+		product.monoprix_product
+
+	for product in Dalliz_product.objects.all():
+		for c in product.product_categories.all():
+			c.delete()
+		product.delete()
+
 

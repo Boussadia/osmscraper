@@ -3,6 +3,7 @@ from django.db import models
 from dalliz.models import Category_sub as Category_dalliz
 from dalliz.models import Brand as Brand_dalliz
 from dalliz.models import Unit as Unit_dalliz
+from dalliz.models import Product as Dalliz_product
 
 class Category_main(models.Model):
 	name = models.CharField(max_length=100, unique=True)
@@ -79,6 +80,7 @@ class Product(models.Model):
 	composition = models.TextField(null=True)
 
 	dalliz_url = models.CharField(max_length=9999, null=True)
+	dalliz_product = models.ForeignKey(Dalliz_product, null=True, related_name="monoprix_product_dalliz_product")
 
 
 	def __unicode__(self):

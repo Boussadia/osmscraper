@@ -29,17 +29,9 @@ class Unit(models.Model):
 		return self.name
 
 class Product(models.Model):
-	title = models.CharField(max_length=1000)
-	url = models.CharField(max_length=9999)
+	url = models.CharField(max_length=9999, unique=True)
 	brand = models.ForeignKey(Brand)
-	unit_price = models.FloatField()
-	unit = models.ForeignKey(Unit)
 	product_categories = models.ManyToManyField(Category_sub)
-
-
-	class Meta:
-		unique_together = ("title", "url")
-
 
 	def __unicode__(self):
 		return self.title

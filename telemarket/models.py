@@ -4,6 +4,7 @@ from monoprix.models import Product as Product_monoprix
 from dalliz.models import Category_sub as Category_dalliz
 from dalliz.models import Brand as Brand_dalliz
 from dalliz.models import Unit as Unit_dalliz
+from dalliz.models import Product as Dalliz_product
 
 
 # Create your models here.
@@ -79,6 +80,7 @@ class Product(models.Model):
 	image_url = models.CharField(max_length=9999)
 	category = models.ManyToManyField(Category_final)
 	monoprix_product = models.ForeignKey(Product_monoprix, null=True)
+	dalliz_product = models.ForeignKey(Dalliz_product, null=True, related_name="telemarket_product_dalliz_product")
 
 	def __unicode__(self):
 		return self.title
