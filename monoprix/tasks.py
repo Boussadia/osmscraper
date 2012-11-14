@@ -105,7 +105,7 @@ def save_product(product, sub_category_final):
 		# Saving Unit
 		unit = save_unit(product["unit"])
 
-		title = product["title"]
+		title = "à".join("e".join(product["title"].split('{')).split("@"))
 		url = product["url"].split(";jsessionid")[0]
 		reference = url.split('/')[-1].split('-')[-1]
 		if 'LV' in reference:
