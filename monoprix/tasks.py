@@ -210,6 +210,7 @@ def migrate_to_dalliz_model():
 	from dalliz.models import Product as Dalliz_product
 	from telemarket.models import Product as Telemarket_product
 	from osmscraper.unaccent import unaccent
+	from django.db import connection
 	telemarket_products = Telemarket_product.objects.filter(monoprix_product_id__isnull = False).filter(dalliz_product_id__isnull = True)
 
 	for telemarket_product in telemarket_products:
@@ -221,19 +222,23 @@ def migrate_to_dalliz_model():
 			brand_name_url = u'-'.join(brand_name_url.split("'"))
 			url = brand_name_url+"-"+telemarket_product.monoprix_product.dalliz_url
 			print url
-			dalliz_product = Dalliz_product(url = url, brand = dalliz_brand)
-			dalliz_product.save()
-			telemarket_product.dalliz_product = dalliz_product
-			telemarket_product.save()
-			telemarket_product.monoprix_product.dalliz_product = dalliz_product
-			telemarket_product.monoprix_product.save()
-			for cat in  telemarket_product.category.all():
-				for c in cat.dalliz_category.all():
-					try:
-						dalliz_product.product_categories.add(c)
-					except Exception, e:
-						print e
-
+			try:
+				dalliz_product = Dalliz_product(url = url, brand = dalliz_brand)
+				dalliz_product.save()
+				telemarket_product.dalliz_product = dalliz_product
+				telemarket_product.save()
+				telemarket_product.monoprix_product.dalliz_product = dalliz_product
+				telemarket_product.monoprix_product.save()
+				for cat in  telemarket_product.category.all():
+					for c in cat.dalliz_category.all():
+						try:
+							dalliz_product.product_categories.add(c)
+						except Exception, e:
+							connection._rollback()
+							print e
+			except Exception, e:
+				print e
+				connection._rollback()
 			print 
 
 def rollback_migration():
