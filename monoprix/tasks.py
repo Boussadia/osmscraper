@@ -256,4 +256,47 @@ def rollback_migration():
 			c.delete()
 		product.delete()
 
+def migrate_users_and_carts():
+	import dalliz
+	from django.db import connection
 
+	for cart in Cart.objects.all():
+		try:
+			dalliz_cart = dalliz.models.Cart()
+			dalliz_cart.session_key = cart.session_key
+			dalliz_cart.save()
+			for product in cart.products.all():
+				cart_content = Cart_content.objects.filter(product = product, cart = cart)[0]
+				dalliz_content = dalliz.models.Cart_content()
+				dalliz_content.quantity = cart_content.quantity
+				dalliz_content.cart = dalliz_cart
+				dalliz_content.product = cart_content.product.dalliz_product
+				dalliz_content.save()
+		except Exception, e:
+			connection._rollback()
+			print e
+
+	for user in User.objects.all():
+		try:
+			dalliz_user = dalliz.models.User()
+			dalliz_user.first_name = user.last_name
+			dalliz_user.last_name = user.last_name
+			dalliz_user.sex = user.sex
+			dalliz_user.email = user.email
+			dalliz_user.password = user.password
+			print user.cart.id
+			dalliz_user.cart = dalliz.models.Cart.objects.get(session_key = user.cart.session_key)
+			dalliz_user.created = user.created
+			dalliz_user.token = user.token
+		except Exception, e:
+			connection._rollback()
+			print e
+
+def rollback_users_and_carts():
+	import dalliz
+	for content in dalliz.models.Cart_content.objects.all():
+		content.delete()
+	for cart in dalliz.models.Cart.objects.all():
+		cart.delete()
+	for user in dalliz.models.User.objects.all():
+		user.delete()
