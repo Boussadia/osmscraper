@@ -27,8 +27,6 @@ $(document).ready(function(){
 
 	// Filter by price
 	function filter_by_price_low_to_high(products){
-		// var products = $('.product');
-		// $('.product').remove();
 		var sorted_products = products;
 		var sorted = false;
 		while(!sorted){
@@ -47,8 +45,6 @@ $(document).ready(function(){
 				}
 			}
 			products = sorted_products;
-			// console.log(products);
-			// console.log(sorted);
 		}
 		return products;
 
@@ -80,13 +76,15 @@ $(document).ready(function(){
 
 	// Number of products init
 	$("input[id^='brand_']").each(function(){
-		var id = $(this).data('id');
+		$that = $(this)
+		var id = $that.data('id');
+		$products = $('.product')
 		if (id===0){
-			var count = $('.product').length
-			$(this).find("+label").html($(this).find("+label").text()+' <span>('+count+')</span>');			
+			var count = $products.length
+			$that.find("+label").html($that.find("+label").text()+' <span>('+count+')</span>');			
 		}else{
 			var count = $('div[data-brand='+id+']').length
-			$(this).find("+label").html($(this).find("+label").text()+' <span>('+count+')</span>');
+			$that.find("+label").html($that.find("+label").text()+' <span>('+count+')</span>');
 		}
 	})
 });

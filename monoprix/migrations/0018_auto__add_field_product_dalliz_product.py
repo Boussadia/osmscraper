@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Product.dalliz_product'
         db.add_column('monoprix_product', 'dalliz_product',
-                      self.gf('django.db.models.fields.related.ForeignKey')(related_name='monoprix_product_dalliz_product', null=True, to=orm['dalliz.Product']),
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['dalliz.Product'], null=True),
                       keep_default=False)
 
 
@@ -104,7 +104,7 @@ class Migration(SchemaMigration):
             'composition': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'conseil': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'conservation': ('django.db.models.fields.TextField', [], {'null': 'True'}),
-            'dalliz_product': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'monoprix_product_dalliz_product'", 'null': 'True', 'to': "orm['dalliz.Product']"}),
+            'dalliz_product': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['dalliz.Product']", 'null': 'True'}),
             'dalliz_url': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'null': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),

@@ -34,7 +34,7 @@ class Product(models.Model):
 	product_categories = models.ManyToManyField(Category_sub)
 
 	def __unicode__(self):
-		return self.title
+		return self.url
 
 class Cart(models.Model):
 	session_key = models.CharField(max_length=1000, unique= True)

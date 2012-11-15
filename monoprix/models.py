@@ -80,7 +80,7 @@ class Product(models.Model):
 	composition = models.TextField(null=True)
 
 	dalliz_url = models.CharField(max_length=9999, null=True)
-	dalliz_product = models.ForeignKey(Dalliz_product, null=True, related_name="monoprix_product_dalliz_product")
+	dalliz_product = models.ForeignKey(Dalliz_product, null=True)
 
 
 	def __unicode__(self):

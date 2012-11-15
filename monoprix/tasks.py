@@ -199,6 +199,47 @@ def perform_scraping():
 	sub_categories_final_list = save_categories(categories)
 	get_product_list(sub_categories_final_list)
 
+def set_references():
+	import telemarket
+
+	for product in Product.objects.filter(reference__isnull = False):
+		product.reference = None
+		product.save()
+
+	for product in Product.objects.all():
+		print 
+		print product
+		print product.id
+		other_products = Product.objects.raw("select * from monoprix_product where url ='%s'" %(product.url) )
+		count = 0
+		for t in other_products:
+			count = count + 1
+		if count < 2:
+			product.reference = product.url.split('/')[-1].split('-')[-1]
+			product.save()
+		else:
+			telemarket_products = telemarket.models.Product.objects.raw("select telemarket_product.id from telemarket_product join monoprix_product on monoprix_product.id = telemarket_product.monoprix_product_id where monoprix_product.url = '%s'"%(product.url))
+			count = 0
+			for t in telemarket_products:
+				count = count + 1
+			print count
+			if count == 0:
+				print 'No match'
+				product.delete()
+			else:
+				same_product = False
+				for t in telemarket_products:
+					print t.monoprix_product
+					print t.monoprix_product.id
+					if product.id == t.monoprix_product.id:
+						print "Same product"
+						same_product = True
+						break
+
+				if not same_product:
+					product.delete()
+					pass
+
 def set_history():
 	products = Product.objects.all()
 
@@ -245,11 +286,13 @@ def rollback_migration():
 	from telemarket.models import Product as Telemarket_product
 	from dalliz.models import Product as Dalliz_product
 
-	for product in Telemarket_product.objects.filter(monoprix_product_id__isnull = False).filter(dalliz_product_id__isnull = False):
+	for product in Telemarket_product.objects.filter(dalliz_product_id__isnull = False):
 		product.dalliz_product = None
-		product.monoprix_product.dalliz_product = None
 		product.save()
-		product.monoprix_product
+
+	for product in Product.objects.filter(dalliz_product_id__isnull = False):
+		product.dalliz_product = None
+		product.save()
 
 	for product in Dalliz_product.objects.all():
 		for c in product.product_categories.all():
@@ -291,12 +334,3 @@ def migrate_users_and_carts():
 		except Exception, e:
 			connection._rollback()
 			print e
-
-def rollback_users_and_carts():
-	import dalliz
-	for content in dalliz.models.Cart_content.objects.all():
-		content.delete()
-	for cart in dalliz.models.Cart.objects.all():
-		cart.delete()
-	for user in dalliz.models.User.objects.all():
-		user.delete()
