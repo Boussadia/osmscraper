@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
+from django.core.mail import send_mail
 
 from scrapers.monoprix import Monoprix
 from models import *
@@ -68,7 +69,7 @@ def get_product_list(sub_categories_final_list):
 		url_products = sub_category_final.url
 		product_lists = extract_products(url_products)
 
-		# Going threw every product and saving it
+		# Going through every product and saving it
 		for title_product in product_lists:
 			# First we retrive information about product
 			product = monoprix.extract_product(product_lists[title_product]["url"])
@@ -193,144 +194,38 @@ def save_unit(unit_name):
 	unit, created_unit = Unit.objects.get_or_create(name = unit_name)
 	return unit
 
-def perform_scraping():
+def perform_complete_scraping():
 	monoprix.get_menu()
 	categories = monoprix.get_categories()
 	sub_categories_final_list = save_categories(categories)
 	get_product_list(sub_categories_final_list)
 
-def set_references():
-	import telemarket
+def perform_update_scraping():
+	categories = Category_final.objects.all()
+	new_products_reference = []
 
-	for product in Product.objects.filter(reference__isnull = False):
-		product.reference = None
-		product.save()
-
-	for product in Product.objects.all():
-		print 
-		print product
-		print product.id
-		other_products = Product.objects.raw("select * from monoprix_product where url ='%s'" %(product.url) )
-		count = 0
-		for t in other_products:
-			count = count + 1
-		if count < 2:
-			product.reference = product.url.split('/')[-1].split('-')[-1]
-			product.save()
-		else:
-			telemarket_products = telemarket.models.Product.objects.raw("select telemarket_product.id from telemarket_product join monoprix_product on monoprix_product.id = telemarket_product.monoprix_product_id where monoprix_product.url = '%s'"%(product.url))
-			count = 0
-			for t in telemarket_products:
-				count = count + 1
-			print count
-			if count == 0:
-				print 'No match'
-				product.delete()
+	for category in categories:
+		products = monoprix.extract_product_list(category.url)
+		for title, product in products.iteritems():
+			print title+' ('+product["reference"]+')'
+			product_db = Product.objects.filter(reference = product["reference"])
+			if len(product_db)>0:
+				print "Product already in database, creating history entry"
+				history = Product_history(product = product_db[0], price = product['price'], unit_price = product['unit_price'], promotion = product['promotion'])
+				history.save()
 			else:
-				same_product = False
-				for t in telemarket_products:
-					print t.monoprix_product
-					print t.monoprix_product.id
-					if product.id == t.monoprix_product.id:
-						print "Same product"
-						same_product = True
-						break
+				new_products_reference.append(product["reference"])
+				new_product = monoprix.extract_product(product['url'])
+				save_product(new_product, category)
 
-				if not same_product:
-					product.delete()
-					pass
+	send_mail_new_products(new_products_reference)
 
-def set_history():
-	products = Product.objects.all()
+def send_mail_new_products(new_products_reference):
+	subject = "New products monoprix"
+	message = "New products (%d)\n" %(len(new_products_reference))
+	for ref in new_products_reference:
+		message = message+"\t%s\n" %(ref)
+	send_mail(subject, message, 'admin@dalliz.com', ['ahmed@dalliz.com'], fail_silently=False)
 
-	for product in products:
-		history = Product_history(product = product, price = product.price, unit_price = product.unit_price, unit = product.unit, promotion = product.promotion )
-		history.save()
 
-def migrate_to_dalliz_model():
-	from dalliz.models import Product as Dalliz_product
-	from telemarket.models import Product as Telemarket_product
-	from osmscraper.unaccent import unaccent
-	from django.db import connection
-	telemarket_products = Telemarket_product.objects.filter(monoprix_product_id__isnull = False).filter(dalliz_product_id__isnull = True)
 
-	for telemarket_product in telemarket_products:
-		print telemarket_product.id
-		print telemarket_product.monoprix_product.reference
-		dalliz_brand = telemarket_product.monoprix_product.brand.dalliz_brand
-		if dalliz_brand is not None:
-			brand_name_url = unaccent(u"-".join(dalliz_brand.name.lower().split(' ')))
-			brand_name_url = u'-'.join(brand_name_url.split("'"))
-			url = brand_name_url+"-"+telemarket_product.monoprix_product.dalliz_url
-			print url
-			try:
-				dalliz_product = Dalliz_product(url = url, brand = dalliz_brand)
-				dalliz_product.save()
-				telemarket_product.dalliz_product = dalliz_product
-				telemarket_product.save()
-				telemarket_product.monoprix_product.dalliz_product = dalliz_product
-				telemarket_product.monoprix_product.save()
-				for cat in  telemarket_product.category.all():
-					for c in cat.dalliz_category.all():
-						try:
-							dalliz_product.product_categories.add(c)
-						except Exception, e:
-							connection._rollback()
-							print e
-			except Exception, e:
-				print e
-				connection._rollback()
-			print 
-
-def rollback_migration():
-	from telemarket.models import Product as Telemarket_product
-	from dalliz.models import Product as Dalliz_product
-
-	for product in Telemarket_product.objects.filter(dalliz_product_id__isnull = False):
-		product.dalliz_product = None
-		product.save()
-
-	for product in Product.objects.filter(dalliz_product_id__isnull = False):
-		product.dalliz_product = None
-		product.save()
-
-	for product in Dalliz_product.objects.all():
-		for c in product.product_categories.all():
-			c.delete()
-		product.delete()
-
-def migrate_users_and_carts():
-	import dalliz
-	from django.db import connection
-
-	for cart in Cart.objects.all():
-		try:
-			dalliz_cart = dalliz.models.Cart()
-			dalliz_cart.session_key = cart.session_key
-			dalliz_cart.save()
-			for product in cart.products.all():
-				cart_content = Cart_content.objects.filter(product = product, cart = cart)[0]
-				dalliz_content = dalliz.models.Cart_content()
-				dalliz_content.quantity = cart_content.quantity
-				dalliz_content.cart = dalliz_cart
-				dalliz_content.product = cart_content.product.dalliz_product
-				dalliz_content.save()
-		except Exception, e:
-			connection._rollback()
-			print e
-
-	for user in User.objects.all():
-		try:
-			dalliz_user = dalliz.models.User()
-			dalliz_user.first_name = user.last_name
-			dalliz_user.last_name = user.last_name
-			dalliz_user.sex = user.sex
-			dalliz_user.email = user.email
-			dalliz_user.password = user.password
-			print user.cart.id
-			dalliz_user.cart = dalliz.models.Cart.objects.get(session_key = user.cart.session_key)
-			dalliz_user.created = user.created
-			dalliz_user.token = user.token
-		except Exception, e:
-			connection._rollback()
-			print e

@@ -1,7 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 from django.db import connection
-from monoprix.models import Cart, Product, User, Cart_content
+from dalliz.models import Cart, Product, User, Cart_content
+from monoprix.models import Product as Monoprix_product, Product_history as Monoprix_history
+from telemarket.models import Product as Telemarket_product, Product_history  as Telemarket_history
 
 
 def dictfetchall(cursor):
@@ -10,24 +12,53 @@ def dictfetchall(cursor):
 		return [ dict(zip([col[0] for col in desc], row)) for row in cursor.fetchall() ]
 
 def get_product_from_short_url(short_url):
-	sql_query = ("SELECT monoprix_product.id, monoprix_product.title as product_name, monoprix_product.url, monoprix_brand.name as brand_name, LEAST(monoprix_product.price*(1.0-CAST(monoprix_product.promotion AS FLOAT)), tph.price) as price, LEAST(monoprix_product.unit_price*(1-CAST(monoprix_product.promotion AS FLOAT)), tph.unit_price) as unit_price, monoprix_product.unit_id, monoprix_product.image_url, monoprix_product.promotion, monoprix_product.description, monoprix_product.ingredients, monoprix_product.valeur_nutritionnelle, monoprix_product.conservation, monoprix_product.conseil, monoprix_product.composition "
-				"FROM monoprix_product "
-				"JOIN telemarket_product ON telemarket_product.monoprix_product_id=monoprix_product.id "
-				"JOIN ( SELECT tph.*, groupedtph.monoprix_product_id "
-							"FROM telemarket_product_history AS tph "
-							"INNER JOIN( SELECT telemarket_product_id, max(timestamp) AS max_timestamp, telemarket_product.monoprix_product_id AS monoprix_product_id "
-											"FROM telemarket_product_history "
-											"JOIN telemarket_product ON telemarket_product.id = telemarket_product_history.telemarket_product_id "
-											"GROUP BY telemarket_product_id, telemarket_product.monoprix_product_id "
-										") groupedtph ON tph.telemarket_product_id = groupedtph.telemarket_product_id AND tph.timestamp = groupedtph.max_timestamp "
-							"WHERE tph.price>0 "
-							"ORDER BY tph.telemarket_product_id "
-							") AS tph ON tph.telemarket_product_id = telemarket_product.id "
-				"JOIN monoprix_brand ON monoprix_product.brand_id = monoprix_brand.id "
-				"WHERE dalliz_url='"+short_url+"'")
-	cursor = connection.cursor()
-	cursor.execute(sql_query)
-	result_db = dictfetchall(cursor)
+	# sql_query = ("SELECT monoprix_product.id, monoprix_product.title as product_name, monoprix_product.url, monoprix_brand.name as brand_name, LEAST(monoprix_product.price*(1.0+CAST(monoprix_product.promotion AS FLOAT)), tph.price) as price, LEAST(monoprix_product.unit_price*(1+CAST(monoprix_product.promotion AS FLOAT)), tph.unit_price) as unit_price, monoprix_product.unit_id, monoprix_product.image_url, monoprix_product.promotion, monoprix_product.description, monoprix_product.ingredients, monoprix_product.valeur_nutritionnelle, monoprix_product.conservation, monoprix_product.conseil, monoprix_product.composition "
+	# 			"FROM monoprix_product "
+	# 			"JOIN telemarket_product ON telemarket_product.monoprix_product_id=monoprix_product.id "
+	# 			"JOIN ( SELECT tph.*, groupedtph.monoprix_product_id "
+	# 						"FROM telemarket_product_history AS tph "
+	# 						"INNER JOIN( SELECT telemarket_product_id, max(timestamp) AS max_timestamp, telemarket_product.monoprix_product_id AS monoprix_product_id "
+	# 										"FROM telemarket_product_history "
+	# 										"JOIN telemarket_product ON telemarket_product.id = telemarket_product_history.telemarket_product_id "
+	# 										"GROUP BY telemarket_product_id, telemarket_product.monoprix_product_id "
+	# 									") groupedtph ON tph.telemarket_product_id = groupedtph.telemarket_product_id AND tph.timestamp = groupedtph.max_timestamp "
+	# 						"WHERE tph.price>0 "
+	# 						"ORDER BY tph.telemarket_product_id "
+	# 						") AS tph ON tph.telemarket_product_id = telemarket_product.id "
+	# 			"JOIN monoprix_brand ON monoprix_product.brand_id = monoprix_brand.id "
+	# 			"WHERE dalliz_url='"+short_url+"'")
+	# cursor = connection.cursor()
+	# cursor.execute(sql_query)
+	# result_db = dictfetchall(cursor)
+
+	result_db = []
+	dalliz_product = Product.objects.get(url=short_url)
+	telemarket_product = Telemarket_product.objects.get(dalliz_product = dalliz_product)
+	monoprix_product = Monoprix_product.objects.get(dalliz_product = dalliz_product)
+
+	item = {}
+	item['id'] = dalliz_product.id
+	item['brand_id'] = dalliz_product.brand.id
+	item['brand_name'] = dalliz_product.brand.name 
+	item['short_url'] = dalliz_product.url
+	monoprix_latest_price = Monoprix_history.objects.raw("SELECT * from monoprix_product_history where product_id = %d order by timestamp desc"%(monoprix_product.id))[0]
+	telemarket_latest_price = Monoprix_history.objects.raw("SELECT * from telemarket_product_history where telemarket_product_id = %d order by timestamp desc"%(telemarket_product.id))[0]
+	item['conseil'] = monoprix_product.conseil
+	item['description'] = monoprix_product.description
+	item['ingredients'] = monoprix_product.ingredients
+	item['url'] = monoprix_product.url
+	item['valeur_nutritionnelle'] = monoprix_product.valeur_nutritionnelle
+	item['product_name'] = monoprix_product.title
+	item['conservation'] = monoprix_product.conservation
+	item['image_url'] = monoprix_product.image_url
+	item['unit_id'] = monoprix_latest_price.unit_id
+	item['composition'] = monoprix_product.composition
+	item['promotion'] = monoprix_latest_price.promotion
+	item['price'] = min(monoprix_latest_price.price*(1+float(monoprix_latest_price.promotion)), telemarket_latest_price.price)
+	item['unit_price'] = min(monoprix_latest_price.unit_price*(1+float(monoprix_latest_price.promotion)), telemarket_latest_price.unit_price)
+
+	result_db.append(item)
+
 	result = []
 	for i in xrange(0,len(result_db)):
 		result.append({'items':[]})
@@ -46,28 +77,59 @@ def get_product_from_short_url(short_url):
 	return result
 
 def get_product_from_category_id(category_id):
-	sql_query = ("SELECT monoprix_product.id,  monoprix_product.dalliz_url as short_url, monoprix_product.title as product_name, monoprix_product.url, monoprix_brand.name as brand_name, monoprix_brand.id as brand_id, LEAST(monoprix_product.price*(1-CAST(monoprix_product.promotion AS FLOAT)), tph.price) as price, LEAST(monoprix_product.unit_price, tph.unit_price) as unit_price, monoprix_product.unit_id, monoprix_product.image_url, monoprix_product.promotion, monoprix_product.description, monoprix_product.ingredients, monoprix_product.valeur_nutritionnelle, monoprix_product.conservation, monoprix_product.conseil, monoprix_product.composition "
-				"FROM monoprix_product "
-				"JOIN telemarket_product ON telemarket_product.monoprix_product_id=monoprix_product.id "
-				"JOIN ( SELECT tph.*, groupedtph.monoprix_product_id "
-							"FROM telemarket_product_history AS tph "
-							"INNER JOIN( SELECT telemarket_product_id, max(timestamp) AS max_timestamp, telemarket_product.monoprix_product_id AS monoprix_product_id "
-											"FROM telemarket_product_history "
-											"JOIN telemarket_product ON telemarket_product.id = telemarket_product_history.telemarket_product_id "
-											"GROUP BY telemarket_product_id, telemarket_product.monoprix_product_id "
-										") groupedtph ON tph.telemarket_product_id = groupedtph.telemarket_product_id AND tph.timestamp = groupedtph.max_timestamp "
-							"WHERE tph.price>0 "
-							"ORDER BY tph.telemarket_product_id "
-							") AS tph ON tph.telemarket_product_id = telemarket_product.id  "
-				"JOIN monoprix_brand ON monoprix_product.brand_id = monoprix_brand.id "
-				"JOIN monoprix_product_category ON monoprix_product_category.product_id = monoprix_product.id "
-				"JOIN monoprix_category_final_dalliz_category ON monoprix_category_final_dalliz_category.category_final_id = monoprix_product_category.category_final_id "
-				"JOIN dalliz_category_sub ON dalliz_category_sub.id = monoprix_category_final_dalliz_category.category_sub_id "
-				"WHERE telemarket_product.monoprix_product_id is not null and dalliz_category_sub.id = "+str(category_id)+" "
-				"ORDER BY monoprix_brand.name")
-	cursor = connection.cursor()
-	cursor.execute(sql_query)
-	result_db = dictfetchall(cursor)
+	# sql_query = ("SELECT monoprix_product.id,  monoprix_product.dalliz_url as short_url, monoprix_product.title as product_name, monoprix_product.url, monoprix_brand.name as brand_name, monoprix_brand.id as brand_id, LEAST(monoprix_product.price*(1+CAST(monoprix_product.promotion AS FLOAT)), tph.price) as price, LEAST(monoprix_product.unit_price, tph.unit_price) as unit_price, monoprix_product.unit_id, monoprix_product.image_url, monoprix_product.promotion, monoprix_product.description, monoprix_product.ingredients, monoprix_product.valeur_nutritionnelle, monoprix_product.conservation, monoprix_product.conseil, monoprix_product.composition "
+	# 			"FROM monoprix_product "
+	# 			"JOIN telemarket_product ON telemarket_product.monoprix_product_id=monoprix_product.id "
+	# 			"JOIN ( SELECT tph.*, groupedtph.monoprix_product_id "
+	# 						"FROM telemarket_product_history AS tph "
+	# 						"INNER JOIN( SELECT telemarket_product_id, max(timestamp) AS max_timestamp, telemarket_product.monoprix_product_id AS monoprix_product_id "
+	# 										"FROM telemarket_product_history "
+	# 										"JOIN telemarket_product ON telemarket_product.id = telemarket_product_history.telemarket_product_id "
+	# 										"GROUP BY telemarket_product_id, telemarket_product.monoprix_product_id "
+	# 									") groupedtph ON tph.telemarket_product_id = groupedtph.telemarket_product_id AND tph.timestamp = groupedtph.max_timestamp "
+	# 						"WHERE tph.price>0 "
+	# 						"ORDER BY tph.telemarket_product_id "
+	# 						") AS tph ON tph.telemarket_product_id = telemarket_product.id  "
+	# 			"JOIN monoprix_brand ON monoprix_product.brand_id = monoprix_brand.id "
+	# 			"JOIN monoprix_product_category ON monoprix_product_category.product_id = monoprix_product.id "
+	# 			"JOIN monoprix_category_final_dalliz_category ON monoprix_category_final_dalliz_category.category_final_id = monoprix_product_category.category_final_id "
+	# 			"JOIN dalliz_category_sub ON dalliz_category_sub.id = monoprix_category_final_dalliz_category.category_sub_id "
+	# 			"WHERE telemarket_product.monoprix_product_id is not null and dalliz_category_sub.id = "+str(category_id)+" "
+	# 			"ORDER BY monoprix_brand.name")
+	# cursor = connection.cursor() 
+	# cursor.execute(sql_query)
+	# result_db = dictfetchall(cursor)
+
+	result_db = []
+	dalliz_products = Product.objects.filter(product_categories__id__exact=category_id)
+
+	for dalliz_product in dalliz_products:
+		item = {}
+		item['id'] = dalliz_product.id
+		item['brand_id'] = dalliz_product.brand.id
+		item['brand_name'] = dalliz_product.brand.name 
+		item['short_url'] = dalliz_product.url
+
+		telemarket_product = Telemarket_product.objects.get(dalliz_product = dalliz_product)
+		monoprix_product = Monoprix_product.objects.get(dalliz_product = dalliz_product)
+		monoprix_latest_price = Monoprix_history.objects.raw("SELECT * from monoprix_product_history where product_id = %d order by timestamp desc"%(monoprix_product.id))[0]
+		telemarket_latest_price = Monoprix_history.objects.raw("SELECT * from telemarket_product_history where telemarket_product_id = %d order by timestamp desc"%(telemarket_product.id))[0]
+		item['conseil'] = monoprix_product.conseil
+		item['description'] = monoprix_product.description
+		item['ingredients'] = monoprix_product.ingredients
+		item['url'] = monoprix_product.url
+		item['valeur_nutritionnelle'] = monoprix_product.valeur_nutritionnelle
+		item['product_name'] = monoprix_product.title
+		item['conservation'] = monoprix_product.conservation
+		item['image_url'] = monoprix_product.image_url
+		item['unit_id'] = monoprix_latest_price.unit_id
+		item['composition'] = monoprix_product.composition
+		item['promotion'] = monoprix_latest_price.promotion
+		item['price'] = min(monoprix_latest_price.price, telemarket_latest_price.price)
+		item['unit_price'] = min(monoprix_latest_price.unit_price, telemarket_latest_price.unit_price)
+
+		result_db.append(item)
+
 	result = []
 	for i in xrange(0,len(result_db)):
 		result.append({'items':[]})
@@ -101,7 +163,7 @@ def get_products_for_sub_category(sub_category_url):
 		for i in xrange(0,len(result)):
 			if len(brands)==0:
 				brands.append({"id":result[i]['brand_id'], "name": result[i]['brand_name']})
-			elif brands[-1]["id"] != result[i]['brand_id']:
+			elif result[i]['brand_id'] not in [brand['id'] for brand in brands]:
 				brands.append({"id":result[i]['brand_id'], "name": result[i]['brand_name']})
 	return products, brands
 
@@ -160,49 +222,67 @@ def get_cart(cart):
 		result['quantity'] = sum( [p['quantity'] for p in products_db] )
 		result['products'] = []
 		for i in xrange(0, len(products_db)):
+			telemarket_product = Telemarket_product.objects.get(dalliz_product = products_db[i]['product'])
+			monoprix_product = Monoprix_product.objects.get(dalliz_product = products_db[i]['product'])
+
 			for j in xrange(0,products_db[i]['quantity']):
-				result['products'].append({'dalliz_url': products_db[i]['product'].dalliz_url, 'image_url': products_db[i]['product'].image_url, 'id': products_db[i]['product'].id, 'title': products_db[i]['product'].title, 'brand_name':products_db[i]['product'].brand.name})
+				result['products'].append({'dalliz_url': products_db[i]['product'].url, 'image_url': monoprix_product.image_url, 'id': products_db[i]['product'].id, 'title': monoprix_product.title, 'brand_name':products_db[i]['product'].brand.name})
 		return result
 	else:
 		return None
 
 def get_cart_price(session_key):
-	sql_telemarket =("SELECT  tph.price AS price, monoprix_cart_content.quantity AS quantity, monoprix_product.id "
-					"FROM( SELECT tph.*, groupedtph.monoprix_product_id "
-							"FROM telemarket_product_history AS tph "
-							"INNER JOIN( SELECT telemarket_product_id, max(timestamp) AS max_timestamp, telemarket_product.monoprix_product_id AS monoprix_product_id "
-											"FROM telemarket_product_history "
-											"JOIN telemarket_product ON telemarket_product.id = telemarket_product_history.telemarket_product_id "
-											"GROUP BY telemarket_product_id, telemarket_product.monoprix_product_id "
-										") groupedtph ON tph.telemarket_product_id = groupedtph.telemarket_product_id AND tph.timestamp = groupedtph.max_timestamp "
-							"WHERE tph.price>0 "
-							"ORDER BY tph.telemarket_product_id "
-							") AS tph "
-					"JOIN monoprix_product ON tph.monoprix_product_id = monoprix_product.id "
-					"JOIN monoprix_cart_content ON monoprix_cart_content.product_id = monoprix_product.id "
-					"JOIN monoprix_cart ON monoprix_cart.id = monoprix_cart_content.cart_id "
-					"WHERE monoprix_cart.session_key = '"+session_key+"';")
 
-	sql_monoprix = ("SELECT monoprix_product.price*(1-CAST(monoprix_product.promotion AS FLOAT)) AS price ,monoprix_cart_content.quantity AS quantity,monoprix_product.id "
-					"FROM monoprix_cart_content "
-					"JOIN monoprix_product ON monoprix_cart_content.product_id = monoprix_product.id "
-					"JOIN monoprix_cart ON monoprix_cart.id = monoprix_cart_content.cart_id "
-					"WHERE monoprix_cart.session_key = '"+session_key+"';")
+	# sql_telemarket =("SELECT  tph.price AS price, monoprix_cart_content.quantity AS quantity, monoprix_product.id "
+	# 				"FROM( SELECT tph.*, groupedtph.monoprix_product_id "
+	# 						"FROM telemarket_product_history AS tph "
+	# 						"INNER JOIN( SELECT telemarket_product_id, max(timestamp) AS max_timestamp, telemarket_product.monoprix_product_id AS monoprix_product_id "
+	# 										"FROM telemarket_product_history "
+	# 										"JOIN telemarket_product ON telemarket_product.id = telemarket_product_history.telemarket_product_id "
+	# 										"GROUP BY telemarket_product_id, telemarket_product.monoprix_product_id "
+	# 									") groupedtph ON tph.telemarket_product_id = groupedtph.telemarket_product_id AND tph.timestamp = groupedtph.max_timestamp "
+	# 						"WHERE tph.price>0 "
+	# 						"ORDER BY tph.telemarket_product_id "
+	# 						") AS tph "
+	# 				"JOIN monoprix_product ON tph.monoprix_product_id = monoprix_product.id "
+	# 				"JOIN monoprix_cart_content ON monoprix_cart_content.product_id = monoprix_product.id "
+	# 				"JOIN monoprix_cart ON monoprix_cart.id = monoprix_cart_content.cart_id "
+	# 				"WHERE monoprix_cart.session_key = '"+session_key+"';")
 
-	cursor = connection.cursor()
-	cursor.execute(sql_telemarket)
-	telemarket_db = dictfetchall(cursor)
-	telemarket = {'name':'Telemaket','class':'telemarket', 'price': sum( (product['price']*product['quantity'] for product in telemarket_db) )}
+	# sql_monoprix = ("SELECT monoprix_product.price*(1+CAST(monoprix_product.promotion AS FLOAT)) AS price ,monoprix_cart_content.quantity AS quantity,monoprix_product.id "
+	# 				"FROM monoprix_cart_content "
+	# 				"JOIN monoprix_product ON monoprix_cart_content.product_id = monoprix_product.id "
+	# 				"JOIN monoprix_cart ON monoprix_cart.id = monoprix_cart_content.cart_id "
+	# 				"WHERE monoprix_cart.session_key = '"+session_key+"';")
+
+	# cursor = connection.cursor()
+	# cursor.execute(sql_telemarket)
+	# telemarket_db = dictfetchall(cursor)
+
+	# cursor = connection.cursor()
+	# cursor.execute(sql_monoprix)
+	# monoprix_db = dictfetchall(cursor)
+
+	products = Product.objects.raw("SELECT dalliz_product.id, dalliz_cart_content.quantity FROM dalliz_product JOIN dalliz_cart_content ON dalliz_cart_content.product_id = dalliz_product.id JOIN dalliz_cart ON dalliz_cart_content.cart_id = dalliz_cart.id WHERE dalliz_cart.session_key = '%s'"%(session_key))
+
+	monoprix = {'name':'Monoprix','class':'monoprix', 'price':0}
+	telemarket = {'name':'Telemaket','class':'telemarket', 'price':0}
+
+	for dalliz_product in products:
+		telemarket_product = Telemarket_product.objects.get(dalliz_product = dalliz_product)
+		telemarket_latest_price = Monoprix_history.objects.raw("SELECT * from telemarket_product_history where telemarket_product_id = %d order by timestamp desc"%(telemarket_product.id))[0]
+		telemarket['price'] = telemarket['price'] + telemarket_latest_price.price*dalliz_product.quantity
+		monoprix_product = Monoprix_product.objects.get(dalliz_product = dalliz_product)
+		monoprix_latest_price = Monoprix_history.objects.raw("SELECT * from monoprix_product_history where product_id = %d order by timestamp desc"%(monoprix_product.id))[0]
+		monoprix['price'] = monoprix['price'] + monoprix_latest_price.price)*dalliz_product.quantity
+
+
+	monoprix['livraison'] = get_livraison_monoprix(monoprix['price'])
+	monoprix['total'] = monoprix['livraison'] + monoprix['price']
 	telemarket['livraison'] = get_livraison_telemarket(telemarket['price'])
 	telemarket['total'] = telemarket['livraison'] + telemarket['price']
 
-	cursor = connection.cursor()
-	cursor.execute(sql_monoprix)
-	monoprix_db = dictfetchall(cursor)
-	monoprix = {'name':'Monoprix','class':'monoprix', 'price': sum( (product['price']*product['quantity'] for product in monoprix_db) )}
-	monoprix['livraison'] = get_livraison_monoprix(monoprix['price'])
-	monoprix['total'] = monoprix['livraison'] + monoprix['price']
-
+	# Shipping
 	if telemarket['total'] > monoprix['total']:
 		monoprix['is_min'] = True
 		monoprix['percent'] = monoprix['total']/telemarket['total']*100

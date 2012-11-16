@@ -147,9 +147,9 @@ class Monoprix(OSMScraper):
 				url - url of products page
 
 			Return :
-				products - dictionnay of prodcuts title and urls to product page
+				products - dictionnay of products title and urls to product page
 		"""
-		products ={}
+		products = {}
 		parsed_page, code = self.get_parsed_page_for_url(url)
 
 		if code == 200:
@@ -177,12 +177,37 @@ class Monoprix(OSMScraper):
 				for row in rows_html:
 					for child in row.findChildren(recursive=False):
 						if child.name == "li":
-							url_product = child.findChildren(recursive=False)[0].get("href")
-							title_product = child.findChildren(recursive=False)[0].find("img").get("alt")
-							products[title_product] ={
-								"title": title_product,
-								"url": url_product
-							}
+							try:
+								url_product = child.findChildren(recursive=False)[0].get("href")
+								title_product = child.findChildren(recursive=False)[0].find("img").get("alt")
+								product ={
+									"title": title_product,
+									"url": url_product,
+								}
+								print product["title"]
+								reference = product['url'].split('/')[-1].split('-')[-1].split(';jsessionid=')[0]
+								if 'LV' in reference:
+									reference = reference.split('_')[1]
+								product['reference'] = reference
+
+								if child.find("p",{"class","promoPriceBox"}) is None:
+									product["price"] = self.convert_price_to_float(child.find("p",{"class","priceBox"}).find("label").find(text=True))
+									product["promotion"] = 0
+								else:
+									product["price"] = self.convert_price_to_float(child.find("span",{"class","priceBox"}).find(text=True))
+									product["promotion"] = 1-(product["price"])/(self.convert_price_to_float(child.find("p",{"class","promoPriceBox"}).find("del").find(text=True)))
+
+								if len(self.strip_string(child.find("p",{"class":"Style06"}).find(text=True)).split(" / ")) > 1:
+									product["unit_price"], product["unit"] = self.strip_string(child.find("p",{"class":"Style06"}).find(text=True)).split(" / ")
+									product["unit_price"] = self.convert_price_to_float(product["unit_price"])
+								else:
+									product["unit_price"] = -1
+									product["unit"] = "Unit"
+
+								products[title_product] = product
+							except Exception, e:
+								print e
+								print "Something went wrong with a product. (url_category = %s)"%(url)
 			else:
 				print "Aborting scrapping of products list page"
 		else:
@@ -222,7 +247,7 @@ class Monoprix(OSMScraper):
 				else:
 					product["price"] = self.convert_price_to_float(product_section.find("span",{"class","priceBox"}).find(text=True))
 					product["promotion_html"] =  "".join([unicode(element) for element in product_section.find("p",{"class","Style05"}).contents])
-					product["promotion"] = 1-(self.convert_price_to_float(product_section.find("p",{"class","promoPriceBox"}).find("del").find(text=True)))/(product["price"])
+					product["promotion"] = 1-(product["price"])/(self.convert_price_to_float(product_section.find("p",{"class","promoPriceBox"}).find("del").find(text=True)))
 
 				if len(self.strip_string(product_section.find("p",{"class":"Style06"}).find(text=True)).split(" / ")) > 1:
 					product["unit_price"], product["unit"] = self.strip_string(product_section.find("p",{"class":"Style06"}).find(text=True)).split(" / ")
@@ -244,5 +269,3 @@ class Monoprix(OSMScraper):
 			print "Aborting scrapping of product"
 
 		return product
-
-		
