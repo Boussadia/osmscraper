@@ -54,6 +54,7 @@ def save_categories(categories):
 
 def save_products(url_sub_category, category_final):
 	products = telemarket.extract_product_list(url_sub_category)
+	new_products = []
 
 	for product_name in products:
 		product = products[product_name]
@@ -76,6 +77,7 @@ def save_products(url_sub_category, category_final):
 		product_object, created = Product.objects.get_or_create(reference = unicode(reference), defaults= {"title": unicode(title), "url": unicode(url),"image_url" : unicode(image_url)})
 		if created:
 			print "Saving new product "+ title+" to database..."
+			new_products.append(product_object.reference)
 		else:
 			print "Updating product "+ title+" to database..."
 			
@@ -92,10 +94,4 @@ def perform_scraping():
 	telemarket.get_menu()
 	categories = telemarket.get_categories()
 	save_categories(categories)
-
-def set_units():
-	history = Product_history.objects.all()
-	for h in history:
-		h.telemarket_product.unit = h.unit
-		h.telemarket_product.save()
 
