@@ -271,4 +271,3 @@ def account(request):
 			user.save()
 
 	return 'dalliz/account.html',render_dict
-

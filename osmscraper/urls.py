@@ -3,6 +3,7 @@
 
 from django.conf.urls import patterns, include, url
 from django.conf import settings
+from django.views.generic.simple import direct_to_template
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -48,6 +49,7 @@ urlpatterns = patterns('',
     url(r'^login/?$','dalliz.views.login'),
     url(r'^logout/?$','dalliz.views.logout'),
     url(r'^compte/?$','dalliz.views.account'),
+    url(r'^robots\.txt$', direct_to_template, {'template': 'dalliz/robots.txt', 'mimetype': 'text/plain'})
 )
 
 
