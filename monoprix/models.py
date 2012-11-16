@@ -91,7 +91,6 @@ class Product_history(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True)
 	price = models.FloatField()
 	unit_price = models.FloatField()
-	unit = models.ForeignKey(Unit)
 	promotion = models.CharField(max_length=9999)
 
 	def __unicode__(self):
