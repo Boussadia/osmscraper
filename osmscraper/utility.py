@@ -51,7 +51,7 @@ def get_product_from_short_url(short_url):
 	item['product_name'] = monoprix_product.title
 	item['conservation'] = monoprix_product.conservation
 	item['image_url'] = monoprix_product.image_url
-	item['unit_id'] = monoprix_latest_price.unit_id
+	item['unit_id'] = monoprix_product.unit_id
 	item['composition'] = monoprix_product.composition
 	item['promotion'] = monoprix_latest_price.promotion
 	item['price'] = min(monoprix_latest_price.price*(1+float(monoprix_latest_price.promotion)), telemarket_latest_price.price)
@@ -122,7 +122,7 @@ def get_product_from_category_id(category_id):
 		item['product_name'] = monoprix_product.title
 		item['conservation'] = monoprix_product.conservation
 		item['image_url'] = monoprix_product.image_url
-		item['unit_id'] = monoprix_latest_price.unit_id
+		item['unit_id'] = monoprix_product.unit_id
 		item['composition'] = monoprix_product.composition
 		item['promotion'] = monoprix_latest_price.promotion
 		item['price'] = min(monoprix_latest_price.price, telemarket_latest_price.price)
@@ -274,7 +274,7 @@ def get_cart_price(session_key):
 		telemarket['price'] = telemarket['price'] + telemarket_latest_price.price*dalliz_product.quantity
 		monoprix_product = Monoprix_product.objects.get(dalliz_product = dalliz_product)
 		monoprix_latest_price = Monoprix_history.objects.raw("SELECT * from monoprix_product_history where product_id = %d order by timestamp desc"%(monoprix_product.id))[0]
-		monoprix['price'] = monoprix['price'] + monoprix_latest_price.price)*dalliz_product.quantity
+		monoprix['price'] = monoprix['price'] + monoprix_latest_price.price*dalliz_product.quantity
 
 
 	monoprix['livraison'] = get_livraison_monoprix(monoprix['price'])

@@ -27,7 +27,7 @@ def perform_scraping():
 	
 	try:
 		print "Step 1 : Telemarket"
-		# telemarket.tasks.perform_scraping()
+		telemarket.tasks.perform_scraping()
 	except Exception as e :
 		print e
 		print "Aborting after error while executing telemarket scraper"
@@ -37,7 +37,7 @@ def perform_scraping():
 	
 	try:
 		print "Step 2 : Monoprix"
-		monoprix.tasks.perform_scraping()
+		monoprix.tasks.perform_update_scraping()
 	except Exception as e :
 		print e
 		print "Aborting after error while executing monoprix scraper"
@@ -64,45 +64,4 @@ def perform_scraping():
 		print "Coursengo scraper executed properly"
 
 	print "Performing matching"
-	# perform_monoprix_telemarket_matching()
-
-
-
-@task
-def migrate_monoprix_db():
-	import re
-	from osmscraper.utility import dictfetchall
-	from django.db import connection
-	REGEXP = re.compile(r'\W+')
-
-	sql_query = (" SELECT id, unaccent(lower(title)) as title FROM monoprix_product ")
-
-	cursor = connection.cursor()
-	cursor.execute(sql_query)
-	products = dictfetchall(cursor)
-	for i in xrange(0,len(products)):
-		dalliz_url = '-'.join(REGEXP.split(products[i]['title']))
-		product = monoprix.models.Product.objects.get(id=products[i]['id'])
-		product.dalliz_url = dalliz_url
-		product.save()
-
-@task
-def migrate_categories():
-	import re
-	from osmscraper.utility import dictfetchall
-	from django.db import connection
-	from dalliz.models import Category_sub
-	REGEXP = re.compile(r'\W+')
-
-	sql_query = (" SELECT id, unaccent(lower(name)) as name FROM dalliz_category_sub ")
-
-	cursor = connection.cursor()
-	cursor.execute(sql_query)
-	categories = dictfetchall(cursor)
-	for i in xrange(0,len(categories)):
-		url = '-'.join(REGEXP.split(categories[i]['name']))
-		category = Category_sub.objects.get(id=categories[i]['id'])
-		category.url = url
-		category.save()
-
-
+	perform_monoprix_telemarket_matching()
