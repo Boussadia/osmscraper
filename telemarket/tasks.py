@@ -93,4 +93,9 @@ def perform_scraping():
 	categories = telemarket.get_categories()
 	save_categories(categories)
 
+def set_units():
+	history = Product_history.objects.all()
+	for h in history:
+		h.telemarket_product.unit = h.unit
+		h.telemarket_product.save()
 
