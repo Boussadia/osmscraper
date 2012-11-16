@@ -221,11 +221,12 @@ def perform_update_scraping():
 	send_mail_new_products(new_products_reference)
 
 def send_mail_new_products(new_products_reference):
-	subject = "New products monoprix"
-	message = "New products (%d)\n" %(len(new_products_reference))
-	for ref in new_products_reference:
-		message = message+"\t%s\n" %(ref)
-	send_mail(subject, message, 'admin@dalliz.com', ['ahmed@dalliz.com'], fail_silently=False)
+	if len(new_products_reference)
+		subject = "New products monoprix"
+		message = "New products (%d)\n" %(len(new_products_reference))
+		for ref in new_products_reference:
+			message = message+"\t%s\n" %(ref)
+		send_mail(subject, message, 'admin@dalliz.com', ['ahmed@dalliz.com'], fail_silently=False)
 
 
 

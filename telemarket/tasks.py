@@ -3,6 +3,7 @@
 
 from django.conf import settings
 from django.db import connection
+from django.core.mail import send_mail
 
 from scrapers.telemarket import Telemarket
 from models import *
@@ -34,7 +35,8 @@ def save_categories(categories):
 				if len(sub_categories[name_category_sub][name_category_sub_lvl_2]["sub_categories"]) == 0:
 					sub_category_lvl_3, sub_created = Category_sub_3.objects.get_or_create(name = unicode(name_category_sub_lvl_2), url = unicode(url_sub_categories_lvl_2), parent_category = sub_category_lvl_2)
 					sub_category_lvl_4, sub_created = Category_final.objects.get_or_create(name = unicode(name_category_sub_lvl_2), url = unicode(url_sub_categories_lvl_2), parent_category = sub_category_lvl_3)
-					save_products(url_sub_categories_lvl_2, sub_category_lvl_4)
+					new_references = save_products(url_sub_categories_lvl_2, sub_category_lvl_4)
+					send_mail_new_products(new_references)
 				else:
 					for name_category_sub_lvl_3 in sub_categories[name_category_sub][name_category_sub_lvl_2]["sub_categories"]:
 						print "Saving sub category level 3 "+name_category_sub_lvl_3+" to database"
@@ -43,13 +45,15 @@ def save_categories(categories):
 						
 						if len(sub_categories[name_category_sub][name_category_sub_lvl_2]["sub_categories"][name_category_sub_lvl_3]["sub_categories"]) == 0:
 							sub_category_lvl_4, sub_created = Category_final.objects.get_or_create(name = unicode(name_category_sub_lvl_3), url = unicode(url_sub_categories_lvl_3), parent_category = sub_category_lvl_3)
-							save_products(url_sub_categories_lvl_3, sub_category_lvl_4)
+							new_references = save_products(url_sub_categories_lvl_3, sub_category_lvl_4)
+							send_mail_new_products(new_references)
 						else:
 							for name_category_sub_lvl_4 in sub_categories[name_category_sub][name_category_sub_lvl_2]["sub_categories"][name_category_sub_lvl_3]["sub_categories"]:
 								print "Saving sub category level 4 "+name_category_sub_lvl_4+" to database"
 								url_sub_categories_lvl_4 = sub_categories[name_category_sub][name_category_sub_lvl_2]["sub_categories"][name_category_sub_lvl_3]["sub_categories"][name_category_sub_lvl_4]["url"]
 								sub_category_lvl_4, sub_created = Category_final.objects.get_or_create(name = unicode(name_category_sub_lvl_4), url = unicode(url_sub_categories_lvl_4), parent_category = sub_category_lvl_3)
-								save_products(url_sub_categories_lvl_4, sub_category_lvl_4)
+								new_references = save_products(url_sub_categories_lvl_4, sub_category_lvl_4)
+								send_mail_new_products(new_references)
 	return categories_final_objects
 
 def save_products(url_sub_category, category_final):
@@ -90,8 +94,18 @@ def save_products(url_sub_category, category_final):
 		history = Product_history(telemarket_product = product_object, price = price, unit_price=unit_price, unit= unit, promotion=promotion)
 		history.save()
 
+	return new_products
+
 def perform_scraping():
 	telemarket.get_menu()
 	categories = telemarket.get_categories()
 	save_categories(categories)
+
+def send_mail_new_products(new_products_reference):
+	if len(new_products_reference>0):
+		subject = "New products telemarket"
+		message = "New products (%d)\n" %(len(new_products_reference))
+		for ref in new_products_reference:
+			message = message+"\t%s\n" %(ref)
+		send_mail(subject, message, 'admin@dalliz.com', ['ahmed@dalliz.com'], fail_silently=False)
 
