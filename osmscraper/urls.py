@@ -49,7 +49,8 @@ urlpatterns = patterns('',
     url(r'^login/?$','dalliz.views.login'),
     url(r'^logout/?$','dalliz.views.logout'),
     url(r'^compte/?$','dalliz.views.account'),
-    url(r'^robots\.txt$', direct_to_template, {'template': 'dalliz/robots.txt', 'mimetype': 'text/plain'})
+    url(r'^robots\.txt$', direct_to_template, {'template': 'dalliz/robots.txt', 'mimetype': 'text/plain'}),
+    url(r'^google0b72a6d52b859293\.html$', direct_to_template, {'template': 'dalliz/google0b72a6d52b859293.html', 'mimetype': 'html'})
 )
 
 
