@@ -7,9 +7,11 @@ from django.core import serializers
 from django.db import connection, transaction
 
 from osmscraper.utility import dictfetchall
+from osmscraper.unaccent import unaccent
 
 from telemarket.models import Product as Telemarket_product
 from monoprix.models import Product as Monoprix_product
+from dalliz.models import Product as Dalliz_product
 
 
 def index(request):
@@ -49,10 +51,7 @@ def suggestions(request, id):
 	if request.method == 'POST':
 		post = request.POST
 		id_monoprix = post["id_monoprix"]
-		product_telemarket = Telemarket_product.objects.get(id=id)
-		product_monoprix = Monoprix_product.objects.get(id=id_monoprix)
-		product_telemarket.monoprix_product = product_monoprix
-		product_telemarket.save()
+		add_matching(id, id_monoprix)
 		result['status'] = 200
 
 
@@ -87,9 +86,51 @@ def previous(request, id):
 
 def cancel(request, id):
 	if request.method == 'POST':
-		product_telemarket = Telemarket_product.objects.get(id=id)
-		product_telemarket.monoprix_product = None
-		product_telemarket.save()
+		remove_matching(id)
 		result = {'status': 200}
 		return HttpResponse(json.dumps(result))
+
+def add_matching(telemarket_id, monoprix_id):
+	product_telemarket = Telemarket_product.objects.get(id=telemarket_id)
+	product_monoprix = Monoprix_product.objects.get(id=monoprix_id)
+	product_telemarket.monoprix_product = product_monoprix
+	product_telemarket.save()
+
+	# Creating or getting dalliz_product
+	url = "-".join("-".join(unaccent(product_telemarket.monoprix_product.title).lower().split(' ')).split("'"))
+	dalliz_products = Dalliz_product.objects.filter(url = url)
+	if len(dalliz_products)==0:
+		dalliz_product = Dalliz_product(url=url,brand = product_telemarket.monoprix_product.brand.dalliz_brand )
+		dalliz_product.save()
+		# Setting categories of dalliz_products
+		for category in product_telemarket.monoprix_product.category.all():
+			for dalliz_category in category.dalliz_category:
+				try:
+					dalliz_product.product_categories.add(dalliz_category)
+				except Exception, e:
+					print e
+			for category in product_telemarket.category.all():
+				for dalliz_category in category.dalliz_category:
+					try:
+						dalliz_product.product_categories.add(dalliz_category)
+					except Exception, e:
+						print e
+	else:
+		dalliz_product = dalliz_products[0]
+
+	product_telemarket.monoprix_product.dalliz_product = dalliz_product
+	product_telemarket.dalliz_product = dalliz_product
+
+	product_telemarket.monoprix_product.save()
+	product_telemarket.save()
+
+def remove_matching(telemarket_id):
+	product_telemarket = Telemarket_product.objects.get(id=telemarket_id)
+	product_telemarket.monoprix_product.dalliz_product = None
+	product_telemarket.monoprix_product.save()
+	product_telemarket.monoprix_product = None
+	product_telemarket.dalliz_product = None
+	product_telemarket.save()
+
+
 

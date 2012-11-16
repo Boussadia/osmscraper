@@ -8,6 +8,8 @@ from django.db import connection, transaction
 from telemarket.models import Monoprix_matching
 from telemarket.models import Product as Telemarket_product
 
+from monoprix.models import Product as Monoprix_product
+
 
 from engine import Engine
 from engine import Product_engine
@@ -104,19 +106,9 @@ class Telemarket_matcher(OSM_matcher):
 	def __init__(self): 
 		super(Telemarket_matcher, self).__init__(
 			("SELECT telemarket_product.id, unaccent(lower(title)) as content, telemarket_unit_dalliz_unit.to_unit_id as unit "
-			"FROM telemarket_product "
-			"JOIN ( SELECT tph.*, groupedtph.monoprix_product_id "
-							"FROM telemarket_product_history AS tph "
-							"INNER JOIN( SELECT telemarket_product_id, max(timestamp) AS max_timestamp, telemarket_product.monoprix_product_id AS monoprix_product_id "
-											"FROM telemarket_product_history "
-											"JOIN telemarket_product ON telemarket_product.id = telemarket_product_history.telemarket_product_id "
-											"GROUP BY telemarket_product_id, telemarket_product.monoprix_product_id "
-										") groupedtph ON tph.telemarket_product_id = groupedtph.telemarket_product_id AND tph.timestamp = groupedtph.max_timestamp "
-							"WHERE tph.price>0 "
-							"ORDER BY tph.telemarket_product_id "
-							") AS tph ON tph.telemarket_product_id = telemarket_product.id  "
-			"JOIN telemarket_unit_dalliz_unit ON tph.unit_id = telemarket_unit_dalliz_unit.from_unit_id "
-			"ORDER BY length(title) DESC"), Product_engine)
+				"FROM telemarket_product "
+				"JOIN telemarket_unit_dalliz_unit ON telemarket_product.unit_id = telemarket_unit_dalliz_unit.from_unit_id "
+				"ORDER BY length(title) DESC"), Product_engine)
 
 	def get_categories(self, sql_categories):
 		cursor = connection.cursor()
@@ -145,7 +137,13 @@ class Telemarket_matcher(OSM_matcher):
 
 class Monoprix_matcher(OSM_matcher):
 	def __init__(self): 
-		super(Monoprix_matcher, self).__init__("SELECT monoprix_product.id, (unaccent(lower(monoprix_brand.name))||' '||unaccent(lower(title)) )as content, monoprix_unit_dalliz_unit.to_unit_id as unit, monoprix_product.category_id as category FROM monoprix_product JOIN monoprix_unit_dalliz_unit ON monoprix_product.unit_id = monoprix_unit_dalliz_unit.from_unit_id JOIN monoprix_brand ON monoprix_brand.id = monoprix_product.brand_id ORDER BY length(title) DESC", Product_engine)
+		# super(Monoprix_matcher, self).__init__("SELECT monoprix_product.id, (unaccent(lower(monoprix_brand.name))||' '||unaccent(lower(title)) )as content, monoprix_unit_dalliz_unit.to_unit_id as unit, monoprix_product.category_id as category FROM monoprix_product JOIN monoprix_unit_dalliz_unit ON monoprix_product.unit_id = monoprix_unit_dalliz_unit.from_unit_id JOIN monoprix_brand ON monoprix_brand.id = monoprix_product.brand_id ORDER BY length(title) DESC", Product_engine)
+		super(Monoprix_matcher, self).__init__(
+			("SELECT monoprix_product.id, (unaccent(lower(monoprix_brand.name))||' '||unaccent(lower(title))) as content, monoprix_unit_dalliz_unit.to_unit_id as unit "
+				"FROM monoprix_product "
+				"JOIN monoprix_unit_dalliz_unit ON monoprix_product.unit_id = monoprix_unit_dalliz_unit.from_unit_id "
+				"JOIN monoprix_brand on monoprix_brand.id = monoprix_product.brand_id "
+				"ORDER BY length(title) DESC"), Product_engine)
 
 	def get_categories(self, sql_categories):
 		cursor = connection.cursor()
@@ -162,9 +160,11 @@ class Monoprix_matcher(OSM_matcher):
 		categories = list(self.get_categories("SELECT category_final_id as monoprix_category, category_sub_id as category FROM monoprix_category_final_dalliz_category"))
 		for product in products_from_db:
 			product['categories'] = []
+			product_monoprix_ctegories = [ category.id for category in Monoprix_product.objects.get(id=product['id']).category.all()]
 			for j in xrange(0,len(categories)):
-				if categories[j]['monoprix_category'] == product['category']:
-					product['categories'].append(categories[j]['category'])
+				for category_monoprix in product_monoprix_ctegories:
+					if categories[j]['monoprix_category'] == category_monoprix and categories[j]['category'] not in product['categories']:
+						product['categories'].append(categories[j]['category'])
 			yield product
 
 	def start_process(self, other_products):
