@@ -142,7 +142,7 @@ def save_product(product, sub_category_final):
 		if "Conseil" in product.keys():
 			conseil = unicode(product["Conseil"])
 
-		product_db, created = Product.objects.get_or_create(reference = reference, defaults={"title": unicode(title), "url": unicode(url), "brand":brand, "image_url":unicode(image_url), "description":description, "valeur_nutritionnelle":valeur_nutritionnelle, "conservation":conservation, "composition":composition, "conseil":conseil, "ingredients":ingredients })
+		product_db, created = Product.objects.get_or_create(reference = reference, defaults={"title": unicode(title), "url": unicode(url),"unit": unit, "brand":brand, "image_url":unicode(image_url), "description":description, "valeur_nutritionnelle":valeur_nutritionnelle, "conservation":conservation, "composition":composition, "conseil":conseil, "ingredients":ingredients })
 		if created:
 			print "Saving new product "+ title+" to database..."
 		else:
@@ -154,7 +154,7 @@ def save_product(product, sub_category_final):
 			print "Adding new category "+unicode(sub_category_final)
 
 		# Saving record
-		history = Product_history(product = product_db, price = price, unit_price=unit_price, unit= unit, promotion=promotion)
+		history = Product_history(product = product_db, price = price, unit_price=unit_price, promotion=promotion)
 		history.save()
 
 	elif product["status"] == 404:
