@@ -15,6 +15,9 @@
 		<meta name="description" content="{{ meta_description }}">
 		<meta name="keywords" content="dalliz, gagner du temps, économiser de l'argent, comparateur de panier, supermarchés en ligne, courses moins chères">
 
+		<!-- Bing authentication -->
+		<meta name="msvalidate.01" content="E4AF46245775AA2147B1DCDA91022A88" />
+
 
 		<!-- Open graph meta tags -->
 		<meta property="og:title" content="Dalliz" >
@@ -191,8 +194,8 @@
 					<span><a href="/partenariat/">Partenariat</a> </span>
 					•<a href="{% static files/presse_kit_dalliz.rar %}"> Presse kit </a>
 					•<span> Jobs </span>
-					•<span>  <a href="/mentions-legales">Mentions légales</a></span>
-					<span>• <a href="/conditions-generale-d-utilisation">Conditions générales d'utilisation</a> </span>
+					•<span>  <a href="/mentions-legales/">Mentions légales</a></span>
+					<span>• <a href="/conditions-generale-d-utilisation/">Conditions générales d'utilisation</a> </span>
 					<span>• <a href="/a-propos-de-dalliz/">À propos de Dalliz </a></span>
 					<span>Dalliz © 2012</span>
 				</div>	
@@ -209,7 +212,10 @@
 		<!-- JQuery -->
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script>window.jQuery || document.write('<script src="{% static js/libs/jquery-1.7.2.min.js %}"><\/script>')</script>
-		<!-- EmberJS -->
+		<!-- Underscore & Backbone -->
+		<script type="text/javascript" src="{% static js/underscore-min.js%}"></script>
+		<script type="text/javascript" src="{% static js/backbone-min.js%}"></script>
+
 		<!-- Bootstrap JS -->
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/bootstrap.min.js"></script>
 
