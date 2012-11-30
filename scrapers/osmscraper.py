@@ -20,6 +20,10 @@ class OSMScraper(object):
 		self.__network_failures_retry__ = 0
 
 	def fetch_html(self, url=""):
+		html, code, cookie = self.fetch_html_cookie(url)
+		return html, code
+
+	def fetch_html_cookie(self, url="", cookie = None):
 		try:
 			url = self.pre_processing_url(url)
 			if url.find(self.get_base_url())>-1:
@@ -34,16 +38,20 @@ class OSMScraper(object):
 					url = self.get_base_url()
 			
 			print "Fetching page from "+url
-			response = urllib2.urlopen(url)
+			request = urllib2.Request(url)
+			if cookie is not None:
+				request.add_header('cookie', cookie)
+			response = urllib2.urlopen(request)
+			response_cookie = response.headers.get('Set-Cookie')
 			html = response.read()
 			print "Page Fetched for "+response.geturl()
 			response.close()
 			self.__network_failures_retry__ = 0 # Everything went OK, setting variable for network failure to 0
-			return html, 200
+			return html, 200, response_cookie
 		except urllib2.HTTPError, e:
 			if e.code == 404:
 				print "Error when retrieving "+url+" : page not found."
-				return None, 404
+				return None, 404, None
 			else:
 				self.__network_failures_retry__ = self.__network_failures_retry__ + 1
 				if self.__network_failures_retry__ < OSMScraper.MAX_NETWORK_FAILURE_TRIES:
@@ -52,7 +60,7 @@ class OSMScraper(object):
 					return self.fetch_html(url)
 				else:
 					print "Error when retrieving "+url
-					return None, e.code
+					return None, e.code, None
 		except urllib2.URLError, e:
 			self.__network_failures_retry__ = self.__network_failures_retry__ + 1
 			if self.__network_failures_retry__ < OSMScraper.MAX_NETWORK_FAILURE_TRIES:
@@ -61,15 +69,19 @@ class OSMScraper(object):
 				return self.fetch_html(url)
 			else:
 				print "Error when retrieving "+url
-				return None, -1
+				return None, -1, None
 
 	def get_parsed_page_for_url(self, url=""):
-		html_page, code = self.fetch_html(url)
+		parsed_page, code, cookie = self.get_parsed_page_for_url_cookie(url)
+		return parsed_page, code
+
+	def get_parsed_page_for_url_cookie(self, url="", cookie = None):
+		html_page, code, cookie = self.fetch_html_cookie(url, cookie)
 		if html_page is not None:
 			parsed_page = BeautifulSoup(html_page, "lxml")
 		else:
 			parsed_page = BeautifulSoup("", "lxml")
-		return parsed_page, code
+		return parsed_page, code, cookie
 
 	def get_base_url(self):
 		return self.__base_url__
