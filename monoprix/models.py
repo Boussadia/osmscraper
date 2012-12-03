@@ -94,7 +94,7 @@ class Product_history(models.Model):
 	promotion = models.CharField(max_length=9999)
 
 	def __unicode__(self):
-		return self.telemarket_product.title+' - '+str(self.timestamp)+' - '+str(self.price)
+		return self.product.title+' - '+str(self.timestamp)+' - '+str(self.price)
 
 class Cart(models.Model):
 	session_key = models.CharField(max_length=1000, unique= True)

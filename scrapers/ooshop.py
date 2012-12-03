@@ -131,11 +131,13 @@ class Ooshop(OSMScraper):
 
 	def get_products_for_category(self, category):
 		url = category["url"]
-		cookie = category["cookie"]
-		self.get_product_list_for_url_category(url, cookie)
+		# cookie = category["cookie"]
+		products = self.get_product_list_for_url_category(url)
+		return products
 
-	def get_product_list_for_url_category(self, url_category, cookie):
+	def get_product_list_for_url_category(self, url_category, cookie=''):
 		parsed_page, code = self.get_parsed_page_for_url(url_category)
+		products = []
 
 		if code == 200:
 			# Is there more than one page of products for this category? (pagination)
@@ -144,59 +146,115 @@ class Ooshop(OSMScraper):
 			pagination_links = pagination_links[:len(pagination_links)/2] # removing unecessary elements
 
 			post_data_to_perform = []
-			self.get_product_list_from_parsed_page(parsed_page)
+			products = self.get_product_list_from_parsed_page(parsed_page)
 
 			for i in xrange(0,len(pagination_links)):
 				if 'href' in pagination_links[i].attrs:
 					eventTarget =  pagination_links[i].attrs['href'].split("javascript:__doPostBack('")[1].split("','")[0]
 					eventArgument = pagination_links[i].attrs['href'].split("javascript:__doPostBack('")[1].split("','")[1].split("')")[0]
 					post_data_to_perform.append({"eventTarget": eventTarget, "eventArgument": eventArgument, "form_parsed": form_parsed})
-					self.get_product_list_from_parsed_page(self.__do_PostBack(eventTarget, eventArgument, form_parsed, cookie))
+					products = products + self.get_product_list_from_parsed_page(self.__do_PostBack(eventTarget, eventArgument, form_parsed))
 			
 		else:
 			print "Aborting fetch of products list"
 
+		return products
+
 	def get_product_list_from_parsed_page(self, parsed_page):
+		products = []
 		lis = parsed_page.find_all('li',{'class':'lineproductLine'}) # products in li
-		print len(lis)
+		
+		for i in xrange(0, len(lis)):
+			li = lis[i]
+			name = li.find('h5').find(text=True)[22:-40]
+			brand = li.find('img', {'class':'marque'}).attrs['title']
+			image_url = self.get_base_url()+'/'+li.find('input', {'class':'image'}).attrs['src'].replace('Vignettes', 'Images')
+			url = self.get_base_url()+'/'+li.find('a', {'class':'prodimg'}).attrs['href']
+			reference = image_url.split('/')[-1].split('.')[0]
 
+			product = {
+				'name': name,
+				'brand': brand,
+				'image_url': image_url,
+				'url': url,
+			}
 
+			# Dealing with promotion
 
-	def __do_PostBack(self, eventTarget, eventArgument, form_parsed, cookie):
-		values = {}
-		inputs = form_parsed.find_all('input')
-		selects = form_parsed.find_all('select')
-		cookie = "OOshopSessionState=xwedmt552uxovrrfqwnxgr45; xtvrn=$460644$; atgPlatoStop=1; SupportCookies=true; s_cc=true; cf=6; s_sq=%5B%5BB%5D%5D; xtan460644=-; xtant460644=1; fs_nocache_guid=0EBDF3490718C0957774FA88BFE3CC97; s_vi=[CS]v1|2857A04005160775-6000018360002F45[CE]; juniper=ed8e821022cf3f2d8a050d4f2fb336a0"
+			promotion = {}
+			if 'Promo' in li.attrs['class']:
+				textContent = li.find('strike').find(text = True);
+				product['price'] = float(textContent[17:-2].replace(',', '.'))
 
-
-		for i in xrange(0,len(selects)):
-			options = selects[i].find_all('option')
-			if len(options)>0:
-				selected = options[0].get('value')
-			else:
-				selected = ""
-
-			values[selects[i].get('name')] = selected
-			# print selects[i].get('name')+' : '+selected
-
-		url = self.get_base_url()+'/'+form_parsed.get("action")
-
-		for i in xrange(0,len(inputs)):
-			# print inputs[i].get('name')
-			# print inputs[i].get('value')
-			if inputs[i].get('name') is not None:
-				if inputs[i].get('value') is None:
-					values[str(inputs[i].get('name'))] = ""
+				textContent = li.find('strong').find(text = True);
+				promotion['percentage'] = 1 - float(textContent[17:-2].replace(',', '.')) / product['price']
+				
+				ps = li.find('div',{'class' : 'unit price'}).find_all('p') #  p:not(.productPicto) span')[0].textContent
+				if 'productPicto' in ps[0].attrs['class']:
+					p = ps[1]
 				else:
-					values[str(inputs[i].get('name'))] = str(inputs[i].get('value'))
-				# print inputs[i].get('name'), values[str(inputs[i].get('name'))]
+					p = ps[0]
+
+				textContent = p.find('span').find(text=True)
+				product['unit_price'] = float(textContent.split(u' € / ')[0].replace(u',', u'.'))
+				product['unit'] = textContent.split(u' € / ')[1]
+
+				textContent = p.find_all('span')[1].find(text=True)
+				product['text_unit'] = textContent
+
+				if product['unit'] == 'Lot':
+					promotion['type'] = 'lot'
+					promotion['selector'] = '.lineproductLine:nth-child('+str(2*(i+1)-1)+') a.prodimg'
+					promotion['references'] = self.get_references(product['url'])
+				else:
+					promotion['type'] = 'simple'
+
+			else:
+				promotion['type'] = 'none'
+				textContent = li.find('strong').find(text=True)
+				product['price'] = float(textContent[17:-2].replace(',', '.'))
+
+				ps = li.find('div',{'class' : 'unit price'}).find_all('p') #  p:not(.productPicto) span')[0].textContent
+				if 'class' in ps[0].attrs and 'productPicto' in ps[0].attrs['class']:
+					p = ps[1]
+				else:
+					p = ps[0]
+
+				textContent = p.find('span').find(text=True)
+				product['unit_price'] = float(textContent.split(u' € / ')[0].replace(u',', u'.'))
+				product['unit'] = textContent.split(u' € / ')[1]
+
+				textContent = p.find_all('span')[1].find(text=True)
+				product['text_unit'] = textContent
+
+			product['promotion'] = promotion
+			products.append(product)
+
+		return products
+
+	def get_references(self, url):
+		references = []
+		parsed_page, code = self.get_parsed_page_for_url(url)
+
+		if code == 200:
+			divs = parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_pDetLot').find_all('div',{'class': 'extraProduit'})
+			for div in divs:
+				image = div.find('div', {'class': 'unit'}).find('a').find('img')
+				reference = image.attrs['src'].split('/')[-1].split('.')[0]
+				references.append(reference)
+		else:
+			print 'Page accession aborted'
+
+		return references
+
+	def __do_PostBack(self, eventTarget, eventArgument, form_parsed, cookie = "xtvrn=$460644$; vuidck=6b124715-62fb-4903-bc7b-fa8994716724; SupportCookies=true; atgPlatoStop=1; OOshopSessionState=dcu0rp450bxhq5ba2dmelf55; s_cc=true; xtan460644=-; xtant460644=1; fs_nocache_guid=0EBDF3490718C0957774FA88BFE3CC97; s_sq=%5B%5BB%5D%5D; s_vi=[CS]v1|2857A04005160775-6000018360002F45[CE]; juniper=18faf872ea4792ef9af05da1b3681935"):
+		values = {}
+		url = self.get_base_url()+'/'+form_parsed.get("action")
 
 		values["__EVENTTARGET"] = eventTarget
 		values["__EVENTARGUMENT"] = eventArgument
 		values["__LASTFOCUS"] = ""
 		values["ctl00$sm"] = 'ctl00$cphC$pn3T1$ctl01$upPaginationH|'+eventTarget
-		values["ctl00$xCoordHolder"] = "0"
-		values["ctl00$yCoordHolder"] = "471"
 
 		print "Posting data to "+url
 
@@ -213,40 +271,42 @@ class Ooshop(OSMScraper):
 
 def perform():
 	ooshop = Ooshop()
-	# url_category = "http://www.ooshop.com/courses-en-ligne/ContentNavigation.aspx?TO_NOEUD_IDMO=N000000017060&TO_NOEUD_IDFO=117588&NOEUD_NIVEAU=4"
-	# cookie = 'juniper=f2fc25ca3a2a681e251a89f1de69e98b; path=/;'
-	# ooshop.get_product_list_for_url_category(url_category, cookie)
+	# ooshop.get_menu()
 
 
-	categories = {
-		u'LE BIEN \xc3\u0160TRE': {
-			'url': '/ContentNavigation.aspx?TO_NOEUD_IDMO=N000000013565&TO_NOEUD_IDFO=81502&NOEUD_NIVEAU=1&UNIVERS_INDEX=10',
-			'sub_categories': {
-				u'D\xc3\xa9odorants & parfums': {
-					'url': '/ContentNavigation.aspx?TO_NOEUD_IDMO=N000000013566&FROM_NOEUD_IDMO=N000000013565&TO_NOEUD_IDFO=81503&NOEUD_NIVEAU=2&UNIVERS_INDEX=10',
-					'sub_categories': {
-						u'Atomiseurs': {
-							'url': '/ContentNavigation.aspx?TO_NOEUD_IDMO=N000000017058&TO_NOEUD_IDFO=117586&NOEUD_NIVEAU=3',
-							'cookie': 'OOshopSessionState=w2hyge452uivhs2u45m1ximz; path=/; HttpOnly, juniper=f2fc25ca3a2a681e251a89f1de69e98b; path=/;',
-							'sub_categories': {
-								u'Parfumants': {
-									'url': 'ContentNavigation.aspx?TO_NOEUD_IDMO=N000000017059&TO_NOEUD_IDFO=117587&NOEUD_NIVEAU=4',
-									'cookie': 'juniper=f2fc25ca3a2a681e251a89f1de69e98b; path=/;'
-								},
-								u'Sp\xc3\xa9cifiques': {
-									'url': 'ContentNavigation.aspx?TO_NOEUD_IDMO=N000000017060&TO_NOEUD_IDFO=117588&NOEUD_NIVEAU=4',
-									'cookie': 'juniper=f2fc25ca3a2a681e251a89f1de69e98b; path=/;'
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	ooshop.set_categories(categories)
-	# ooshop.get_sub_menu_level_3()
-	ooshop.get_products_for_category(categories[u'LE BIEN \xc3\u0160TRE']['sub_categories'][u'D\xc3\xa9odorants & parfums']['sub_categories'][u'Atomiseurs']['sub_categories'][u'Sp\xc3\xa9cifiques'])
+	# categories = {
+	# 	u'LE BIEN \xc3\u0160TRE': {
+	# 		'url': '/ContentNavigation.aspx?TO_NOEUD_IDMO=N000000013565&TO_NOEUD_IDFO=81502&NOEUD_NIVEAU=1&UNIVERS_INDEX=10',
+	# 		'sub_categories': {
+	# 			u'D\xc3\xa9odorants & parfums': {
+	# 				'url': '/ContentNavigation.aspx?TO_NOEUD_IDMO=N000000013566&FROM_NOEUD_IDMO=N000000013565&TO_NOEUD_IDFO=81503&NOEUD_NIVEAU=2&UNIVERS_INDEX=10',
+	# 				'sub_categories': {
+	# 					u'Atomiseurs': {
+	# 						'url': '/ContentNavigation.aspx?TO_NOEUD_IDMO=N000000017058&TO_NOEUD_IDFO=117586&NOEUD_NIVEAU=3',
+	# 						'cookie': 'OOshopSessionState=w2hyge452uivhs2u45m1ximz; path=/; HttpOnly, juniper=f2fc25ca3a2a681e251a89f1de69e98b; path=/;',
+	# 						'sub_categories': {
+	# 							u'Parfumants': {
+	# 								'url': 'ContentNavigation.aspx?TO_NOEUD_IDMO=N000000017059&TO_NOEUD_IDFO=117587&NOEUD_NIVEAU=4',
+	# 								'cookie': 'juniper=f2fc25ca3a2a681e251a89f1de69e98b; path=/;'
+	# 							},
+	# 							u'Sp\xc3\xa9cifiques': {
+	# 								'url': 'ContentNavigation.aspx?TO_NOEUD_IDMO=N000000013010&TO_NOEUD_IDFO=80947&NOEUD_NIVEAU=3',
+	# 								'cookie': 'juniper=f2fc25ca3a2a681e251a89f1de69e98b; path=/;'
+	# 							}
+	# 						}
+	# 					}
+	# 				}
+	# 			}
+	# 		}
+	# 	}
+	# }
+	# ooshop.set_categories(categories)
+	# # ooshop.get_sub_menu_level_3()
+	# ooshop.get_products_for_category(categories[u'LE BIEN \xc3\u0160TRE']['sub_categories'][u'D\xc3\xa9odorants & parfums']['sub_categories'][u'Atomiseurs']['sub_categories'][u'Sp\xc3\xa9cifiques'])	
+
+	# products = ooshop.get_product_list_for_url_category('http://www.ooshop.com/courses-en-ligne/ContentNavigation.aspx?TO_NOEUD_IDMO=N000000013154&TO_NOEUD_IDFO=81091&NOEUD_NIVEAU=3', 'juniper=f2fc25ca3a2a681e251a89f1de69e98b; path=/;')
+	# print products
+	# print len(products)
 
 
 
