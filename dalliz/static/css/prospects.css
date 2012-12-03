@@ -10,3 +10,12 @@
 #send_mail{
 	margin-right: 36%;
 }
+
+a{
+	color: none;
+	outline: none;
+}
+
+a:focus{
+	outline: none;
+}
