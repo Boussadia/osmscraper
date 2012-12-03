@@ -1,0 +1,28 @@
+<link href="{% static css/login.css %}" rel="stylesheet">
+<link href="{% static css/prospects.css %}" rel="stylesheet">
+
+<div id="modalProspect" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel"> Demandez votre invitation. </h3>
+	</div>
+	<div class="modal-body">
+		<p>Dalliz sera bientôt disponible en Béta privée, vous pouvez laisser votre mail et on vous enverra une invitation pour utiliser le service lorsqu'il sera prêt!</p>
+		<input type="email" name="email" class="mail" placeholder="Email" ></input>
+
+		<div class="successmessage">
+			<p>Votre inscription a bien été prise en compte, A bientôt sur Dalliz! </p>
+		</div>
+
+		<div class="errormessage mailnotok">
+			<p> Le mail que vous avez donner ne semble pas correct. </p>
+		</div>
+
+		<div class="errormessage smth-wrong">
+			<p> Oups, il semble qu'un problème est survenu lors de l'enregistrement de votre mail, veuillez essayer de nouveau ultérieurement. Nous sommes désolé pour ce soucis. </p>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button id="send_mail" class="btn btn-success">Enregistrer email</button>
+	</div>
+</div>

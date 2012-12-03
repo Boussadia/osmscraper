@@ -11,10 +11,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.http import Http404
 from django.shortcuts import render, redirect
 from django.template import Context, loader
+from django.core.mail import send_mail
 
 from templates import templates
 from osmscraper.utility import *
 from monoprix.models import User, Cart
+from dalliz.models import Prospect
 
 def user(function):
 	def wrapper(request, *args, **kwargs):
@@ -271,3 +273,37 @@ def account(request):
 			user.save()
 
 	return 'dalliz/account.html',render_dict
+
+def prospects(request):
+	response = {}
+	if request.method == 'POST':
+		regex = "^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$"
+		mail = request.POST['mail']
+		if re.search(regex, mail):
+			prospect, created = Prospect.objects.get_or_create(mail= mail)
+
+			if created:
+				subject = 'Dalliz, le comparateur de panier'
+				message = """Bonjour,
+
+				Bienvenue chez Dalliz !
+				
+				Bientôt, vous pourrez utiliser en exclusivité le premier comparateur de courses en ligne et ainsi faire des économies sur vos achats.
+
+				Nous vous tiendrons au courant de la disponibilité du service.
+
+				A bientôt,
+
+				L'equipe Dalliz
+				"""
+				send_mail(subject, message, 'hello@dalliz.com', [mail], fail_silently=False)
+
+
+			response = {'status': 200}
+		else:
+			response = {'status': 500}
+	else:
+		response = {'status': 403}
+
+	return HttpResponse(json.dumps(response))
+

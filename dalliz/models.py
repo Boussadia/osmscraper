@@ -68,3 +68,10 @@ class User(models.Model):
 
 	def __unicode__(self):
 		return self.first_name+' '+self.last_name
+
+class Prospect(models.Model):
+	mail = models.EmailField(unique = True)
+
+	def __unicode__(self):
+		return self.mail
+

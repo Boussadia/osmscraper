@@ -37,6 +37,7 @@ urlpatterns = patterns('',
 
     # Dalliz website
     url(r'^/?$', 'dalliz.views.index'),
+    url(r'^prospects/?$','dalliz.views.prospects'),
     url(r'^a-propos-de-dalliz/?$', 'dalliz.views.a_propos'),
     url(r'^mentions-legales/?$','dalliz.views.mentions'),
     url(r'^partenariat/?$', 'dalliz.views.partenariat'),

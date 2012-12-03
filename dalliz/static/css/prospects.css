@@ -1,0 +1,12 @@
+.mail{
+	margin-left: 25%;
+	width: 50%;
+}
+
+.successmessage, .errormessage{
+	display: none;
+}
+
+#send_mail{
+	margin-right: 36%;
+}

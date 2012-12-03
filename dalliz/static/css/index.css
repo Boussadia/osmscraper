@@ -127,6 +127,14 @@
 	background-image: url(../images/osms/logo_telemarket.jpg);
 }
 
+#osms .inter{
+	background-image: url(../images/osms/inter.jpg);
+}
+
+#osms .auchan{
+	background-image: url(../images/osms/auchan.jpg);
+}
+
 #osms .row{
 	margin-left: 0px;
 }
