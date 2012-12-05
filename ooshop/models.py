@@ -16,7 +16,7 @@ class Category_sub_level_1(models.Model):
 	name = models.CharField(max_length=100)
 	parent_category = models.ForeignKey(Category_main)
 	url = models.CharField(max_length=9999)
-	selector = models.CharField(max_length=100, null = True)
+	cookie = models.CharField(max_length=10000, null = True)
 
 	def __unicode__(self):
 		return self.name
@@ -28,7 +28,7 @@ class Category_sub_level_2(models.Model):
 	name = models.CharField(max_length=100)
 	parent_category = models.ForeignKey(Category_sub_level_1)
 	url = models.CharField(max_length=9999)
-	selector = models.CharField(max_length=100, null = True)
+	cookie = models.CharField(max_length=10000, null = True)
 
 	def __unicode__(self):
 		return self.name
@@ -41,7 +41,7 @@ class Category_final(models.Model):
 	name = models.CharField(max_length=100)
 	parent_category = models.ForeignKey(Category_sub_level_2)
 	url = models.CharField(max_length=9999)
-	selector = models.CharField(max_length=100, null = True)
+	cookie = models.CharField(max_length=10000, null = True)
 	dalliz_category = models.ManyToManyField(Category_dalliz, related_name="ooshop_category_final_category_dalliz")
 
 	def __unicode__(self):
@@ -83,7 +83,7 @@ class Product_history(models.Model):
 	price = models.FloatField() # Price before any promotion
 	unit_price = models.FloatField()
 	promotion_type = models.CharField(max_length=9999)
-	promotion = models.FloatField()
+	promotion = models.FloatField(default = 0)
 	references = models.ManyToManyField(Product, related_name="ooshop_promotion_lot")
 
 
