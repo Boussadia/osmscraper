@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import urllib, urllib2
 from bs4 import BeautifulSoup
 import re
@@ -234,7 +235,7 @@ class Ooshop(OSMScraper):
 				product['promotion'] = promotion
 				products.append(product)
 			except Exception, e:
-				print e
+				print 'ERROR PARSING PRODUCT : '+e
 
 		return products
 

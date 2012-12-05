@@ -7,7 +7,7 @@ from celery.task import periodic_task, task
 from django.conf import settings
 from celery import Celery
 
-from osmscraper.telemarket_matching import *
+from osmscraper.matching import *
 
 from scrapers.monoprix import Monoprix
 from scrapers.telemarket import Telemarket
