@@ -33,7 +33,6 @@ class Monoprix(OSMScraper):
 			for li in menu_li:
 				class_li = li.get("class")
 				title = li.find("a").get("title")
-				# url = li.find("a").get("href").split(";")[0]
 				url = li.find("a").get("href")
 				if ('Reverse' not in class_li) and title != "MODE":
 					print "Found main category : "+title

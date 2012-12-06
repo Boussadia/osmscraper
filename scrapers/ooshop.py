@@ -209,7 +209,7 @@ class Ooshop(OSMScraper):
 
 					if product['unit'] == 'Lot':
 						promotion['type'] = 'lot'
-						promotion['selector'] = '.lineproductLine:nth-child('+str(2*(i+1)-1)+') a.prodimg'
+						promotion['selector'] = '.lineproductLine:nth-child('+unicode(2*(i+1)-1)+') a.prodimg'
 						promotion['references'] = self.get_references(product['url'])
 					else:
 						promotion['type'] = 'simple'
@@ -235,7 +235,7 @@ class Ooshop(OSMScraper):
 				product['promotion'] = promotion
 				products.append(product)
 			except Exception, e:
-				print 'ERROR PARSING PRODUCT : '+e
+				print 'ERROR PARSING PRODUCT : '+str(e)
 
 		return products
 
@@ -272,7 +272,7 @@ class Ooshop(OSMScraper):
 		
 		page = response.read()
 		print "Response fetched"
-		parsed_page = BeautifulSoup(page)
+		parsed_page = BeautifulSoup(page,"lxml")
 
 		return parsed_page
 

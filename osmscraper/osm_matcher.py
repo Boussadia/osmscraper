@@ -10,6 +10,8 @@ from telemarket.models import Product as Telemarket_product
 
 from monoprix.models import Product as Monoprix_product
 
+from ooshop.models import Brand_matching
+
 
 from engine import Engine
 from engine import Product_engine
@@ -80,27 +82,39 @@ class OSM_matcher(object):
 			print str(id_other_product)+' : '+str(id_max)+' -> '+str(score_max)
 
 
-class Dalliz_matcher(OSM_matcher):
+class Dalliz_brand_matcher(OSM_matcher):
 	def __init__(self): 
-		super(Dalliz_matcher, self).__init__("SELECT id, unaccent(lower(name)) as content FROM dalliz_brand ORDER BY length(name) DESC")
+		super(Dalliz_brand_matcher, self).__init__("SELECT id, unaccent(lower(name)) as content FROM dalliz_brand ORDER BY length(name) DESC")
 
 	def brands(self):
 		brands_from_db = self.get_data_from_db()
 		for brand in brands_from_db:
 			yield brand
 
-	def save_brands_telemarket(self):
-		all_matches = self.get_matches()
+	def start_process(self, other_brands):
+		# Indexation
+		self.make_index()
+		engine = self.get_engine()
+		matches = {}
+		for other_brand in other_brands:
+			query = other_brand["content"]
+			engine.process_query(query)
+			matches[other_brand['id']] = engine.get_possible_matches(query)
+			self.save_ooshop_brands_matches(other_brand['id'], matches[other_brand['id']]) 
 
-		for id_other_product, possible_matches in all_matches.iteritems():
-			score_max = 0
-			id_max = 1
-			for i in xrange(0,len(possible_matches)):
-				if possible_matches[i]['score']>score_max:
-					score_max = possible_matches[i]['score']
-					id_max = possible_matches[i]['id']
+		self.set_matches(matches)
 
-			print str(id_other_product)+' : '+str(id_max)+' -> '+str(score_max)
+	def save_ooshop_brands_matches(self, id_ooshop_brand_id, matches):
+		try:
+			print 'Saving matcher result'
+			for i in xrange(0,len(matches)):
+				id_dalliz_brand = matches[i]['id']
+				score = matches[i]['score']
+				relation, created = Brand_matching.objects.get_or_create(ooshop_brand_id = id_ooshop_brand_id, dalliz_brand_id = id_dalliz_brand, defaults={'score': score})
+				relation.score = score
+				relation.save()
+		except Exception, e:
+			print e
 
 class Telemarket_matcher(OSM_matcher):
 	def __init__(self): 
@@ -133,11 +147,8 @@ class Telemarket_matcher(OSM_matcher):
 		self.__engine__ = engine
 
 
-
-
 class Monoprix_matcher(OSM_matcher):
 	def __init__(self): 
-		# super(Monoprix_matcher, self).__init__("SELECT monoprix_product.id, (unaccent(lower(monoprix_brand.name))||' '||unaccent(lower(title)) )as content, monoprix_unit_dalliz_unit.to_unit_id as unit, monoprix_product.category_id as category FROM monoprix_product JOIN monoprix_unit_dalliz_unit ON monoprix_product.unit_id = monoprix_unit_dalliz_unit.from_unit_id JOIN monoprix_brand ON monoprix_brand.id = monoprix_product.brand_id ORDER BY length(title) DESC", Product_engine)
 		super(Monoprix_matcher, self).__init__(
 			("SELECT monoprix_product.id, (unaccent(lower(monoprix_brand.name))||' '||unaccent(lower(title))) as content, monoprix_unit_dalliz_unit.to_unit_id as unit "
 				"FROM monoprix_product "
@@ -191,3 +202,14 @@ class Monoprix_matcher(OSM_matcher):
 				relation.save()
 		except Exception, e:
 			print e
+
+class Ooshop_brand_matcher(OSM_matcher):
+	def __init__(self):
+		super(Ooshop_brand_matcher, self).__init__("SELECT ooshop_brand.id, unaccent(lower(ooshop_brand.name)) as content FROM ooshop_brand ORDER BY length(name) DESC;")
+
+	def brands(self):
+		brands_from_db = self.get_data_from_db()
+		for brand in brands_from_db:
+			yield brand
+
+

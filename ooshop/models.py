@@ -57,6 +57,11 @@ class Brand(models.Model):
 	def __unicode__(self):
 		return self.name
 
+class Brand_matching(models.Model):
+	score = models.FloatField()
+	dalliz_brand = models.ForeignKey(Brand_dalliz)
+	ooshop_brand = models.ForeignKey(Brand)
+
 class Unit(models.Model):
 	name = models.CharField(max_length=30, unique=True)
 	dalliz_unit = models.ManyToManyField(Unit_dalliz, null=True, related_name="ooshop_unit_dalliz_unit")
