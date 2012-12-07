@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<title> Ooshop brand matcher </title>
+
+		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+		<script data-main="/static/js/main.js" src="{% static js/require.js%}"></script>
+	</head>
+	<body>
+		<section id="content">
+			{% autoescape off %}
+				{{content}}
+			{% endautoescape %}
+		</section>
+
+		<script type="text/javascript">
+		{% autoescape off %}
+			var template_value = {{template_value}};
+		{% endautoescape %}
+		</script>
+		
+		<script id='template' type="text/mustache">
+		{% autoescape off %}
+			{{template}}
+		{% endautoescape %}
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,49 @@
+{{# ooshop_brand}}
+<div id="ooshop">
+	<div class="row">
+		<div class="span12">
+			<h1 class='ooshop_brand span6'> {{ name }}  </h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span6">
+			<button type="button" id="btn-cancel" class="btn btn-danger" data-id="{{id}}"> No Match</button>
+		</div>
+		{{#is_set_previous_id}}
+			<div class="span3">
+				<button type="button" id="btn-previous" class="btn btn-primary" data-id="{{previous_id}}"> Previous</button>
+			</div>
+		{{/is_set_previous_id}}
+		{{#is_set_next_id}}
+			<div class="span3">
+				<button type="button" id="btn-next" class="btn btn-primary" data-id="{{next_id}}"> Next</button>
+			</div>
+		{{/is_set_next_id}}
+	</div>
+</div>
+{{/ ooshop_brand}}
+
+<div id="matches" class="row">
+	<div class="span12">
+		<table class="table  table-striped">
+			<thead>
+				<tr class='info'>
+					<th>id</th>
+					<th>Marque Dalliz</th>
+					<th>Score</th>
+					<th>Selectionner marque</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{#dalliz_brands}}
+					<tr {{#is_match}}class="info"{{/is_match}}> 
+						<td>{{id}}</td>
+						<td><strong>{{name}}</strong></td>
+						<td><i>{{score}}</i></td>
+						<td><button class="btn btn-success btn-selection" data-id="{{id}}">Selectionner cette marque</button></td>
+					</tr>
+				{{/dalliz_brands}}
+			</tbody>
+		</table>
+	</div>
+</div>

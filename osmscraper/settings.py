@@ -9,6 +9,7 @@ SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+APPEND_SLASH = False
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -144,6 +145,7 @@ INSTALLED_APPS = (
     'scrapers',
     'scraper_scheduler',
     'categories_matcher',
+    'ooshop_brand_matcher',
     'dalliz',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',

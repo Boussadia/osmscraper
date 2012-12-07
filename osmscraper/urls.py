@@ -34,6 +34,10 @@ urlpatterns = patterns('',
     url(r'^telemarket_monoprix/products/previous/(?P<id>\d+)/?$', 'telemarket_monoprix.views.previous'),
     url(r'^telemarket_monoprix/products/cancel/(?P<id>\d+)/?$', 'telemarket_monoprix.views.cancel'),
 
+    # Ooshop brand matcher
+    url(r'^brand/ooshop/(?P<id>\d+)/?$','ooshop_brand_matcher.views.selector'),
+    url(r'^brand/ooshop/cancel/(?P<id>\d+)/?$', 'ooshop_brand_matcher.views.cancel'),
+    url(r'^brand/ooshop/set/(?P<ooshop_brand_id>\d+)/(?P<dalliz_brand_id>\d+)/?$', 'ooshop_brand_matcher.views.set'),
 
     # Dalliz website
     url(r'^/?$', 'dalliz.views.index'),
