@@ -46,8 +46,8 @@ def selector(request, id):
 	}
 
 	# Next and previous elements : 
-	next_brands = Brand.objects.filter(id__gte = int(id)+1)
-	previous = Brand.objects.filter(id__lte= int(id)-1)
+	next_brands = Brand.objects.filter(id__gte = int(id)+1).order_by('id')
+	previous = Brand.objects.filter(id__lte= int(id)-1).order_by('-id')
 
 	if len(next_brands)>0:
 		ooshop_brand_template_value['is_set_next_id'] = True
