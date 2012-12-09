@@ -78,9 +78,9 @@ class OSMScraper(object):
 	def get_parsed_page_for_url_cookie(self, url="", cookie = None):
 		html_page, code, cookie = self.fetch_html_cookie(url, cookie)
 		if html_page is not None:
-			parsed_page = BeautifulSoup(html_page, "lxml")
+			parsed_page = BeautifulSoup(html_page, "lxml", from_encoding = 'utf-8')
 		else:
-			parsed_page = BeautifulSoup("", "lxml")
+			parsed_page = BeautifulSoup("", "lxml", from_encoding = 'utf-8')
 		return parsed_page, code, cookie
 
 	def get_base_url(self):
