@@ -40,7 +40,7 @@ def selector(request, id):
 	ooshop_brand_template_value = {
 		'name': brand.name,
 		'id': brand.id,
-		'dalliz_brand_id': brand.dalliz_brand_id,
+		'dalliz_brand_ids': [dalliz_brand.id for dalliz_brand in brand.dalliz_brand_m2m.all()],
 		'is_set_next_id': False,
 		'is_set_previous_id': False
 	}
@@ -58,7 +58,7 @@ def selector(request, id):
 
 	template.set_ooshop_brand(ooshop_brand_template_value)
 
-	matches_template_value = [ { 'id': match.dalliz_brand.id, 'name': match.dalliz_brand.name, 'score': match.score, 'is_match': (brand.dalliz_brand_id == match.dalliz_brand.id) } for match in Brand_matching.objects.filter(ooshop_brand = brand).order_by('-score')]
+	matches_template_value = [ { 'id': match.dalliz_brand.id, 'name': match.dalliz_brand.name, 'score': match.score, 'is_match': (match.dalliz_brand.id in ooshop_brand_template_value['dalliz_brand_ids']) } for match in Brand_matching.objects.filter(ooshop_brand = brand).order_by('-score')]
 	template.set_dalliz_brands(matches_template_value)
 
 	template_value = {
@@ -83,8 +83,9 @@ def cancel(request, id):
 			ooshop_brand = ooshop_brand[0]
 
 			# Setting match
-			ooshop_brand.dalliz_brand = None
-			ooshop_brand.save()
+			# ooshop_brand.dalliz_brand = None
+			# ooshop_brand.save()
+			ooshop_brand.dalliz_brand_m2m.clear()
 
 			response = {'status': 200}
 		else:
@@ -106,8 +107,9 @@ def set(request, ooshop_brand_id, dalliz_brand_id):
 			dalliz_brand = dalliz_brand[0]
 
 			# Setting match
-			ooshop_brand.dalliz_brand = dalliz_brand
-			ooshop_brand.save()
+			# ooshop_brand.dalliz_brand = dalliz_brand
+			# ooshop_brand.save()
+			ooshop_brand.dalliz_brand_m2m.add(dalliz_brand)
 
 			response = {'status': 200}
 		else:

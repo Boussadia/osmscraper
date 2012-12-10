@@ -53,6 +53,7 @@ class Category_final(models.Model):
 class Brand(models.Model):
 	name = models.CharField(max_length=100, unique=True)
 	dalliz_brand = models.ForeignKey(Brand_dalliz, null=True, related_name="ooshop_brand_dalliz_brand")
+	dalliz_brand_m2m = models.ManyToManyField(Brand_dalliz, related_name="ooshop_brand_dalliz_brand_M2M")
 
 	def __unicode__(self):
 		return self.name

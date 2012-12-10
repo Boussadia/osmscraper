@@ -45,7 +45,7 @@ define([
 			this.ooshop_brand.cancel_match(); // Removing in database
 		},
 		set_match: function(e){
-			this.remove_UI_match();// Removing UI indicator
+			// this.remove_UI_match();// Removing UI indicator
 
 			// Processing data
 			var id = $(e.target).data(id);
