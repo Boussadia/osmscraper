@@ -1,10 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import pystache
 import os
+import pystache
 
-class Brand_selector(pystache.View):
+class Ooshop_brand_matcher_pystache_view(pystache.View):
+	def __init__(self):
+		super(Ooshop_brand_matcher_pystache_view, self).__init__()
+		self.template_path = os.path.abspath(os.path.dirname(__file__))
+		self.template_encoding = 'utf-8'
+
+class Brand_selector(Ooshop_brand_matcher_pystache_view):
 	def set_ooshop_brand(self, ooshop_brand):
 		self.__ooshop_brand = ooshop_brand
 

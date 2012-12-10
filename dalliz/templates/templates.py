@@ -4,7 +4,13 @@
 import pystache
 import os
 
-class Product(pystache.View):
+class Dalliz_pystache_view(pystache.View):
+	def __init__(self):
+		super(Dalliz_pystache_view, self).__init__()
+		self.template_path = os.path.abspath(os.path.dirname(__file__))
+		self.template_encoding = 'utf-8'
+
+class Product(Dalliz_pystache_view):
 	def set_product(self, product):
 		self.__product = product
 	
@@ -12,7 +18,7 @@ class Product(pystache.View):
 		return self.__product
 
 
-class Category(pystache.View):
+class Category(Dalliz_pystache_view):
 	def set_products(self, products):
 		self.__products = products
 	
@@ -38,7 +44,7 @@ class Category(pystache.View):
 		return self.__parent_category
 
 
-class Cart(pystache.View):
+class Cart(Dalliz_pystache_view):
 	def set_cart(self, cart):
 		self.__cart = cart
 	
@@ -51,7 +57,7 @@ class Cart(pystache.View):
 	def totals(self):
 		return self.__totals
 
-class Login(pystache.View):
+class Login(Dalliz_pystache_view):
 	def set_errors(self, errors):
 		self.__errors = errors
 
