@@ -14,6 +14,16 @@ define([
 			var template = $('#template').text();
 			var out = Mustache.render(template, template_value);
 			this.$el.html(out);
+			// Keybord listener on previous and next
+			$('html').keyup(function(e){
+				if(e.keyCode === 39){
+					// Next
+					$('#btn-next').click();
+				}else if(e.keyCode === 37){
+					// Previous
+					$('#btn-previous').click();
+				}
+			})
 		},
 		set_proper_data: function(){
 			this.choices = new Choices(template_value['dalliz_brands']);
