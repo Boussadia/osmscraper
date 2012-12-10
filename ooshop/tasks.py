@@ -3,6 +3,7 @@
 
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db import connection
 
 from scrapers.ooshop import Ooshop
 from models import *
@@ -44,7 +45,9 @@ def save_categories(categories):
 				sub_category_db.save()
 				print 'Sub category %s updated in database'%(sub_category_name)
 
+			# Some sub categories do not have level 2 sub categories
 			if len(sub_categories_level_2)>0:
+				# If there are level 2 sub categories, cycle throught them and save data
 				for sub_category_level_2_name, sub_category_level_2_content in sub_categories_level_2.iteritems():
 					url_sub_category_level_2 = sub_category_level_2_content['url']
 					cookie_sub_category_level_2 = sub_category_level_2_content['cookie']
@@ -59,31 +62,35 @@ def save_categories(categories):
 						sub_category_level_2_db.save()
 						print 'Sub category level 2 %s updated in database'%(sub_category_level_2_name)
 
-				if len(sub_categories_level_3)>0:
-					for sub_category_final_name, sub_category_final_content in sub_categories_level_3.iteritems():
-						url_sub_category_final = sub_category_final_content['url']
-						cookie_sub_category_final = sub_category_final_content['cookie']
-						sub_category_final_db, created = Category_final.objects.get_or_create(name = unicode(sub_category_final_name),parent_category = sub_category_level_2_db, defaults={'url': unicode(url_sub_category_final), 'cookie': unicode(cookie_sub_category_final)})
-						sub_categories_final_list.append(sub_category_final_db)
+					# Some level 2 sub categories do not have level 3 sub categories
+					if len(sub_categories_level_3)>0:
+						# If there are level 3 sub categories, cycle throught them and save data
+						for sub_category_final_name, sub_category_final_content in sub_categories_level_3.iteritems():
+							url_sub_category_final = sub_category_final_content['url']
+							cookie_sub_category_final = sub_category_final_content['cookie']
+							sub_category_final_db, created = Category_final.objects.get_or_create(name = unicode(sub_category_final_name),parent_category = sub_category_level_2_db, defaults={'url': unicode(url_sub_category_final), 'cookie': unicode(cookie_sub_category_final)})
+							sub_categories_final_list.append(sub_category_final_db)
 
-						if created:
-							print 'New sub category level 3 %s saved in database'%(sub_category_final_name)
-						else:
-							sub_category_final_db.url = url_sub_category_final
-							sub_category_final_db.cookie = cookie_sub_category_final
+							if created:
+								print 'New sub category level 3 %s saved in database'%(sub_category_final_name)
+							else:
+								sub_category_final_db.url = url_sub_category_final
+								sub_category_final_db.cookie = cookie_sub_category_final
+								sub_category_final_db.save()
+								print 'Sub category level 3 %s updated in database'%(sub_category_final_name)
+					else:
+						# No level 2 sub categories found, saving sub category as level 2 sub category and level 3 sub category
+						print 'No sub categories level 3 for sub category %s'%(sub_category_level_2_name)
+						sub_category_final_db, created = Category_final.objects.get_or_create(name = unicode(sub_category_level_2_name),parent_category = sub_category_level_2_db, defaults={'url': unicode(url_sub_category_level_2), 'cookie': unicode(cookie_sub_category_level_2)})
+						if not created:
+							sub_category_final_db.url = url_sub_category_level_2
+							sub_category_final_db.cookie = cookie_sub_category_level_2
 							sub_category_final_db.save()
-							print 'Sub category level 3 %s updated in database'%(sub_category_final_name)
-				else:
-					print 'No sub categories level 3 for sub category %s'%(sub_category_level_2_name)
-					sub_category_final_db, created = Category_final.objects.get_or_create(name = unicode(sub_category_level_2_name),parent_category = sub_category_level_2_db, defaults={'url': unicode(url_sub_category_level_2), 'cookie': unicode(cookie_sub_category_level_2)})
-					if not created:
-						sub_category_final_db.url = url_sub_category_level_2
-						sub_category_final_db.cookie = cookie_sub_category_level_2
-						sub_category_final_db.save()
-					sub_categories_final_list.append(sub_category_final_db)
+						sub_categories_final_list.append(sub_category_final_db)
 
 
 			else:
+				# No level 2 sub categories found, saving level 2 sub category as level 3 sub category
 				print 'No sub categories level 2 for sub category %s'%(sub_category_name)
 				sub_category_level_2_db, created = Category_sub_level_2.objects.get_or_create(name = unicode(sub_category_name),parent_category = sub_category_db, defaults={'url': unicode(url_sub_category), 'cookie': unicode(cookie_sub_category)})
 				if not created:
@@ -134,39 +141,43 @@ def save_product(product, final_category):
 	url = product['url']
 	image_url = product['image_url']
 
-	product_db, created = Product.objects.get_or_create(reference = unicode(reference), defaults = {'title': unicode(title), 'url': unicode(url), 'image_url': unicode(image_url), 'unit_id': unit_db.id, 'brand_id': brand_db.id})
+	try:
+		product_db, created = Product.objects.get_or_create(reference = unicode(reference), defaults = {'title': unicode(title), 'url': unicode(url), 'image_url': unicode(image_url), 'unit_id': unit_db.id, 'brand_id': brand_db.id})
 
-	if created:
-		print 'Created product '+title
-	else:
-		print 'Updating product '+title
-		product_db.title = title
-		product_db.image_url = image_url
-		product_db.url = url
-		product_db.brand = brand_db
-		product_db.unit = unit_db
-		product_db.save()
+		if created:
+			print 'Created product '+title
+		else:
+			print 'Updating product '+title
+			product_db.title = title
+			product_db.image_url = image_url
+			product_db.url = url
+			product_db.brand = brand_db
+			product_db.unit = unit_db
+			product_db.save()
 
-	# Adding category
-	product_db.category.add(final_category)
+		# Adding category
+		product_db.category.add(final_category)
 
-	# Saving history
-	price = product['price']
-	unit_price = product['unit_price']
-	promotion = product['promotion']
+		# Saving history
+		price = product['price']
+		unit_price = product['unit_price']
+		promotion = product['promotion']
 
-	product_history = Product_history(product = product_db, price = price, unit_price = unit_price, promotion_type = promotion['type'], promotion = 0)
+		product_history = Product_history(product = product_db, price = price, unit_price = unit_price, promotion_type = promotion['type'], promotion = 0)
 
-	if promotion['type'] == 'simple' or promotion['type'] == 'lot':
-		product_history.promotion = promotion['percentage']
-	product_history.save()
+		if promotion['type'] == 'simple' or promotion['type'] == 'lot':
+			product_history.promotion = promotion['percentage']
+		product_history.save()
 
-	# If type of promoption is a combination of product : add them
-	if promotion['type'] == 'lot':
-		for j in xrange(0, len(promotion['references'])):
-			reference = promotion['references'][j]
-			ref_product, created = Product.objects.get_or_create(reference = reference)
-			product_history.references.add(ref_product)
+		# If type of promotion is a combination of product : add them
+		if promotion['type'] == 'lot':
+			for j in xrange(0, len(promotion['references'])):
+				reference = promotion['references'][j]
+				ref_product, created = Product.objects.get_or_create(reference = reference)
+				product_history.references.add(ref_product)
+	except Exception, e:
+		print 'ERROR WHILE SAVING PRODUCT : %s' %(e)
+		connection._rollback()
 
 def save_brand(brand_name):
 	brand_db, created = Brand.objects.get_or_create(name = unicode(brand_name) )

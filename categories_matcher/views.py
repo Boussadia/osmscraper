@@ -9,6 +9,7 @@ import place_du_marche
 import monoprix
 import coursengo
 import dalliz
+import ooshop
 
 def index(request):
 	categories = {}
@@ -80,6 +81,26 @@ def categories(request, osm, level, parent="1"):
 				response[sub_categories[i].id] = sub_categories[i].name
 			response["final"] = True
 
+	# Ooshop get response
+	if osm == "ooshop":
+		if level == "1":
+			main_categories = ooshop.models.Category_main.objects.all()
+			for i in xrange(0, len(main_categories)):
+				response[main_categories[i].id] = main_categories[i].name
+		elif level == "2":
+			sub_categories = ooshop.models.Category_sub_level_1.objects.all().filter(parent_category_id=parent)
+			for i in xrange(0, len(sub_categories)):
+				response[sub_categories[i].id] = sub_categories[i].name
+		elif level == "3":
+			sub_categories = ooshop.models.Category_sub_level_2.objects.all().filter(parent_category_id=parent)
+			for i in xrange(0, len(sub_categories)):
+				response[sub_categories[i].id] = sub_categories[i].name
+		elif level == "4":
+			sub_categories = ooshop.models.Category_final.objects.all().filter(parent_category_id=parent)
+			for i in xrange(0, len(sub_categories)):
+				response[sub_categories[i].id] = sub_categories[i].name
+			response["final"] = True
+
 	# Coursengo get response
 	if osm == "coursengo":
 		if level == "1":
@@ -95,6 +116,7 @@ def categories(request, osm, level, parent="1"):
 			for i in xrange(0, len(sub_categories)):
 				response[sub_categories[i].id] = sub_categories[i].name
 			response["final"] = True
+
 	return HttpResponse(json.dumps(response))
 
 
@@ -116,6 +138,8 @@ def add_link(request):
 			category_final = place_du_marche.models.Category_final.objects.get(id=id_category_final)
 		elif osm == "monoprix":
 			category_final = monoprix.models.Category_final.objects.get(id=id_category_final)
+		elif osm == "ooshop":
+			category_final = ooshop.models.Category_final.objects.get(id=id_category_final)
 
 		if category_final is not None:
 			category_final.dalliz_category.add(category_dalliz)
@@ -142,6 +166,8 @@ def delete_link(request):
 			category_final = place_du_marche.models.Category_final.objects.get(id=id_category_final)
 		elif osm == "monoprix":
 			category_final = monoprix.models.Category_final.objects.get(id=id_category_final)
+		elif osm == "ooshop":
+			category_final = ooshop.models.Category_final.objects.get(id=id_category_final)
 
 		if category_final is not None:
 			category_final.dalliz_category.remove(category_dalliz)
@@ -161,6 +187,8 @@ def get_links(request, osm, category_id):
 		dalliz_categories = dalliz.models.Category_sub.objects.filter(place_du_marche_category_final_category_dalliz=category_id)
 	elif osm == "monoprix":
 		dalliz_categories = dalliz.models.Category_sub.objects.filter(monoprix_category_final_category_dalliz=category_id)
+	elif osm == "ooshop":
+		dalliz_categories = dalliz.models.Category_sub.objects.filter(ooshop_category_final_category_dalliz=category_id)
 
 	response = {}
 
