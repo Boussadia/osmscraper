@@ -14,6 +14,7 @@ class Ooshop(OSMScraper):
 	"""
 	def __init__(self):
 		super(Ooshop, self).__init__("http://www.ooshop.com/courses-en-ligne")
+		self.total_products_found = 0
 		
 
 	def get_menu(self):
@@ -166,6 +167,7 @@ class Ooshop(OSMScraper):
 	def get_product_list_from_parsed_page(self, parsed_page):
 		products = []
 		lis = parsed_page.find_all('li',{'class':'lineproductLine'}) # products in li
+		self.total_products_found = self.total_products_found + len(lis)
 		
 		for i in xrange(0, len(lis)):
 			try:
@@ -272,13 +274,14 @@ class Ooshop(OSMScraper):
 		
 		page = response.read()
 		print "Response fetched"
-		parsed_page = BeautifulSoup(page,"lxml")
+		parsed_page = BeautifulSoup(page,"lxml",from_encoding = 'utf-8')
 
 		return parsed_page
 
 def perform():
 	ooshop = Ooshop()
-	url = 'http://www.ooshop.com/courses-en-ligne/ContentNavigation.aspx?NOEUD_IDFO=68152'
+	# ooshop.get_menu()
+	url = 'http://www.ooshop.com/courses-en-ligne/ContentNavigation.aspx?TO_NOEUD_IDMO=N000000013065&TO_NOEUD_IDFO=81002&NOEUD_NIVEAU=3'
 	products = ooshop.get_product_list_for_url_category(url)
 	print products
 

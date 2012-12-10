@@ -183,4 +183,5 @@ def perform_complete_scraping():
 	categories = ooshop.get_categories()
 	sub_categories_final_list = save_categories(categories)
 	save_products(sub_categories_final_list)
+	print 'Nb of products retrieved : %d'%(ooshop.total_products_found)
 
