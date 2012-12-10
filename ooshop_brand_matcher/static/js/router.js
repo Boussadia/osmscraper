@@ -19,7 +19,7 @@ define([
 			var router = this;
 			$.ajax({
 				url: '/brand/ooshop/'+id+'/',
-				type:"POST",
+				type:"GET",
 				dataType:"json",
 				data:{},
 				success: function(data, textStatus, jqXHR){
