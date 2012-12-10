@@ -197,5 +197,5 @@ class Coursengo(OSMScraper):
 		response = urllib2.urlopen(req)
 		the_page = response.read()
 		response.close()
-		parsed_page = BeautifulSoup(the_page, "lxml", , from_encoding = 'utf-8')
+		parsed_page = BeautifulSoup(the_page, "lxml", from_encoding = 'utf-8')
 		return parsed_page
