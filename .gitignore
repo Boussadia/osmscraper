@@ -4,3 +4,4 @@ celerybeat-schedule.db
 sqlite_dbs
 .DS_Store
 osmscraper/static/*
+scrapers/run.py
