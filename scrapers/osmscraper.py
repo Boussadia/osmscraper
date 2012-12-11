@@ -57,7 +57,7 @@ class OSMScraper(object):
 				if self.__network_failures_retry__ < OSMScraper.MAX_NETWORK_FAILURE_TRIES:
 					print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
 					time.sleep(self.__network_failures_retry__)
-					return self.fetch_html(url)
+					return self.fetch_html_cookie(url, cookie)
 				else:
 					print "Error when retrieving "+url
 					return None, e.code, None
@@ -66,7 +66,7 @@ class OSMScraper(object):
 			if self.__network_failures_retry__ < OSMScraper.MAX_NETWORK_FAILURE_TRIES:
 				print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
 				time.sleep(self.__network_failures_retry__)
-				return self.fetch_html(url)
+				return self.fetch_html_cookie(url, cookie)
 			else:
 				print "Error when retrieving "+url
 				return None, -1, None
