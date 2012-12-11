@@ -5,8 +5,13 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.db import connection
 
+from celery import Celery
+from celery.task import periodic_task, task
+
 from scrapers.ooshop import Ooshop
 from models import *
+
+celery = Celery('tasks', broker=settings.BROKER_URL)
 
 ooshop = Ooshop()
 
@@ -188,7 +193,7 @@ def save_unit(unit_name):
 	return unit_db
 
 
-
+@celery.task
 def perform_complete_scraping():
 	ooshop.get_menu()
 	categories = ooshop.get_categories()
