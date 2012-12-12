@@ -12,7 +12,8 @@ TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = False
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Ahmed Boussadia', 'ahmed@dalliz.com'),
+    ('Mohamed Ali Ben Aleya', 'dali@dalliz.com'),
 )
 
 MANAGERS = ADMINS
@@ -21,15 +22,6 @@ import dj_database_url
 
 DATABASES = {
     'default': dj_database_url.config(default='postgres://postgres:2asefthukom,3@localhost:5432/osmsdb'),
-
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-    #     'NAME': './sqlite_dbs/ooshop_products.db',                      # Or path to database file if using sqlite3.
-    #     # 'USER': '',                      # Not used with sqlite3.
-    #     # 'PASSWORD': '',                  # Not used with sqlite3.
-    #     # 'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-    #     # 'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    # }
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -216,3 +208,26 @@ EMAIL_HOST= 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_PASSWORD = 'ihj4wr91'
+
+# Memcachier configuration
+def get_cache():
+  try:
+    os.environ['MEMCACHE_SERVERS'] = os.environ['MEMCACHIER_SERVERS']
+    os.environ['MEMCACHE_USERNAME'] = os.environ['MEMCACHIER_USERNAME']
+    os.environ['MEMCACHE_PASSWORD'] = os.environ['MEMCACHIER_PASSWORD']
+    return {
+      'default': {
+        'BACKEND': 'django_pylibmc.memcached.PyLibMCCache',
+        'LOCATION': os.environ['MEMCACHIER_SERVERS'],
+        'TIMEOUT': 500,
+        'BINARY': True,
+      }
+    }
+  except:
+    return {
+      'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
+      }
+    }
+
+CACHES = get_cache()
