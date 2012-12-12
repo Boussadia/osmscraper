@@ -13,7 +13,6 @@ APPEND_SLASH = False
 
 ADMINS = (
     ('Ahmed Boussadia', 'ahmed@dalliz.com'),
-    ('Mohamed Ali Ben Aleya', 'dali@dalliz.com'),
 )
 
 MANAGERS = ADMINS
