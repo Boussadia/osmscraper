@@ -10,6 +10,12 @@
 	font-weight:bold;
 }
 
+@font-face{
+	font-family: Norican;
+	src: url('../fonts/Norican-Regular.ttf');
+	font-weight: normal;
+}
+
 p, h1, h2, h3, h4, h5, h6{
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizelegibility;
@@ -600,7 +606,7 @@ footer .separator{
 
 .explanation{
 	color: #d82121;
-	font-family: brankovic;
+	font-family: Norican;
 	text-align: center;
 	width: 150px;
 	position: absolute;

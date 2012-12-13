@@ -67,19 +67,24 @@
 	z-index: 9;
 }
 
-#slide_show .cta .message{
-	font-family: brankovic;
-	margin-left: 10px;
+#slide_show .message{
+	font-family: Norican;
+	margin-left: 25px;
 	color: #9E09A8;
 	font-size: 30px;
 	line-height: 30px;
 	width: 305px;
 }
 
+#slide_show .slides_container .message{
+	margin-top: 91px;
+}
+
 #slide_show button{
 	left: 80px;
 	position: absolute;
 	top: 110px;
+	width: 190px;
 }
 
 /* Online Supermarkets*/
@@ -136,14 +141,18 @@
 }
 
 #osms .row{
-	margin-left: 0px;
+	margin-left: 24px;
 }
 
 #osms [class*="span"]{
 	float: left;
 	min-height: 1px;
-	margin-left: 10px;
-	margin-right: 10px;
+	margin-left: 6px;
+	margin-right: 17px;
+}
+
+#osms .span3 {
+	width: 187px;
 }
 
 /* Comercial pitch */
