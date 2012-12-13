@@ -26,7 +26,7 @@
 		<meta property="og:locale" content="fr-fr" >
 		<meta property="og:site_name" content="Dalliz">
 		<meta property="og:description" content="{{ meta_description }}">
-		<meta property="og:image" content="{% static images/logo_og.png %}">
+		<meta property="og:image" content="{% static dalliz/images/logo_og.png %}">
 		<meta property="fb:admins" content="1478671803" />
 
 		{% block meta_robots %}
@@ -34,11 +34,11 @@
 		{% endblock %}
 
 		<!-- Favico -->
-		<link href="{% static images/favicon.ico %}" rel="icon" type="image/x-icon" />
+		<link href="{% static dalliz/images/favicon.ico %}" rel="icon" type="image/x-icon" />
 
 		<!-- CSS -->
-		<link href="{% static css/bootstrap.min.css %}" rel="stylesheet">
-		<link href="{% static css/base.css %}" rel="stylesheet">
+		<link href="{% static dalliz/css/bootstrap.min.css %}" rel="stylesheet">
+		<link href="{% static dalliz/css/base.css %}" rel="stylesheet">
 
 		<!-- Support for full multi-stop gradients with IE9 (using SVG). Add a "gradient" class to all your elements that have a gradient, and add the following override to your HTML to complete the IE9 support: -->
 		<!--[if gte IE 9]>
@@ -192,7 +192,7 @@
 			<div class="bottom">
 				<div class="container">
 					<span><a href="/partenariat/">Partenariat</a> </span>
-					•<a href="{% static files/presse_kit_dalliz.rar %}"> Presse kit </a>
+					•<a href="{% static dalliz/files/presse_kit_dalliz.rar %}"> Presse kit </a>
 					•<span> Jobs </span>
 					•<span>  <a href="/mentions-legales/">Mentions légales</a></span>
 					<span>• <a href="/conditions-generale-d-utilisation/">Conditions générales d'utilisation</a> </span>
@@ -209,16 +209,13 @@
 		<!-- Javascript -->
 		<!-- JQuery -->
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-		<script>window.jQuery || document.write('<script src="{% static js/libs/jquery-1.7.2.min.js %}"><\/script>')</script>
-		<!-- Underscore & Backbone -->
-		<script type="text/javascript" src="{% static js/underscore-min.js%}"></script>
-		<script type="text/javascript" src="{% static js/backbone-min.js%}"></script>
+		<script>window.jQuery || document.write('<script src="{% static dalliz/js/libs/jquery-1.7.2.min.js %}"><\/script>')</script>
 
 		<!-- Bootstrap JS -->
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/bootstrap.min.js"></script>
 
-		<script type="text/javascript" src="{% static js/cart.js%}"></script>
-		<script type="text/javascript" src="{% static js/prospects.js %}"></script>
+		<script type="text/javascript" src="{% static dalliz/js/cart.js%}"></script>
+		<script type="text/javascript" src="{% static dalliz/js/prospects.js %}"></script>
 		<!-- Custom Javascript Import -->
 		{% block javascript%}
 		{% endblock%}

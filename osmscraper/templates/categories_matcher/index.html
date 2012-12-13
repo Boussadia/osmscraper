@@ -3,7 +3,7 @@
 		<title>Categories Matcher</title>
 
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
-		<script type="text/javascript" src="{{ STATIC_URL }}js/categories_matcher.js"></script>
+		<script type="text/javascript" src="{% static categories_matcher/js/categories_matcher.js %}"></script>
 		<script type="text/javascript">
 			var dalliz_categories = {
 				{% for id, name in categories.iteritems %}
@@ -12,7 +12,7 @@
 			} 
 		</script>
 
-		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/categories_matcher.css">
+		<link rel="stylesheet" type="text/css" href="{% static categories_matcher/css/categories_matcher.css %}">
 	</head>
 	<body>
 		<h1>Categories Matcher</h1>
