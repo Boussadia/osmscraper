@@ -9,6 +9,8 @@ from django.views.generic.simple import direct_to_template, redirect_to
 from django.contrib import admin
 admin.autodiscover()
 
+import allauth
+
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'osmscraper.views.home', name='home'),
@@ -40,6 +42,7 @@ urlpatterns = patterns('',
     url(r'^brand/ooshop/set/(?P<ooshop_brand_id>\d+)/(?P<dalliz_brand_id>\d+)/?$', 'ooshop_brand_matcher.views.set'),
 
     # Dalliz website
+    url(r'^accounts/', include('allauth.urls')),
     url(r'^/?$', 'dalliz.views.index'),
     url(r'^prospects/?$','dalliz.views.prospects'),
     url(r'^a-propos-de-dalliz/?$', 'dalliz.views.a_propos'),
@@ -49,7 +52,9 @@ urlpatterns = patterns('',
     url(r'^robots\.txt$', direct_to_template, {'template': 'dalliz/robots.txt', 'mimetype': 'text/plain'}),
     url(r'^google0b72a6d52b859293\.html$', direct_to_template, {'template': 'dalliz/google0b72a6d52b859293.html', 'mimetype': 'html'}),
     url(r'^sitemap\.xml$', direct_to_template, {'template': 'dalliz/sitemap.xml', 'mimetype': 'xml'}),
+    
     url(r'^.*$', redirect_to, {'url': '/'}),
+    
     url(r'^produit/(?P<name>((\w)+-?)+)/?$','dalliz.views.product'),
     url(r'^categorie/(?P<sub_category>((\w)+-?)+)/?$','dalliz.views.category'),
     url(r'^panier/?$','dalliz.views.cart'),

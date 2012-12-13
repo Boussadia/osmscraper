@@ -4,6 +4,7 @@ import django
 # used as starting points for various other paths
 DJANGO_ROOT = os.path.dirname(os.path.realpath(django.__file__))
 SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
+PROJECT_ROOT = '/'.join(SITE_ROOT.split('/')[:-1])
 
 # Django settings for osmscraper project.
 
@@ -71,6 +72,8 @@ STATICFILES_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     # os.path.join(SITE_ROOT, 'static'),
+    '/'.join([PROJECT_ROOT, 'dalliz', 'static']),
+    '/'.join([PROJECT_ROOT, 'categories_matcher', 'static']),
 )
 
 # List of finder classes that know how to find static files in
@@ -143,6 +146,18 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    # django-allauth ahtentication apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.linkedin',
+    'allauth.socialaccount.providers.openid',
+    'allauth.socialaccount.providers.persona',
+    'allauth.socialaccount.providers.soundcloud',
+    'allauth.socialaccount.providers.twitter',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -230,3 +245,21 @@ def get_cache():
     }
 
 CACHES = get_cache()
+
+
+# Allauth configuration settings
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.core.context_processors.static",
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.request",
+    "allauth.account.context_processors.account",
+    "allauth.socialaccount.context_processors.socialaccount",
+)
+
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    "django.contrib.auth.backends.ModelBackend",
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
