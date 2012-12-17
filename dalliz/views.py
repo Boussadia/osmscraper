@@ -21,7 +21,7 @@ from dalliz.models import Prospect
 def user(function):
 	def wrapper(request, *args, **kwargs):
 		# Getting information of called method and updating dict
-		RENDER_DICT = {'meta_description': "Dalliz est un comparateur de panier entre les différents supermarchés en lignes. Avec Dalliz, gagnez du temps, économisez de l'argent.", 'user_set': False}
+		RENDER_DICT = {'meta_description': "Faites des économies sur vos courses en ligne en trouvant le prix le moins cher pour votre panier !", 'user_set': False}
 		template_path, render_dict = function(request, *args, **kwargs)
 		RENDER_DICT.update(render_dict)
 
