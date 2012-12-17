@@ -140,6 +140,7 @@ INSTALLED_APPS = (
     'scraper_scheduler',
     'categories_matcher',
     'ooshop_brand_matcher',
+    'ooshop_monoprix',
     'dalliz',
     'pystache',
     # Uncomment the next line to enable the admin:
