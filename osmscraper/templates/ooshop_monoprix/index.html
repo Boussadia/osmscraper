@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title> Telemarket/Monoprix product matcher </title>
+		<title> Ooshop/Monoprix product matcher </title>
 
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
-		<script type="text/javascript" src="{{ STATIC_URL }}telemarket_monoprix/js/telemarket_matching.js"></script>
-		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}telemarket_monoprix/css/telemarket_matching.css">
+		<script type="text/javascript" src="{{ STATIC_URL }}ooshop_monoprix/js/ooshop_matching.js"></script>
+		<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}ooshop_monoprix/css/ooshop_matching.css">
 	</head>
 	<body>
 		<button id="start"> Start Matching! </button>
 		
 		<div id="main" class="loading">
-			<section id="telemarket">
+			<section id="ooshop">
 				<h1 class="name_product"></h1>
 				<h3 class='categories'>Categories : </h3>
 				<a href="" class="link_product" target="_blank">
@@ -34,12 +34,12 @@
 		</div>
 
 		<div id="loading">
-			<img src="{{ STATIC_URL }}telemarket_monoprix/images/loading.gif">
+			<img src="{{ STATIC_URL }}ooshop_monoprix/images/loading.gif">
 		</div>
 
 		<script type="text/javascript">
-			var first_element_id = {{ element_id }};
-			ID_TELEMARKET_PRODUCT = first_element_id;
+			var first_element_id = "{{ element_id }}";
+			ID_OOSHOP_PRODUCT = first_element_id;
 		</script>
 	</body>
 </html>

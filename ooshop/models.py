@@ -80,10 +80,14 @@ class Product(models.Model):
 	unit = models.ForeignKey(Unit, null = True)
 	image_url = models.CharField(max_length=9999, null = True)
 	category = models.ManyToManyField(Category_final, null = True)
+	monoprix_product = models.ForeignKey(Product_monoprix, null=True, related_name="ooshop_monoprix_product")
 	dalliz_product = models.ForeignKey(Dalliz_product, null=True, related_name="ooshop_product_dalliz_product")
 
 	def __unicode__(self):
-		return self.title
+		if self.title is not None:
+			return self.title
+		else:
+			return self.reference
 
 class Product_history(models.Model):
 	product = models.ForeignKey(Product)

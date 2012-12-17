@@ -76,3 +76,4 @@ def perform_scraping():
 
 	print "Performing matching"
 	# perform_monoprix_telemarket_matching()
+	perform_ooshop_monoprix_matching()

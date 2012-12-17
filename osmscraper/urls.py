@@ -36,6 +36,13 @@ urlpatterns = patterns('',
     url(r'^telemarket_monoprix/products/previous/(?P<id>\d+)/?$', 'telemarket_monoprix.views.previous'),
     url(r'^telemarket_monoprix/products/cancel/(?P<id>\d+)/?$', 'telemarket_monoprix.views.cancel'),
 
+    # Ooshop/Monoprix products validation
+    url(r'^ooshop_monoprix/products/?$', 'ooshop_monoprix.views.index'),
+    url(r'^ooshop_monoprix/products/suggestions/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.suggestions'),
+    url(r'^ooshop_monoprix/products/next/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.next'),
+    url(r'^ooshop_monoprix/products/previous/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.previous'),
+    url(r'^ooshop_monoprix/products/cancel/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.cancel'),
+
     # Ooshop brand matcher
     url(r'^brand/ooshop/(?P<id>\d+)/?$','ooshop_brand_matcher.views.selector'),
     url(r'^brand/ooshop/cancel/(?P<id>\d+)/?$', 'ooshop_brand_matcher.views.cancel'),
