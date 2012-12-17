@@ -5,12 +5,15 @@ import math
 
 from django.db import connection, transaction
 
-from telemarket.models import Monoprix_matching
+from telemarket.models import Monoprix_matching as Telemarket_monoprix_matching
 from telemarket.models import Product as Telemarket_product
 
 from monoprix.models import Product as Monoprix_product
 
 from ooshop.models import Brand_matching
+from ooshop.models import Monoprix_matching as Ooshop_monoprix_matching
+from ooshop.models import Product as Ooshop_product
+from ooshop.models import Brand as Ooshop_brand
 
 
 from engine import Engine
@@ -34,9 +37,17 @@ class OSM_matcher(object):
 	def get_sql_query(self):
 		return self.__sql_query__
 
+	def set_sql_query(self, query):
+		self.__sql_query__ = query;
+
 	def get_data_from_db(self):
 		cursor = connection.cursor()
 		cursor.execute(self.get_sql_query())
+		return self.dictfetchall(cursor)
+
+	def execute_query(self, sql):
+		cursor = connection.cursor()
+		cursor.execute(sql)
 		return self.dictfetchall(cursor)
 
 	def get_engine_class(self):
@@ -150,7 +161,7 @@ class Telemarket_matcher(OSM_matcher):
 class Monoprix_matcher(OSM_matcher):
 	def __init__(self): 
 		super(Monoprix_matcher, self).__init__(
-			("SELECT monoprix_product.id, (unaccent(lower(monoprix_brand.name))||' '||unaccent(lower(title))) as content, monoprix_unit_dalliz_unit.to_unit_id as unit "
+			("SELECT monoprix_product.id, (unaccent(lower(monoprix_brand.name))||' '||unaccent(lower(title))) as content, monoprix_unit_dalliz_unit.to_unit_id as unit, monoprix_brand.dalliz_brand_id as dalliz_brand "
 				"FROM monoprix_product "
 				"JOIN monoprix_unit_dalliz_unit ON monoprix_product.unit_id = monoprix_unit_dalliz_unit.from_unit_id "
 				"JOIN monoprix_brand on monoprix_brand.id = monoprix_product.brand_id "
@@ -176,18 +187,25 @@ class Monoprix_matcher(OSM_matcher):
 				for category_monoprix in product_monoprix_ctegories:
 					if categories[j]['monoprix_category'] == category_monoprix and categories[j]['category'] not in product['categories']:
 						product['categories'].append(categories[j]['category'])
+						product['brands'] = [product['dalliz_brand']]
 			yield product
 
-	def start_process(self, other_products):
+	def start_process(self, other_products, brand = False, osm = 'telemarket'):
+		"""
+		Matching process, if brand is True, takes into account for product brand.
+		"""
 		# Indexation
 		self.make_index()
 		engine = self.get_engine()
 		matches = {}
 		for other_product in other_products:
 			query = other_product["content"]
-			engine.set_possible_products(other_product)
+			engine.set_possible_products(other_product, brand)
 			matches[other_product['id']] = engine.get_possible_matches(query)
-			self.save_matches_telemarket(other_product['id'], matches[other_product['id']]) 
+			if osm == 'telemarket':
+				self.save_matches_telemarket(other_product['id'], matches[other_product['id']]) 
+			elif osm == 'ooshop':
+				self.save_matches_ooshop(other_product['id'], matches[other_product['id']]) 
 
 		self.set_matches(matches)
 
@@ -197,7 +215,19 @@ class Monoprix_matcher(OSM_matcher):
 			for i in xrange(0,len(matches)):
 				id_monoprix = matches[i]['id']
 				score = matches[i]['score']
-				relation, created = Monoprix_matching.objects.get_or_create(telemarket_product_id = id_telemarket_product, monoprix_product_id = id_monoprix, defaults={'score': score})
+				relation, created = Telemarket_monoprix_matching.objects.get_or_create(telemarket_product_id = id_telemarket_product, monoprix_product_id = id_monoprix, defaults={'score': score})
+				relation.score = score
+				relation.save()
+		except Exception, e:
+			print e
+
+	def save_matches_ooshop(self, id_ooshop_product,matches ):
+		try:
+			print 'Saving matcher result'
+			for i in xrange(0,len(matches)):
+				id_monoprix = matches[i]['id']
+				score = matches[i]['score']
+				relation, created = Ooshop_monoprix_matching.objects.get_or_create(ooshop_product_id = id_ooshop_product, monoprix_product_id = id_monoprix, defaults={'score': score})
 				relation.score = score
 				relation.save()
 		except Exception, e:
@@ -211,5 +241,30 @@ class Ooshop_brand_matcher(OSM_matcher):
 		brands_from_db = self.get_data_from_db()
 		for brand in brands_from_db:
 			yield brand
+
+class Ooshop_matcher(OSM_matcher):
+	def __init__(self):
+		super(Ooshop_matcher, self).__init__(("SELECT ooshop_product.reference, (unaccent(lower(title))) as content, ooshop_unit_dalliz_unit.to_unit_id as unit, ooshop_product.brand_id as brand "
+				"FROM ooshop_product "
+				"JOIN ooshop_unit_dalliz_unit ON ooshop_product.unit_id = ooshop_unit_dalliz_unit.from_unit_id "
+				"ORDER BY length(title) DESC"), Product_engine)
+
+	def products(self):
+		products_from_db = self.get_data_from_db()
+		categories = list(self.execute_query("SELECT category_final_id as ooshop_category, category_sub_id as category FROM ooshop_category_final_dalliz_category"))
+		# brands = list(self.execute_query("SELECT from_brand_id as ooshop_brand, to_brand_id as dalliz_brand FROM ooshop_brand_dalliz_brand_m2m"))
+		for product in products_from_db:
+			product['id'] = product['reference']
+			product['categories'] = []
+			product_ooshop_categories = [ category.id for category in Ooshop_product.objects.get(reference=product['reference']).category.all()]
+			product_ooshop_brands = [ brand.id for brand in Ooshop_product.objects.get(reference=product['reference']).brand.dalliz_brand_m2m.all()]
+			product['brands'] = product_ooshop_brands
+			for j in xrange(0,len(categories)):
+				for category_ooshop in product_ooshop_categories:
+					if categories[j]['ooshop_category'] == category_ooshop and categories[j]['category'] not in product['categories']:
+						product['categories'].append(categories[j]['category'])
+
+
+			yield product
 
 

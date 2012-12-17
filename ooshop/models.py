@@ -5,6 +5,8 @@ from dalliz.models import Brand as Brand_dalliz
 from dalliz.models import Unit as Unit_dalliz
 from dalliz.models import Product as Dalliz_product
 
+from monoprix.models import Product as Product_monoprix
+
 class Category_main(models.Model):
 	name = models.CharField(max_length=100, unique=True)
 	url = models.CharField(max_length=9999)
@@ -95,3 +97,8 @@ class Product_history(models.Model):
 
 	def __unicode__(self):
 		return self.product.title+' - '+str(self.timestamp)+' - '+str(self.price)
+
+class Monoprix_matching(models.Model):
+	ooshop_product = models.ForeignKey(Product)
+	monoprix_product = models.ForeignKey(Product_monoprix, related_name='matching_monoprix_ooshop')
+	score = models.FloatField()

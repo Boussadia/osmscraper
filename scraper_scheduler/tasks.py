@@ -75,4 +75,4 @@ def perform_scraping():
 		print "Ooshop scraper executed properly"
 
 	print "Performing matching"
-	perform_monoprix_telemarket_matching()
+	# perform_monoprix_telemarket_matching()

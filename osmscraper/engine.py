@@ -315,19 +315,28 @@ class Product_engine(Engine):
 	def __init__(self, corpus):
 		super(Product_engine, self).__init__(corpus)
 
-	def are_comprable(self, product_1, product_2):
+	def are_comprable(self, product_1, product_2, brand = False):
 		"""
-			Comparaison of products compared by unit of product
+			Comparaison of products compared by unit of product. if brand is set to True, takes intot acount brand of product.
 		"""
 		if product_1["unit"] == product_2["unit"]:
 			for i in xrange(0,len(product_1['categories'])):
 				for j in xrange(0,len(product_2['categories'])):
 					if product_1['categories'][i] == product_2['categories'][j]:
-						return True
+						if brand:
+							for k in xrange(0, len(product_1['brands'])):
+								for l in xrange(0, len(product_2['brands'])):
+									if product_1['brands'][k] == product_2['brands'][l]:
+										return True
+						else:
+							return True
 
 		return False
 
-	def set_possible_products(self, product_dict):
+	def set_possible_products(self, product_dict, brand = False):
+		"""
+			Sets possible matches for a product, if brand is true, takes into account for product brand.
+		"""
 		query = product_dict['content']
 		print "Calculating score for "+product_dict['content']
 		possible_matches = []
@@ -336,7 +345,7 @@ class Product_engine(Engine):
 		index = self.get_index()
 
 		for product in products:
-			if self.are_comprable(product_dict, product):
+			if self.are_comprable(product_dict, product, brand):
 				score = self.generate_score(query, product)
 			else:
 				score = 0.0
