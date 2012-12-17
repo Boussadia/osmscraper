@@ -3,6 +3,17 @@ $(document).ready(function(){
 		window.location.hash = first_element_id;
 	})
 
+	// Keybord listener on previous and next
+	$('html').keyup(function(e){
+		if(e.keyCode === 39){
+			// Next
+			$('#next').click();
+		}else if(e.keyCode === 37){
+			// Previous
+			$('#previous').click();
+		}
+	})
+
 	$("#next").click(function(){
 		next();
 	});
@@ -54,7 +65,6 @@ $(document).ready(function(){
 			var id = current_hash.substring(1);
 			if (id){
 				$('#ooshop').attr('data-id', id);
-				console.log(id);
 				get_data(id);
 				ID_OOSHOP_PRODUCT = id;
 
