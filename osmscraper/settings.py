@@ -8,7 +8,7 @@ PROJECT_ROOT = '/'.join(SITE_ROOT.split('/')[:-1])
 
 # Django settings for osmscraper project.
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = False
 

@@ -28,7 +28,8 @@ def suggestions(request, id):
 		# Getting product corresponding at id
 		product = Ooshop_product.objects.get(reference=id)
 		product_json = json.loads(serializers.serialize("json", [product]))[0]["fields"]
-		product_history = Ooshop_product_history.objects.filter(product_id = id).order_by('-timestamp')[0]
+		product_histories = Ooshop_product_history.objects.filter(product_id = id).order_by('-timestamp')
+		product_history = product_histories.order_by('-timestamp')[0]
 		product_json['price'] = product_history.price
 		product_json['unit_price'] = product_history.unit_price
 
@@ -70,7 +71,7 @@ def next(request, id):
 	if 'reference-' in id:
 		id = id.split('reference-')[1]
 	# id_next = int(id)+1
-	products = Ooshop_product.objects.order_by('reference').filter(reference__gte=id)
+	products = Ooshop_product.objects.order_by('reference').filter(reference__gte=id).filter(title__isnull=False)
 	
 	if len(products)>1:
 		product = products[1]
@@ -84,7 +85,7 @@ def previous(request, id):
 	result = {}
 	if 'reference-' in id:
 		id = id.split('reference-')[1]
-	products = Ooshop_product.objects.order_by('-reference').filter(reference__lte=id)
+	products = Ooshop_product.objects.order_by('-reference').filter(reference__lte=id).filter(title__isnull=False)
 
 	if len(products)>1:
 		product = products[1]
