@@ -121,8 +121,8 @@ def save_products(final_categories):
 
 		products = ooshop.get_products_for_category(category)
 
-		for i in xrange(0, len(products)):
-			save_product(products[i], final_categories[i])
+		for j in xrange(0, len(products)):
+			save_product(products[j], final_categories[i])
 
 def save_product(product, final_category):
 	"""
@@ -159,6 +159,9 @@ def save_product(product, final_category):
 			product_db.brand = brand_db
 			product_db.unit = unit_db
 			product_db.save()
+
+		# Cleaning categories
+		product_db.category.clear()
 
 		# Adding category
 		product_db.category.add(final_category)

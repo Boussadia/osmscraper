@@ -281,7 +281,8 @@ class Ooshop(OSMScraper):
 def perform():
 	ooshop = Ooshop()
 	# ooshop.get_menu()
-	url = 'http://www.ooshop.com/courses-en-ligne/ContentNavigation.aspx?TO_NOEUD_IDMO=N000000013065&TO_NOEUD_IDFO=81002&NOEUD_NIVEAU=3'
+	# cookie = "cf=1; xtvrn="
+	url = 'http://www.ooshop.com/courses-en-ligne/ContentNavigation.aspx?TO_NOEUD_IDMO=N000000013580&TO_NOEUD_IDFO=81517&NOEUD_NIVEAU=3'
 	products = ooshop.get_product_list_for_url_category(url)
 	print products
 

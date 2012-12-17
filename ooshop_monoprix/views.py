@@ -39,6 +39,7 @@ def suggestions(request, id):
 		ooshop_categories = product.category.all()[0]
 		categories = ooshop_categories.dalliz_category.all()
 		categories_json = [ element['fields'] for element in json.loads(serializers.serialize("json", categories))]
+		print categories_json
 		result['product']['categories'] = categories_json
 
 
