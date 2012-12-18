@@ -32,7 +32,6 @@ def suggestions(request, id):
 		product_history = product_histories.order_by('-timestamp')[0]
 		product_json['price'] = product_history.price
 		product_json['unit_price'] = product_history.unit_price
-		print product_json
 
 		result['product'] = product_json
 
@@ -63,13 +62,14 @@ def suggestions(request, id):
 		
 		for suggestion in suggestions:
 			reference = suggestion['reference']
-			is_in_result = False
-			for res in result['suggestions']:
-				if res['reference'] == reference:
-					is_in_result = True
+			if reference is not None:
+				is_in_result = False
+				for res in result['suggestions']:
+					if res['reference'] == reference:
+						is_in_result = True
 
-			if not is_in_result:
-				result['suggestions'].append(suggestion)
+				if not is_in_result:
+					result['suggestions'].append(suggestion)
 
 	if request.method == 'POST':
 		post = request.POST
