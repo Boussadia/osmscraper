@@ -150,7 +150,6 @@ def save_product(product, sub_category_final):
 			
 		product_db.category.clear()
 		product_db.category.add(sub_category_final)
-		print sub_category_final
 		print "Adding category "+unicode(sub_category_final)
 
 		# Saving record

@@ -44,20 +44,33 @@ def suggestions(request, id):
 
 
 		# Fetching related suggestions
-		sql_query = ("SELECT ooshop_monoprix_matching.score as score , max(monoprix_product.id) as id, monoprix_product.title as product_name, monoprix_brand.name as brand_name , monoprix_product.url, monoprix_product.image_url,  monoprix_product.unit_price as unit_price,monoprix_product.price as price , dalliz_unit.name as unit "
+		sql_query = ("SELECT ooshop_monoprix_matching.score as score , max(monoprix_product.id) as id, monoprix_product.title as product_name, monoprix_brand.name as brand_name , monoprix_product.url, monoprix_product.image_url, (monoprix_product_history.unit_price) as unit_price,(monoprix_product_history.price) as price , dalliz_unit.name as unit, monoprix_product.reference "
 					"FROM ooshop_monoprix_matching "
 					"JOIN ooshop_product ON ooshop_monoprix_matching.ooshop_product_id = ooshop_product.reference "
 					"JOIN monoprix_product ON monoprix_product.id = ooshop_monoprix_matching.monoprix_product_id "
+					"JOIN monoprix_product_history on monoprix_product_history.product_id = monoprix_product.id "
 					"JOIN monoprix_brand ON monoprix_brand.id = monoprix_product.brand_id "
 					"JOIN monoprix_unit_dalliz_unit ON monoprix_product.unit_id = monoprix_unit_dalliz_unit.from_unit_id "
 					"JOIN dalliz_unit ON dalliz_unit.id = monoprix_unit_dalliz_unit.to_unit_id "
 					"WHERE ooshop_product.reference = '"+str(id)+"' "
-					"GROUP BY  ooshop_monoprix_matching.score , monoprix_product.title, monoprix_brand.name , monoprix_product.url, monoprix_product.image_url, monoprix_product.unit_price, dalliz_unit.name, monoprix_product.price "
-					"ORDER BY ooshop_monoprix_matching.score DESC "
+					"GROUP BY ooshop_monoprix_matching.score , monoprix_product.title, monoprix_brand.name , monoprix_product.url, monoprix_product.image_url, dalliz_unit.name, monoprix_product_history.unit_price, monoprix_product_history.price, monoprix_product.reference, monoprix_product_history.timestamp "
+					"ORDER BY ooshop_monoprix_matching.score DESC , monoprix_product.reference, monoprix_product_history.timestamp DESC "
 					" ")
 		cursor = connection.cursor()
 		cursor.execute(sql_query)
-		result['suggestions'] = dictfetchall(cursor)
+		suggestions = dictfetchall(cursor)
+		result['suggestions'] = []
+		
+		for suggestion in suggestions:
+			reference = suggestion['reference']
+			is_in_result = False
+			for res in result['suggestions']:
+				if res['reference'] == reference:
+					is_in_result = True
+
+			if not is_in_result:
+				result['suggestions'].append(suggestion)
+
 	if request.method == 'POST':
 		post = request.POST
 		id_monoprix = post["id_monoprix"]
