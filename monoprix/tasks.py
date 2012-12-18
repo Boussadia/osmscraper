@@ -205,18 +205,22 @@ def perform_update_scraping():
 	new_products_reference = []
 
 	for category in categories:
-		products = monoprix.extract_product_list(category.url)
-		for title, product in products.iteritems():
-			print title+' ('+product["reference"]+')'
-			product_db = Product.objects.filter(reference = product["reference"])
-			if len(product_db)>0:
-				print "Product already in database, creating history entry"
-				history = Product_history(product = product_db[0], price = product['price'], unit_price = product['unit_price'], promotion = product['promotion'])
-				history.save()
-			else:
-				new_products_reference.append(product["reference"])
-				new_product = monoprix.extract_product(product['url'])
-				save_product(new_product, category)
+		try:
+			products = monoprix.extract_product_list(category.url)
+			for title, product in products.iteritems():
+				print title+' ('+product["reference"]+')'
+				product_db = Product.objects.filter(reference = product["reference"])
+				
+				if len(product_db)>0:
+					print "Product already in database, creating history entry"
+					history = Product_history(product = product_db[0], price = product['price'], unit_price = product['unit_price'], promotion = product['promotion'])
+					history.save()
+				else:
+					new_products_reference.append(product["reference"])
+					new_product = monoprix.extract_product(product['url'])
+					save_product(new_product, category)
+		except Exception, e:
+			print 'ERROR OCCURED WHILE SAVING PRODUCTS TO DB : '+e
 
 	send_mail_new_products(new_products_reference)
 
