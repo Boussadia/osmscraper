@@ -220,7 +220,7 @@ def perform_update_scraping():
 					new_product = monoprix.extract_product(product['url'])
 					save_product(new_product, category)
 		except Exception, e:
-			print 'ERROR OCCURED WHILE SAVING PRODUCTS TO DB : '+e
+			print 'ERROR OCCURED WHILE SAVING PRODUCTS TO DB : '+str(e)
 
 	send_mail_new_products(new_products_reference)
 
