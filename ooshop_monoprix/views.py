@@ -32,6 +32,7 @@ def suggestions(request, id):
 		product_history = product_histories.order_by('-timestamp')[0]
 		product_json['price'] = product_history.price
 		product_json['unit_price'] = product_history.unit_price
+		print product_json
 
 		result['product'] = product_json
 
@@ -39,7 +40,6 @@ def suggestions(request, id):
 		ooshop_categories = product.category.all()[0]
 		categories = ooshop_categories.dalliz_category.all()
 		categories_json = [ element['fields'] for element in json.loads(serializers.serialize("json", categories))]
-		print categories_json
 		result['product']['categories'] = categories_json
 
 

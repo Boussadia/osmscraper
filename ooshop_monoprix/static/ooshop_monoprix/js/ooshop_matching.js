@@ -126,7 +126,7 @@ $(document).ready(function(){
 				text_categories = text_categories +', ';
 			}
 		}
-		text_categories = text_categories+' | price = '+ooshop_product['price']+'€ | unit price '+ooshop_product['unit_price']+'€/unit';
+		text_categories = text_categories+' | price = '+ooshop_product['price']+'€ | unit price '+ooshop_product['unit_price']+'€/unit | '+ooshop_product['price']/ooshop_product['unit_price']+' unit';
 		ID_OOSHOP_PRODUCT = ooshop_product['id'];
 
 		$('#ooshop .name_product').text(name_product);

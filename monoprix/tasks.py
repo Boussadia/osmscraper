@@ -148,10 +148,10 @@ def save_product(product, sub_category_final):
 		else:
 			print "Updating product "+ title+" to database..."
 			
-		categories = product_db.category.filter(id = sub_category_final.id)
-		if len(categories) == 0:
-			product_db.category.add(sub_category_final)
-			print "Adding new category "+unicode(sub_category_final)
+		product_db.category.clear()
+		product_db.category.add(sub_category_final)
+		print sub_category_final
+		print "Adding category "+unicode(sub_category_final)
 
 		# Saving record
 		history = Product_history(product = product_db, price = price, unit_price=unit_price, promotion=promotion)
