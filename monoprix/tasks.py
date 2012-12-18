@@ -70,9 +70,9 @@ def get_product_list(sub_categories_final_list):
 		product_lists = extract_products(url_products)
 
 		# Going through every product and saving it
-		for title_product in product_lists:
+		for reference_product in product_lists:
 			# First we retrive information about product
-			product = monoprix.extract_product(product_lists[title_product]["url"])
+			product = monoprix.extract_product(product_lists[reference_product]["url"])
 			save_product(product, sub_category_final)
 		
 
@@ -207,16 +207,16 @@ def perform_update_scraping():
 	for category in categories:
 		try:
 			products = monoprix.extract_product_list(category.url)
-			for title, product in products.iteritems():
-				print title+' ('+product["reference"]+')'
-				product_db = Product.objects.filter(reference = product["reference"])
+			for reference, product in products.iteritems():
+				print product['title']+' ('+reference+')'
+				product_db = Product.objects.filter(reference = reference)
 				
 				if len(product_db)>0:
 					print "Product already in database, creating history entry"
 					history = Product_history(product = product_db[0], price = product['price'], unit_price = product['unit_price'], promotion = product['promotion'])
 					history.save()
 				else:
-					new_products_reference.append(product["reference"])
+					new_products_reference.append(reference)
 					new_product = monoprix.extract_product(product['url'])
 					save_product(new_product, category)
 		except Exception, e:

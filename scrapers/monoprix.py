@@ -203,7 +203,7 @@ class Monoprix(OSMScraper):
 									product["unit_price"] = -1
 									product["unit"] = "Unit"
 
-								products[title_product] = product
+								products[reference] = product
 							except Exception, e:
 								print e
 								print "Something went wrong with a product. (url_category = %s)"%(url)
@@ -227,6 +227,7 @@ class Monoprix(OSMScraper):
 		product = {
 			"url": url_product
 		}
+		product['reference'] = product['url'].split('/')[-1].split('-')[-1].split(';jsessionid=')[0]
 		parsed_page, code = self.get_parsed_page_for_url(url_product)
 
 		product["status"] = code
