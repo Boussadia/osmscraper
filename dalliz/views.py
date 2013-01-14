@@ -281,6 +281,7 @@ def prospects(request):
 		mail = request.POST['mail']
 		if re.search(regex, mail):
 			prospect, created = Prospect.objects.get_or_create(mail= mail)
+			nb_prospects = len(Prospect.objects.all())
 
 			if created:
 				subject = 'Dalliz, le comparateur de panier'
@@ -297,6 +298,7 @@ def prospects(request):
 				L'equipe Dalliz
 				"""
 				send_mail(subject, message, 'hello@dalliz.com', [mail], fail_silently=False)
+				send_mail('Nouveau prospect', 'Mail : '+mail+'.\nNombre d\'inscrits : '+str(nb_prospects), 'hello@dalliz.com', ['hello@dalliz.com'] , fail_silently=False)
 
 
 			response = {'status': 200}
