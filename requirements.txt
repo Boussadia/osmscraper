@@ -17,6 +17,7 @@ gunicorn==0.14.6
 httplib2==0.7.7
 kombu==2.4.7
 lxml==3.0
+newrelic==1.9.0.21
 oauth2==1.5.211
 psycopg2==2.4.5
 pylibmc==1.2.3
