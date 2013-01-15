@@ -9,7 +9,7 @@ from django.db import connection, transaction
 from osmscraper.utility import dictfetchall
 from osmscraper.unaccent import unaccent
 
-from ooshop.models import Product as Ooshop_product
+from ooshop.models import Product as Ooshop_product, Brand as Ooshop_brand
 from ooshop.models import Product_history as Ooshop_product_history
 from monoprix.models import Product as Monoprix_product
 from dalliz.models import Product as Dalliz_product
@@ -27,7 +27,9 @@ def suggestions(request, id):
 	if request.method == 'GET':
 		# Getting product corresponding at id
 		product = Ooshop_product.objects.get(reference=id)
+		brand_name = Ooshop_brand.objects.get(id=product.brand_id).name
 		product_json = json.loads(serializers.serialize("json", [product]))[0]["fields"]
+		product_json['title'] = product_json['title']+' - '+brand_name
 		product_histories = Ooshop_product_history.objects.filter(product_id = id).order_by('-timestamp')
 		product_history = product_histories.order_by('-timestamp')[0]
 		product_json['price'] = product_history.price
