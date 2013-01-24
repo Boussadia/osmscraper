@@ -75,3 +75,17 @@ class Prospect(models.Model):
 	def __unicode__(self):
 		return self.mail
 
+
+# New models of category
+class Category(models.Model):
+	name = models.CharField(max_length=100)
+	parent_category = models.ForeignKey('self', null = True)
+	url = models.CharField(max_length=9999, null=True)
+	position = models.IntegerField(default=0)
+
+	class Meta:
+		unique_together = ("name", "parent_category")
+
+	def __unicode__(self):
+		return self.name
+
