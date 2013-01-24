@@ -31,7 +31,7 @@ def suggestions(request, id):
 		product_json = json.loads(serializers.serialize("json", [product]))[0]["fields"]
 		product_json['title'] = product_json['title']+' - '+brand_name
 		product_histories = Ooshop_product_history.objects.filter(product_id = id).order_by('-timestamp')
-		product_history = product_histories.order_by('-timestamp')[0]
+		product_history = product_histories[0]
 		product_json['price'] = product_history.price
 		product_json['unit_price'] = product_history.unit_price
 

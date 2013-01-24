@@ -10,6 +10,7 @@ from osmscraper.utility import dictfetchall
 from osmscraper.unaccent import unaccent
 
 from telemarket.models import Product as Telemarket_product
+from telemarket.models import Product_history as Telemarket_product_history
 from monoprix.models import Product as Monoprix_product
 from dalliz.models import Product as Dalliz_product
 
@@ -24,6 +25,11 @@ def suggestions(request, id):
 		# Getting product corresponding at id
 		product = Telemarket_product.objects.get(id=id)
 		product_json = json.loads(serializers.serialize("json", [product]))[0]["fields"]
+		product_histories = Telemarket_product_history.objects.filter(telemarket_product_id = id).order_by('-timestamp')
+		product_history = product_histories[0]
+		product_json['price'] = product_history.price
+		product_json['unit_price'] = product_history.unit_price
+
 		result['product'] = product_json
 
 		# Fetching categories of product:

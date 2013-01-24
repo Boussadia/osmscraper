@@ -9,8 +9,6 @@ from django.views.generic.simple import direct_to_template, redirect_to
 from django.contrib import admin
 admin.autodiscover()
 
-import allauth
-
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'osmscraper.views.home', name='home'),
@@ -49,7 +47,6 @@ urlpatterns = patterns('',
     url(r'^brand/ooshop/set/(?P<ooshop_brand_id>\d+)/(?P<dalliz_brand_id>\d+)/?$', 'ooshop_brand_matcher.views.set'),
 
     # Dalliz website
-    url(r'^accounts/', include('allauth.urls')),
     url(r'^/?$', 'dalliz.views.index'),
     url(r'^prospects/?$','dalliz.views.prospects'),
     url(r'^a-propos-de-dalliz/?$', 'dalliz.views.a_propos'),
