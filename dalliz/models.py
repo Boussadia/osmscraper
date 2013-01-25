@@ -80,7 +80,7 @@ class Prospect(models.Model):
 class Category(models.Model):
 	name = models.CharField(max_length=100)
 	parent_category = models.ForeignKey('self', null = True)
-	url = models.CharField(max_length=9999, null=True)
+	url = models.CharField(max_length=9999, null=True, unique = True)
 	position = models.IntegerField(default=0)
 
 	class Meta:

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Categories Dalliz</title>
+		<script data-main="{{STATIC_URL}}categories_builder/js/main.js" src="{% static categories_builder/js/libs/require/require.js%}"></script>
+
+		<!-- CSS-->
+		<link rel="stylesheet" type="text/css" href="{% static categories_builder/css/bootstrap.min.css%}">
+		<link rel="stylesheet" type="text/css" href="{% static categories_builder/css/index.css%}">
+	</head>
+	<body>
+		<div id="content">
+
+		</div>
+		<script type="text/javascript">
+			var parent_categories = {{categories|safe}}
+		</script>
+
+		<script id="template_category" type='text/template'>
+			<tr class="category">
+				<td>
+					<a href="/backend#{% templatetag openvariable %} url {% templatetag closevariable %}" class="btn btn-primary">
+						{% templatetag openvariable %} name {% templatetag closevariable %}
+					</a>
+				</td>
+			</tr>	
+
+		</script>
+
+		<script id="template_category_list" type="text/template">
+			<tbody>
+				{% templatetag openvariable %} content {% templatetag closevariable %}
+			</tbody>
+		</script>
+
+		<script id="add_category" type="text/template">
+
+			<button class="btn btn-danger add">
+				<i class="icon-plus"></i>
+				Ajouter categorie
+			</button>
+
+		</script>
+
+		<script id="modal" type="text/template">
+			<div id="form_{% templatetag openvariable %} level {% templatetag closevariable %}"  class="formCategory modal" data-parent-url='{% templatetag openvariable %} parent_url {% templatetag closevariable %}'>
+				<div class="modal-header">
+					<h3 id="myModalLabel">Créer une nouvelle catégorie</h3>
+				</div>
+				<div class="modal-body">
+					<form>
+						<fieldset>
+							<label>Nom de la categorie</label>
+							<input type="text" name="name_category" id="name_category" >
+							<label>Url de la categorie</label>
+							<input type="text" name="url_category" id="url_category" >
+						</fieldset>
+
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-close" >Fermer</button>
+					<button class="btn btn-primary save">Enregistrer</button>
+				</div>
+			</div>
+			<div class="modal-backdrop"></div>
+
+		</script>
+
+
+	</body>
+</html>

@@ -74,6 +74,7 @@ STATICFILES_DIRS = (
     # os.path.join(SITE_ROOT, 'static'),
     '/'.join([PROJECT_ROOT, 'dalliz', 'static']),
     '/'.join([PROJECT_ROOT, 'categories_matcher', 'static']),
+    '/'.join([PROJECT_ROOT, 'categories_builder', 'static']),
 )
 
 # List of finder classes that know how to find static files in

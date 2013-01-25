@@ -1,0 +1,10 @@
+.table{
+	width: 200px;
+	padding-left: 10px;
+	padding-right: 10px; 
+	float: left;
+}
+
+.table tr.category{
+	text-transform:capitalize;
+}
