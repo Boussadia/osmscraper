@@ -6,6 +6,7 @@ define([
 
 		var CategoryCollection = Backbone.Collection.extend({
 			model: Category,
+			is_current: false,
 			initialize: function(option){
 				return this;
 			},

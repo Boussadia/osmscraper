@@ -12,3 +12,7 @@
 .table tr.category a, .table tr.category button{
 	float: right; 
 } 
+
+.current{
+	background-color: red;
+}

@@ -26,6 +26,12 @@ define([
 	}
 
 	App.prototype.subCategory = function(list_url){
+		if(!this.parentCategoryView){
+			this.parentCategoryView = new CategoryCollectionView({'init_data': this.init_data, 'vent': this.vent, 'level':-1, 'current_selected': list_url[0] });
+		}else{
+			this.parentCategoryView.set_current(list_url[0]);
+		}
+
 		// var start_index = 0;
 		// for (var i=0; i<list_url;i++){
 		// 	if(i<this.viewsSubCategory.length){
@@ -40,7 +46,8 @@ define([
 		// Creating new CategoryCollectionViews
 		var i = 0;
 		_.each(list_url, function(url){
-			var view = new CategoryCollectionView({'url': url, 'vent': this.vent, 'level':i, 'parent_url': list_url[0]});
+			var current_selected = list_url[i+1];
+			var view = new CategoryCollectionView({'url': url, 'vent': this.vent, 'level':i, 'parent_url': url, 'current_selected': current_selected});
 			this.viewsSubCategory.push(view);
 			view.fetch();
 			i = i+1;
@@ -73,18 +80,14 @@ define([
 	}
 
 	App.prototype.render = function(){
-		if(!this.parentCategoryView){
-			this.parentCategoryView = new CategoryCollectionView({'init_data': this.init_data, 'vent': this.vent, 'level':-1});
-			var rendered = this.parentCategoryView.render().el;
-			var wraper = $('<div>');
-			wraper.html(rendered);
-			$('#content').html(wraper);
-			this.hijax();
-		}
+		var rendered = this.parentCategoryView.render().el;
+		var wraper = $('<div>');
+		wraper.html(rendered);
+		$('#content').html(wraper);
 
 		$('.content').remove();
 
-		var wraper = $('<div>').addClass('.content');
+		var wraper = $('<div>').addClass('content');
 
 		for (var i = 0; i < this.viewsSubCategory.length; i++) {
 			var view = this.viewsSubCategory[i];
@@ -94,6 +97,7 @@ define([
 		};
 
 		$('#content').append(wraper);
+		this.hijax();
 
 	}
 

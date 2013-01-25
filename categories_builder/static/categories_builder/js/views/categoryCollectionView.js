@@ -22,7 +22,9 @@ define([
 			render: function(){
 				var content = ''
 				_.each(this.categoryCollection.models, function(model){
-					var view = new CategoryView({'model': model});
+					var model_json = model.toJSON()
+					var url_identifier = model_json['url'].split(model_json['parent_url']+'/').pop();
+					var view = new CategoryView({'model': model, 'is_current': (this.current_selected == url_identifier)});
 					this.addSubView(view);
 					content = content +' '+view.render().el;
 				}, this);
@@ -44,6 +46,7 @@ define([
 				this.level = option.level;
 				this.url = option.url || null;
 				this.parent_url = option.parent_url;
+				this.current_selected = option.current_selected;
 				this.categoryCollection = new CategoryCollection(this.init_data);
 				this.categoryCollection.set_url(this.url);
 				this.bindTo(this.categoryCollection, 'reset', function(){
@@ -72,6 +75,10 @@ define([
 			removeCategory: function(e){
 				if(confirm('Si vous supprimer cette categorie, toutes les categories filles vont être suprimée, voulez vous proceder?')){
 					var id = $(e.target).attr('data-id');
+					if(!id){
+						var id = $(e.target).parent().attr('data-id');
+
+					}
 					this.categoryCollection.removeFromServer(id);
 				}
 			},
@@ -91,6 +98,9 @@ define([
 				var name = this.$el.find('#name_category').val();
 				var url = this.$el.find('#url_category').val();
 				this.categoryCollection.addNewCategory({'name': name, 'url': url});
+			},
+			set_current: function(url_current){
+				this.current_selected = url_current;
 			}
 		});
 		return CategoryCollectionView;
