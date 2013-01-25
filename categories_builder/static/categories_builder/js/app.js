@@ -80,6 +80,10 @@ define([
 	}
 
 	App.prototype.render = function(){
+		if(!this.parentCategoryView){
+			this.parentCategoryView = new CategoryCollectionView({'init_data': this.init_data, 'vent': this.vent, 'level':-1, 'current_selected': '' });
+		}
+
 		var rendered = this.parentCategoryView.render().el;
 		var wraper = $('<div>');
 		wraper.html(rendered);
