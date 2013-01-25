@@ -22,6 +22,7 @@ urlpatterns = patterns('',
 
     # Dalliz categories builder
     url(r'^backend/?$', 'categories_builder.views.index'),
+    url(r'^backend/delete/(?P<id>(\d+))/?$', 'categories_builder.views.delete_category'),
     url(r'^backend/(?P<url>(.+))/?$', 'categories_builder.views.sub_categories'),
 
     # Categories matcher app

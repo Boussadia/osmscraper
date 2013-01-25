@@ -32,6 +32,8 @@ define([
 				if(this.level>-1){
 					var button = $("#add_category").text();
 					this.$el.append(button);
+				}else{
+					this.$el.find('.remove').remove();
 				}
 				return this;
 
@@ -52,6 +54,10 @@ define([
 					this.fetched = true;
 					this.vent.trigger('render');
 				});
+				this.bindTo(this.categoryCollection, 'remove', function(){
+					this.fetched = true;
+					this.vent.trigger('render');
+				});
 			},
 			fetch : function(){
 				this.fetched = false;
@@ -60,7 +66,14 @@ define([
 			events: {
 				'click button.add': 'modal',
 				'click button.btn-close': 'closeModal',
-				'click button.save': 'saveCategory'
+				'click button.save': 'saveCategory',
+				'click button.remove': 'removeCategory',
+			},
+			removeCategory: function(e){
+				if(confirm('Si vous supprimer cette categorie, toutes les categories filles vont être suprimée, voulez vous proceder?')){
+					var id = $(e.target).attr('data-id');
+					this.categoryCollection.removeFromServer(id);
+				}
 			},
 			modal: function(){
 				var modal_html = $('#modal').text();

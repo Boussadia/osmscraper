@@ -9,7 +9,7 @@
 		<link rel="stylesheet" type="text/css" href="{% static categories_builder/css/index.css%}">
 	</head>
 	<body>
-		<div id="content">
+		<div id="content"> 
 
 		</div>
 		<script type="text/javascript">
@@ -19,9 +19,13 @@
 		<script id="template_category" type='text/template'>
 			<tr class="category">
 				<td>
+					{% templatetag openvariable %} name {% templatetag closevariable %}  <br/>
 					<a href="/backend#{% templatetag openvariable %} url {% templatetag closevariable %}" class="btn btn-primary">
-						{% templatetag openvariable %} name {% templatetag closevariable %}
+						<i class="icon-arrow-right"></i>
 					</a>
+					<button class="btn btn-danger remove" data-id='{% templatetag openvariable %} id {% templatetag closevariable %}'>
+						<i class="icon-remove"></i>
+					</button>
 				</td>
 			</tr>	
 
@@ -35,9 +39,8 @@
 
 		<script id="add_category" type="text/template">
 
-			<button class="btn btn-danger add">
+			<button class="btn btn-success add">
 				<i class="icon-plus"></i>
-				Ajouter categorie
 			</button>
 
 		</script>

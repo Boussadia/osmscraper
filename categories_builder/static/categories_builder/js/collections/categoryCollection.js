@@ -61,6 +61,25 @@ define([
 					}
 				});
 
+			},
+			removeFromServer: function(id_to_remove){
+				var that = this;
+				$.ajax({
+					url:'backend/delete/'+id_to_remove,
+					type:"DELETE",
+					dataType:"json",
+					success: function(data, textStatus, jqXHR){
+						if(data['status'] === '200'){
+							var model = that.get(id_to_remove);
+							that.remove(model);
+						}
+					},
+					error: function(jqXHR, textStatus, errorThrown){
+						console.log(jqXHR);
+						console.log(textStatus);
+						console.log(errorThrown);
+					}
+				});
 			}
 		});
 

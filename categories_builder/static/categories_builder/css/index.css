@@ -8,3 +8,7 @@
 .table tr.category{
 	text-transform:capitalize;
 }
+
+.table tr.category a, .table tr.category button{
+	float: right; 
+} 
