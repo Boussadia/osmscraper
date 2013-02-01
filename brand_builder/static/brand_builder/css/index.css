@@ -1,0 +1,18 @@
+.table{
+	width: 200px;
+	padding-left: 10px;
+	padding-right: 10px; 
+	float: left;
+}
+
+.table tr.brand{
+	text-transform:capitalize;
+}
+
+.table tr.brand a, .table tr.brand button{
+	float: right; 
+} 
+
+.current{
+	background-color: red;
+}

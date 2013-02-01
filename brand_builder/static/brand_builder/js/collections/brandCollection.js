@@ -1,23 +1,25 @@
 define([
 	'underscore',
 	'backbone',
-	'models/category'
-	], function(_, Backbone, Category){
+	'models/brand'
+	], function(_, Backbone, Brand){
 
-		var CategoryCollection = Backbone.Collection.extend({
-			model: Category,
+		var BrandCollection = Backbone.Collection.extend({
+			model: Brand,
 			is_current: false,
 			initialize: function(option){
 				return this;
 			},
 			set_url : function(url){
 				this.url = url;
+				console.log(url);
 			},
 			fetch : function(){
 				// Fetching data here
 				var that = this;
+				console.log(that);
 				$.ajax({
-					url:'categorie/'+that.url,
+					url:'brand/'+that.url,
 					type:"GET",
 					dataType:"json",
 					data:{},
@@ -37,14 +39,14 @@ define([
 				});
 
 			},
-			addNewCategory: function(newModel){
+			addNewBrand: function(newModel){
 				this.save(newModel);
 			},
 			save: function(model){
 				// Saving new Model
 				var that = this;
 				$.ajax({
-					url:'categorie/'+that.url,
+					url:'brand/'+that.url,
 					type:"POST",
 					dataType:"json",
 					data:model,
@@ -66,7 +68,7 @@ define([
 			removeFromServer: function(id_to_remove){
 				var that = this;
 				$.ajax({
-					url:'categorie/delete/'+id_to_remove,
+					url:'brand/delete/'+id_to_remove,
 					type:"DELETE",
 					dataType:"json",
 					success: function(data, textStatus, jqXHR){
@@ -84,6 +86,6 @@ define([
 			}
 		});
 
-		return CategoryCollection;
+		return BrandCollection;
 	
 })

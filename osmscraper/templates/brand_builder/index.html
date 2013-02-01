@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Brands Dalliz</title>
+		<script data-main="{{STATIC_URL}}brand_builder/js/main.js" src="{% static brand_builder/js/libs/require/require.js%}"></script>
+
+		<!-- CSS-->
+		<link rel="stylesheet" type="text/css" href="{% static brand_builder/css/bootstrap.min.css%}">
+		<link rel="stylesheet" type="text/css" href="{% static brand_builder/css/index.css%}">
+	</head>
+	<body>
+		<div id="content"> 
+
+		</div>
+		<script type="text/javascript">
+			var parent_brands = {{brands|safe}}
+		</script>
+
+		<script id="template_brand" type='text/template'>
+			<tr class="brand {% templatetag openvariable %} class_current {% templatetag closevariable %}" data-id='{% templatetag openvariable %} id {% templatetag closevariable %}'>
+				<td>
+					{% templatetag openvariable %} name {% templatetag closevariable %}  <br/>
+					<a href="/backend/brand#{% templatetag openvariable %} url {% templatetag closevariable %}" class="btn btn-primary childs" data-id='{% templatetag openvariable %} id {% templatetag closevariable %}'>
+						<i class="icon-arrow-right"></i>
+					</a>
+					<button class="btn btn-danger remove" data-id='{% templatetag openvariable %} id {% templatetag closevariable %}'>
+						<i class="icon-remove"></i>
+					</button>
+				</td>
+			</tr>	
+
+		</script>
+
+		<script id="template_brand_list" type="text/template">
+			<tbody>
+				{% templatetag openvariable %} content {% templatetag closevariable %}
+			</tbody>
+		</script>
+
+		<script id="add_brand" type="text/template">
+
+			<button class="btn btn-success add">
+				<i class="icon-plus"></i>
+			</button>
+
+		</script>
+
+		<script id="modal" type="text/template">
+			<div id="form_{% templatetag openvariable %} level {% templatetag closevariable %}"  class="formBrand modal" data-parent-url='{% templatetag openvariable %} parent_url {% templatetag closevariable %}'>
+				<div class="modal-header">
+					<h3 id="myModalLabel">Créer une nouvelle marque</h3>
+				</div>
+				<div class="modal-body">
+					<form>
+						<fieldset>
+							<label>Nom de la marque</label>
+							<input type="text" name="name_brand" id="name_brand" >
+						</fieldset>
+
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-close" >Fermer</button>
+					<button class="btn btn-primary save">Enregistrer</button>
+				</div>
+			</div>
+			<div class="modal-backdrop"></div>
+
+		</script>
+
+
+	</body>
+</html>

@@ -75,6 +75,7 @@ STATICFILES_DIRS = (
     '/'.join([PROJECT_ROOT, 'dalliz', 'static']),
     '/'.join([PROJECT_ROOT, 'categories_matcher', 'static']),
     '/'.join([PROJECT_ROOT, 'categories_builder', 'static']),
+    '/'.join([PROJECT_ROOT, 'brand_builder', 'static']),
 )
 
 # List of finder classes that know how to find static files in
@@ -140,6 +141,8 @@ INSTALLED_APPS = (
     'scrapers',
     'scraper_scheduler',
     'categories_matcher',
+    'categories_builder',
+    'brand_builder',
     'ooshop_brand_matcher',
     'ooshop_monoprix',
     'dalliz',

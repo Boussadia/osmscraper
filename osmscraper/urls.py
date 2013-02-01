@@ -21,9 +21,14 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     # Dalliz categories builder
-    url(r'^backend/?$', 'categories_builder.views.index'),
-    url(r'^backend/delete/(?P<id>(\d+))/?$', 'categories_builder.views.delete_category'),
-    url(r'^backend/(?P<url>(.+))/?$', 'categories_builder.views.sub_categories'),
+    url(r'^backend/categorie/?$', 'categories_builder.views.index'),
+    url(r'^backend/categorie/delete/(?P<id>(\d+))/?$', 'categories_builder.views.delete_category'),
+    url(r'^backend/categorie/(?P<url>(.+))/?$', 'categories_builder.views.sub_categories'),
+
+    # Dalliz brands builder
+    url(r'^backend/brand/?$', 'brand_builder.views.index'),
+    url(r'^backend/brand/delete/(?P<id>(\d+))/?$', 'brand_builder.views.delete_brand'),
+    url(r'^backend/brand/(?P<id>(\d+))/?$', 'brand_builder.views.sub_brands'),
 
     # Categories matcher app
     url(r'^categories_matcher/?$', 'categories_matcher.views.index'),

@@ -9,14 +9,14 @@ define([
 
 			// Routes
 			this.route('', "index");
-			this.route(/^(.+)$/, "subCategory");
+			this.route(/^(.+)$/, "subBrand");
 
 			return this;
 		},
 		index: function(){
 			this.vent.trigger('route:index');
 		},
-		subCategory: function(e){
+		subBrand: function(e){
 			var list = [];
 			list = e.split('/');
 			_.each(list, function(el){
@@ -24,7 +24,7 @@ define([
 					list.splice(el,1)
 				}
 			})
-			this.vent.trigger('route:subcategory', list);
+			this.vent.trigger('route:subBrand', list);
 		},
 		storeRoot: function(){
 			this.history.push(Backbone.history.fragment);

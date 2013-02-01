@@ -3,8 +3,8 @@ define([
 	'underscore',
 	'backbone',
 	'router',
-	'views/categoryCollectionView'
-], function($, _ , Backbone, Router, CategoryCollectionView){
+	'views/brandCollectionView'
+], function($, _ , Backbone, Router, BrandCollectionView){
 
 	function App(){
 		// Mustache style templatating
@@ -18,60 +18,52 @@ define([
 
 		// Events
 		this.vent.on('route:index', this.index, this);
-		this.vent.on('route:subcategory', this.subCategory, this);
+		this.vent.on('route:subBrand', this.subBrand, this);
 		this.vent.on('render', this.render, this);
 
-		this.init_data = parent_categories;
-		this.viewsSubCategory = [];
+		this.init_data = parent_brands;
+		this.viewsSubBrand = [];
 	}
 
-	App.prototype.subCategory = function(list_url){
-		if(!this.parentCategoryView){
-			this.parentCategoryView = new CategoryCollectionView({'init_data': this.init_data, 'vent': this.vent, 'level':-1, 'current_selected': list_url[0] });
+	App.prototype.subBrand = function(list_url){
+		console.log(list_url);
+		if(!this.parentBrandView){
+			this.parentBrandView = new BrandCollectionView({'init_data': this.init_data, 'vent': this.vent, 'level':-1, 'current_selected': list_url[0] });
 		}else{
-			this.parentCategoryView.set_current(list_url[0]);
+			this.parentBrandView.set_current(list_url[0]);
 		}
-
-		// var start_index = 0;
-		// for (var i=0; i<list_url;i++){
-		// 	if(i<this.viewsSubCategory.length){
-
-		// 	}
-		// }
-
-		// this.closeAfter(start_index);
 
 		this.closeViews();
 
-		// Creating new CategoryCollectionViews
+		// Creating new BrandCollectionViews
 		var i = 0;
 		_.each(list_url, function(url){
 			var current_selected = list_url[i+1];
-			var view = new CategoryCollectionView({'url': url, 'vent': this.vent, 'level':i, 'parent_url': url, 'current_selected': current_selected});
-			this.viewsSubCategory.push(view);
+			var view = new BrandCollectionView({'url': url, 'vent': this.vent, 'level':i, 'parent_url': url, 'current_selected': current_selected});
+			this.viewsSubBrand.push(view);
 			view.fetch();
 			i = i+1;
 		}, this);
 	}
 
 	App.prototype.closeViewAt = function(index){
-		if(this.viewsSubCategory[index]){
-			this.viewsSubCategory[index].close();
-			this.viewsSubCategory.pop(index);
+		if(this.viewsSubBrand[index]){
+			this.viewsSubBrand[index].close();
+			this.viewsSubBrand.pop(index);
 		}
 	}
 
 	App.prototype.closeAfter = function(index_start){
-		for (var i = index_start; i<this.viewsSubCategory.length; i++){
+		for (var i = index_start; i<this.viewsSubBrand.length; i++){
 			this.closeViewAt(i);
 		}
 	}
 
 	App.prototype.closeViews = function(){
-		_.each(this.viewsSubCategory, function(view){
+		_.each(this.viewsSubBrand, function(view){
 			view.close();
 		}, this);
-		this.viewsSubCategory = [];
+		this.viewsSubBrand = [];
 	}
 
 	App.prototype.index = function(option){
@@ -80,11 +72,11 @@ define([
 	}
 
 	App.prototype.render = function(){
-		if(!this.parentCategoryView){
-			this.parentCategoryView = new CategoryCollectionView({'init_data': this.init_data, 'vent': this.vent, 'level':-1, 'current_selected': '' });
+		if(!this.parentBrandView){
+			this.parentBrandView = new BrandCollectionView({'init_data': this.init_data, 'vent': this.vent, 'level':-1, 'current_selected': '' });
 		}
 
-		var rendered = this.parentCategoryView.render().el;
+		var rendered = this.parentBrandView.render().el;
 		var wraper = $('<div>');
 		wraper.html(rendered);
 		$('#content').html(wraper);
@@ -93,8 +85,8 @@ define([
 
 		var wraper = $('<div>').addClass('content');
 
-		for (var i = 0; i < this.viewsSubCategory.length; i++) {
-			var view = this.viewsSubCategory[i];
+		for (var i = 0; i < this.viewsSubBrand.length; i++) {
+			var view = this.viewsSubBrand[i];
 			if(view.fetched){
 				wraper.append(view.render().el);
 			}
@@ -109,7 +101,7 @@ define([
 		// Pass in our Router module and call it's initialize function
 		this.router = new Router({'vent': this.vent});
 		Backbone.history.start({
-			root: '/backend/categorie'
+			root: '/backend/brand'
 		});
 		this.hijax();
 
