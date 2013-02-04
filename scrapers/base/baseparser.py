@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 import re
 
-class Parser(object):
+class BaseParser(object):
 	"""
 		Base Parser class for online supermarket sites. This class has to be inherited to implement specif methods.
 
@@ -15,15 +15,19 @@ class Parser(object):
 			- get_product_info : retrieves all product information form a product page
 	"""
 
-	def __init__(self):
-		pass
+	def __init__(self, html):
+		"""
+			Input :
+				- html (string) : string containing the html code of a page.
+		"""
+		self.parsed_page = BeautifulSoup(html, "lxml", from_encoding = 'utf-8')
 
-	def get_categories(self, html, level = 0, depth = 1 ):
+
+	def get_categories(self, level = 0, depth = 1 ):
 		"""
 			Extract categories from html.
 
 			Input :
-				- html (string) : string containing the html code of a page.
 				- level (int) : level of categories to extract. 0 = main catgories, 1 = sub categories level 1 ...
 				- depth (int) : how many levels of categories to extract. -1 = all sub levels.
 			Output :
@@ -36,12 +40,10 @@ class Parser(object):
 		"""
 		pass
 
-	def get_products(self, html):
+	def get_products(self):
 		"""
 			Extracts products from a category page.
 
-			Input :
-				- html (string) : html of category page.
 			Output :
 				- products : list of hash representing products, example:
 					[{
@@ -62,12 +64,9 @@ class Parser(object):
 		"""
 		pass
 
-	def parse_promotion_short(self, html_product_short):
+	def parse_promotion_short(self):
 		"""
 			This method is responsible for extracting information regarding promotion in a product form a category page.
-
-			Input :
-				- html_product_short (string) : html from a product element in a category page.
 
 			Output : 
 				- hash representing promotion of product. Example
@@ -93,13 +92,11 @@ class Parser(object):
 		"""
 		pass
 
-	def parse_promotion_full(self, html_product_full):
+	def parse_promotion_full(self):
 		"""
 			This method extracts information form a promtion page, it includes all informations relative
 			to the promotion
 
-			Input : 
-				- html_product_full (string) : html of a promotion page
 			Return:
 				ref. parse_promotion_short. And other inofmration depending on osm
 		"""

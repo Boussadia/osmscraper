@@ -7,7 +7,7 @@ import urllib2
 import cookielib
 
 
-class Crawler(object):
+class BaseCrawler(object):
 	"""
 		Base Crawler class.
 		
