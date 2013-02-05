@@ -3,8 +3,6 @@
 
 from bs4 import BeautifulSoup
 
-import re
-
 class BaseParser(object):
 	"""
 		Base Parser class for online supermarket sites. This class has to be inherited to implement specif methods.
@@ -101,3 +99,6 @@ class BaseParser(object):
 				ref. parse_promotion_short. And other inofmration depending on osm
 		"""
 		pass
+
+	def set_html(self, html):
+		self.parsed_page = BeautifulSoup(html, "lxml", from_encoding = 'utf-8')

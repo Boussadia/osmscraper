@@ -3,7 +3,7 @@
 
 import time
 import urllib
-import urllib2
+import mechanize
 import cookielib
 
 
@@ -30,10 +30,22 @@ class BaseCrawler(object):
 	MAX_NETWORK_FAILURE_TRIES = 10
 
 	def __init__(self):
-		# Initialising cookie jar & opener
-		self.jar = cookielib.CookieJar()
-		self.opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(self.jar))
-		self.__network_failures_retry__ = 0 # 
+		# Mechanize Browser
+		self.browser = mechanize.Browser()
+		# Cookie Jar
+		self.jar = cookielib.LWPCookieJar()
+		self.browser.set_cookiejar(self.jar)
+		# Browser options
+		self.browser.set_handle_equiv(True)
+		# self.browser.set_handle_gzip(True)
+		self.browser.set_handle_redirect(True)
+		self.browser.set_handle_referer(True)
+		self.browser.set_handle_robots(False)
+
+		# Follows refresh 0 but not hangs on refresh > 0
+		self.browser.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time=1)
+
+		self.__network_failures_retry__ = 0
 
 	def do_request(self, url, data = {}):
 		"""
@@ -51,33 +63,33 @@ class BaseCrawler(object):
 			print "Fetching page from "+url
 			if data == {}:
 				print "GET method used"
-				response = self.opener.open(url)
+				response = self.browser.open(url)
 				html = response.read()
 			else:
 				print "POST method used"
 				form_data = urllib.urlencode(data)
-				response = self.opener.open(url, form_data)
+				response = self.browser.open(url, form_data)
 				html = response.read()
 
 			self.__network_failures_retry__ = 0 # Everything went OK, setting variable for network failure to 0
 			return html, 200
 
-		except urllib2.HTTPError, e:
+		except mechanize.HTTPError, e:
 			if e.code == 404:
 				print "Error when retrieving "+url+" : page not found."
 				return None, 404
 			else:
 				self.__network_failures_retry__ = self.__network_failures_retry__ + 1
-				if self.__network_failures_retry__ < Crawler.MAX_NETWORK_FAILURE_TRIES:
+				if self.__network_failures_retry__ < BaseCrawler.MAX_NETWORK_FAILURE_TRIES:
 					print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
 					time.sleep(self.__network_failures_retry__)
 					return self.do_request(url, data)
 				else:
 					print "Error when retrieving "+url
 					return None, e.code
-		except urllib2.URLError, e:
+		except mechanize.URLError, e:
 			self.__network_failures_retry__ = self.__network_failures_retry__ + 1
-			if self.__network_failures_retry__ < Crawler.MAX_NETWORK_FAILURE_TRIES:
+			if self.__network_failures_retry__ < BaseCrawler.MAX_NETWORK_FAILURE_TRIES:
 				print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
 				time.sleep(self.__network_failures_retry__)
 				return self.do_request(url, data)
@@ -95,10 +107,17 @@ class BaseCrawler(object):
 		"""
 		return self.do_request(url)
 
-	def post(url, data):
+	def post(self, url, data):
 		"""
 			Executes a POST url fetch.
 		"""
 		return self.do_request(url, data)
+
+	def empty_cookie_jar(self):
+		"""
+			Removing all cookies from cookie jar
+		"""
+		self.jar.clear()
+
 
 
