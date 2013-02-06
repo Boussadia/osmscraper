@@ -104,6 +104,31 @@ class OoshopParser(BaseParser):
 
 		return categories
 
+	def get_pagination(self):
+		"""
+			This method extracts from a cartegory page the pagination.
+
+			Output :
+				- list of hash representing pagination : {'url': url, 'page': 2}
+		"""
+		parsed_page = self.parsed_page
+		pagination = []
+		
+		# Is there more than one page of products for this category? (pagination)
+		form_parsed = parsed_page.find(id='aspnetForm')
+		pagination_links = parsed_page.find_all('a',{'class': 'rptPagination'}) # Should be an even number (pagination at the top and bottom of the page)
+		pagination_links = pagination_links[:len(pagination_links)/2] # removing unecessary elements
+
+		for i in xrange(0,len(pagination_links)):
+			if 'href' in pagination_links[i].attrs:
+				eventTarget =  pagination_links[i].attrs['href'].split("javascript:__doPostBack('")[1].split("','")[0]
+				eventArgument = pagination_links[i].attrs['href'].split("javascript:__doPostBack('")[1].split("','")[1].split("')")[0]
+				pagination.append({"page":(i+1), "eventTarget": eventTarget, "eventArgument": eventArgument})
+			else:
+				pagination.append({"page":(i+1)})
+
+		return pagination
+
 	def get_eligibility(self):
 		"""
 			Method responsible for parsing the eligibility page. When asking Ooshop if an area is eligible 
@@ -137,7 +162,80 @@ class OoshopParser(BaseParser):
 						}
 					}]
 		"""
-		pass
+		parsed_page = self.parsed_page
+		products = []
+		lis = parsed_page.find_all('li',{'class':'lineproductLine'}) # products in li
+		
+		for i in xrange(0, len(lis)):
+			try:
+				li = lis[i]
+				name = li.find('h5').find(text=True)[22:-40]
+				brand = li.find('img', {'class':'marque'}).attrs['title']
+				image_url = li.find('input', {'class':'image'}).attrs['src'].replace('Vignettes', 'Images')
+				url = li.find('a', {'class':'prodimg'}).attrs['href']
+				reference = image_url.split('/')[-1].split('.')[0]
+
+				product = {
+					'name': name,
+					'brand': brand,
+					'image_url': image_url,
+					'url': url,
+					'reference': reference
+				}
+
+				# Dealing with promotion
+
+				promotion = {}
+				if 'Promo' in li.attrs['class']:
+					textContent = li.find('strike').find(text = True);
+					product['price'] = float(textContent[17:-2].replace(',', '.'))
+
+					textContent = li.find('strong').find(text = True);
+					promotion['percentage'] = 1 - float(textContent[17:-2].replace(',', '.')) / product['price']
+					
+					ps = li.find('div',{'class' : 'unit price'}).find_all('p') #  p:not(.productPicto) span')[0].textContent
+					if 'productPicto' in ps[0].attrs['class']:
+						p = ps[1]
+					else:
+						p = ps[0]
+
+					textContent = p.find('span').find(text=True)
+					product['unit_price'] = float(textContent.split(u' € / ')[0].replace(u',', u'.'))
+					product['unit'] = textContent.split(u' € / ')[1]
+
+					textContent = p.find_all('span')[1].find(text=True)
+					product['text_unit'] = textContent
+
+					if product['unit'] == 'Lot':
+						promotion['type'] = 'lot'
+						promotion['selector'] = '.lineproductLine:nth-child('+unicode(2*(i+1)-1)+') a.prodimg'
+						promotion['references'] = self.get_references(product['url'])
+					else:
+						promotion['type'] = 'simple'
+
+				else:
+					promotion['type'] = 'none'
+					textContent = li.find('strong').find(text=True)
+					product['price'] = float(textContent[17:-2].replace(',', '.'))
+
+					ps = li.find('div',{'class' : 'unit price'}).find_all('p') #  p:not(.productPicto) span')[0].textContent
+					if 'class' in ps[0].attrs and 'productPicto' in ps[0].attrs['class']:
+						p = ps[1]
+					else:
+						p = ps[0]
+
+					textContent = p.find('span').find(text=True)
+					product['unit_price'] = float(textContent.split(u' € / ')[0].replace(u',', u'.'))
+					product['unit'] = textContent.split(u' € / ')[1]
+
+					textContent = p.find_all('span')[1].find(text=True)
+					product['text_unit'] = textContent
+
+				product['promotion'] = promotion
+				products.append(product)
+			except Exception, e:
+				print 'ERROR PARSING PRODUCT : '+str(e)
+		return products
 
 	def parse_promotion_short(self):
 		"""
@@ -214,7 +312,7 @@ class OoshopParser(BaseParser):
 
 
 				else:
-					# Multiple promotion
+					# Simple promotion
 					promotion['type'] = 'simple'
 
 
@@ -243,7 +341,6 @@ class OoshopParser(BaseParser):
 			# Common to promotion and normal product
 			# Is the product available ?
 			img_unavailable = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_imgOther')
-			print img_unavailable
 			if img_unavailable:
 				product['is_available'] = False
 			else:
@@ -254,9 +351,13 @@ class OoshopParser(BaseParser):
 			# Cleaning from spaces and carriage return
 			name_and_brand = re.search('(\\n| |\\r\\n)+(.*)(\\n| |\\r\\n)*', name_and_brand).group(2)
 			# Seperating name and brand
-			name_and_brand = name_and_brand.split(' - ')
-			product['name'] = ' - '.join(name_and_brand[:-1])
-			product['brand'] = name_and_brand[-1:][0]
+			if '-' in name_and_brand:
+				name_and_brand = name_and_brand.split(' - ')
+				product['name'] = ' - '.join(name_and_brand[:-1])
+				product['brand'] = name_and_brand[-1:][0]
+			else:
+				product['name'] = name_and_brand
+				product['brand'] = '' # Some products do not have brands...
 
 			# Getting images
 			product_image = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_imgVisu')
@@ -267,22 +368,31 @@ class OoshopParser(BaseParser):
 			product['brand_image_url'] = brand_image_url
 
 			# Checking if promotion
-			promotion_html = product_html.find('a', {'class': 'btnRectSimple'})
+			rects_html = product_html.find_all('a', {'class': 'btnRectSimple'})
+			promotion_html = None
+			for rect in rects_html:
+				text = ' '.join(rect.find_all(text=True)).lower()
+				if 'promotion' in text:
+					promotion_html = rect
 			if promotion_html:
 				# This product is a promotion
 				product['is_promotion'] = True
 				product['promotion'] = self.parse_promotion_full()
-			
+				if product['promotion']['type'] == 'simple':
+					product['is_product'] = True
+				else:
+					product['is_product'] = False
 			else:
-				# This is a normal product
 				product['is_product'] = True
 
+			if product['is_product']:
 				# Getting base product information
 				product_info = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_divContentPromNouv')
 
-				# Getting price
-				price = product_info.find('p', {'class', 'price'}).find('strong').find(text= True)
-				product['price'] = self.convert_to_float(price)
+				if not product['is_promotion']:
+					# Getting price
+					price = product_info.find('p', {'class', 'price'}).find('strong').find(text= True)
+					product['price'] = self.convert_to_float(price)
 
 				# Getting package content unit price and unit
 				product_info_ps = product_info.find_all('p')
@@ -328,7 +438,7 @@ class OoshopParser(BaseParser):
 
 		else:
 			product['is_product'] = False
-			
+
 		return product
 
 	def extract_package_content(self, str_package):
@@ -343,14 +453,14 @@ class OoshopParser(BaseParser):
 		"""
 		package = {}
 		regexp1 = r'(\d+)x(\d+,?\d*) ?(\w+)' # type = 6x33cl
-		regexp2 = r'(\d+)[^\d]+(\d+,?\d*) ?(\w+)' # type = les 3 boites de 200g
+		regexp2 = r'(\d+)(?!,)[^\d]+(\d+,?\d*) ?(\w+)' # type = les 3 boites de 200g
 		regexp3 = r'(\d+,?\d*) ?(\w+)' # type = La bouteille de 1,5L
 		m = re.search(regexp1, str_package)
 		if m:
 			# found first type package content
 			package = {
 				'quantity': m.group(1),
-				'quantity_measure': m.group(2),
+				'quantity_measure': self.convert_to_float(m.group(2)),
 				'unit': m.group(3)
 			}
 		else:
@@ -359,7 +469,7 @@ class OoshopParser(BaseParser):
 				# type 2 content
 				package = {
 					'quantity': m.group(1),
-					'quantity_measure': m.group(2),
+					'quantity_measure': self.convert_to_float(m.group(2)),
 					'unit': m.group(3)
 				}
 			else:
@@ -368,7 +478,7 @@ class OoshopParser(BaseParser):
 					# type 3 content
 					package = {
 						'quantity': 1,
-						'quantity_measure': m.group(1),
+						'quantity_measure': self.convert_to_float(m.group(1)),
 						'unit': m.group(2)
 					}
 
