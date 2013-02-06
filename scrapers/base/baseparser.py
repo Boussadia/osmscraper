@@ -21,6 +21,12 @@ class BaseParser(object):
 		self.parsed_page = BeautifulSoup(html, "lxml", from_encoding = 'utf-8')
 
 
+	#-----------------------------------------------------------------------------------------------------------------------
+	#
+	#									METHODS TO BE DEFINED IN INHERITED CLASSES
+	#
+	#-----------------------------------------------------------------------------------------------------------------------
+
 	def get_categories(self, level = 0, depth = 1 ):
 		"""
 			Extract categories from html.
@@ -90,6 +96,12 @@ class BaseParser(object):
 		"""
 		pass
 
+	def parse_product_full(self):
+		"""
+			This method is responsible for extracting information from a product page.
+			It behaves the same as get_products for a single product and also returns detailed information about the product.
+		"""
+
 	def parse_promotion_full(self):
 		"""
 			This method extracts information form a promtion page, it includes all informations relative
@@ -99,6 +111,41 @@ class BaseParser(object):
 				ref. parse_promotion_short. And other inofmration depending on osm
 		"""
 		pass
+
+	def extract_package_content(self, package):
+		"""
+			This method extracts package content of a product.
+			e.g. '4 pots de yaourt de 200g' -> {'quantity': 4, 'unit_quantity': 200, 'unit': g}
+
+			Input :
+				- package (string) : description of the content of a product
+			Output : 
+				- hash describing content
+		"""
+
+
+	#-----------------------------------------------------------------------------------------------------------------------
+	#
+	#									COMMON METHODS
+	#
+	#-----------------------------------------------------------------------------------------------------------------------
+
+	def convert_to_float(self, price):
+		"""
+			Take a price and converts it to a float
+
+			Input :
+				- price (string) : e.g. '2,30 €'
+			Output :
+				- price (float) : e.g. 2.3
+		"""
+		return float(self.strip_string(price).replace(",",".").replace(u'\u20ac',""))
+
+	def strip_string(self, str):
+		"""
+			Cleaning string.
+		"""
+		return " ".join(str.split())
 
 	def set_html(self, html):
 		self.parsed_page = BeautifulSoup(html, "lxml", from_encoding = 'utf-8')

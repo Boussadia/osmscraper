@@ -14,6 +14,12 @@ class OoshopParser(BaseParser):
 	def __init__(self, html = ''):
 		super(OoshopParser, self).__init__(html)
 
+	#-----------------------------------------------------------------------------------------------------------------------
+	#
+	#									INHERITED METHODS FROM BASE PARSER
+	#
+	#-----------------------------------------------------------------------------------------------------------------------
+
 	def get_categories(self, level = 0):
 		"""
 			Extract categories from html.
@@ -169,11 +175,184 @@ class OoshopParser(BaseParser):
 			Return:
 				ref. parse_promotion_short. And other inofmration depending on osm
 		"""
-		pass
+		promotion = {}
+		promotion_html = self.parsed_page.find(id='ctl00_ucDetProd_upProd')
+
+		# Getting price before and after promotion
+		price_block = promotion_html.find('p', {'class' : 'strikePrice'})
+		price_after = self.convert_to_float(price_block.find('strong').find(text=True))
+		price_before = self.convert_to_float(price_block.find('strike').find(text=True))
+		promotion['before'] = price_before
+		promotion['after'] = price_after
+
+		# After price_block, ooshop indicates dates of promotion
+		date_block = price_block.nextSibling
+		results = re.findall(r'(\d{1,2})/(\d{1,2})/(\d{4})', date_block.find(text=True))
+		promotion.update(dict(zip(['date_start', 'date_end'], [ dict(zip(['day','month', 'year'], r)) for r in results])))
+
+		# Getting package content unit price and unit - determining type of promotion
+		promotion_info_ps = price_block.parent()
+		for p in promotion_info_ps:
+			text = p.find(text=True)
+			# Appyling reg
+			match = re.match(r'(\d+),(\d+) ?\W ?/ ?(\w{1,3})', text)
+			if match:
+				# Unit price and unit
+				unit_price = float('%s.%s'%(match.group(1), match.group(2)))
+				unit = match.group(3)
+				promotion['unit_price'] = unit_price
+				promotion['unit'] = unit
+				
+				if 'lot' in promotion['unit'].lower():
+					# Multiple promotion
+					promotion['type'] = 'multi'
+
+					# Extracting image url of products in promotion (url of product not available in this section...)
+					content_promotion = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_pDetLot')
+					products_lot = content_promotion.find_all(id=re.compile('ctl00_cphC_pn3T1_ctl01_rptDetailLot_ctl(\d{2})_plProd_divPnl'))
+					promotion['product_image_urls'] = [p.find('a').find('img').attrs['src'] for p in products_lot]
+
+
+				else:
+					# Multiple promotion
+					promotion['type'] = 'simple'
+
+
+		
+
+		return promotion
+		
+
+	def parse_product_full(self):
+		"""
+			This method is responsible for extracting information from a product page.
+			It behaves the same as get_products for a single product and also returns detailed information about the product.
+		"""
+		# Initializing product hash
+		product = {
+			'is_product': False,
+			'is_promotion': False,
+			'is_available': False
+		}
+		# First we need to check if this product is a valid product page
+		# TO DO
+
+		product_html = self.parsed_page.find(id='ctl00_ucDetProd_upProd')
+		product['html'] = product_html.prettify()
+
+		if product_html:
+			# Common to promotion and normal product
+			# Is the product available ?
+			img_unavailable = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_imgOther')
+			if img_unavailable:
+				product['is_available'] = False
+			else:
+				product['is_available'] = True
+
+			# Extracting product name and brand
+			name_and_brand = product_html.find('h3', {'class', 'BmarginSm'}).find(text=True)
+			# Cleaning from spaces and carriage return
+			name_and_brand = re.search('(\\n| |\\r\\n)+(.*)(\\n| |\\r\\n)*', name_and_brand).group(2)
+			# Seperating name and brand
+			name_and_brand = name_and_brand.split(' - ')
+			product['name'] = ' - '.join(name_and_brand[:-1])
+			product['brand'] = name_and_brand[-1:][0]
+
+			# Getting images
+			product_image = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_imgVisu')
+			product_image_url = product_image.attrs['src']
+			brand_image = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_iLogo')
+			brand_image_url = brand_image.attrs['src']
+			product['product_image_url'] = product_image_url
+			product['brand_image_url'] = brand_image_url
+
+			# Checking if promotion
+			promotion_html = product_html.find('a', {'class': 'btnRectSimple'})
+			if promotion_html:
+				# This product is a promotion
+				product['is_promotion'] = True
+				product['promotion'] = self.parse_promotion_full()
+			
+			else:
+				# This is a normal product
+				product['is_product'] = True
+
+				# Getting base product information
+				product_info = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_divContentPromNouv')
+
+				# Getting price
+				price = product_info.find('p', {'class', 'price'}).find('strong').find(text= True)
+				product['price'] = self.convert_to_float(price)
+
+				# Getting package content unit price and unit
+				product_info_ps = product_info.find_all('p')
+				for p in product_info_ps:
+					if 'class' not in p.attrs:
+						text = p.find(text=True)
+						# Appyling reg
+						match = re.match(r'(\d+),(\d+) ?\W ?/ ?(\w{1,3})', text)
+						if match:
+							# Unit price and unit
+							unit_price = float('%s.%s'%(match.group(1), match.group(2)))
+							unit = match.group(3)
+							product['unit_price'] = unit_price
+							product['unit'] = unit
+							# Package
+							package = self.extract_package_content(p.previous_sibling.find(text=True))
+							product['package'] = package
+							
+
+				# Extracting detailed information about the product
+				information = {}
+				# Is there an origin for this product ?
+				origin_parsed = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_lOrigine')
+				if origin_parsed:
+					information['origin'] = self.strip_string(origin_parsed.find('span',{'class' : 'origine'}).find(text=True))
+				# First : nutritional information
+				nutritional_info = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_pIg')
+				if nutritional_info:
+					# Information found
+					title_info = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_lTig').find(text=True)
+					tds = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_lHig').find_all('td')
+					information[title_info] = dict([[self.strip_string(string) for string in td.findAll(text=True) if self.strip_string(string) != ''] for td in tds])
+
+				# Then all the other information
+				information_titles_html = self.parsed_page.find_all(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_lTitre\d'))
+				information_titles = [' '.join(html.find_all(text=True)) for html in information_titles_html]
+				information_content_html = self.parsed_page.find_all(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_lHtml\d'))
+				information_content = [' '.join(html.find_all(text=True)) for html in information_content_html]
+
+				information.update(dict(zip(information_titles, information_content)))
+
+				product['information'] = information
+
+		else:
+			product['is_product'] = False
+
+		return product
+
+	def extract_package_content(self, package):
+		"""
+			This method extracts package content of a product.
+			e.g. '4 pots de yaourt de 200g' -> {'quantity': 4, 'unit_quantity': 200, 'unit': g}
+
+			Input :
+				- package (string) : description of the content of a product
+			Output : 
+				- hash describing content
+		"""
+		# TO DO
+		return package
+
+	#-----------------------------------------------------------------------------------------------------------------------
+	#
+	#									SPECIFIC METHODS TO OOSHOP PARSER
+	#
+	#-----------------------------------------------------------------------------------------------------------------------
 
 	def get_form_values(self):
 		"""
-			Ooshop website is a .NET application that worls with a global form that encapsulates the body content.
+			Ooshop website is a .NET application that works with a global form that encapsulates the body content.
 			This method return a hash of name and values of the form.
 
 			Output : 

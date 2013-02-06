@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from urlparse import urlparse, parse_qs, urlunparse
+
 from scrapers.base.basescraper import BaseScraper
 from scrapers.ooshop.ooshopparser import OoshopParser
 from scrapers.ooshop.ooshopcrawler import OoshopCrawler
@@ -57,6 +59,7 @@ class OoshopScraper(BaseScraper):
 					print "Something went wrong when fetching level 2 categories for Ooshop"
 		
 		# Here we pass the categories list to the databasehelper to be saved
+		# TO DO
 
 	def is_served_area(self, code_postal = '94230'):
 		"""
@@ -125,9 +128,112 @@ class OoshopScraper(BaseScraper):
 
 	def get_product_info(self, product_url):
 		"""
-			Retrive complete information for product.
+			Retrive complete information for product. Independent from localisation.
+
+			Input : 
+				- product_url (string) :  url of product to scrape
+			Output :
+				- hash representing the product 
+				- code (int) : was the request successfull (200 = OK)
 		"""
-		pass
+		# First, retrieve html page
+		html, code = self.crawler.get(product_url)
+
+		if code == 200:
+			self.parser.set_html(html)
+			product = self.parser.parse_product_full()
+
+			# Adding reference to product hash
+			if product['is_product']:
+				scheme, netloc, path, params, query, fragment = urlparse(product_url)
+				product['reference'] = parse_qs(query)['NOEUD_IDFO'][0]
+				product['url'] = product_url
+
+				# Setting proper full urls
+				product['brand_image_url'] = urlunparse((scheme, netloc, product['brand_image_url'], '', '', ''))
+				product['product_image_url'] = urlunparse((scheme, netloc, product['product_image_url'], '', '', ''))
+			print product
+			# TO DO : save product in database
+		else:
+			print 'Error while retrieving product page : error %d'%(code)
+
+
+		# products = []
+		# lis = parsed_page.find_all('li',{'class':'lineproductLine'}) # products in li
+		# self.total_products_found = self.total_products_found + len(lis)
+		
+		# for i in xrange(0, len(lis)):
+		# 	try:
+		# 		li = lis[i]
+		# 		name = li.find('h5').find(text=True)[22:-40]
+		# 		brand = li.find('img', {'class':'marque'}).attrs['title']
+		# 		image_url = self.get_base_url()+'/'+li.find('input', {'class':'image'}).attrs['src'].replace('Vignettes', 'Images')
+		# 		url = self.get_base_url()+'/'+li.find('a', {'class':'prodimg'}).attrs['href']
+		# 		reference = image_url.split('/')[-1].split('.')[0]
+
+		# 		product = {
+		# 			'name': name,
+		# 			'brand': brand,
+		# 			'image_url': image_url,
+		# 			'url': url,
+		# 			'reference': reference
+		# 		}
+
+		# 		# Dealing with promotion
+
+		# 		promotion = {}
+		# 		if 'Promo' in li.attrs['class']:
+		# 			textContent = li.find('strike').find(text = True);
+		# 			product['price'] = float(textContent[17:-2].replace(',', '.'))
+
+		# 			textContent = li.find('strong').find(text = True);
+		# 			promotion['percentage'] = 1 - float(textContent[17:-2].replace(',', '.')) / product['price']
+					
+		# 			ps = li.find('div',{'class' : 'unit price'}).find_all('p') #  p:not(.productPicto) span')[0].textContent
+		# 			if 'productPicto' in ps[0].attrs['class']:
+		# 				p = ps[1]
+		# 			else:
+		# 				p = ps[0]
+
+		# 			textContent = p.find('span').find(text=True)
+		# 			product['unit_price'] = float(textContent.split(u' € / ')[0].replace(u',', u'.'))
+		# 			product['unit'] = textContent.split(u' € / ')[1]
+
+		# 			textContent = p.find_all('span')[1].find(text=True)
+		# 			product['text_unit'] = textContent
+
+		# 			if product['unit'] == 'Lot':
+		# 				promotion['type'] = 'lot'
+		# 				promotion['selector'] = '.lineproductLine:nth-child('+unicode(2*(i+1)-1)+') a.prodimg'
+		# 				promotion['references'] = self.get_references(product['url'])
+		# 			else:
+		# 				promotion['type'] = 'simple'
+
+		# 		else:
+		# 			promotion['type'] = 'none'
+		# 			textContent = li.find('strong').find(text=True)
+		# 			product['price'] = float(textContent[17:-2].replace(',', '.'))
+
+		# 			ps = li.find('div',{'class' : 'unit price'}).find_all('p') #  p:not(.productPicto) span')[0].textContent
+		# 			if 'class' in ps[0].attrs and 'productPicto' in ps[0].attrs['class']:
+		# 				p = ps[1]
+		# 			else:
+		# 				p = ps[0]
+
+		# 			textContent = p.find('span').find(text=True)
+		# 			product['unit_price'] = float(textContent.split(u' € / ')[0].replace(u',', u'.'))
+		# 			product['unit'] = textContent.split(u' € / ')[1]
+
+		# 			textContent = p.find_all('span')[1].find(text=True)
+		# 			product['text_unit'] = textContent
+
+		# 		product['promotion'] = promotion
+		# 		products.append(product)
+		# 	except Exception, e:
+		# 		print 'ERROR PARSING PRODUCT : '+str(e)
+
+		# return products
+
 
 	def is_available(self, product_url):
 		"""
