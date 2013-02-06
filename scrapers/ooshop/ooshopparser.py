@@ -195,7 +195,7 @@ class OoshopParser(BaseParser):
 		for p in promotion_info_ps:
 			text = p.find(text=True)
 			# Appyling reg
-			match = re.match(r'(\d+),(\d+) ?\W ?/ ?(\w{1,3})', text)
+			match = re.search(r'(\d+),?(\d*) ?\W ?/ ?(\w{1,5})', text)
 			if match:
 				# Unit price and unit
 				unit_price = float('%s.%s'%(match.group(1), match.group(2)))
@@ -234,8 +234,7 @@ class OoshopParser(BaseParser):
 			'is_promotion': False,
 			'is_available': False
 		}
-		# First we need to check if this product is a valid product page
-		# TO DO
+		# encapsulatating in try except block
 
 		product_html = self.parsed_page.find(id='ctl00_ucDetProd_upProd')
 		product['html'] = product_html.prettify()
@@ -244,6 +243,7 @@ class OoshopParser(BaseParser):
 			# Common to promotion and normal product
 			# Is the product available ?
 			img_unavailable = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_imgOther')
+			print img_unavailable
 			if img_unavailable:
 				product['is_available'] = False
 			else:
@@ -290,7 +290,7 @@ class OoshopParser(BaseParser):
 					if 'class' not in p.attrs:
 						text = p.find(text=True)
 						# Appyling reg
-						match = re.match(r'(\d+),(\d+) ?\W ?/ ?(\w{1,3})', text)
+						match = re.search(r'(\d+),?(\d*) ?\W ?/ ?(\w{1,5})', text)
 						if match:
 							# Unit price and unit
 							unit_price = float('%s.%s'%(match.group(1), match.group(2)))
@@ -328,20 +328,51 @@ class OoshopParser(BaseParser):
 
 		else:
 			product['is_product'] = False
-
+			
 		return product
 
-	def extract_package_content(self, package):
+	def extract_package_content(self, str_package):
 		"""
 			This method extracts package content of a product.
-			e.g. '4 pots de yaourt de 200g' -> {'quantity': 4, 'unit_quantity': 200, 'unit': g}
+			e.g. '4 pots de yaourt de 200g' -> {'quantity': 4, 'quantity_measure': 200, 'unit': g}
 
 			Input :
-				- package (string) : description of the content of a product
+				- str_package (string) : description of the content of a product
 			Output : 
 				- hash describing content
 		"""
-		# TO DO
+		package = {}
+		regexp1 = r'(\d+)x(\d+,?\d*) ?(\w+)' # type = 6x33cl
+		regexp2 = r'(\d+)[^\d]+(\d+,?\d*) ?(\w+)' # type = les 3 boites de 200g
+		regexp3 = r'(\d+,?\d*) ?(\w+)' # type = La bouteille de 1,5L
+		m = re.search(regexp1, str_package)
+		if m:
+			# found first type package content
+			package = {
+				'quantity': m.group(1),
+				'quantity_measure': m.group(2),
+				'unit': m.group(3)
+			}
+		else:
+			m = re.search(regexp2, str_package)
+			if m:
+				# type 2 content
+				package = {
+					'quantity': m.group(1),
+					'quantity_measure': m.group(2),
+					'unit': m.group(3)
+				}
+			else:
+				m = re.search(regexp3, str_package)
+				if m:
+					# type 3 content
+					package = {
+						'quantity': 1,
+						'quantity_measure': m.group(1),
+						'unit': m.group(2)
+					}
+
+		package.update({'str': str_package})
 		return package
 
 	#-----------------------------------------------------------------------------------------------------------------------
