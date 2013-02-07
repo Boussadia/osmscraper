@@ -88,19 +88,59 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 		"""
 		pass
 
-	def get_categories(self, id_parent_category = None, start_date = None, end_date = None):
+	def get_categories(self, options = {}):
 		"""
 			Method that retrieves all categories in a hash.
 
 			Input:
-				- id_parent_category : id of parent category
-				- start_date (datetime): retireve category updated after this date
-				- end_date (datetime): retireve category updated before this date
+				- option (hash) : 
+					1. {
+						'leaves' : boolean, get categories with no childs (optional),
+						'id_parent_category': id of parent category (optional),
+						'start_date':  (datetime) retireve category updated after this date (optional),
+						'end_date':  (datetime) retireve category updated before this date (optional),
+					}
 
 			Output :
 				- categories : list of hashs representing categories.
 		"""
-		pass
+		categories_entities = Category.objects.all()
+		if 'id_parent_category' in options and options['id_parent_category']:
+			id_parent_category = options['id_parent_category']
+			categories_entities = categories_entities.filter(parent_category_id = id_parent_category)
+
+		if 'start_date' in options and options['start_date']:
+			start_date = options['start_date']
+			categories_entities = categories_entities.filter(updated__gte=start_date)
+
+		if 'end_date' in options and options['end_date']:
+			end_date = options['end_date']
+			categories_entities = categories_entities.filter(updated__lte=end_date)
+
+		categories = list(categories_entities)
+
+		if 'leaves' in options and options['leaves']:
+			# Keeping only category leaves, i.e. category that are not parent of another category
+			# if a parent category is in categories_entities, remove it but get its children
+			i = 0
+			while i<len(categories):
+				category = categories[i]
+				sub_categories = Category.objects.filter(parent_category = category)
+				if len(sub_categories) == 0:
+					# This category is a leaf keep going
+					i = i+1
+					continue
+				else:
+					# This is not a leaf, remove it and add sub categories to end of list
+					categories.pop(i)
+					categories = categories + list(sub_categories)
+					continue
+
+		# Organizing categories
+		categories = [ {'id': cat.id, 'name': cat.name, 'parent_category_id': cat.parent_category_id, 'url': cat.url} for cat in categories]
+
+		return categories
+
 
 	def get_shipping_areas(self):
 		"""

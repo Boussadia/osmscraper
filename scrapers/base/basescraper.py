@@ -92,22 +92,22 @@ class BaseScraper(object):
 			is_served_area, code = self.is_served_area(postal_code)
 			if code == 200 and is_served_area:
 				# Passing result to database helper
-				self.databaseHelper.save_shipping_areas({
+				self.databaseHelper.save_shipping_areas([{
 					'is_served_area': True,
 					'name': city_name,
 					'postal_code': postal_code
-				})
+				}])
 			if is_served_area:
 				print 'City : %s (%s) is OK'%(city_name, postal_code)
 			else:
 				print 'City : %s (%s) is NOT OK'%(city_name, postal_code)
 
 		# Adding default location (non set) to shipping areas
-		self.databaseHelper.save_shipping_areas({
+		self.databaseHelper.save_shipping_areas([{
 					'is_served_area': False,
 					'name': '',
 					'name': '',
-				})
+				}])
 
 
 	def what_to_do_next(self):

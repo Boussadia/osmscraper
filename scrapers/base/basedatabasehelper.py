@@ -56,9 +56,16 @@ class BaseDatabaseHelper(object):
 			Method that retrieves all categories in a hash.
 
 			Input:
-				- id_parent_category : id of parent category
-				- start_date (datetime): retireve category updated after this date
-				- end_date (datetime): retireve category updated before this date
+				- option (hash) : 
+					1. {
+						'leaves' : boolean, get categories with no childs (optional, but if present all the other options are ignored)
+						'id_parent_category': id of parent category (optional),
+						'start_date':  (datetime) retireve category updated after this date (optional),
+						'end_date':  (datetime) retireve category updated before this date (optional),
+					}
+
+			Output :
+				- categories : list of hashs representing categories.
 
 			Output :
 				- categories : list of hashs representing categories.
