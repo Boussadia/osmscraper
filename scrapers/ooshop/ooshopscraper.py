@@ -98,7 +98,7 @@ class OoshopScraper(BaseScraper):
 		else:
 			print "Something went wrong when fetching category page for Ooshop : code %d"%(code)
 
-		print len(products)
+		print products
 
 
 	def get_all_products(self):
@@ -108,22 +108,22 @@ class OoshopScraper(BaseScraper):
 		"""
 		pass
 
-	def get_localized_product(self, localisation):
-		pass
 
-
-
-	def get_product_info(self, product_url):
+	def get_product_info(self, product_url, location = 'default'):
 		"""
-			Retrive complete information for product. Independent from localisation.
+			Retrive complete information for product.
 
 			Input : 
 				- product_url (string) :  url of product to scrape
+				- location (string) : postal code of the location, 'default' -> no location
 			Output :
 				- hash representing the product 
 				- code (int) : was the request successfull (200 = OK)
 		"""
-		# First, retrieve html page
+		# Setting location 
+		self.set_location(location)
+
+		# Retrieve html page
 		html, code = self.crawler.get(product_url)
 
 		if code == 200:
@@ -160,7 +160,8 @@ class OoshopScraper(BaseScraper):
 		if re.match(r'(\d{5})', code_postal):
 			return self.is_served_area(code_postal)
 		else:
-			return True, 200
+			# Location not abiding by postal code standard
+			return False, -1
 
 	def is_served_area(self, code_postal = 'default'):
 		"""

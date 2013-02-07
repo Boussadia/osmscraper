@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+from urlparse import urlparse, parse_qs, urlunparse
 
 from scrapers.base.baseparser import BaseParser
 
@@ -167,80 +168,76 @@ class OoshopParser(BaseParser):
 		lis = parsed_page.find_all('li',{'class':'lineproductLine'}) # products in li
 		
 		for i in xrange(0, len(lis)):
+			product = {
+					'is_product': False,
+					'is_promotion': False,
+					'is_available': False
+				}
 			try:
 				li = lis[i]
+				product['html'] = li.prettify()
+
 				name = li.find('h5').find(text=True)[22:-40]
-				brand = li.find('img', {'class':'marque'}).attrs['title']
+				brand = li.find('img', {'class':'marque'})
+				brand_image_url = brand.attrs['src']
+				if 'title' in brand.attrs:
+					brand = brand.attrs['title']
+				else:
+					brand = '' # Some products do not have brands
+
 				image_url = li.find('input', {'class':'image'}).attrs['src'].replace('Vignettes', 'Images')
 				url = li.find('a', {'class':'prodimg'}).attrs['href']
-				reference = image_url.split('/')[-1].split('.')[0]
+				scheme, netloc, path, params, query, fragment = urlparse(url)
+				reference = parse_qs(query)['NOEUD_IDFO'][0]
 
-				product = {
+				# Is the product available
+				if li.find('img', {'class': 'indispo'}):
+					product['is_available'] = False
+				else:
+					product['is_available'] = True
+
+				product.update({
 					'name': name,
 					'brand': brand,
-					'image_url': image_url,
+					'brand_image_url': brand_image_url,
+					'product_image_url': image_url,
 					'url': url,
 					'reference': reference
-				}
+				})
 
 				# Dealing with promotion
 
-				promotion = {}
 				if 'Promo' in li.attrs['class']:
-					textContent = li.find('strike').find(text = True);
-					product['price'] = float(textContent[17:-2].replace(',', '.'))
+					product['is_promotion'] = True
+					promotion = self.parse_promotion_short(li)
 
-					textContent = li.find('strong').find(text = True);
-					promotion['percentage'] = 1 - float(textContent[17:-2].replace(',', '.')) / product['price']
-					
-					ps = li.find('div',{'class' : 'unit price'}).find_all('p') #  p:not(.productPicto) span')[0].textContent
-					if 'productPicto' in ps[0].attrs['class']:
-						p = ps[1]
-					else:
-						p = ps[0]
-
-					textContent = p.find('span').find(text=True)
-					product['unit_price'] = float(textContent.split(u' € / ')[0].replace(u',', u'.'))
-					product['unit'] = textContent.split(u' € / ')[1]
-
-					textContent = p.find_all('span')[1].find(text=True)
-					product['text_unit'] = textContent
-
-					if product['unit'] == 'Lot':
-						promotion['type'] = 'lot'
-						promotion['selector'] = '.lineproductLine:nth-child('+unicode(2*(i+1)-1)+') a.prodimg'
-						promotion['references'] = self.get_references(product['url'])
-					else:
-						promotion['type'] = 'simple'
+					product['promotion'] = promotion
 
 				else:
-					promotion['type'] = 'none'
+					product['is_product'] = True
 					textContent = li.find('strong').find(text=True)
-					product['price'] = float(textContent[17:-2].replace(',', '.'))
+					product['price'] = self.convert_to_float(self.strip_string(textContent))
 
-					ps = li.find('div',{'class' : 'unit price'}).find_all('p') #  p:not(.productPicto) span')[0].textContent
-					if 'class' in ps[0].attrs and 'productPicto' in ps[0].attrs['class']:
-						p = ps[1]
-					else:
-						p = ps[0]
+					textContent = li.find(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_rp_ctl(\d+)_ctl00_lPrxUnit')).find(text=True)
 
-					textContent = p.find('span').find(text=True)
 					product['unit_price'] = float(textContent.split(u' € / ')[0].replace(u',', u'.'))
 					product['unit'] = textContent.split(u' € / ')[1]
 
-					textContent = p.find_all('span')[1].find(text=True)
-					product['text_unit'] = textContent
+					textContent = li.find(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_rp_ctl(\d+)_ctl00_lCont')).find(text=True)
+					product['package'] =self.extract_package_content(textContent)
 
-				product['promotion'] = promotion
+				
 				products.append(product)
 			except Exception, e:
 				print 'ERROR PARSING PRODUCT : '+str(e)
 		return products
 
-	def parse_promotion_short(self):
+	def parse_promotion_short(self, product_html):
 		"""
 			This method is responsible for extracting information regarding promotion in a product form a category page.
 
+			Input :
+				- product_html (BeautifulSoup object) : the product_html to analyse
 			Output : 
 				- hash representing promotion of product. Example
 					- for simple promotion :
@@ -263,7 +260,27 @@ class OoshopParser(BaseParser):
 						}	
 
 		"""
-		pass
+		promotion = {}
+
+		textContent = product_html.find('strike').find(text = True);
+		promotion['after'] = float(textContent[17:-2].replace(',', '.'))
+
+		textContent = product_html.find('strong').find(text = True);
+		promotion['before'] = float(textContent[17:-2].replace(',', '.'))
+
+		textContent = product_html.find(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_rp_ctl(\d+)_ctl00_lPrxUnit')).find(text=True)
+
+		promotion['unit_price'] = float(textContent.split(u' € / ')[0].replace(u',', u'.'))
+		promotion['unit'] = textContent.split(u' € / ')[1]
+
+		if promotion['unit'] == 'Lot':
+			promotion['type'] = 'multi'
+		else:
+			promotion['type'] = 'simple'
+			textContent = product_html.find(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_rp_ctl(\d+)_ctl00_lCont')).find(text=True)
+			promotion['package'] =self.extract_package_content(textContent)
+
+		return promotion
 
 	def parse_promotion_full(self):
 		"""
@@ -293,7 +310,7 @@ class OoshopParser(BaseParser):
 		for p in promotion_info_ps:
 			text = p.find(text=True)
 			# Appyling reg
-			match = re.search(r'(\d+),?(\d*) ?\W ?/ ?(\w{1,5})', text)
+			match = re.search(r'(\d+),?(\d*) ?\W ?/ ?(\w{1,10})', text)
 			if match:
 				# Unit price and unit
 				unit_price = float('%s.%s'%(match.group(1), match.group(2)))
@@ -400,7 +417,7 @@ class OoshopParser(BaseParser):
 					if 'class' not in p.attrs:
 						text = p.find(text=True)
 						# Appyling reg
-						match = re.search(r'(\d+),?(\d*) ?\W ?/ ?(\w{1,5})', text)
+						match = re.search(r'(\d+),?(\d*) ?\W ?/ ?(\w{1,10})', text)
 						if match:
 							# Unit price and unit
 							unit_price = float('%s.%s'%(match.group(1), match.group(2)))
