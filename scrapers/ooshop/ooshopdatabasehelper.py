@@ -160,10 +160,10 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 		"""
 
 		for shipping_area in shipping_areas:
-			city_name = shipping_area['city_name']
+			city_name = shipping_area['name']
 			postal_code = shipping_area['postal_code']
 			is_shipping_area = shipping_area['is_shipping_area']
-			area, created = ShippingArea(postal_code = postal_code, defaults={'city_name': city_name, 'is_shipping_area': is_shipping_area})
+			area, created = ShippingArea.objects.get_or_create(postal_code = postal_code, defaults={'city_name': city_name, 'is_shipping_area': is_shipping_area})
 			if not created:
 				area.city_name = city_name
 				area.is_shipping_area = is_shipping_area
