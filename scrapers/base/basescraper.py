@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import re
+
 from scrapers.base.cities import cities
 
 class BaseScraper(object):
@@ -89,22 +91,22 @@ class BaseScraper(object):
 		"""
 		shipping_areas = []
 		for postal_code, city_name in cities:
-			is_served_area, code = self.is_served_area(postal_code)
-			if code == 200 and is_served_area:
+			is_shipping_area, code = self.is_served_area(postal_code)
+			if code == 200 and is_shipping_area:
 				# Passing result to database helper
 				self.databaseHelper.save_shipping_areas([{
-					'is_served_area': True,
+					'is_shipping_area': True,
 					'name': city_name,
 					'postal_code': postal_code
 				}])
-			if is_served_area:
+			if is_shipping_area:
 				print 'City : %s (%s) is OK'%(city_name, postal_code)
 			else:
 				print 'City : %s (%s) is NOT OK'%(city_name, postal_code)
 
 		# Adding default location (non set) to shipping areas
 		self.databaseHelper.save_shipping_areas([{
-					'is_served_area': False,
+					'is_shipping_area': False,
 					'name': '',
 					'name': '',
 				}])
