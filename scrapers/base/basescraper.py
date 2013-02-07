@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from scrapers.base.cities import cities
+
 class BaseScraper(object):
 	"""
 		This class is responsible for coordianting the actions of the crawler, parser and databasehelper.
@@ -49,6 +51,64 @@ class BaseScraper(object):
 			This method checks if the product is still available in the osm website
 		"""
 		pass
+
+	def set_location(self, code_postal = 'default'):
+		"""
+			Sets crawler location to the one defined. Clears cookies first.
+
+			Input : 
+				- code_postal (string) : french postal code of a city.
+			Output :
+				- boolean : True -> served, False -> not served
+				- code : was the request successfull? (200 = OK)
+
+		"""
+		# Clearing cookie jar
+		self.crawler.empty_cookie_jar()
+		if re.match(r'(\d{5})', code_postal):
+			return self.is_served_area(code_postal)
+		else:
+			# Location not abiding by postal code standard
+			return False, -1
+
+	def is_served_area(self, code_postal = 'default'):
+		"""
+			This method checks if a given area is served by ooshop.
+
+			Input :
+				- code_postal (string) : french postal code of a city.
+			Output:
+				- boolean : True -> served, False -> not served
+				- code : was the request successfull? (200 = OK)
+		"""
+		pass
+
+	def build_shipping_area(self):
+		"""
+			Building shipping area from cities.
+		"""
+		shipping_areas = []
+		for postal_code, city_name in cities:
+			is_served_area, code = self.is_served_area(postal_code)
+			if code == 200 and is_served_area:
+				# Passing result to database helper
+				self.databaseHelper.save_shipping_areas({
+					'is_served_area': True,
+					'name': city_name,
+					'postal_code': postal_code
+				})
+			if is_served_area:
+				print 'City : %s (%s) is OK'%(city_name, postal_code)
+			else:
+				print 'City : %s (%s) is NOT OK'%(city_name, postal_code)
+
+		# Adding default location (non set) to shipping areas
+		self.databaseHelper.save_shipping_areas({
+					'is_served_area': False,
+					'name': '',
+					'name': '',
+				})
+
 
 	def what_to_do_next(self):
 		"""

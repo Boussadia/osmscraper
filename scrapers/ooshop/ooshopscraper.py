@@ -28,37 +28,50 @@ class OoshopScraper(BaseScraper):
 		if code == 200:
 			self.parser.set_html(html)
 			categories = self.parser.get_categories(level = 0)
+			# Setting proper urls
+			[ cat.update({'url': self.properurl(cat['url'])}) for cat in categories]
+			# Save categories
+			categories = self.databaseHelper.save_categories(categories)
 		else:
 			print "Something went wrong when fetching main categories for Ooshop : code %d"%(code)
 
 		# Categories is a list of main categories and sub categories level 1
-		# Cycle through level 1 categories keep going till level 3
+		# Cycle through level 1 categories keep going untill level 3
 
 		for i in xrange(0, len(categories)):
 			main_category = categories[i]
+			# Setting proper urls
+			[ cat.update({'url': self.properurl(cat['url'])}) for cat in main_category['sub_categories']]
 
 			for j in xrange(0, len(main_category['sub_categories'])):
 				level_1_category = main_category['sub_categories'][j]
-				url = self.base_url + '/' + level_1_category['url']
+				url = level_1_category['url']
 				html, code = self.crawler.get(url)
 				if code == 200:
 					self.parser.set_html(html)
 					level_1_category['sub_categories'] = self.parser.get_categories(level = 2)
+					# Setting proper urls
+					[ cat.update({'url': self.properurl(cat['url'])}) for cat in level_1_category['sub_categories']]
+					# Save categories
+					[level_1_category] = self.databaseHelper.save_categories([level_1_category], main_category['id'])
 
 					# We have to fetch sub categories level 3 here because of the way Ooshop website works
 					for k in xrange(0, len(level_1_category['sub_categories'])):
 						level_2_category = level_1_category['sub_categories'][k]
-						url = self.base_url + '/' + level_2_category['url']
+						url = level_2_category['url']
 						html, code = self.crawler.get(url)
 						if code == 200:
 							self.parser.set_html(html)
 							level_2_category['sub_categories'] = self.parser.get_categories(level = 3)
+							level_1_category['sub_categories'][k] = level_2_category
 						else:
 							print "Something went wrong when fetching level 3 categories for Ooshop"
 
+					# Save categories
+					level_1_category['sub_categories'] = self.databaseHelper.save_categories(level_1_category['sub_categories'], level_1_category['id'])					
 				else:
 					print "Something went wrong when fetching level 2 categories for Ooshop"
-		
+
 		# Here we pass the categories list to the databasehelper to be saved
 		# TO DO
 
@@ -137,31 +150,12 @@ class OoshopScraper(BaseScraper):
 				product['url'] = product_url
 
 				# Setting proper full urls
-				product['brand_image_url'] = urlunparse((scheme, netloc, product['brand_image_url'], '', '', ''))
-				product['product_image_url'] = urlunparse((scheme, netloc, product['product_image_url'], '', '', ''))
+				product['brand_image_url'] = self.properurl(product['brand_image_url'])
+				product['product_image_url'] = self.properurl(product['product_image_url'])
 			print product
 			# TO DO : save product in database
 		else:
 			print 'Error while retrieving product page : error %d'%(code)
-
-	def set_location(self, code_postal = 'default'):
-		"""
-			Sets crawler location to the one defined. Clears cookies first.
-
-			Input : 
-				- code_postal (string) : french postal code of a city.
-			Output :
-				- boolean : True -> served, False -> not served
-				- code : was the request successfull? (200 = OK)
-
-		"""
-		# Clearing cookie jar
-		self.crawler.empty_cookie_jar()
-		if re.match(r'(\d{5})', code_postal):
-			return self.is_served_area(code_postal)
-		else:
-			# Location not abiding by postal code standard
-			return False, -1
 
 	def is_served_area(self, code_postal = 'default'):
 		"""
@@ -226,3 +220,15 @@ class OoshopScraper(BaseScraper):
 			Defines the logic of the scraper.
 		"""
 		pass		
+
+	def properurl(self, url_to_format):
+		"""
+			Formating a proper url :
+				base_url = 'http://www.example.com', url_to_format = 'path/to/page' -> 'http://www.example.com/path/to/page'
+				base_url = 'http://www.example.com', url_to_format = 'http://www.example.com/path/to/page' -> 'http://www.example.com/path/to/page'
+		"""
+		base_url = self.base_url
+		scheme_base, netloc_base, path_base, params_base, query_base, fragment_base = urlparse(base_url)
+		scheme, netloc, path, params, query, fragment = urlparse(url_to_format)
+
+		return urlunparse((scheme_base, netloc_base, path, params, query, fragment))

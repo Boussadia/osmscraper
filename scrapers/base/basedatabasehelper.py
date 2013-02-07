@@ -17,16 +17,68 @@ class BaseDatabaseHelper(object):
 				- categories : list of hash representing categories
 				- id_parent_category : if not None, this is the id of the parent category in the database.
 		"""
+		pass
 
 	def save_products(self, products, id_parent_category):
 		"""
 			Method responsible for saving products to database
 		"""
+		pass
 
-	def get_categories(self):
+	def get_products(self, options = {}):
+		"""
+			Method responsible for retireving products from database.
+
+			Input :
+				- option (hash) : 
+					1. {
+						'type': 'single',
+						'filter':{
+							'reference': '...' (optional)
+							'image_url': '...',(optional, if reference is not set),
+						}
+					}
+					2. {
+						'type': 'multi',
+						'filter': {
+							'after_date': 'datetime' (optional retrieve products updated after date),
+							'before_date': 'datetime' (optional retrieve products older than date),
+							'category_id': id (optional)
+						}
+					}
+			Output : 
+				- list of products (represented by hash)
+		"""
+		pass
+
+	def get_categories(self, id_parent_category = None, start_date = None, end_date = None):
 		"""
 			Method that retrieves all categories in a hash.
+
+			Input:
+				- id_parent_category : id of parent category
+				- start_date (datetime): retireve category updated after this date
+				- end_date (datetime): retireve category updated before this date
 
 			Output :
 				- categories : list of hashs representing categories.
 		"""
+		pass
+
+	def get_shipping_areas(self):
+		"""
+			Method reponsible for retrieving shipping areas
+
+			Output :
+				- list of hash : {'id':..., 'city_name': ..., 'postal_code': .....}
+		"""
+		pass
+
+	def save_shipping_areas(self, shipping_areas):
+		"""
+			Method that handle shipping areas saving
+
+			Input :
+				- shipping_area (list of hash) : {'city_name': ..., 'postal_code': ....., 'is_shipping_area': Bool}
+		"""
+		pass

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
-from urlparse import urlparse, parse_qs, urlunparse
+from urlparse import urlparse, parse_qs
 
 from scrapers.base.baseparser import BaseParser
 
@@ -263,10 +263,10 @@ class OoshopParser(BaseParser):
 		promotion = {}
 
 		textContent = product_html.find('strike').find(text = True);
-		promotion['after'] = float(textContent[17:-2].replace(',', '.'))
+		promotion['before'] = self.convert_to_float(self.strip_string(textContent))
 
 		textContent = product_html.find('strong').find(text = True);
-		promotion['before'] = float(textContent[17:-2].replace(',', '.'))
+		promotion['after'] = self.convert_to_float(self.strip_string(textContent))
 
 		textContent = product_html.find(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_rp_ctl(\d+)_ctl00_lPrxUnit')).find(text=True)
 
