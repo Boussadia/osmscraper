@@ -205,16 +205,17 @@ class OoshopParser(BaseParser):
 					'reference': reference
 				})
 
-				# Dealing with promotion
+				# Default value of is_product
+				product['is_product'] = True
 
+				# Dealing with promotion
 				if 'Promo' in li.attrs['class']:
 					product['is_promotion'] = True
 					promotion = self.parse_promotion_short(li)
-
 					product['promotion'] = promotion
-
+					if promotion['type'] == 'multi':
+						product['is_product'] = False
 				else:
-					product['is_product'] = True
 					textContent = li.find('strong').find(text=True)
 					product['price'] = self.convert_to_float(self.strip_string(textContent))
 

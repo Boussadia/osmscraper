@@ -72,7 +72,7 @@ class OoshopScraper(BaseScraper):
 				else:
 					print "Something went wrong when fetching level 2 categories for Ooshop"
 
-	def get_list_products_for_category(self, category_url, location = 'default'):
+	def get_list_products_for_category(self, category_url, location = 'default', save = False):
 		"""
 			For a category and a location, retrieve product list and save them.
 
@@ -108,7 +108,14 @@ class OoshopScraper(BaseScraper):
 		else:
 			print "Something went wrong when fetching category page for Ooshop : code %d"%(code)
 
-		print products
+		# Cleaning urls
+		products = self.clean_urls_in_products(products)
+
+		# Saing products
+		if save:
+			self.databaseHelper.save_products(products, None, None)
+		else:
+			return products
 
 
 	def get_all_products(self):
@@ -117,6 +124,30 @@ class OoshopScraper(BaseScraper):
 			each localisation and saves them.
 		"""
 		pass
+
+	def clean_urls_in_products(self, products):
+		"""
+			Clean all urls in products list
+
+			Input :
+				- products (list hash) : products
+
+			Output :
+				- the same list of products but with clean urls
+		"""
+		new_products = []
+		for product in products:
+			# Clean urls
+			product['url'] = self.properurl(product['url'])
+			product['brand_image_url'] = self.properurl(product['brand_image_url'])
+			product['product_image_url'] = self.properurl(product['product_image_url'])
+			
+			if not product['is_product'] and product['is_promotion'] and product['promotion']['type'] == 'multi' and 'product_image_urls' in product['promotion']:
+				# Setting proper full urls
+				product['promotion']['product_image_urls'] = [ self.properurl(url) for url in product['promotion']['product_image_urls']]
+			new_products.append(product)
+
+		return new_products
 
 
 	def get_product_info(self, product_url, location = 'default', save = False):
@@ -144,12 +175,7 @@ class OoshopScraper(BaseScraper):
 			scheme, netloc, path, params, query, fragment = urlparse(product_url)
 			product['reference'] = parse_qs(query)['NOEUD_IDFO'][0]
 			product['url'] = product_url
-			product['brand_image_url'] = self.properurl(product['brand_image_url'])
-			product['product_image_url'] = self.properurl(product['product_image_url'])
-			
-			if not product['is_product'] and product['is_promotion'] and product['promotion']['type'] == 'multi':
-				# Setting proper full urls
-				product['promotion']['product_image_urls'] = [ self.properurl(url) for url in product['promotion']['product_image_urls']]
+			[product] = self.clean_urls_in_products([product])
 
 			# save product in database
 			if save:
