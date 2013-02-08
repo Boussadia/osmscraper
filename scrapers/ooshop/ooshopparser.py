@@ -325,7 +325,7 @@ class OoshopParser(BaseParser):
 					# Extracting image url of products in promotion (url of product not available in this section...)
 					content_promotion = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_pDetLot')
 					products_lot = content_promotion.find_all(id=re.compile('ctl00_cphC_pn3T1_ctl01_rptDetailLot_ctl(\d{2})_plProd_divPnl'))
-					promotion['product_image_urls'] = [p.find('a').find('img').attrs['src'] for p in products_lot]
+					promotion['product_image_urls'] = [p.find('a').find('img').attrs['src'].replace('Vignettes', 'Images') for p in products_lot]
 
 
 				else:

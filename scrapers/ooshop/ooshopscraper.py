@@ -72,9 +72,6 @@ class OoshopScraper(BaseScraper):
 				else:
 					print "Something went wrong when fetching level 2 categories for Ooshop"
 
-		# Here we pass the categories list to the databasehelper to be saved
-		# TO DO
-
 	def get_list_products_for_category(self, category_url, location = 'default'):
 		"""
 			For a category and a location, retrieve product list and save them.
@@ -122,7 +119,7 @@ class OoshopScraper(BaseScraper):
 		pass
 
 
-	def get_product_info(self, product_url, location = 'default'):
+	def get_product_info(self, product_url, location = 'default', save = False):
 		"""
 			Retrive complete information for product.
 
@@ -143,19 +140,26 @@ class OoshopScraper(BaseScraper):
 			self.parser.set_html(html)
 			product = self.parser.parse_product_full()
 
-			# Adding reference to product hash
-			if product['is_product']:
-				scheme, netloc, path, params, query, fragment = urlparse(product_url)
-				product['reference'] = parse_qs(query)['NOEUD_IDFO'][0]
-				product['url'] = product_url
-
+			# Clean urls
+			scheme, netloc, path, params, query, fragment = urlparse(product_url)
+			product['reference'] = parse_qs(query)['NOEUD_IDFO'][0]
+			product['url'] = product_url
+			product['brand_image_url'] = self.properurl(product['brand_image_url'])
+			product['product_image_url'] = self.properurl(product['product_image_url'])
+			
+			if not product['is_product'] and product['is_promotion'] and product['promotion']['type'] == 'multi':
 				# Setting proper full urls
-				product['brand_image_url'] = self.properurl(product['brand_image_url'])
-				product['product_image_url'] = self.properurl(product['product_image_url'])
-			print product
-			# TO DO : save product in database
+				product['promotion']['product_image_urls'] = [ self.properurl(url) for url in product['promotion']['product_image_urls']]
+
+			# save product in database
+			if save:
+				self.databaseHelper.save_products([product], None, None)
+			else:
+				return product
+
 		else:
 			print 'Error while retrieving product page : error %d'%(code)
+			return None
 
 	def is_served_area(self, code_postal = 'default'):
 		"""

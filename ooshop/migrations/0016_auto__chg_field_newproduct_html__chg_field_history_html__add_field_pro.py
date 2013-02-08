@@ -8,134 +8,27 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'NewProduct'
-        db.create_table('ooshop_newproduct', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('reference', self.gf('django.db.models.fields.CharField')(max_length=9999, unique=True, null=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=1000, null=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, auto_now_add=True, blank=True)),
-            ('url', self.gf('django.db.models.fields.CharField')(max_length=9999, null=True)),
-            ('brand', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.NewBrand'], null=True)),
-            ('unit', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.Unit'], null=True)),
-            ('image_url', self.gf('django.db.models.fields.CharField')(max_length=9999, null=True)),
-            ('goodie', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('exists', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('origine', self.gf('django.db.models.fields.TextField')(null=True)),
-            ('informations', self.gf('django.db.models.fields.TextField')(null=True)),
-            ('ingredients', self.gf('django.db.models.fields.TextField')(null=True)),
-            ('conservation', self.gf('django.db.models.fields.TextField')(null=True)),
-            ('conseils', self.gf('django.db.models.fields.TextField')(null=True)),
-            ('composition', self.gf('django.db.models.fields.TextField')(null=True)),
-            ('avertissements', self.gf('django.db.models.fields.TextField')(null=True)),
-            ('html', self.gf('django.db.models.fields.TextField')(max_length=9999999999999999999999L)),
-            ('package_quantity', self.gf('django.db.models.fields.IntegerField')(null=True)),
-            ('package_measure', self.gf('django.db.models.fields.FloatField')(null=True)),
-            ('package_unit', self.gf('django.db.models.fields.TextField')(null=True)),
-        ))
-        db.send_create_signal('ooshop', ['NewProduct'])
 
-        # Adding M2M table for field categories on 'NewProduct'
-        db.create_table('ooshop_newproduct_categories', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('newproduct', models.ForeignKey(orm['ooshop.newproduct'], null=False)),
-            ('category', models.ForeignKey(orm['ooshop.category'], null=False))
-        ))
-        db.create_unique('ooshop_newproduct_categories', ['newproduct_id', 'category_id'])
+        # Changing field 'NewProduct.html'
+        db.alter_column('ooshop_newproduct', 'html', self.gf('django.db.models.fields.TextField')(max_length=9999999999999999999999L, null=True))
 
-        # Adding model 'Category'
-        db.create_table('ooshop_category', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('parent_category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.Category'], null=True)),
-            ('url', self.gf('django.db.models.fields.CharField')(max_length=9999, unique=True, null=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, auto_now_add=True, blank=True)),
-        ))
-        db.send_create_signal('ooshop', ['Category'])
-
-        # Adding unique constraint on 'Category', fields ['name', 'parent_category']
-        db.create_unique('ooshop_category', ['name', 'parent_category_id'])
-
-        # Adding model 'NewBrand'
-        db.create_table('ooshop_newbrand', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
-            ('image_url', self.gf('django.db.models.fields.CharField')(max_length=9999, null=True)),
-        ))
-        db.send_create_signal('ooshop', ['NewBrand'])
-
-        # Adding model 'History'
-        db.create_table('ooshop_history', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('product', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.NewProduct'])),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('price', self.gf('django.db.models.fields.FloatField')()),
-            ('unit_price', self.gf('django.db.models.fields.FloatField')()),
-            ('shipping_area', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.ShippingArea'], null=True)),
-            ('availability', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('html', self.gf('django.db.models.fields.TextField')(max_length=9999999999999999999999L)),
-        ))
-        db.send_create_signal('ooshop', ['History'])
-
-        # Adding model 'ShippingArea'
-        db.create_table('ooshop_shippingarea', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('city_name', self.gf('django.db.models.fields.TextField')(null=True)),
-            ('postal_code', self.gf('django.db.models.fields.TextField')(null=True)),
-            ('is_shipping_area', self.gf('django.db.models.fields.BooleanField')(default=False)),
-        ))
-        db.send_create_signal('ooshop', ['ShippingArea'])
-
-        # Adding model 'Promotion'
-        db.create_table('ooshop_promotion', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('type', self.gf('django.db.models.fields.CharField')(default='s', max_length=1)),
-            ('image_url', self.gf('django.db.models.fields.CharField')(max_length=9999, null=True)),
-            ('before', self.gf('django.db.models.fields.FloatField')()),
-            ('after', self.gf('django.db.models.fields.FloatField')()),
-            ('start', self.gf('django.db.models.fields.DateField')()),
-            ('end', self.gf('django.db.models.fields.DateField')()),
-            ('shipping_area', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.ShippingArea'], null=True)),
-        ))
-        db.send_create_signal('ooshop', ['Promotion'])
-
-        # Adding M2M table for field content on 'Promotion'
-        db.create_table('ooshop_promotion_content', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('promotion', models.ForeignKey(orm['ooshop.promotion'], null=False)),
-            ('newproduct', models.ForeignKey(orm['ooshop.newproduct'], null=False))
-        ))
-        db.create_unique('ooshop_promotion_content', ['promotion_id', 'newproduct_id'])
+        # Changing field 'History.html'
+        db.alter_column('ooshop_history', 'html', self.gf('django.db.models.fields.TextField')(max_length=9999999999999999999999L, null=True))
+        # Adding field 'Promotion.html'
+        db.add_column('ooshop_promotion', 'html',
+                      self.gf('django.db.models.fields.TextField')(max_length=9999999999999999999999L, null=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'Category', fields ['name', 'parent_category']
-        db.delete_unique('ooshop_category', ['name', 'parent_category_id'])
 
-        # Deleting model 'NewProduct'
-        db.delete_table('ooshop_newproduct')
+        # Changing field 'NewProduct.html'
+        db.alter_column('ooshop_newproduct', 'html', self.gf('django.db.models.fields.TextField')(default=None, max_length=9999999999999999999999L))
 
-        # Removing M2M table for field categories on 'NewProduct'
-        db.delete_table('ooshop_newproduct_categories')
-
-        # Deleting model 'Category'
-        db.delete_table('ooshop_category')
-
-        # Deleting model 'NewBrand'
-        db.delete_table('ooshop_newbrand')
-
-        # Deleting model 'History'
-        db.delete_table('ooshop_history')
-
-        # Deleting model 'ShippingArea'
-        db.delete_table('ooshop_shippingarea')
-
-        # Deleting model 'Promotion'
-        db.delete_table('ooshop_promotion')
-
-        # Removing M2M table for field content on 'Promotion'
-        db.delete_table('ooshop_promotion_content')
+        # Changing field 'History.html'
+        db.alter_column('ooshop_history', 'html', self.gf('django.db.models.fields.TextField')(default=None, max_length=9999999999999999999999L))
+        # Deleting field 'Promotion.html'
+        db.delete_column('ooshop_promotion', 'html')
 
 
     models = {
@@ -289,7 +182,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'History'},
             'availability': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'html': ('django.db.models.fields.TextField', [], {'max_length': '9999999999999999999999L'}),
+            'html': ('django.db.models.fields.TextField', [], {'max_length': '9999999999999999999999L', 'null': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'price': ('django.db.models.fields.FloatField', [], {}),
             'product': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['ooshop.NewProduct']"}),
@@ -320,7 +213,7 @@ class Migration(SchemaMigration):
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'exists': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'goodie': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'html': ('django.db.models.fields.TextField', [], {'max_length': '9999999999999999999999L'}),
+            'html': ('django.db.models.fields.TextField', [], {'max_length': '9999999999999999999999L', 'null': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'image_url': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'null': 'True'}),
             'informations': ('django.db.models.fields.TextField', [], {'null': 'True'}),
@@ -361,14 +254,17 @@ class Migration(SchemaMigration):
         'ooshop.promotion': {
             'Meta': {'object_name': 'Promotion'},
             'after': ('django.db.models.fields.FloatField', [], {}),
+            'availability': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'before': ('django.db.models.fields.FloatField', [], {}),
             'content': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['ooshop.NewProduct']", 'symmetrical': 'False'}),
             'end': ('django.db.models.fields.DateField', [], {}),
+            'html': ('django.db.models.fields.TextField', [], {'max_length': '9999999999999999999999L', 'null': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'image_url': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'null': 'True'}),
             'shipping_area': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['ooshop.ShippingArea']", 'null': 'True'}),
             'start': ('django.db.models.fields.DateField', [], {}),
-            'type': ('django.db.models.fields.CharField', [], {'default': "'s'", 'max_length': '1'})
+            'type': ('django.db.models.fields.CharField', [], {'default': "'s'", 'max_length': '1'}),
+            'unit_price': ('django.db.models.fields.FloatField', [], {'null': 'True'})
         },
         'ooshop.shippingarea': {
             'Meta': {'object_name': 'ShippingArea'},
