@@ -31,12 +31,8 @@ define([
 				var template = _.template(this.template);
 				content = template({'content': content});
 				this.$el.html(content);
-				if(this.level>-1){
-					var button = $("#add_brand").text();
-					this.$el.append(button);
-				}else{
-					this.$el.find('.remove').remove();
-				}
+				var button = $("#add_brand").text();
+				this.$el.append(button);
 				return this;
 
 			},
@@ -97,6 +93,8 @@ define([
 				e.preventDefault();
 				var name = this.$el.find('#name_brand').val();
 				var id = this.$el.find('#id_brand').val();
+				if (!id) id = -1;
+				console.log(id);
 				this.brandCollection.addNewBrand({'name': name, 'id': id});
 			},
 			set_current: function(id_current){

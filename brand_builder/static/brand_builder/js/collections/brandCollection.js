@@ -12,12 +12,10 @@ define([
 			},
 			set_url : function(url){
 				this.url = url;
-				console.log(url);
 			},
 			fetch : function(){
 				// Fetching data here
 				var that = this;
-				console.log(that);
 				$.ajax({
 					url:'brand/'+that.url,
 					type:"GET",
@@ -44,9 +42,14 @@ define([
 			},
 			save: function(model){
 				// Saving new Model
+				console.log(this.url);
 				var that = this;
+				var url = that.url;
+				if (!url){
+					url = 0;
+				}
 				$.ajax({
-					url:'brand/'+that.url,
+					url:'brand/'+url,
 					type:"POST",
 					dataType:"json",
 					data:model,

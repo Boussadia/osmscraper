@@ -13,7 +13,7 @@ from scrapers.monoprix import Monoprix
 from scrapers.telemarket import Telemarket
 from scrapers.place_du_marche import Place_du_marche
 from scrapers.coursengo import Coursengo
-from scrapers.ooshop import Ooshop
+from scrapers.ooshop_old import Ooshop
 
 import monoprix
 import place_du_marche

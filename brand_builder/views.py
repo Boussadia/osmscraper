@@ -76,6 +76,25 @@ def sub_brands(request, id):
 				model['parent_id'] = brand.id
 				model['id'] = new_sub_brand.id
 				response['model'] = model
+	elif id == 0 or id=='0':
+		if request.method == 'POST':
+			try:
+				name = request.POST['name']
+				brand = Brand(name=name)
+				brand.save()
+				basic_json_model = json.loads(serializers.serialize("json", [brand]))
+				
+				model = [{'id': j['pk']} for j in basic_json_model][0]
+				model.update(basic_json_model[0]['fields'])
+
+				model['url'] = ''
+				model['parent_id'] = None
+				model['id'] = brand.id
+				response['status'] = '200'
+				response['model'] = model
+			except Exception, e:
+				print e
+				response['status'] = '404'
 	else:
 		response['status'] = '404'
 
@@ -87,7 +106,7 @@ def delete_brand(request, id):
 	if request.method == 'DELETE':
 		# Getting brand
 		brand = Brand.objects.filter(id = id)
-		if len(brand) == 1 and brand[0].parent_brand is not None:
+		if len(brand) == 1:
 			# Getting all sub brands and delete them
 			id_brands_to_delete = [brand[0].id]
 			cursor = 0

@@ -8,7 +8,7 @@ from django.db import connection
 from celery import Celery
 from celery.task import periodic_task, task
 
-from scrapers.ooshop import Ooshop
+from scrapers.ooshop_old import Ooshop
 from models import *
 
 celery = Celery('tasks', broker=settings.BROKER_URL)
