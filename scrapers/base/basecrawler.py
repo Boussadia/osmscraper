@@ -79,6 +79,7 @@ class BaseCrawler(object):
 				print "Error when retrieving "+url+" : page not found."
 				return None, 404
 			else:
+				print 'Error : %s'%(e)
 				self.__network_failures_retry__ = self.__network_failures_retry__ + 1
 				if self.__network_failures_retry__ < BaseCrawler.MAX_NETWORK_FAILURE_TRIES:
 					print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
@@ -88,6 +89,7 @@ class BaseCrawler(object):
 					print "Error when retrieving "+url
 					return None, e.code
 		except mechanize.URLError, e:
+			print 'Error : %s'%(e)
 			self.__network_failures_retry__ = self.__network_failures_retry__ + 1
 			if self.__network_failures_retry__ < BaseCrawler.MAX_NETWORK_FAILURE_TRIES:
 				print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
