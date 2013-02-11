@@ -149,6 +149,9 @@ class Store(models.Model):
 	icon = models.IntegerField(null=True)
 	ctm = models.IntegerField(null=True)
 
+	class Meta:
+		unique_together = ("name", "city_name", "postal_code", "adress")
+
 	def __unicode__(self):
 		return ' %s (%s) %s %s %s '%(self.name, self.chain, self.adress, self.city_name, self.postal_code)
 
