@@ -8,13 +8,13 @@ from django.db import DatabaseError
 
 from scrapers.base.basedatabasehelper import BaseDatabaseHelper
 
-# from ooshop.models import Category
-# from ooshop.models import NewBrand as Brand
-# from ooshop.models import Unit
-# from ooshop.models import NewProduct as Product
-# from ooshop.models import Promotion
-# from ooshop.models import History
-# from ooshop.models import ShippingArea
+from monoprix.models import Category
+# from monoprix.models import NewBrand as Brand
+# from monoprix.models import Unit
+# from monoprix.models import NewProduct as Product
+# from monoprix.models import Promotion
+# from monoprix.models import History
+# from monoprix.models import ShippingArea
 
 class MonoprixDatabaseHelper(BaseDatabaseHelper):
 

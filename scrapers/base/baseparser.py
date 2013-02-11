@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import re
+
 from bs4 import BeautifulSoup
 
 class BaseParser(object):
@@ -149,3 +151,70 @@ class BaseParser(object):
 
 	def set_html(self, html):
 		self.parsed_page = BeautifulSoup(html, "lxml", from_encoding = 'utf-8')
+
+	def properurl(self, url_to_format):
+		"""
+			Formating a proper url :
+				base_url = 'http://www.example.com', url_to_format = 'path/to/page' -> 'http://www.example.com/path/to/page'
+				base_url = 'http://www.example.com', url_to_format = 'http://www.example.com/path/to/page' -> 'http://www.example.com/path/to/page'
+		"""
+		base_url = self.base_url
+		scheme_base, netloc_base, path_base, params_base, query_base, fragment_base = urlparse(base_url)
+		scheme, netloc, path, params, query, fragment = urlparse(url_to_format)
+
+		return urlunparse((scheme_base, netloc_base, path, params, query, fragment))
+
+	def extract_package_content(self, str_package):
+		"""
+			This method extracts package content of a product.
+			e.g. '4 pots de yaourt de 200g' -> {'quantity': 4, 'quantity_measure': 200, 'unit': g}
+
+			Input :
+				- str_package (string) : description of the content of a product
+			Output : 
+				- hash describing content
+		"""
+		package = {}
+		regexp1 = r'(\d+)x(\d+,?\d*) ?([^\W\d_]+)' # type = 6x33cl
+		regexp2 = r'(\d+)(?!,)[^\d]+(\d+,?\d*) ?([^\W\d_]+)' # type = les 3 boites de 200g
+		regexp3 = r'[\w\D]+(\d+)\D+(\d+,?\d*) ?([^\W\d_]+)' # la barquette de 2, 350g
+		regexp4 = r'(\d+,?\d*) ?([^\W\d_]+)' # type = La bouteille de 1,5L
+		m = re.search(regexp1, str_package)
+		if m:
+			# found first type package content
+			package = {
+				'quantity': m.group(1),
+				'quantity_measure': self.convert_to_float(m.group(2)),
+				'unit': m.group(3)
+			}
+		else:
+			m = re.search(regexp2, str_package)
+			if m:
+				# type 2 content
+				package = {
+					'quantity': m.group(1),
+					'quantity_measure': self.convert_to_float(m.group(2)),
+					'unit': m.group(3)
+				}
+			else:
+				m = re.search(regexp3, str_package)
+				if m:
+					# type 3 content
+					package = {
+						'quantity': m.group(1),
+						'quantity_measure': self.convert_to_float(m.group(2)),
+						'unit': m.group(3)
+					}
+					
+				else:
+					m = re.search(regexp4, str_package)
+					if m:
+						# type 4 content
+						package = {
+							'quantity': 1,
+							'quantity_measure': self.convert_to_float(m.group(1)),
+							'unit': m.group(2)
+						}
+
+		package.update({'str': str_package})
+		return package

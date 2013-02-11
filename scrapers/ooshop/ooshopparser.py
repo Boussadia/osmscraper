@@ -459,50 +459,6 @@ class OoshopParser(BaseParser):
 
 		return product
 
-	def extract_package_content(self, str_package):
-		"""
-			This method extracts package content of a product.
-			e.g. '4 pots de yaourt de 200g' -> {'quantity': 4, 'quantity_measure': 200, 'unit': g}
-
-			Input :
-				- str_package (string) : description of the content of a product
-			Output : 
-				- hash describing content
-		"""
-		package = {}
-		regexp1 = r'(\d+)x(\d+,?\d*) ?(\w+)' # type = 6x33cl
-		regexp2 = r'(\d+)(?!,)[^\d]+(\d+,?\d*) ?(\w+)' # type = les 3 boites de 200g
-		regexp3 = r'(\d+,?\d*) ?(\w+)' # type = La bouteille de 1,5L
-		m = re.search(regexp1, str_package)
-		if m:
-			# found first type package content
-			package = {
-				'quantity': m.group(1),
-				'quantity_measure': self.convert_to_float(m.group(2)),
-				'unit': m.group(3)
-			}
-		else:
-			m = re.search(regexp2, str_package)
-			if m:
-				# type 2 content
-				package = {
-					'quantity': m.group(1),
-					'quantity_measure': self.convert_to_float(m.group(2)),
-					'unit': m.group(3)
-				}
-			else:
-				m = re.search(regexp3, str_package)
-				if m:
-					# type 3 content
-					package = {
-						'quantity': 1,
-						'quantity_measure': self.convert_to_float(m.group(1)),
-						'unit': m.group(2)
-					}
-
-		package.update({'str': str_package})
-		return package
-
 	#-----------------------------------------------------------------------------------------------------------------------
 	#
 	#									SPECIFIC METHODS TO OOSHOP PARSER

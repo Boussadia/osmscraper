@@ -4,6 +4,7 @@
 import re
 
 from scrapers.base.cities import cities
+from urlparse import urlparse, parse_qs, urlunparse
 
 class BaseScraper(object):
 	"""
@@ -117,3 +118,17 @@ class BaseScraper(object):
 			Defines the logic of the scraper.
 		"""
 		pass
+
+
+
+	def properurl(self, url_to_format):
+		"""
+			Formating a proper url :
+				base_url = 'http://www.example.com', url_to_format = 'path/to/page' -> 'http://www.example.com/path/to/page'
+				base_url = 'http://www.example.com', url_to_format = 'http://www.example.com/path/to/page' -> 'http://www.example.com/path/to/page'
+		"""
+		base_url = self.base_url
+		scheme_base, netloc_base, path_base, params_base, query_base, fragment_base = urlparse(base_url)
+		scheme, netloc, path, params, query, fragment = urlparse(url_to_format)
+
+		return urlunparse((scheme_base, netloc_base, path, params, query, fragment))

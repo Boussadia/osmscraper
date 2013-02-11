@@ -113,7 +113,12 @@ class OoshopScraper(BaseScraper):
 
 		# Saing products
 		if save:
-			self.databaseHelper.save_products(products, None, None)
+			# Getting category
+			category = self.databaseHelper.get_category_by_url(category_url)
+			if category:
+				self.databaseHelper.save_products(products, category.id, None)
+			else:
+				self.databaseHelper.save_products(products, None, None)
 		else:
 			return products
 
@@ -249,16 +254,4 @@ class OoshopScraper(BaseScraper):
 		"""
 			Defines the logic of the scraper.
 		"""
-		pass		
-
-	def properurl(self, url_to_format):
-		"""
-			Formating a proper url :
-				base_url = 'http://www.example.com', url_to_format = 'path/to/page' -> 'http://www.example.com/path/to/page'
-				base_url = 'http://www.example.com', url_to_format = 'http://www.example.com/path/to/page' -> 'http://www.example.com/path/to/page'
-		"""
-		base_url = self.base_url
-		scheme_base, netloc_base, path_base, params_base, query_base, fragment_base = urlparse(base_url)
-		scheme, netloc, path, params, query, fragment = urlparse(url_to_format)
-
-		return urlunparse((scheme_base, netloc_base, path, params, query, fragment))
+		pass

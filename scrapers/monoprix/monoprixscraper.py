@@ -14,14 +14,15 @@ class MonoprixScraper(BaseScraper):
 		docstring for MonoprixScraper
 	"""
 	def __init__(self):
-		super(MonoprixScraper, self).__init__('http://courses.monoprix.com', MonoprixCrawler, MonoprixParser, MonoprixDatabaseHelper)
+		super(MonoprixScraper, self).__init__('http://courses.monoprix.fr', MonoprixCrawler, MonoprixParser, MonoprixDatabaseHelper)
 
 	def get_all_categories(self):
 		"""
 			Categories process, specific to child class.
 		"""
-		url = 'http://courses.monoprix.com/magasin-en-ligne/courses-en-ligne.html'
+		url = self.base_url
 		categories, code = self.get_categories(url, level = 0)
+		categories = self.databaseHelper.save_categories(categories)
 
 		# Categories is a list of main categories
 		# Cycle through these categories and keep going until level 3
@@ -30,19 +31,19 @@ class MonoprixScraper(BaseScraper):
 			main_category = categories[i]
 
 			url = main_category['url']
-			sub_categories, code = self.get_categories(url, level = 1)
+			sub_categories, code = self.get_categories(url, level = 1, id_parent_category = main_category['id'])
 
 			# Getting level 2 categories
 			for j in xrange(0,len(sub_categories)):
 				sub_category = sub_categories[j]
 				url = sub_category['url']
-				sub_categories_level_2, code = self.get_categories(url, level = 2)
+				sub_categories_level_2, code = self.get_categories(url, level = 2, id_parent_category = sub_category['id'])
 
 				# Getting sub categories level 3
 				for k in xrange(0, len(sub_categories_level_2)):
 					sub_category_level_2 = sub_categories_level_2[k]
 					url = sub_category_level_2['url']
-					sub_categories_level_3, code = self.get_categories(url, level = 3)
+					sub_categories_level_3, code = self.get_categories(url, level = 3, id_parent_category = sub_category_level_2['id'] )
 
 					# Updating sub categories level 2
 					sub_category_level_2['sub_categories'] = sub_categories_level_3
@@ -59,7 +60,7 @@ class MonoprixScraper(BaseScraper):
 
 		return categories
 
-	def get_categories(self, url, level = 0):
+	def get_categories(self, url, level = 0, id_parent_category = None):
 		"""
 			Method for getting sub categories fr url.
 
@@ -74,9 +75,6 @@ class MonoprixScraper(BaseScraper):
 		"""
 		categories = []
 
-		if level > 1:
-			return categories, 200
-
 		# Getting main categories
 		html, code = self.crawler.get(url)
 		if code == 200:
@@ -85,7 +83,7 @@ class MonoprixScraper(BaseScraper):
 			# Setting proper urls
 			[ cat.update({'url': self.properurl(cat['url'])}) for cat in categories]
 			# Save categories
-			# categories = self.databaseHelper.save_categories(categories)
+			categories = self.databaseHelper.save_categories(categories, id_parent_category)
 		else:
 			print "Something went wrong when fetching main categories for Ooshop : code %d"%(code)
 
@@ -105,27 +103,40 @@ class MonoprixScraper(BaseScraper):
 
 		# Getting html
 		html, code = self.crawler.get(category_url)
+		
 
 		if code == 200:
 			self.parser.set_html(html)
-			pagination = self.parser.get_pagination()
+			brands = self.parser.get_brands_values_in_category_page()
 
-			for i in xrange(0,len(pagination)):
-				page = pagination[i]
-				if i == 0:
-					# page already fetched, no need to fetch it again
-					pass
-				else:
-					html, code = self.crawler.category_pagination(category_url, page)
+			for i in xrange(0,len(brands)):
+				brand = brands[i]
+				html, code = self.crawler.brand_filter(brand['value'])
 
 				if code == 200:
 					self.parser.set_html(html)
-					products = products + self.parser.get_products()
+					# are all the products on in this page ?
+					current_page_all_products, url_all_products = self.parser.pagination_link_all()
+					if not current_page_all_products:
+						products = products + self.parser.get_products()
+					else:
+						html, code = self.crawler.get(url_all_products)
+						if code == 200:
+							html, code = self.crawler.brand_filter(brand['value'])
+							if code == 200:
+								self.parser.set_html(html)
+								products = products + self.parser.get_products()
+							else:
+								print "Something went wrong when fetching category page for Monoprix : code %d"%(code)
+						else:
+							print "Something went wrong when fetching category page for Monoprix : code %d"%(code)
 				else:
-					print "Something went wrong when fetching category page (%d) for Ooshop : code %d"%(i+1,code)
-
+					print "Something went wrong when fetching category page (%d) for Monoprix : code %d"%(i+1,code)
+				# Setting brand name to product
+				for j in xrange(0, len(products)):
+					products[j]['brand'] = brand['name']
 		else:
-			print "Something went wrong when fetching category page for Ooshop : code %d"%(code)
+			print "Something went wrong when fetching category page for Monoprix : code %d"%(code)
 
 		# Cleaning urls
 		products = self.clean_urls_in_products(products)
@@ -158,12 +169,11 @@ class MonoprixScraper(BaseScraper):
 		for product in products:
 			# Clean urls
 			product['url'] = self.properurl(product['url'])
-			product['brand_image_url'] = self.properurl(product['brand_image_url'])
 			product['product_image_url'] = self.properurl(product['product_image_url'])
 			
 			if not product['is_product'] and product['is_promotion'] and product['promotion']['type'] == 'multi' and 'product_image_urls' in product['promotion']:
 				# Setting proper full urls
-				product['promotion']['product_image_urls'] = [ self.properurl(url) for url in product['promotion']['product_image_urls']]
+				product['promotion']['references'] = [ self.properurl(url) for url in product['promotion']['product_image_urls']]
 			new_products.append(product)
 
 		return new_products
@@ -191,8 +201,7 @@ class MonoprixScraper(BaseScraper):
 			product = self.parser.parse_product_full()
 
 			# Clean urls
-			scheme, netloc, path, params, query, fragment = urlparse(product_url)
-			product['reference'] = parse_qs(query)['NOEUD_IDFO'][0]
+			product['reference'] = product_url.split('-')[-1]
 			product['url'] = product_url
 			[product] = self.clean_urls_in_products([product])
 
@@ -217,43 +226,44 @@ class MonoprixScraper(BaseScraper):
 				- code : was the request successfull? (200 = OK)
 		"""
 		is_served = False
+		code = 200
 
-		# Verification url
-		url = 'http://www.ooshop.com/courses-en-ligne/WebForms/Utilisateur/VerifEligibilite.aspx'
-		html, code = self.crawler.get(url)
-		if code == 200:
-			self.parser.set_html(html)
-			form_data = self.parser.get_form_values()
-			# Setting postal code argument to the one povided & other necessary post value
-			form_data['ctl00$cphC$elig$tbCp'] = code_postal
-			form_data['ctl00$sm'] = 'ctl00$sm|ctl00$cphC$elig$bEli'
-			form_data['__EVENTTARGET'] = ''
-			form_data['__EVENTARGUMENT'] = ''
-			form_data['__LASTFOCUS'] = ''
-			form_data['ctl00$xCoordHolder'] = 0
-			form_data['ctl00$yCoordHolder'] = 281
+		# # Verification url
+		# url = 'http://www.ooshop.com/courses-en-ligne/WebForms/Utilisateur/VerifEligibilite.aspx'
+		# html, code = self.crawler.get(url)
+		# if code == 200:
+		# 	self.parser.set_html(html)
+		# 	form_data = self.parser.get_form_values()
+		# 	# Setting postal code argument to the one povided & other necessary post value
+		# 	form_data['ctl00$cphC$elig$tbCp'] = code_postal
+		# 	form_data['ctl00$sm'] = 'ctl00$sm|ctl00$cphC$elig$bEli'
+		# 	form_data['__EVENTTARGET'] = ''
+		# 	form_data['__EVENTARGUMENT'] = ''
+		# 	form_data['__LASTFOCUS'] = ''
+		# 	form_data['ctl00$xCoordHolder'] = 0
+		# 	form_data['ctl00$yCoordHolder'] = 281
 
-			# Deleting unecessary post argument
-			del form_data['ctl00$cphC$elig$ValiderEmail2']
-			del form_data['ctl00$headerCtrl$btOK']
-			del form_data['ctl00$cphC$elig$lv$LoginButton']
-			del form_data['ctl00$Perso$ucAu$ValiderEmail']
-			del form_data['ctl00$Perso$ucAu$SubmitButton']
-			del form_data['ctl00$Perso$ucAu$lv$LoginButton']
-			del form_data['ctl00$ucDetProd$AjoutPanier1$btPan']
+		# 	# Deleting unecessary post argument
+		# 	del form_data['ctl00$cphC$elig$ValiderEmail2']
+		# 	del form_data['ctl00$headerCtrl$btOK']
+		# 	del form_data['ctl00$cphC$elig$lv$LoginButton']
+		# 	del form_data['ctl00$Perso$ucAu$ValiderEmail']
+		# 	del form_data['ctl00$Perso$ucAu$SubmitButton']
+		# 	del form_data['ctl00$Perso$ucAu$lv$LoginButton']
+		# 	del form_data['ctl00$ucDetProd$AjoutPanier1$btPan']
 
-			# geting response
-			html, code = self.crawler.post(url, data = form_data)
+		# 	# geting response
+		# 	html, code = self.crawler.post(url, data = form_data)
 			
-			if code == 200:
-				# Parsing html
-				self.parser.set_html(html)
-				is_served = self.parser.get_eligibility()
-			else:
-				print 'Error %d'%(code)
+		# 	if code == 200:
+		# 		# Parsing html
+		# 		self.parser.set_html(html)
+		# 		is_served = self.parser.get_eligibility()
+		# 	else:
+		# 		print 'Error %d'%(code)
 
-		else:
-			print 'Something went wrong : error %d'%(code)
+		# else:
+		# 	print 'Something went wrong : error %d'%(code)
 
 		return is_served, code
 
@@ -268,16 +278,4 @@ class MonoprixScraper(BaseScraper):
 		"""
 			Defines the logic of the scraper.
 		"""
-		pass		
-
-	def properurl(self, url_to_format):
-		"""
-			Formating a proper url :
-				base_url = 'http://www.example.com', url_to_format = 'path/to/page' -> 'http://www.example.com/path/to/page'
-				base_url = 'http://www.example.com', url_to_format = 'http://www.example.com/path/to/page' -> 'http://www.example.com/path/to/page'
-		"""
-		base_url = self.base_url
-		scheme_base, netloc_base, path_base, params_base, query_base, fragment_base = urlparse(base_url)
-		scheme, netloc, path, params, query, fragment = urlparse(url_to_format)
-
-		return urlunparse((scheme_base, netloc_base, path, params, query, fragment))
+		pass

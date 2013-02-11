@@ -74,7 +74,6 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 		for i in xrange(0, len(products)):
 			# try:
 			product = products[i]
-			print product
 
 			# Common
 			reference = product['reference']
@@ -205,7 +204,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 				if id_parent_category:
 					cat = Category.objects.filter(id = id_parent_category)
 					if len(cat) == 1:
-						product_db.categories.add(cat)
+						product_db.categories.add(cat[0])
 
 				if not product['is_promotion']:
 					# Saving image
@@ -372,6 +371,21 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 		categories = [ {'id': cat.id, 'name': cat.name, 'parent_category_id': cat.parent_category_id, 'url': cat.url} for cat in categories]
 
 		return categories
+
+	def get_category_by_url(self, category_url):
+		"""
+			Getting category entity from database with category_url
+
+			Input :
+				- category_url (string) : url of category page
+			Output : 
+				- category model entity if exists, None otherwise
+		"""
+		category = Category.objects.filter(url = category_url)
+		if len(category) ==0:
+			return None
+		else:
+			return category[0]
 
 
 	def get_shipping_areas(self):
