@@ -135,6 +135,23 @@ class User(models.Model):
 #
 #----------------------------------------------------------------------------------------------------
 
+class Store(models.Model):
+	name = models.TextField(null=True)
+	city_name = models.TextField(null=True)
+	postal_code = models.TextField(null=True)
+	latitude = models.FloatField(null = True)
+	longitude = models.FloatField(null = True)
+	fax = models.TextField(null=True)
+	phone = models.TextField(null=True)
+	adress = models.TextField(null=True)
+	chain = models.TextField(null=True)
+	infos = models.TextField(null=True)
+	icon = models.IntegerField(null=True)
+	ctm = models.IntegerField(null=True)
+
+	def __unicode__(self):
+		return ' %s (%s) %s %s %s '%(self.name, self.chain, self.adress, self.city_name, self.postal_code)
+
 # class ShippingArea(models.Model):
 # 	city_name = models.TextField(null=True)
 # 	postal_code = models.TextField(null=True)
