@@ -128,5 +128,27 @@ class BaseCrawler(object):
 		"""
 		self.jar.clear()
 
+	def get_cookie(self, name = None):
+		"""
+			Get cookie by name
+			Input : 
+				- name (string) : name of cookie.
+			Output :
+				- hash : {
+					'name': ...,
+					'value': ...
+				}
+		"""
+
+		cookie = {}
+
+		if name:
+			for c in self.jar:
+				if name == c.name:
+					cookie['name'] = c.name
+					cookie['value'] = c.value
+					
+		return cookie
+
 
 
