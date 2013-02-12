@@ -109,7 +109,7 @@ class MonoprixParser(BaseParser):
 		options = select.find_all('option')
 		for o in options:
 			value = o.attrs['value']
-			name = o.find(text=True)
+			name = o.text
 			if value and value != '' and value != '-' and name:
 				brands.append({
 					'name': name,
@@ -184,10 +184,10 @@ class MonoprixParser(BaseParser):
 
 						if child.find("p",{"class","promoPriceBox"}) is None:
 							# Not a promotion, it is a simple product
-							package_text = child.find('div', {'class': 'SubBox06'}).find_all('p')[2].find('span').find(text=True)
+							package_text = child.find('div', {'class': 'SubBox06'}).find_all('p')[2].find('span').text
 							package = self.extract_package_content(package_text)
 							product['package'] = package
-							product["price"] = self.convert_to_float(child.find("p",{"class","priceBox"}).find("label").find(text=True))
+							product["price"] = self.convert_to_float(child.find("p",{"class","priceBox"}).find("label").text)
 							product['is_product'] = True
 						else:
 							# This is a promotion
@@ -197,8 +197,8 @@ class MonoprixParser(BaseParser):
 								product['is_product'] = True
 
 
-						if len(self.strip_string(child.find("p",{"class":"Style06"}).find(text=True)).split(" / ")) > 1:
-							product["unit_price"], product["unit"] = self.strip_string(child.find("p",{"class":"Style06"}).find(text=True)).split(" / ")
+						if len(self.strip_string(child.find("p",{"class":"Style06"}).text).split(" / ")) > 1:
+							product["unit_price"], product["unit"] = self.strip_string(child.find("p",{"class":"Style06"}).text).split(" / ")
 							product["unit_price"] = self.convert_to_float(product["unit_price"])
 						else:
 							product["unit_price"] = -1
@@ -257,7 +257,7 @@ class MonoprixParser(BaseParser):
 		promotion['date_end'] = dict(zip(['day', 'month', 'year'], date_end))
 
 		# Is it a simple or multi promotion?
-		name = product_html.find('div', {'class': 'SubBox06'}).find_all('p')[1].find('span').find(text=True)
+		name = product_html.find('div', {'class': 'SubBox06'}).find_all('p')[1].find('span').text
 		if 'lot :' in name.lower():
 			type_promotion = 'multi'
 		else:
@@ -266,7 +266,7 @@ class MonoprixParser(BaseParser):
 		promotion['type'] = type_promotion
 
 		# Unit price
-		promotion["unit_price"], promotion["unit"] = self.strip_string(product_html.find("p",{"class":"Style06"}).find(text=True)).split(" / ")
+		promotion["unit_price"], promotion["unit"] = self.strip_string(product_html.find("p",{"class":"Style06"}).text).split(" / ")
 		promotion["unit_price"] = self.convert_to_float(promotion["unit_price"])
 
 		# Getting products references in promotion
@@ -303,8 +303,8 @@ class MonoprixParser(BaseParser):
 
 		# Getting price before and after promotion
 		price_block = promotion_html.find('p', {'class' : 'promoPriceBox'})
-		price_after = self.convert_to_float(price_block.find('span').find(text=True))
-		price_before = self.convert_to_float(price_block.find('del').find(text=True))
+		price_after = self.convert_to_float(price_block.find('span').text)
+		price_before = self.convert_to_float(price_block.find('del').text)
 		promotion['before'] = price_before
 		promotion['after'] = price_after
 
@@ -325,7 +325,7 @@ class MonoprixParser(BaseParser):
 				else:
 					promotion['type'] = 'simple'
 
-		promotion["unit_price"], promotion["unit"] = self.strip_string(promotion_html.find("p",{"class":"Style06"}).find(text=True)).split(" / ")
+		promotion["unit_price"], promotion["unit"] = self.strip_string(promotion_html.find("p",{"class":"Style06"}).text).split(" / ")
 		promotion["unit_price"] = self.convert_to_float(promotion["unit_price"])
 
 		# References of product
@@ -366,7 +366,7 @@ class MonoprixParser(BaseParser):
 			product['html'] = html
 			product_infos = product_section.find("div",{"class","InfoProduit"})
 
-			product["name"] = self.strip_string(product_infos.find("p",{"class":"Style02"}).find(text=True))
+			product["name"] = self.strip_string(product_infos.find("p",{"class":"Style02"}).text)
 
 			# Is it a promotion?
 			if product_section.find('p', {'class': 'promoPriceBox'}):
@@ -377,15 +377,15 @@ class MonoprixParser(BaseParser):
 					product['is_product'] = True
 			else:
 				product['is_product'] = True
-				product["price"] = self.convert_to_float(product_section.find("p",{"class","priceBox"}).find("label").find(text=True))
+				product["price"] = self.convert_to_float(product_section.find("p",{"class","priceBox"}).find("label").text)
 			
 			if product['is_product']:
-				package_text = self.strip_string(product_infos.find("p",{"class":"Style03"}).find(text=True))
+				package_text = self.strip_string(product_infos.find("p",{"class":"Style03"}).text)
 				package = self.extract_package_content(package_text)
 				product['package'] = package
 
-			if len(self.strip_string(product_section.find("p",{"class":"Style06"}).find(text=True)).split(" / ")) > 1:
-				product["unit_price"], product["unit"] = self.strip_string(product_section.find("p",{"class":"Style06"}).find(text=True)).split(" / ")
+			if len(self.strip_string(product_section.find("p",{"class":"Style06"}).text).split(" / ")) > 1:
+				product["unit_price"], product["unit"] = self.strip_string(product_section.find("p",{"class":"Style06"}).text).split(" / ")
 				product["unit_price"] = self.convert_to_float(product["unit_price"])
 			else:
 				product["unit_price"] = -1
@@ -398,7 +398,7 @@ class MonoprixParser(BaseParser):
 
 			for i in xrange(0,len(lis)):
 				li = lis[i]
-				product['information'][li.find("h4").find(text=True)] = li.find("p",{"class","Para04"}).find(text=True)
+				product['information'][li.find("h4").text] = li.find("p",{"class","Para04"}).text
 		else:
 			product["status"] = 404
 
@@ -423,7 +423,7 @@ class MonoprixParser(BaseParser):
 		url_all_products = ""
 
 
-		active_pagination = parsed_page.find("div", {"class","PageViewControl"}).find("li",{"class":"Active"}).find(text=True)
+		active_pagination = parsed_page.find("div", {"class","PageViewControl"}).find("li",{"class":"Active"}).text
 		if active_pagination != "Tous":
 			links = parsed_page.find("div", {"class","PageViewControl"}).find_all("a")
 			for link in links:

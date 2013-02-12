@@ -109,7 +109,7 @@ class BaseScraper(object):
 		self.databaseHelper.save_shipping_areas([{
 					'is_shipping_area': False,
 					'name': '',
-					'name': '',
+					'postal_code': '',
 				}])
 
 

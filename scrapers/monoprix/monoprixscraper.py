@@ -97,8 +97,20 @@ class MonoprixScraper(BaseScraper):
 				- category_url (string) : url to a category parsed_page
 				- location (hash) : store as a hash ({'city_name': ..., 'postal_code':..., 'address': ...})
 		"""
-		# Setting location & initializing products
-		self.set_location(location)
+		# Setting location, getting category form datastore & initializing products
+		is_LAD, code = self.set_location(location)
+
+		if is_LAD and code == 200:
+			store = self.databaseHelper.get_store(location)
+		else:
+			store = None
+
+		# Category
+		categories = self.databaseHelper.get_categories({'url': category_url})
+		if len(categories)>0:
+			category = categories[0]['db_entity']
+		else:
+			category = None
 		products = []
 
 		# Getting html
@@ -143,7 +155,10 @@ class MonoprixScraper(BaseScraper):
 
 		# Saing products
 		if save:
-			self.databaseHelper.save_products(products, None, None)
+			if category:
+				self.databaseHelper.save_products(products, category.id, store)
+			else:
+				self.databaseHelper.save_products(products, None, store)
 		else:
 			return products
 
@@ -191,7 +206,13 @@ class MonoprixScraper(BaseScraper):
 				- code (int) : was the request successfull (200 = OK)
 		"""
 		# Setting location 
-		self.set_location(location)
+		is_LAD, code = self.set_location(location)
+
+		if is_LAD and code == 200:
+			store = self.databaseHelper.get_store(location)
+		else:
+			store = None
+
 
 		# Retrieve html page
 		html, code = self.crawler.get(product_url)
@@ -207,10 +228,22 @@ class MonoprixScraper(BaseScraper):
 
 			# save product in database
 			if save:
-				self.databaseHelper.save_products([product], None, None)
+				self.databaseHelper.save_products([product], None, store)
 			else:
 				return product
 
+		elif code == 404:
+			product = {
+				'is_available': False,
+				'url': product_url,
+				'reference': product_url.split('-')[-1]
+				}
+
+			# save product in database
+			if save:
+				self.databaseHelper.save_products([product], None, store)
+			else:
+				return product
 		else:
 			print 'Error while retrieving product page : error %d'%(code)
 			return None
@@ -246,7 +279,7 @@ class MonoprixScraper(BaseScraper):
 			data_delivery = self.parser.get_form_delivery_zone()
 
 			if data_delivery['type'] == 'address':
-				html, code = self.crawler.search_adress('%s, %s %s'%(location['address'],location['postal_code'], location['city_name']))
+				html, code = self.crawler.search_adress('%s, %s %s'%(location['address'].encode('utf8', 'replace'),location['postal_code'].encode('utf8', 'replace'), location['city_name'].encode('utf8', 'replace')))
 				suggetions = self.parser.extract_suggested_addresses(html)
 				[s.update({'url': self.properurl(s['url'])} )for s in suggetions]
 
@@ -265,10 +298,12 @@ class MonoprixScraper(BaseScraper):
 
 			elif data_delivery['type'] == 'select':
 				data_delivery['form']['url'] = self.properurl(data_delivery['form']['url'])
-				html, code = self.crawler.set_delivery(data_delivery)
-
-				if code == 200:
-					is_served = True
+				if 'radiogroup' in data_delivery['form']['data'] and 'LAD' in data_delivery['form']['data']['radiogroup']:
+					html, code = self.crawler.set_delivery(data_delivery)
+					if code == 200:
+						is_served = True
+				else:
+					is_served = False
 
 		else:
 			print 'Error while fetching base url of Monoprix (code = %d)'%(code)
@@ -292,6 +327,27 @@ class MonoprixScraper(BaseScraper):
 			return self.is_served_area(location)
 		# Location not abiding by postal code standard
 		return False, -1
+
+	def build_shipping_area(self):
+		"""
+			Building shipping area from stores.
+		"""
+		stores = self.databaseHelper.get_stores()
+
+		for store in stores:
+			print 'Store : %s, %s %s %s'%(store['name'], store['address'], store['city_name'], store['postal_code'])
+			is_LAD, code = self.set_location(store)
+			if code == 200 and is_LAD:
+				print 'Is OK'
+			elif code != 200:
+				print 'Error code : %d'%(code)
+			else:
+				print 'Is NOT OK'
+
+			if code == 200 and is_LAD != store['is_LAD']:
+				store['is_LAD'] = is_LAD
+				self.databaseHelper.save_stores([store])
+
 
 	def is_available(self, product_url):
 		"""

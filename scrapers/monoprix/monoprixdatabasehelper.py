@@ -9,12 +9,12 @@ from django.db import DatabaseError
 from scrapers.base.basedatabasehelper import BaseDatabaseHelper
 
 from monoprix.models import Category
-# from monoprix.models import NewBrand as Brand
-# from monoprix.models import Unit
-# from monoprix.models import NewProduct as Product
-# from monoprix.models import Promotion
-# from monoprix.models import History
-# from monoprix.models import ShippingArea
+from monoprix.models import NewBrand as Brand
+from monoprix.models import Unit
+from monoprix.models import NewProduct as Product
+from monoprix.models import Promotion
+from monoprix.models import History
+from monoprix.models import Store
 
 class MonoprixDatabaseHelper(BaseDatabaseHelper):
 
@@ -42,7 +42,7 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 		for i in xrange(len(categories)):
 			category = categories[i]
 			name = unicode(category['name'])
-			url = unicode(category['url'])
+			url = unicode(category['url'].split(';jsessionid=')[0])
 			if id_parent_category:
 				category_db, created = Category.objects.get_or_create(url = url, defaults={'name': name, 'parent_category_id': id_parent_category})
 			else:
@@ -62,7 +62,7 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 
 
 
-	def save_products(self, products, id_parent_category = None, shipping_area = None):
+	def save_products(self, products, id_parent_category = None, location = None):
 		"""
 			Method responsible for saving products to database
 
@@ -71,18 +71,33 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 				- id_parent_category (int) : id of parent category
 				- shipping_area (database entity) : corresponding databse entity
 		"""
+		# Getting store:
+		store = location
+
 		for i in xrange(0, len(products)):
 			# try:
 			product = products[i]
-			print product
+			availability = product['is_available']
+
+			if not availability:
+				reference = product['reference']
+
+				# Getting product from database, and saving history indicating non availability
+				product = Product.objects.filter(reference = reference)
+				if len(product):
+					product = product[0]
+					history = History(product = product, availability = False, store = store)
+					history.save()
+					return
+
 
 			# Common
 			reference = product['reference']
 			name = product['name']
-			url = product['url']
+			url = product['url'].split(';jsessionid=')[0]
 			html = product['html']
-			if product['brand'] != '':
-				brand = self.save_brand(product['brand'], product['brand_image_url'])
+			if 'brand' in product and product['brand'] != '':
+				brand = self.save_brand(product['brand'])
 			else:
 				brand = None
 
@@ -91,8 +106,7 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 			else:
 				unit = None
 
-			image_url = product['product_image_url']
-			availability = product['is_available']
+			image_url = product['product_image_url'].split(';jsessionid=')[0]
 
 			# Promotion specific
 			if product['is_promotion']:
@@ -108,28 +122,23 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 
 			if product['is_product']:
 				# Detailed information
-				if 'information' in product and 'Information' in product['information']:
-					informations = product['information']['Information']
+				if 'information' in product and 'Description' in product['information']:
+					description = product['information']['Description']
 				else:
-					informations = None
-
+					description = None
+				#
 				if 'information' in product and 'Conservation' in product['information']:
 					conservation = product['information']['Conservation']
 				else:
 					conservation = None
 
-				if 'information' in product and 'origin' in product['information']:
-					origine = product['information']['origin']
+				if 'information' in product and u"Conseil" in product['information']:
+					conseil = product['information'][u"Conseil"]
 				else:
-					origine = None
-
-				if 'information' in product and u"Conseils d'utilisation" in product['information']:
-					conseils = product['information'][u"Conseils d'utilisation"]
-				else:
-					conseils = None
-
-				if 'information' in product and 'Ingredients' in product['information']:
-					ingredients = product['information']['Ingredients']
+					conseil = None
+				# done
+				if 'information' in product and u'Ingrédients' in product['information']:
+					ingredients = product['information']['Ingrédients']
 				else:
 					ingredients = None
 
@@ -137,11 +146,11 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 					composition = product['information']['Composition']
 				else:
 					composition = None
-
-				if 'information' in product and 'Avertissements' in product['information']:
-					avertissements = product['information']['Avertissements']
+				#
+				if 'information' in product and 'Valeur nutritionnelle' in product['information']:
+					valeur_nutritionnelle = product['information']['Avertissements']
 				else:
-					avertissements = None
+					valeur_nutritionnelle = None
 
 				# Package
 				if 'package' in product and 'unit' in product['package']:
@@ -166,13 +175,12 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 					'reference': reference,
 					'brand': brand,
 					'unit': unit,
-					'informations': informations,
-					'conservation': conservation,
-					'origine': origine,
-					'conseils': conseils,
+					'description': description,
 					'ingredients': ingredients,
+					'valeur_nutritionnelle': valeur_nutritionnelle,
+					'conservation': conservation,
+					'conseil': conseil,
 					'composition': composition,
-					'avertissements': avertissements,
 					'package_unit': package_unit,
 					'package_quantity': package_quantity,
 					'package_measure': package_measure
@@ -184,13 +192,12 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 					product_db.reference = reference
 					product_db.brand = brand
 					product_db.unit = unit
-					product_db.informations = informations
-					product_db.conservation = conservation
-					product_db.origine = origine
-					product_db.conseils = conseils
+					product_db.description = description
 					product_db.ingredients = ingredients
+					product_db.valeur_nutritionnelle = valeur_nutritionnelle
+					product_db.conservation = conservation
+					product_db.conseil = conseil
 					product_db.composition = composition
-					product_db.avertissements = avertissements
 					product_db.package_unit = package_unit
 					product_db.package_quantity = package_quantity
 					product_db.package_measure = package_measure
@@ -205,7 +212,7 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 				if id_parent_category:
 					cat = Category.objects.filter(id = id_parent_category)
 					if len(cat) == 1:
-						product_db.categories.add(cat)
+						product_db.categories.add(cat[0])
 
 				if not product['is_promotion']:
 					# Saving image
@@ -217,7 +224,7 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 					unit_price = product['unit_price']
 
 					# Saving history to database
-					history = History(product = product_db, price = price, unit_price = unit_price, availability = availability, html = html, shipping_area = shipping_area)
+					history = History(product = product_db, price = price, unit_price = unit_price, availability = availability, html = html, store = store)
 					history.save()
 
 					# Is it a goodie?
@@ -226,7 +233,7 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 						product_db.save()
 				elif product['promotion']['type'] == 'simple':
 					# Simple promotion
-					promotion, created = Promotion.objects.get_or_create(reference = reference, defaults = {'type': Promotion.SIMPLE, 'url': url, 'image_url': image_url, 'before': before, 'after': after, 'unit_price': unit_price, 'start': start, 'end': end, 'shipping_area': shipping_area, 'availability': availability, 'html': html})
+					promotion, created = Promotion.objects.get_or_create(reference = reference, defaults = {'type': Promotion.SIMPLE, 'url': url, 'image_url': image_url, 'before': before, 'after': after, 'unit_price': unit_price, 'start': start, 'end': end, 'store': store, 'availability': availability, 'html': html})
 					if created:
 						promotion.type = Promotion.SIMPLE
 						promotion.url = url
@@ -236,14 +243,14 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 						promotion.unit_price = unit_price
 						promotion.start = start
 						promotion.end = end
-						promotion.shipping_area = shipping_area
+						promotion.store = store
 						promotion.availability = availability
 						promotion.html =  html
 						promotion.save()
 					promotion.content.add(product_db)
 			elif product['is_product'] == False and product['is_promotion'] and product['promotion']['type'] == 'multi':
-				# TO DO : Multi promotion
-				promotion, created = Promotion.objects.get_or_create(reference = reference, shipping_area = shipping_area, defaults = {'type': Promotion.MULTI, 'url': url, 'image_url': image_url, 'before': before, 'after': after, 'unit_price': unit_price, 'start': start, 'end': end, 'availability': availability, 'html': html})
+				# Multi promotion
+				promotion, created = Promotion.objects.get_or_create(reference = reference, store = store, defaults = {'type': Promotion.MULTI, 'url': url, 'image_url': image_url, 'before': before, 'after': after, 'unit_price': unit_price, 'start': start, 'end': end, 'availability': availability, 'html': html})
 				if created:
 					promotion.type = Promotion.MULTI
 					promotion.url = url
@@ -257,31 +264,28 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 					promotion.html =  html
 					promotion.save()
 				# Adding content of package
-				if 'product_image_urls' in product['promotion']:
-					for product_image_url in product['promotion']['product_image_urls']:
-						# Is there a product with this image url?
-						content_product = Product.objects.filter(image_url = product_image_url)
+				if 'references' in product['promotion']:
+					for reference in product['promotion']['references']:
+						# Is there a product with reference?
+						content_product = Product.objects.filter(reference = reference)
 						if len(content_product)>0:
 							content_product = content_product[0]
 						else:
-							content_product = Product(image_url = product_image_url)
+							content_product = Product(image_url = reference)
 							content_product.save()
 						promotion.content.add(content_product)
 			# except DatabaseError, e:
 			# 	connection._rollback()
 			# 	print 'Failed to save product to database %s'%(e)
-			# 	print product, id_parent_category, shipping_area
+			# 	print product, id_parent_category, store
 			# 	raise e
 			
 
-	def save_brand(self, brand_name, brand_image_url):
+	def save_brand(self, brand_name):
 		"""
 			Saves and return brand entity.
 		"""
-		brand, created = Brand.objects.get_or_create(name = brand_name, defaults = {'image_url': brand_image_url})
-		if not created:
-			brand.image_url = brand_image_url
-			brand.save()
+		brand, created = Brand.objects.get_or_create(name = unicode(brand_name))
 		return brand
 
 	def save_unit(self, unit_name):
@@ -289,7 +293,7 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 			Saves and return unit entity.
 		"""
 		if unit_name:
-			unit, created = Unit.objects.get_or_create(name = unit_name)
+			unit, created = Unit.objects.get_or_create(name = unicode(unit_name))
 			return unit
 		else:
 			return None
@@ -329,6 +333,7 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 					1. {
 						'leaves' : boolean, get categories with no childs (optional),
 						'id_parent_category': id of parent category (optional),
+						'url': url of category (optionnal)
 						'start_date':  (datetime) retireve category updated after this date (optional),
 						'end_date':  (datetime) retireve category updated before this date (optional),
 					}
@@ -340,6 +345,10 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 		if 'id_parent_category' in options and options['id_parent_category']:
 			id_parent_category = options['id_parent_category']
 			categories_entities = categories_entities.filter(parent_category_id = id_parent_category)
+
+		if 'url' in options and options['url']:
+			url = options['url']
+			categories_entities = categories_entities.filter(url = url)
 
 		if 'start_date' in options and options['start_date']:
 			start_date = options['start_date']
@@ -369,36 +378,100 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 					continue
 
 		# Organizing categories
-		categories = [ {'id': cat.id, 'name': cat.name, 'parent_category_id': cat.parent_category_id, 'url': cat.url} for cat in categories]
+		categories = [ {'id': cat.id, 'name': cat.name, 'parent_category_id': cat.parent_category_id, 'url': cat.url, 'db_entity': cat} for cat in categories]
 
 		return categories
 
-
-	def get_shipping_areas(self):
+	def save_stores(self, stores):
 		"""
-			Method reponsible for retrieving shipping areas
-
-			Output :
-				- list of hash : {'id':..., 'city_name': ..., 'postal_code': .....}
-		"""
-		pass
-
-	def save_shipping_areas(self, shipping_areas):
-		"""
-			Method that handle shipping areas saving
+			Method that handle stores saving
 
 			Input :
-				- shipping_area (list of hash) : {'city_name': ..., 'postal_code': ....., 'is_shipping_area': Bool}
+				- stores (list of hash) :
+					[{
+						'id':..., # Optionnal
+						'name': ...,
+						'city_name': ...,
+						'postal_code': ...,
+						'address': ...,
+						'is_LAD': ...
+					}]
 		"""
 
-		for shipping_area in shipping_areas:
-			city_name = shipping_area['name']
-			postal_code = shipping_area['postal_code']
-			is_shipping_area = shipping_area['is_shipping_area']
-			area, created = ShippingArea.objects.get_or_create(postal_code = postal_code,city_name = city_name, defaults={ 'is_shipping_area': is_shipping_area})
-			if not created:
-				area.city_name = city_name
-				area.is_shipping_area = is_shipping_area
-				area.save()
+		for store in stores:
+			city_name = store['city_name']
+			postal_code = store['postal_code']
+			is_LAD = store['is_LAD']
+			name = store['name']
+
+			if 'id' in store:
+				store_db = Store.objects.filter(id = store['id'])
+				if len(store_db) == 1:
+					store_db = store_db[0]
+					store_db.city_name = store['city_name']
+					store_db.postal_code = store['postal_code']
+					store_db.is_LAD = store['is_LAD']
+					store_db.name = store['name']
+					store_db.save()
+			else:
+				store_db, created = Store.objects.get_or_create(postal_code = postal_code,city_name = city_name, address = address, name = name, defaults={ 'is_LAD': is_LAD})
+				if not created:
+					store_db.is_LAD = is_LAD
+					store_db.save()
+
+	def get_stores(self):
+		"""
+			Get from database all Monoprix get_stores
+
+			Output :
+				- list of hash : [{
+					'id':...,
+					'name': ...,
+					'city_name': ...,
+					'postal_code': ...,
+					'address': ...,
+					'is_LAD': ...
+				}]
+		"""
+		stores = Store.objects.all()
+
+		stores_return = [{'id':s.id,'name': s.name, 'postal_code':s.postal_code, 'city_name':s.city_name, 'address':s.address, 'is_LAD': s.is_LAD} for s in stores]
+
+		return stores_return
+
+	def get_store(self, location):
+		"""
+			Extract store form database.
+
+			Input :
+				- location {
+					'name': ...,
+					'city_name': ...,
+					'postal_code': ...,
+					'address': ...,
+				}
+		"""
+
+		store = Store.objects.filter(postal_code = location['postal_code'])
+
+		if len(store) == 1:
+			return store[0]
+		elif len(store) == 0:
+			return None
+		else:
+			store = Store.objects.filter(postal_code = location['postal_code'], city_name = location['city_name'])
+
+			if len(store) == 1:
+				return store[0]
+			elif len(store) == 0:
+				return None
+			else:
+				store = Store.objects.filter(postal_code = location['postal_code'], city_name = location['city_name'], address = location['address'])
+				if len(store) > 0:
+					return store[0]
+				else:
+					return None
+
+
 
 

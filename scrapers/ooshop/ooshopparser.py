@@ -47,7 +47,7 @@ class OoshopParser(BaseParser):
 				a_main_cats = li.find_all("a",{"class":re.compile("univ(\d){1}")})
 				if len(a_main_cats)>0:
 					a = a_main_cats[0]
-					name = a.find(text=True)
+					name = a.text
 					url = a.get("href")
 					category = {
 						'name': name,
@@ -79,7 +79,7 @@ class OoshopParser(BaseParser):
 
 			for i in xrange(0, len(lis)):
 				li = lis[i]
-				name_sub_category_level_2 = li.find("a").find(text=True)
+				name_sub_category_level_2 = li.find("a").text
 				url_sub_category_level_2 = li.find("a").get("href")
 				sub_categories_level_2 = {
 					"name": name_sub_category_level_2,
@@ -95,7 +95,7 @@ class OoshopParser(BaseParser):
 
 				for i in xrange(0, len(lis)):
 					li = lis[i]
-					name_sub_category_level_3 = li.find("a").find(text=True)
+					name_sub_category_level_3 = li.find("a").text
 					url_sub_category_level_3 = li.find("a").get("href")
 					sub_categories_level_3 = {
 						'name': name_sub_category_level_3,
@@ -177,7 +177,7 @@ class OoshopParser(BaseParser):
 				li = lis[i]
 				product['html'] = li.prettify()
 
-				name = li.find('h5').find(text=True)[22:-40]
+				name = li.find('h5').text[22:-40]
 				brand = li.find('img', {'class':'marque'})
 				brand_image_url = brand.attrs['src']
 				if 'title' in brand.attrs:
@@ -216,15 +216,15 @@ class OoshopParser(BaseParser):
 					if promotion['type'] == 'multi':
 						product['is_product'] = False
 				else:
-					textContent = li.find('strong').find(text=True)
+					textContent = li.find('strong').text
 					product['price'] = self.convert_to_float(self.strip_string(textContent))
 
-					textContent = li.find(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_rp_ctl(\d+)_ctl00_lPrxUnit')).find(text=True)
+					textContent = li.find(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_rp_ctl(\d+)_ctl00_lPrxUnit')).text
 
 					product['unit_price'] = float(textContent.split(u' € / ')[0].replace(u',', u'.'))
 					product['unit'] = textContent.split(u' € / ')[1]
 
-					textContent = li.find(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_rp_ctl(\d+)_ctl00_lCont')).find(text=True)
+					textContent = li.find(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_rp_ctl(\d+)_ctl00_lCont')).text
 					product['package'] =self.extract_package_content(textContent)
 
 				
@@ -269,7 +269,7 @@ class OoshopParser(BaseParser):
 		textContent = product_html.find('strong').find(text = True);
 		promotion['after'] = self.convert_to_float(self.strip_string(textContent))
 
-		textContent = product_html.find(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_rp_ctl(\d+)_ctl00_lPrxUnit')).find(text=True)
+		textContent = product_html.find(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_rp_ctl(\d+)_ctl00_lPrxUnit')).text
 
 		promotion['unit_price'] = float(textContent.split(u' € / ')[0].replace(u',', u'.'))
 		promotion['unit'] = textContent.split(u' € / ')[1]
@@ -278,7 +278,7 @@ class OoshopParser(BaseParser):
 			promotion['type'] = 'multi'
 		else:
 			promotion['type'] = 'simple'
-			textContent = product_html.find(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_rp_ctl(\d+)_ctl00_lCont')).find(text=True)
+			textContent = product_html.find(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_rp_ctl(\d+)_ctl00_lCont')).text
 			promotion['package'] =self.extract_package_content(textContent)
 
 		return promotion
@@ -296,20 +296,20 @@ class OoshopParser(BaseParser):
 
 		# Getting price before and after promotion
 		price_block = promotion_html.find('p', {'class' : 'strikePrice'})
-		price_after = self.convert_to_float(price_block.find('strong').find(text=True))
-		price_before = self.convert_to_float(price_block.find('strike').find(text=True))
+		price_after = self.convert_to_float(price_block.find('strong').text)
+		price_before = self.convert_to_float(price_block.find('strike').text)
 		promotion['before'] = price_before
 		promotion['after'] = price_after
 
 		# After price_block, ooshop indicates dates of promotion
 		date_block = price_block.nextSibling
-		results = re.findall(r'(\d{1,2})/(\d{1,2})/(\d{4})', date_block.find(text=True))
+		results = re.findall(r'(\d{1,2})/(\d{1,2})/(\d{4})', date_block.text)
 		promotion.update(dict(zip(['date_start', 'date_end'], [ dict(zip(['day','month', 'year'], r)) for r in results])))
 
 		# Getting package content unit price and unit - determining type of promotion
 		promotion_info_ps = price_block.parent()
 		for p in promotion_info_ps:
-			text = p.find(text=True)
+			text = p.text
 			# Appyling reg
 			match = re.search(r'(\d+),?(\d*) ?\W ?/ ?(\w{1,10})', text)
 			if match:
@@ -365,7 +365,7 @@ class OoshopParser(BaseParser):
 				product['is_available'] = True
 
 			# Extracting product name and brand
-			name_and_brand = product_html.find('h3', {'class', 'BmarginSm'}).find(text=True)
+			name_and_brand = product_html.find('h3', {'class', 'BmarginSm'}).text
 			# Cleaning from spaces and carriage return
 			name_and_brand = re.search('(\\n| |\\r\\n)+(.*)(\\n| |\\r\\n)*', name_and_brand).group(2)
 			# Seperating name and brand
@@ -416,7 +416,7 @@ class OoshopParser(BaseParser):
 				product_info_ps = product_info.find_all('p')
 				for p in product_info_ps:
 					if 'class' not in p.attrs:
-						text = p.find(text=True)
+						text = p.text
 						# Appyling reg
 						match = re.search(r'(\d+),?(\d*) ?\W ?/ ?(\w{1,10})', text)
 						if match:
@@ -426,7 +426,7 @@ class OoshopParser(BaseParser):
 							product['unit_price'] = unit_price
 							product['unit'] = unit
 							# Package
-							package = self.extract_package_content(p.previous_sibling.find(text=True))
+							package = self.extract_package_content(p.previous_sibling.text)
 							product['package'] = package
 							
 
@@ -435,12 +435,12 @@ class OoshopParser(BaseParser):
 				# Is there an origin for this product ?
 				origin_parsed = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_lOrigine')
 				if origin_parsed:
-					information['origin'] = self.strip_string(origin_parsed.find('span',{'class' : 'origine'}).find(text=True))
+					information['origin'] = self.strip_string(origin_parsed.find('span',{'class' : 'origine'}).text)
 				# First : nutritional information
 				nutritional_info = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_pIg')
 				if nutritional_info:
 					# Information found
-					title_info = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_lTig').find(text=True)
+					title_info = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_lTig').text
 					tds = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_lHig').find_all('td')
 					information[title_info] = dict([[self.strip_string(string) for string in td.findAll(text=True) if self.strip_string(string) != ''] for td in tds])
 
