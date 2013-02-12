@@ -15,9 +15,29 @@ class AuchanScraper(BaseScraper):
 
 	def get_all_categories(self):
 		"""
-			Categories process, specific to child class.
+			Getting all categories from website and saving to database
 		"""
-		pass
+		categories = []
+		url = self.base_url
+
+		html, code = self.crawler.get(url)
+
+		if code == 200:
+			self.parser.set_html(html)
+			categories = self.parser.get_categories()
+			for i in xrange(0, len(categories)):
+				for j in xrange(0, len(categories[i]['sub_categories'])):
+					categories[i]['sub_categories'][j]['url'] = self.properurl(categories[i]['sub_categories'][j]['url'])
+					for k in xrange(0, len(categories[i]['sub_categories'][j]['sub_categories'])):
+						categories[i]['sub_categories'][j]['sub_categories'][k]['url'] = self.properurl(categories[i]['sub_categories'][j]['sub_categories'][k]['url'])
+
+			self.databaseHelper.save_categories(categories)
+
+		else:
+			print 'Could not scrape categories : error %d'%(code)
+
+
+
 
 	def get_all_products(self):
 		"""

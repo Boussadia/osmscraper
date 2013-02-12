@@ -3,8 +3,9 @@
 
 import re
 import simplejson as json
-
 from urlparse import urlparse, parse_qs
+
+from bs4 import BeautifulSoup
 
 from scrapers.base.baseparser import BaseParser
 
@@ -20,7 +21,7 @@ class AuchanParser(BaseParser):
 	#
 	#-----------------------------------------------------------------------------------------------------------------------
 
-	def get_categories(self, level = 0, depth = 1 ):
+	def get_categories(self):
 		"""
 			Extract categories from html.
 
@@ -35,7 +36,46 @@ class AuchanParser(BaseParser):
 					 	'sub_categories':[...]
 					 }]
 		"""
-		pass
+		categories = []
+		# Getting menu
+		menu = self.parsed_page.find(id="menu-principal")
+		
+		# Getting main categories
+		for li in menu.findChildren('li', recursive = False):
+			a = li.findChildren('a', recursive = False)[0]
+			# Excluding last element, it is not a category
+			if 'rel' not in a.attrs:
+				a_html = unicode(a).replace('<br />', ' ').replace('<br/>', ' ')
+				new_a = BeautifulSoup(a_html, "lxml", from_encoding = 'utf-8')
+				main_category = {
+					'name': new_a.text,
+					'url': None,
+					'sub_categories': []
+					}
+
+				# Now getting sub categories level 1
+				div = li.findChildren('div', recursive = False)[0]
+				for li_level_1 in div.find('ul').findChildren('li', recursive = False):
+					category_level_1 = {
+						'name': li_level_1.find('h3').find('a').text,
+						'url': li_level_1.find('h3').find('a').attrs['href'],
+						'sub_categories': []
+					}
+
+					# Now getting sub categories level 2
+					as_level_2 = li_level_1.find_all('a')
+					for a_level_2 in as_level_2:
+						category_level_2 = {
+							'name': a_level_2.text,
+							'url': a_level_2.attrs['href']
+						}
+						category_level_1['sub_categories'].append(category_level_2)
+
+					main_category['sub_categories'].append(category_level_1)
+
+				categories.append(main_category)
+
+		return categories
 
 	def get_products(self):
 		"""
