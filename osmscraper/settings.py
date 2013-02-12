@@ -132,6 +132,7 @@ INSTALLED_APPS = (
     'south',
     'storages',
     'cachebuster',
+    'auchan',
     'place_du_marche',
     'telemarket',
     'telemarket_monoprix',
