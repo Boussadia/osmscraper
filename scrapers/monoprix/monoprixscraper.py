@@ -181,7 +181,7 @@ class MonoprixScraper(BaseScraper):
 
 	def get_product_info(self, product_url, location = 'default', save = False):
 		"""
-			Retrive complete information for product.
+			Retrieve complete information for product.
 
 			Input : 
 				- product_url (string) :  url of product to scrape
@@ -215,58 +215,85 @@ class MonoprixScraper(BaseScraper):
 			print 'Error while retrieving product page : error %d'%(code)
 			return None
 
-	def is_served_area(self, code_postal = 'default'):
+	def is_served_area(self, monoprix_store):
 		"""
-			This method checks if a given area is served by ooshop.
+			This method checks if a given area is served by monoprix.
 
 			Input :
-				- code_postal (string) : french postal code of a city.
+				- monoprix_store (hash) : store as a hash ({'city_name': ..., 'postal_code':..., 'address': ...})
 			Output:
 				- boolean : True -> served, False -> not served
 				- code : was the request successfull? (200 = OK)
 		"""
 		is_served = False
-		code = 200
+		code = 500
 
-		# # Verification url
-		# url = 'http://www.ooshop.com/courses-en-ligne/WebForms/Utilisateur/VerifEligibilite.aspx'
-		# html, code = self.crawler.get(url)
-		# if code == 200:
-		# 	self.parser.set_html(html)
-		# 	form_data = self.parser.get_form_values()
-		# 	# Setting postal code argument to the one povided & other necessary post value
-		# 	form_data['ctl00$cphC$elig$tbCp'] = code_postal
-		# 	form_data['ctl00$sm'] = 'ctl00$sm|ctl00$cphC$elig$bEli'
-		# 	form_data['__EVENTTARGET'] = ''
-		# 	form_data['__EVENTARGUMENT'] = ''
-		# 	form_data['__LASTFOCUS'] = ''
-		# 	form_data['ctl00$xCoordHolder'] = 0
-		# 	form_data['ctl00$yCoordHolder'] = 281
+		url = self.base_url
 
-		# 	# Deleting unecessary post argument
-		# 	del form_data['ctl00$cphC$elig$ValiderEmail2']
-		# 	del form_data['ctl00$headerCtrl$btOK']
-		# 	del form_data['ctl00$cphC$elig$lv$LoginButton']
-		# 	del form_data['ctl00$Perso$ucAu$ValiderEmail']
-		# 	del form_data['ctl00$Perso$ucAu$SubmitButton']
-		# 	del form_data['ctl00$Perso$ucAu$lv$LoginButton']
-		# 	del form_data['ctl00$ucDetProd$AjoutPanier1$btPan']
+		html, code = self.crawler.get(url)
 
-		# 	# geting response
-		# 	html, code = self.crawler.post(url, data = form_data)
-			
-		# 	if code == 200:
-		# 		# Parsing html
-		# 		self.parser.set_html(html)
-		# 		is_served = self.parser.get_eligibility()
-		# 	else:
-		# 		print 'Error %d'%(code)
+		if code == 200:
+			# Getting form data 
+			self.parser.set_html(html)
+			form_data = self.parser.get_postal_code_form_data()
+			data = form_data['data']
+			url = self.properurl(form_data['url'])
 
-		# else:
-		# 	print 'Something went wrong : error %d'%(code)
+			data['enteredZipCode'] = monoprix_store['postal_code']
+
+			html, code = self.crawler.post(url, data)
+			self.parser.set_html(html)
+			data_delivery = self.parser.get_form_delivery_zone()
+
+			if data_delivery['type'] == 'address':
+				html, code = self.crawler.search_adress('%s, %s %s'%(monoprix_store['address'],monoprix_store['postal_code'], monoprix_store['city_name']))
+				suggetions = self.parser.extract_suggested_addresses(html)
+				[s.update({'url': self.properurl(s['url'])} )for s in suggetions]
+
+				if len(suggetions) > 0:
+					# There is at least one suggestion, select the first
+					address = suggetions[0]
+
+					# Now set this address
+					html, code = self.crawler.set_address(address)
+					self.parser.set_html(html)
+					form_data = self.parser.get_form_delivery_zone()
+					form_data['form']['url'] = self.properurl(form_data['form']['url'])
+					html, code = self.crawler.set_delivery(form_data)
+					if code == 200:
+						is_served = True
+
+			elif data_delivery['type'] == 'select':
+				data_delivery['form']['url'] = self.properurl(data_delivery['form']['url'])
+				html, code = self.crawler.set_delivery(data_delivery)
+
+				if code == 200:
+					is_served = True
+
+		else:
+			print 'Error while fetching base url of Monoprix (code = %d)'%(code)
 
 		return is_served, code
 
+	def set_location(self, code_postal = 'default'):
+		"""
+			Sets crawler location to the one defined. Clears cookies first.
+
+			Input : 
+				- code_postal (string) : french postal code of a city.
+			Output :
+				- boolean : True -> served, False -> not served
+				- code : was the request successfull? (200 = OK)
+
+		"""
+		# Clearing cookie jar
+		# self.crawler.empty_cookie_jar()
+		# if re.match(r'(\d{5})', code_postal):
+		# 	return self.is_served_area(code_postal)
+		# else:
+		# 	# Location not abiding by postal code standard
+		# 	return False, -1
+		return True, -1
 
 	def is_available(self, product_url):
 		"""

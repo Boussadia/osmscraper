@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import re
+import simplejson as json
+
 from urlparse import urlparse, parse_qs
 
 from scrapers.base.baseparser import BaseParser
@@ -431,3 +433,128 @@ class MonoprixParser(BaseParser):
 					break
 
 		return current_page_is_all, url_all_products
+
+	def get_postal_code_form_data(self):
+		"""
+			This methid extracts from a monoprix page the form data to set location.
+
+			Output :
+				- hash : {name: value}
+		"""
+		parsed_page = self.parsed_page
+		form = parsed_page.find(id = re.compile(r'formZipCode(.*)'))
+		inputs = form.find_all('input')
+		data = {'url':form.attrs['action'], 'data': {}}
+		for input in inputs:
+			if 'name' in input.attrs:
+				name = input.attrs['name']
+				if 'value' in input.attrs:
+					value =  input.attrs['value']
+				else:
+					value = None
+				data['data'][name] = value
+
+		return data
+
+	def get_form_delivery_zone(self):
+		"""
+			Check the html in order to determine what step of the process of the address setting we are on
+
+			Output :
+				- data = {
+							'type': 'select' or 'address',
+							'form': {
+								'url' : rul of form
+								'data' : {data to pass to requery}
+							}
+						}
+
+		"""
+		data = {'type': None}
+		parsed_page = self.parsed_page
+		div_delivery = parsed_page.find(id = 'deliveryZone')
+
+		# Is the form to select delivery/click & go/drive here?
+		form_delivery = div_delivery.find(id = re.compile(r'formRadioDelivery(.*)'))
+		if form_delivery:
+			inputs = form_delivery.find_all('input')
+			data = {'type' : 'select', 'form': {'url':form_delivery.attrs['action'], 'data': {}}}
+			for input in inputs:
+				if 'name' in input.attrs:
+					name = input.attrs['name']
+					if 'value' in input.attrs:
+						value =  input.attrs['value']
+					else:
+						value = None
+					if name in data['form']['data']:
+						if type(data['form']['data'][name]) == type([]):
+							data['form']['data'][name].append(value)
+						else:
+							data['form']['data'][name] = [data['form']['data'][name], value]
+					else:
+						data['form']['data'][name] = value
+		else:
+			# Is it a non served area?
+			textDelivery = div_delivery.text
+			print textDelivery
+			if textDelivery == '':
+				# Is there a form to add address ?
+				div_qas = parsed_page.find(id = 'qasZone')
+				form_address = div_qas.find(id = re.compile(r'addressForm(.*)'))
+				if form_address:
+					inputs = form_address.find_all('input')
+					data = {'type' : 'address', 'form': {'url':form_address.attrs['action'], 'data': {}}}
+					for input in inputs:
+						if 'name' in input.attrs:
+							name = input.attrs['name']
+							if 'value' in input.attrs:
+								value =  input.attrs['value']
+							else:
+								value = None
+							data['form']['data'][name] = value
+
+		return data
+
+	def extract_suggested_addresses(self, data):
+		"""
+			When providing Monoprix with an adress, they need the user to click on the address sugested by server.
+			This method parses the json retrieved from server and return lists of suggestions and links to activate in order to 
+			validate address
+
+			Input : 
+				- data (string) : example -> 
+					{
+						"content":"",
+						"scripts":["http://docs.monoprix.fr/assets/ctx/monoprixV2-1/static/javascript/generic_zone_updater.js","http://pics.monoprix.fr/assets/ctx/monoprixV2-1/static/javascript/generic_zone_updater.js"],
+						"script":"jQuery('input[name=\"addressQAS\"]').removeClass('FieldError');\ndefaultGenericZoneUpdater = new GenericZoneUpdater({\"elementId\":\"addressSuggestId-13ccd8c1b52\",\"event\":\"click\",\"zone\":\"qasZone\",\"url\":\"/productlist.popupcontainer.popupident.popupidentaddress.qassearchaddress.addresssuggestid:addressselected/FRI$007c4507389$007c0MOFRIBQzcBwAAAAAIAwEAAAAEGBeyAAAAAAABADE1ADE1AGQAAAAA.....wAAAAAAAAAAAAAAAAAxNSBib3VsZXZhcmQgZGUgLCA3NTAwMSAA\",\"fields\":[]})\ndefaultGenericZoneUpdater = new GenericZoneUpdater({\"elementId\":\"addressSuggestId-13ccd8c1b52_0\",\"event\":\"click\",\"zone\":\"qasZone\",\"url\":\"/productlist.popupcontainer.popupident.popupidentaddress.qassearchaddress.addresssuggestid:addressselected/FRI$007c4507389$007c0MOFRIBQzcBwAAAAAIAwEAAAAEGBc_gAAAAAABADE1ADE1AGQAAAAA.....wAAAAAAAAAAAAAAAAAxNSBib3VsZXZhcmQgZGUgLCA3NTAwMSAA\",\"fields\":[]})\n",
+						"zones":{
+							"noAddressResultsZone":"",
+							"QASResultZone":"<div class='autoadresse3 SelectUI Theme_Monoprix Theme_Modify Theme_FirstItem HasSelectUI'><ul><li id='addressSuggestId-13ccd8c1b52'>15 BOULEVARD DE LA MADELEINE, 75001 PARIS<\/li><li id='addressSuggestId-13ccd8c1b52_0'>15 BOULEVARD DE SEBASTOPOL, 75001 PARIS<\/li><\/ul><\/div>"
+						}
+					}
+			Output : 
+				- list [('addressSuggestId-13ccd8c1b52', '/productlist.popupcontainer.popupident.popupidentaddress.qassearchaddress.addresssuggestid:addressselected/FRI$007c4507389$007c0MOFRIBQzcBwAAAAAIAwEAAAAEGBeyAAAAAAABADE1ADE1AGQAAAAA.....wAAAAAAAAAAAAAAAAAxNSBib3VsZXZhcmQgZGUgLCA3NTAwMSAA'), ('addressSuggestId-13ccd8c1b52_0', '/productlist.popupcontainer.popupident.popupidentaddress.qassearchaddress.addresssuggestid:addressselected/FRI$007c4507389$007c0MOFRIBQzcBwAAAAAIAwEAAAAEGBc_gAAAAAABADE1ADE1AGQAAAAA.....wAAAAAAAAAAAAAAAAAxNSBib3VsZXZhcmQgZGUgLCA3NTAwMSAA')]
+
+		"""
+		# Converting to python dictionnary
+		data =json.loads(data)
+		suggestions = []
+		if data['zones']['noAddressResultsZone'] == "":
+			# Some suggestions where found
+			# Now we extract id and path to validate address
+			reg = r'"elementId":"(addressSuggestId-\w+)",".*","url":"(/productlist.popupcontainer.popupident.popupidentaddress.qassearchaddress.addresssuggestid:addressselected/.*)","'
+			results = re.findall(reg, data['script'])
+
+			# Now looking for address corresponding to id retrieved
+			html = data['zones']['QASResultZone']
+			self.set_html(html)
+			for id, path in results:
+				address =  self.parsed_page.find(id=id).text
+				suggestions.append({
+					'id': id,
+					'url': path,
+					'address': address
+					})
+		return suggestions
+
+		
