@@ -118,18 +118,6 @@ class MonoprixParser(BaseParser):
 
 		return brands
 
-
-	def get_eligibility(self):
-		"""
-			Method responsible for parsing the eligibility page. When asking Ooshop if an area is eligible 
-			for the service
-
-			Output : 
-				- boolean : whether the area is eligible or not
-		"""
-		el = self.parsed_page.find_all("div",{"class":"Elig"})
-		return len(el)>0
-
 	def get_products(self):
 		"""
 			Extracts products from a category page.

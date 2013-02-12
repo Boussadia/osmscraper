@@ -85,7 +85,7 @@ class MonoprixScraper(BaseScraper):
 			# Save categories
 			categories = self.databaseHelper.save_categories(categories, id_parent_category)
 		else:
-			print "Something went wrong when fetching main categories for Ooshop : code %d"%(code)
+			print "Something went wrong when fetching main categories for Monoprix : code %d"%(code)
 
 		return categories, code
 
