@@ -47,7 +47,7 @@ class BaseCrawler(object):
 
 		self.__network_failures_retry__ = 0
 
-	def do_request(self, url, data = {}):
+	def do_request(self, url ='', data = {}, request = None):
 		"""
 			Base method to perform a request to a url.
 
@@ -60,12 +60,19 @@ class BaseCrawler(object):
 		"""
 		# Encapsulating request in try block in order to catch HTTPError 
 		try:
-			print "Fetching page from "+url
-			if data == {}:
+			if request is not None:
+				self.jar.add_cookie_header(request)
+				response = self.browser.open(request)
+				print "Fetching page from "+response.geturl()
+				print "Using personalized Request"
+				html = response.read()
+			elif data == {}:
+				print "Fetching page from "+url
 				print "GET method used"
 				response = self.browser.open(url)
 				html = response.read()
 			else:
+				print "Fetching page from "+url
 				print "POST method used"
 				form_data = urllib.urlencode(data)
 				response = self.browser.open(url, form_data)

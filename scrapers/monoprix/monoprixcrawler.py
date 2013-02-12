@@ -41,54 +41,20 @@ class MonoprixCrawler(BaseCrawler):
 						}
 					}
 		"""
-		try:
-			url = form_data['form']['url']
-			formdata = form_data['form']['data']['t:formdata']
-			data = { 't:formdata': formdata, 'radiogroup': 'LAD'}
-			new_data = urlencode(data)
-			print "Fetching page from "+url
-			print "POST method used"
+		url = form_data['form']['url']
+		formdata = form_data['form']['data']['t:formdata']
+		data = { 't:formdata': formdata, 'radiogroup': 'LAD'}
+		new_data = urlencode(data)
 
-			request = mechanize.Request(url, new_data)
-			request.add_header('Accept', 'text/javascript, text/html, application/xml, text/xml, */*')
-			request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
-			request.add_header('X-Requested-With', 'XMLHttpRequest')
-			request.add_header('X-Prototype-Version', '1.7')
-			self.jar.add_cookie_header(request)
-			response = self.browser.open(request)
-			html = response.read()
+		request = mechanize.Request(url, new_data)
+		request.add_header('Accept', 'text/javascript, text/html, application/xml, text/xml, */*')
+		request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+		request.add_header('X-Requested-With', 'XMLHttpRequest')
+		request.add_header('X-Prototype-Version', '1.7')
+		html, code = self.do_request(request = request)
 
-			self.__network_failures_retry__ = 0 # Everything went OK, setting variable for network failure to 0
-			return html, 200
+		return html, code
 
-		except mechanize.HTTPError, e:
-			if e.code == 404:
-				print "Error when retrieving "+url+" : page not found."
-				return None, 404
-			else:
-				print 'Error : %s'%(e)
-				self.__network_failures_retry__ = self.__network_failures_retry__ + 1
-				if self.__network_failures_retry__ < BaseCrawler.MAX_NETWORK_FAILURE_TRIES:
-					print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
-					time.sleep(self.__network_failures_retry__)
-					return self.do_request(url, data)
-				else:
-					print "Error when retrieving "+url
-					return None, e.code
-		except mechanize.URLError, e:
-			print 'Error : %s'%(e)
-			self.__network_failures_retry__ = self.__network_failures_retry__ + 1
-			if self.__network_failures_retry__ < BaseCrawler.MAX_NETWORK_FAILURE_TRIES:
-				print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
-				time.sleep(self.__network_failures_retry__)
-				return self.do_request(url, data)
-			else:
-				print "Error when retrieving "+url
-				return None, -1
-		except Exception, e:
-			print 'Unexpected error occured.'
-			print e
-			return None, -1
 
 	def search_adress(self, address):
 		"""
@@ -101,52 +67,17 @@ class MonoprixCrawler(BaseCrawler):
 				- code
 		"""
 		url = 'http://courses.monoprix.fr/productlist.popupcontainer.popupident.popupidentaddress.qassearchaddress.addressqas:refreshqasresultzone'
-		try:
-			data = { 'address': address}
-			new_data = urlencode(data)
-			print "Fetching page from "+url
-			print "POST method used"
+		data = { 'address': address}
+		new_data = urlencode(data)
+		request = mechanize.Request(url, new_data)
+		request.add_header('Accept', 'text/javascript, text/html, application/xml, text/xml, */*')
+		request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+		request.add_header('X-Requested-With', 'XMLHttpRequest')
+		request.add_header('X-Prototype-Version', '1.7')
+		html, code = self.do_request(request = request)
 
-			request = mechanize.Request(url, new_data)
-			request.add_header('Accept', 'text/javascript, text/html, application/xml, text/xml, */*')
-			request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
-			request.add_header('X-Requested-With', 'XMLHttpRequest')
-			request.add_header('X-Prototype-Version', '1.7')
-			self.jar.add_cookie_header(request)
-			response = self.browser.open(request)
-			html = response.read()
-
-			self.__network_failures_retry__ = 0 # Everything went OK, setting variable for network failure to 0
-			return html, 200
-
-		except mechanize.HTTPError, e:
-			if e.code == 404:
-				print "Error when retrieving "+url+" : page not found."
-				return None, 404
-			else:
-				print 'Error : %s'%(e)
-				self.__network_failures_retry__ = self.__network_failures_retry__ + 1
-				if self.__network_failures_retry__ < BaseCrawler.MAX_NETWORK_FAILURE_TRIES:
-					print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
-					time.sleep(self.__network_failures_retry__)
-					return self.do_request(url, data)
-				else:
-					print "Error when retrieving "+url
-					return None, e.code
-		except mechanize.URLError, e:
-			print 'Error : %s'%(e)
-			self.__network_failures_retry__ = self.__network_failures_retry__ + 1
-			if self.__network_failures_retry__ < BaseCrawler.MAX_NETWORK_FAILURE_TRIES:
-				print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
-				time.sleep(self.__network_failures_retry__)
-				return self.do_request(url, data)
-			else:
-				print "Error when retrieving "+url
-				return None, -1
-		except Exception, e:
-			print 'Unexpected error occured.'
-			print e
-			return None, -1
+		return html, code
+			
 
 
 	def set_address(self, address):
@@ -161,48 +92,12 @@ class MonoprixCrawler(BaseCrawler):
 				- html
 				- code
 		"""
-		try:
-			url = address['url']
-			print "Fetching page from "+url
-			print "POST method used"
+		url = address['url']
+		request = mechanize.Request(url, '')
+		request.add_header('Accept', 'text/javascript, text/html, application/xml, text/xml, */*')
+		request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+		request.add_header('X-Requested-With', 'XMLHttpRequest')
+		request.add_header('X-Prototype-Version', '1.7')
+		html, code = self.do_request(request = request)
 
-			request = mechanize.Request(url, '')
-			request.add_header('Accept', 'text/javascript, text/html, application/xml, text/xml, */*')
-			request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
-			request.add_header('X-Requested-With', 'XMLHttpRequest')
-			request.add_header('X-Prototype-Version', '1.7')
-			self.jar.add_cookie_header(request)
-			response = self.browser.open(request)
-			html = response.read()
-
-			self.__network_failures_retry__ = 0 # Everything went OK, setting variable for network failure to 0
-			return html, 200
-
-		except mechanize.HTTPError, e:
-			if e.code == 404:
-				print "Error when retrieving "+url+" : page not found."
-				return None, 404
-			else:
-				print 'Error : %s'%(e)
-				self.__network_failures_retry__ = self.__network_failures_retry__ + 1
-				if self.__network_failures_retry__ < BaseCrawler.MAX_NETWORK_FAILURE_TRIES:
-					print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
-					time.sleep(self.__network_failures_retry__)
-					return self.do_request(url, data)
-				else:
-					print "Error when retrieving "+url
-					return None, e.code
-		except mechanize.URLError, e:
-			print 'Error : %s'%(e)
-			self.__network_failures_retry__ = self.__network_failures_retry__ + 1
-			if self.__network_failures_retry__ < BaseCrawler.MAX_NETWORK_FAILURE_TRIES:
-				print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
-				time.sleep(self.__network_failures_retry__)
-				return self.do_request(url, data)
-			else:
-				print "Error when retrieving "+url
-				return None, -1
-		except Exception, e:
-			print 'Unexpected error occured.'
-			print e
-			return None, -1
+		return html, code

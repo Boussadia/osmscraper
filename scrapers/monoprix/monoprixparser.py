@@ -496,7 +496,6 @@ class MonoprixParser(BaseParser):
 		else:
 			# Is it a non served area?
 			textDelivery = div_delivery.text
-			print textDelivery
 			if textDelivery == '':
 				# Is there a form to add address ?
 				div_qas = parsed_page.find(id = 'qasZone')
