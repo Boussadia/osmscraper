@@ -106,4 +106,13 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 			Input :
 				- shipping_area (list of hash) : {'city_name': ..., 'postal_code': ....., 'is_shipping_area': Bool}
 		"""
-		pass
+
+		for shipping_area in shipping_areas:
+			city_name = shipping_area['name']
+			postal_code = shipping_area['postal_code']
+			is_shipping_area = shipping_area['is_shipping_area']
+			area, created = ShippingArea.objects.get_or_create(postal_code = postal_code,city_name = city_name, defaults={ 'is_shipping_area': is_shipping_area})
+			if not created:
+				area.city_name = city_name
+				area.is_shipping_area = is_shipping_area
+				area.save()
