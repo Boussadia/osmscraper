@@ -8,13 +8,13 @@ from django.db import DatabaseError
 
 from scrapers.base.basedatabasehelper import BaseDatabaseHelper
 
-# from auchan.models import Category
+from auchan.models import Category
 # from auchan.models import Brand
 # from auchan.models import Unit
 # from auchan.models import Product
 # from auchan.models import Promotion
 # from auchan.models import History
-# from auchan.models import Store
+from auchan.models import ShippingArea
 
 class AuchanDatabaseHelper(BaseDatabaseHelper):
 
@@ -27,15 +27,31 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 	#
 	#-----------------------------------------------------------------------------------------------------------------------
 
-	def save_categories(self, categories, id_parent_category = None):
+	def save_categories(self, categories):
 		"""
 			Method reponsible for saving categories to database.
 
 			Input :
 				- categories : list of hash representing categories
-				- id_parent_category : if not None, this is the id of the parent category in the database.
 		"""
-		pass
+
+		for main_category in categories:
+			main_category_db, created = Category.objects.get_or_create(name = main_category['name'])
+
+			for category_level_1 in main_category['sub_categories']:
+				category_level_1_db, created = Category.objects.get_or_create(name = category_level_1['name'], defaults = {'url': category_level_1['url'], 'parent_category': main_category_db})
+
+				if not created:
+					category_level_1_db.url = category_level_1['url']
+					category_level_1_db.parent_category = main_category_db
+
+				for category_level_2 in category_level_1['sub_categories']:
+					category_level_2_db, created = Category.objects.get_or_create(name = category_level_2['name'], defaults = {'url': category_level_2['url'], 'parent_category': category_level_1_db})
+
+					if not created:
+						category_level_2_db.url = category_level_2['url']
+						category_level_2_db.parent_category = category_level_1_db
+		
 
 	def save_products(self, products, id_parent_category):
 		"""

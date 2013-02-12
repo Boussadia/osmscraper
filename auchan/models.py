@@ -13,12 +13,12 @@ class ShippingArea(models.Model):
 		else:
 			return "Default Shipping Area"
 
-# class Category(models.Model):
-# 	name = models.CharField(max_length=100)
-# 	parent_category = models.ForeignKey('self', null = True)
-# 	url = models.CharField(max_length=9999, null=True, unique = True)
-# 	created = models.DateTimeField(auto_now_add=True)
-# 	updated = models.DateTimeField(auto_now=True, auto_now_add=True)
+class Category(models.Model):
+	name = models.CharField(max_length=100)
+	parent_category = models.ForeignKey('self', null = True)
+	url = models.CharField(max_length=9999, null=True, unique = True)
+	created = models.DateTimeField(auto_now_add=True)
+	updated = models.DateTimeField(auto_now=True, auto_now_add=True)
 
 # 	class Meta:
 # 		unique_together = ("name", "parent_category")
