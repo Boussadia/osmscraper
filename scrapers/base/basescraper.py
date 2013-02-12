@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+import time
 
 from scrapers.base.cities import cities
 from urlparse import urlparse, parse_qs, urlunparse
@@ -104,6 +105,7 @@ class BaseScraper(object):
 				print 'City : %s (%s) is OK'%(city_name, postal_code)
 			else:
 				print 'City : %s (%s) is NOT OK'%(city_name, postal_code)
+			time.sleep(1) # In order not to flood server, 1s temporisation
 
 		# Adding default location (non set) to shipping areas
 		self.databaseHelper.save_shipping_areas([{
