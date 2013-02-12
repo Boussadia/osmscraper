@@ -89,13 +89,13 @@ class MonoprixScraper(BaseScraper):
 
 		return categories, code
 
-	def get_list_products_for_category(self, category_url, location = 'default', save = False):
+	def get_list_products_for_category(self, category_url, location = {}, save = False):
 		"""
 			For a category and a location, retrieve product list and save them.
 
 			Input :
 				- category_url (string) : url to a category parsed_page
-				- location (string) : postal code of the location, 'default' -> no location
+				- location (hash) : store as a hash ({'city_name': ..., 'postal_code':..., 'address': ...})
 		"""
 		# Setting location & initializing products
 		self.set_location(location)
@@ -179,13 +179,13 @@ class MonoprixScraper(BaseScraper):
 		return new_products
 
 
-	def get_product_info(self, product_url, location = 'default', save = False):
+	def get_product_info(self, product_url, location = {}, save = False):
 		"""
 			Retrieve complete information for product.
 
 			Input : 
 				- product_url (string) :  url of product to scrape
-				- location (string) : postal code of the location, 'default' -> no location
+				- location (hash) : store as a hash ({'city_name': ..., 'postal_code':..., 'address': ...})
 			Output :
 				- hash representing the product 
 				- code (int) : was the request successfull (200 = OK)
@@ -215,12 +215,12 @@ class MonoprixScraper(BaseScraper):
 			print 'Error while retrieving product page : error %d'%(code)
 			return None
 
-	def is_served_area(self, monoprix_store):
+	def is_served_area(self, location):
 		"""
 			This method checks if a given area is served by monoprix.
 
 			Input :
-				- monoprix_store (hash) : store as a hash ({'city_name': ..., 'postal_code':..., 'address': ...})
+				- location (hash) : store as a hash ({'city_name': ..., 'postal_code':..., 'address': ...})
 			Output:
 				- boolean : True -> served, False -> not served
 				- code : was the request successfull? (200 = OK)
@@ -239,14 +239,14 @@ class MonoprixScraper(BaseScraper):
 			data = form_data['data']
 			url = self.properurl(form_data['url'])
 
-			data['enteredZipCode'] = monoprix_store['postal_code']
+			data['enteredZipCode'] = location['postal_code']
 
 			html, code = self.crawler.post(url, data)
 			self.parser.set_html(html)
 			data_delivery = self.parser.get_form_delivery_zone()
 
 			if data_delivery['type'] == 'address':
-				html, code = self.crawler.search_adress('%s, %s %s'%(monoprix_store['address'],monoprix_store['postal_code'], monoprix_store['city_name']))
+				html, code = self.crawler.search_adress('%s, %s %s'%(location['address'],location['postal_code'], location['city_name']))
 				suggetions = self.parser.extract_suggested_addresses(html)
 				[s.update({'url': self.properurl(s['url'])} )for s in suggetions]
 
@@ -275,25 +275,23 @@ class MonoprixScraper(BaseScraper):
 
 		return is_served, code
 
-	def set_location(self, code_postal = 'default'):
+	def set_location(self, location = {}):
 		"""
 			Sets crawler location to the one defined. Clears cookies first.
 
 			Input : 
-				- code_postal (string) : french postal code of a city.
+				- location (hash) : store as a hash ({'city_name': ..., 'postal_code':..., 'address': ...})
 			Output :
 				- boolean : True -> served, False -> not served
 				- code : was the request successfull? (200 = OK)
 
 		"""
 		# Clearing cookie jar
-		# self.crawler.empty_cookie_jar()
-		# if re.match(r'(\d{5})', code_postal):
-		# 	return self.is_served_area(code_postal)
-		# else:
-		# 	# Location not abiding by postal code standard
-		# 	return False, -1
-		return True, -1
+		self.crawler.empty_cookie_jar()
+		if 'city_name' in location and 'postal_code' in location and 'address' in location and re.match(r'(\d{5})', location['postal_code']):
+			return self.is_served_area(location)
+		# Location not abiding by postal code standard
+		return False, -1
 
 	def is_available(self, product_url):
 		"""
