@@ -20,11 +20,11 @@ class Category(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True, auto_now_add=True)
 
-# 	class Meta:
-# 		unique_together = ("name", "parent_category")
+	class Meta:
+		unique_together = ("name", "parent_category")
 
-# 	def __unicode__(self):
-# 		return self.name
+	def __unicode__(self):
+		return self.name
 
 # class Brand(models.Model):
 # 	name = models.CharField(max_length=100, unique=True)
