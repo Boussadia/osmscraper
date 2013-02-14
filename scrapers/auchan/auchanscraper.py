@@ -36,6 +36,60 @@ class AuchanScraper(BaseScraper):
 		else:
 			print 'Could not scrape categories : error %d'%(code)
 
+	def get_list_products_for_category(self, category_url, location = 'default', save = False):
+		"""
+			For a category and a location, retrieve product list and save them.
+
+			Input :
+				- category_url (string) : url to a category parsed_page
+				- location (string) : postal code of the location, 'default' -> no location
+		"""
+		# Setting location & initializing products
+		self.set_location(location)
+		products = []
+
+		# Getting html
+		html, code = self.crawler.get(category_url)
+
+		if code == 200:
+			self.parser.set_html(html)
+			tags = self.parser.get_tags()
+
+			for i in xrange(0,len(tags)):
+				tags[i]['url'] = self.properurl(tags[i]['url'])
+				tag = tags[i]
+				html, code = self.crawler.category_tag(tag)
+
+				if code == 200:
+					self.parser.set_html_from_tag(html)
+					filtered_products = self.parser.get_products()
+					[ p.update({'tag':tag}) for p in filtered_products]
+					products = products + filtered_products
+				else:
+					print "Something went wrong when fetching category page (%d) for Auchan : code %d"%(i+1,code)
+
+			if len(tags) == 0:
+				# Sometimes, there are no tags in a category page
+				products = self.parser.get_products()
+
+		else:
+			print "Something went wrong when fetching category page for Auchan : code %d"%(code)
+
+		#Cleaning urls
+		products = self.clean_urls_in_products(products)
+
+		#Saing products
+		if save:
+			# # Getting category
+			# category = self.databaseHelper.get_category_by_url(category_url)
+			# if category:
+			# 	self.databaseHelper.save_products(products, category.id, None)
+			# else:
+			# 	self.databaseHelper.save_products(products, None, None)
+			pass
+		else:
+			return products
+
 
 
 
@@ -46,16 +100,34 @@ class AuchanScraper(BaseScraper):
 		"""
 		pass
 
-	def get_localized_product(self, localisation):
-		pass
 
-
-
-	def get_product_info(self, product_url):
+	def get_product_info(self, product_url, location = 'default', save = False):
 		"""
 			Retrive complete information for product.
 		"""
-		pass
+		product = {}
+		html, code = self.crawler.get(product_url)
+
+		if code == 200:
+			self.parser.set_html(html)
+			product = self.parser.parse_product_full()
+			product['url'] = product_url
+			product['reference'] = product_url.split('/')[-1].split(';jsessionid=')[0]
+			product = self.clean_urls_in_products([product])
+		else:
+			print 'Error while fetching product : %d'%(code)
+
+		#Saing products
+		if save:
+			# # Getting category
+			# category = self.databaseHelper.get_category_by_url(category_url)
+			# if category:
+			# 	self.databaseHelper.save_products(products, category.id, None)
+			# else:
+			# 	self.databaseHelper.save_products(products, None, None)
+			pass
+		else:
+			return product
 
 	def is_available(self, product_url):
 		"""
@@ -95,6 +167,26 @@ class AuchanScraper(BaseScraper):
 				is_served_area = True
 
 		return is_served_area, code
+
+
+	def clean_urls_in_products(self, products):
+		"""
+			Clean all urls in products list
+
+			Input :
+				- products (list hash) : products
+
+			Output :
+				- the same list of products but with clean urls
+		"""
+		new_products = []
+		for product in products:
+			# Clean urls
+			product['url'] = self.properurl(product['url'])
+			product['product_image_url'] = self.properurl(product['product_image_url'])
+			new_products.append(product)
+
+		return new_products
 
 
 

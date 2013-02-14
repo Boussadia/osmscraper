@@ -3,7 +3,7 @@
 
 import re
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment
 
 class BaseParser(object):
 	"""
@@ -218,3 +218,18 @@ class BaseParser(object):
 
 		package.update({'str': str_package})
 		return package
+
+	def extract_pure_text(self, html = None):
+		"""
+			Takes an html formated string and returns only text in tags without comments
+		"""
+		if html:
+			soup = BeautifulSoup(html, "lxml", from_encoding = 'utf-8')
+		else:
+			soup = self.parsed_page
+
+		comments = soup.findAll(text=lambda text:isinstance(text, Comment))
+		[comment.extract() for comment in comments]
+		page = ''.join(soup.findAll(text=True))
+		page = ' '.join(page.split())
+		return page
