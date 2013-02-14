@@ -8,7 +8,9 @@ from scrapers.base.basecrawler import BaseCrawler
 
 
 class AuchanCrawler(BaseCrawler):
+	
 	def __init__(self):
+		BaseCrawler.MAX_NETWORK_FAILURE_TRIES = 20
 		super(AuchanCrawler, self).__init__()
 
 	def category_tag(self, tag):

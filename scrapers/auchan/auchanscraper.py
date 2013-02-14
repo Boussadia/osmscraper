@@ -44,8 +44,21 @@ class AuchanScraper(BaseScraper):
 				- category_url (string) : url to a category parsed_page
 				- location (string) : postal code of the location, 'default' -> no location
 		"""
-		# Setting location & initializing products
-		self.set_location(location)
+		# Setting location, getting category form datastore & initializing products
+		is_LAD, code = self.set_location(location)
+
+		if is_LAD and code == 200:
+			shipping_area = self.databaseHelper.get_shipping_area(location)
+		else:
+			shipping_area = None
+
+		# Category
+		categories = self.databaseHelper.get_categories({'url': category_url})
+		if len(categories)>0:
+			category = categories[0]['db_entity']
+		else:
+			category = None
+
 		products = []
 
 		# Getting html
@@ -80,13 +93,7 @@ class AuchanScraper(BaseScraper):
 
 		#Saing products
 		if save:
-			# # Getting category
-			# category = self.databaseHelper.get_category_by_url(category_url)
-			# if category:
-			# 	self.databaseHelper.save_products(products, category.id, None)
-			# else:
-			# 	self.databaseHelper.save_products(products, None, None)
-			pass
+			self.databaseHelper.save_products(products, category, shipping_area)
 		else:
 			return products
 
@@ -105,6 +112,14 @@ class AuchanScraper(BaseScraper):
 		"""
 			Retrive complete information for product.
 		"""
+		# Setting location, getting category form datastore & initializing products
+		is_LAD, code = self.set_location(location)
+
+		if is_LAD and code == 200:
+			shipping_area = self.databaseHelper.get_shipping_area(location)
+		else:
+			shipping_area = None
+
 		product = {}
 		html, code = self.crawler.get(product_url)
 
@@ -113,19 +128,13 @@ class AuchanScraper(BaseScraper):
 			product = self.parser.parse_product_full()
 			product['url'] = product_url
 			product['reference'] = product_url.split('/')[-1].split(';jsessionid=')[0]
-			product = self.clean_urls_in_products([product])
+			[product] = self.clean_urls_in_products([product])
 		else:
 			print 'Error while fetching product : %d'%(code)
 
-		#Saing products
+		#Saving product
 		if save:
-			# # Getting category
-			# category = self.databaseHelper.get_category_by_url(category_url)
-			# if category:
-			# 	self.databaseHelper.save_products(products, category.id, None)
-			# else:
-			# 	self.databaseHelper.save_products(products, None, None)
-			pass
+			self.databaseHelper.save_products([product], None, shipping_area)
 		else:
 			return product
 
@@ -182,8 +191,9 @@ class AuchanScraper(BaseScraper):
 		new_products = []
 		for product in products:
 			# Clean urls
-			product['url'] = self.properurl(product['url'])
-			product['product_image_url'] = self.properurl(product['product_image_url'])
+			product['url'] = self.properurl(product['url']).split(';jsessionid=')[0]
+			if 'product_image_url' in product:
+				product['product_image_url'] = self.properurl(product['product_image_url']).split(';jsessionid=')[0]
 			new_products.append(product)
 
 		return new_products

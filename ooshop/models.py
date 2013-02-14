@@ -196,7 +196,7 @@ class Promotion(models.Model):
 		(SIMPLE, 'simple'),
 		(MULTI, 'multi')
 	)
-	reference = models.CharField(max_length=9999, null=True, unique = True)
+	reference = models.CharField(max_length=9999, null=True)
 	url = models.CharField(max_length=9999, null = True)
 	type = models.CharField(max_length=1, choices=TYPES, default=SIMPLE)
 	image_url = models.CharField(max_length=9999, null = True)
@@ -208,6 +208,9 @@ class Promotion(models.Model):
 	end = models.DateField(null = True)
 	shipping_area = models.ForeignKey(ShippingArea, null = True)
 	availability = models.BooleanField(default = True)
-	html = models.TextField(max_length=9999999999999999999999, null = True) # html of product 
+	html = models.TextField(max_length=9999999999999999999999, null = True) # html of product
+
+	class Meta:
+		unique_together = ("reference", "shipping_area") 
 
 

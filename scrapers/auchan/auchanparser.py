@@ -141,16 +141,8 @@ class AuchanParser(BaseParser):
 
 			# Common to promotion and product:
 			url = bloc_product.find('a').attrs['href']
-			product_image_url = bloc_product.find('a').find('img').attrs['src'].replace('line', 'detail')
 			reference = url.split('/')[-1].split(';jsessionid=')[0]
-			# Brands are either in h3 or h2 tags
-			brand_block = bloc_product.find('div',{'class':'infos-produit-2'})
-			if brand_block.find('h2'):
-				brand = brand_block.find('h2').text
-			elif brand_block.find('h3'):
-				brand = brand_block.find('h3').text
 
-			name = " ".join([h4.text for h4 in bloc_product.find('div',{'class':'infos-produit-2'}).find_all('h4')])
 			p_html = bloc_product.find('div',{'class':'infos-produit-2'}).find('p')
 			p_content = [p for p in p_html.text.split('\n') if p != '']
 			if len(p_content) == 2:
@@ -158,12 +150,9 @@ class AuchanParser(BaseParser):
 			elif len(p_content) == 1:
 				if u'€'  in p_content[0]:
 					unit_price_text = p_content[0]
-					package = ''
 				else:
-					package = p_content[0]
 					unit_price = ''
 			else:
-				package = ''
 				unit_price = ''
 
 			[unit_price, unit] = unit_price_text.split(u'€/')
@@ -172,9 +161,6 @@ class AuchanParser(BaseParser):
 			product.update({
 				'url': url,
 				'reference': reference,
-				'product_image_url': product_image_url,
-				'brand': brand,
-				'name': name,
 				'unit_price': float(unit_price),
 				'unit': unit
 			})
@@ -193,10 +179,18 @@ class AuchanParser(BaseParser):
 
 				promotion ={
 						'before': before,
-						'after': after
+						'after': after,
+						'unit_price': float(unit_price)
 					}
 				product['promotion'] = promotion
 
+			if 'LV' in reference:
+				product['promotion']['type'] = 'multi'
+			elif product['is_promotion']:
+				product['promotion']['type'] = 'undef'
+				product['is_product'] = True
+			else:
+				product['is_product'] = True
 
 			products.append(product)
 
@@ -253,6 +247,7 @@ class AuchanParser(BaseParser):
 			brand = product_info.find('span', {'class': 'titre-principal'}).text
 			name = product_info.find('span', {'class': 'titre-annexe'}).text
 			complement = product_info.find('span', {'class': 'titre-secondaire'})
+			[unit_price, unit] = product_info.find('div', {'class': 'prix-annexe'}).find('p').text.split(u'€/')
 			if complement:
 				complement = complement.text
 			else:
@@ -264,6 +259,7 @@ class AuchanParser(BaseParser):
 			product.update({
 				'brand': brand,
 				'name': name,
+				'unit': unit,
 				'complement': complement,
 				'product_image_url': product_image_url,
 				'html': html
@@ -276,12 +272,10 @@ class AuchanParser(BaseParser):
 				product['is_product'] = True
 				package = self.extract_package_content(product_info.find('span',{'class':'texte-info-normal'}).text.split('Composition : ')[1])
 				price = float(product_info.find('div',{'class': 'prix-actuel'}).find('span').text.split(u'€')[0])
-				[unit_price, unit] = product_info.find('div', {'class': 'prix-annexe'}).find('p').text.split(u'€/')
 				unit_price = float(unit_price)
 				product.update({
 					'price': price,
 					'unit_price': unit_price,
-					'unit': unit,
 					'package': package
 					})
 
@@ -318,34 +312,37 @@ class AuchanParser(BaseParser):
 				ref. parse_promotion_short. And other inofmration depending on osm
 		"""
 		parsed_page = self.parsed_page
-		promotion = {}
+		promotion = {
+			'type': 'undef'
+		}
 		product_info = parsed_page.find(id='produit-infos')
 		product_annexes =parsed_page.find(id = 'produit-infos-annexes') 
 		promotion_composition  =  parsed_page.find(id = 'produit-composition')
 		promotion_block = parsed_page.find('div', {'class':'promotion'})
 
-		if promotion_composition:
-			promotion['type'] = 'multi'
-			# getting references to products in promotion
-			products_block = promotion_composition.find_all('tr', {'class': 'bloc-produit-composition'})
-			references = []
-			for product_block in products_block:
-				references.append(product_block.find('a').attrs['href'].split('/')[-1].split(';jsessionid=')[0])
-
-			promotion['content'] = references
-		else:
-			full_text = self.extract_pure_text()
-			if 'gratuit' in full_text:
-				promotion['type'] = 'more'
-			else:
-				promotion['type'] = 'simple'
 
 
 		if promotion_block:
+
+			if promotion_composition:
+				promotion['type'] = 'multi'
+				# getting references to products in promotion
+				products_block = promotion_composition.find_all('tr', {'class': 'bloc-produit-composition'})
+				references = []
+				for product_block in products_block:
+					references.append(product_block.find('a').attrs['href'].split('/')[-1].split(';jsessionid=')[0])
+
+				promotion['content'] = references
+			else:
+				full_text = self.extract_pure_text()
+				if 'gratuit' in full_text.lower():
+					promotion['type'] = 'plus'
+				else:
+					promotion['type'] = 'simple'
+
 			[unit_price, unit] = product_info.find('div', {'class': 'prix-annexe'}).find('p').text.split(u'€/')
 			unit_price = float(unit_price)
 			promotion['unit_price'] = unit_price
-			promotion['unit'] = unit
 
 			promotion_price_block = product_info.find('div',{'class': 'bloc-prix-promo'})
 			if promotion_price_block:
