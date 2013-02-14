@@ -32,17 +32,22 @@ class BaseScraper(object):
 		"""
 		pass
 
+	def get_list_products_for_category(self, category_url, location = 'default', save = False):
+		"""
+			For a category and a location, retrieve product list and save them.
+
+			Input :
+				- category_url (string) : url to a category parsed_page
+				- location (string) : postal code of the location, 'default' -> no location
+		"""
+		pass
+
 	def get_all_products(self):
 		"""
 			Retrives all possible localisation, retrieves all categories and fetches all products for
 			each localisation and saves them.
 		"""
 		pass
-
-	def get_localized_product(self, localisation):
-		pass
-
-
 
 	def get_product_info(self, product_url):
 		"""
