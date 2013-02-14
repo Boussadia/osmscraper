@@ -119,6 +119,11 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 					product_db.image_url = product['product_image_url']
 					product_db.name = product['name']
 					product_db.complement = product['complement']
+					# Package
+					if product['package'] != {}:
+						product_db.package_quantity =product['package']['quantity']
+						product_db.package_measure =product['package']['quantity_measure']
+						product_db.package_unit =product['package']['unit']
 
 					# Complementary information:
 					if 'information' in product and u'Donn\xe9es nutritionnelles' in product['information'][u'Donn\xe9es nutritionnelles']:

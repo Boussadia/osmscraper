@@ -267,16 +267,14 @@ class AuchanParser(BaseParser):
 
 			# Is this a promotion ?
 			promotion = self.parse_promotion_full()
-			if promotion == {}:
+			if promotion == { 'type': 'undef' }:
 				# This is not a promotion
 				product['is_product'] = True
-				package = self.extract_package_content(product_info.find('span',{'class':'texte-info-normal'}).text.split('Composition : ')[1])
 				price = float(product_info.find('div',{'class': 'prix-actuel'}).find('span').text.split(u'€')[0])
 				unit_price = float(unit_price)
 				product.update({
 					'price': price,
-					'unit_price': unit_price,
-					'package': package
+					'unit_price': unit_price
 					})
 
 			else:
@@ -288,14 +286,21 @@ class AuchanParser(BaseParser):
 
 			# Dealing with extra information
 			if product['is_product']:
+				# Package information
+				if product_info.find('span',{'class':'texte-info-normal'}):
+					package = self.extract_package_content(product_info.find('span',{'class':'texte-info-normal'}).text.split('Composition : ')[1])
+				else:
+					package = {}
 				information = {}
+				product['package'] = package
 				information_block = product_annexes.find(id = 'panel-infos-detaillees')
-				titles = information_block.find_all('h3')
-				for title in titles:
-					p = title.findNext('p')
-					information[title.text] = p.text
+				if information_block:
+					titles = information_block.find_all('h3')
+					for title in titles:
+						p = title.findNext('p')
+						information[title.text] = p.text
 
-				product['information'] = information
+					product['information'] = information
 
 
 		else:
@@ -423,3 +428,54 @@ class AuchanParser(BaseParser):
 
 		return tags
 
+	def extract_package_content(self, str_package):
+		"""
+			This method extracts package content of a product.
+			e.g. '4 pots de yaourt de 200g' -> {'quantity': 4, 'quantity_measure': 200, 'unit': g}
+
+			Input :
+				- str_package (string) : description of the content of a product
+			Output : 
+				- hash describing content
+		"""
+		str_package = ' '.join(str_package.split())
+		package = {}
+		regexp1 = re.compile(u'(\d+) ?x ?(\d+) ?([^\W\d_]+)', re.U) # type = 6 x 33 cl
+		regexp2 = re.compile(u'x ?(\d+)', re.U) # type = x 3
+		regexp3 = re.compile(u'(\d+) ?([^\W\d_]+)', re.U) # type = 200g
+		regexp4 = re.compile(u'(\d+) ?, ?(\d+) ?([^\W\d_]+)', re.U) # type = 2, 5 l
+
+		m = regexp1.search(str_package)
+		if m:
+			package = {
+				'quantity': float(m.group(1)),
+				'quantity_measure': float(m.group(2)),
+				'unit': m.group(3)
+			}
+		else:
+			m = regexp2.search(str_package)
+			if m:
+				package = {
+					'quantity': m.group(1),
+					'quantity_measure': None,
+					'unit': None
+				}
+			else:
+				m = regexp3.search(str_package)
+				if m:
+					package = {
+						'quantity': 1,
+						'quantity_measure': float(m.group(1)),
+						'unit': m.group(2)
+					}
+				else:
+					m = regexp4.search(str_package)
+					if m:
+						package = {
+							'quantity': 1,
+							'quantity_measure': float(m.group(1))+float(m.group(2))*10^(-len(m.group(2))),
+							'unit': m.group(2)
+						}
+
+		package.update({'str': str_package})
+		return package
