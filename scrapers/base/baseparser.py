@@ -175,9 +175,9 @@ class BaseParser(object):
 				- hash describing content
 		"""
 		package = {}
-		regexp1 = r'(\d+)x(\d+,?\d*) ?([^\W\d_]+)' # type = 6x33cl
-		regexp2 = r'(\d+)(?!,)[^\d]+(\d+,?\d*) ?([^\W\d_]+)' # type = les 3 boites de 200g
-		regexp3 = r'[\w\D]+(\d+)\D+(\d+,?\d*) ?([^\W\d_]+)' # la barquette de 2, 350g
+		regexp1 = r'(\d+)x(\d+,?\d*) ?([^\W\d_]+) (\(.*\))*' # type = 6x33cl
+		regexp2 = r'(\d+)(?!,)[^\d]+(\d+,?\d*) ?([^\W\d_]+) (\(.*\))*' # type = les 3 boites de 200g
+		regexp3 = r'[\w\D]+(\d+)\D+(\d+,?\d*) ?([^\W\d_]+) (\(.*\))*' # la barquette de 2, 350g
 		regexp4 = r'(\d+,?\d*) ?([^\W\d_]+)' # type = La bouteille de 1,5L
 		m = re.search(regexp1, str_package)
 		if m:
