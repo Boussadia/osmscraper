@@ -203,6 +203,8 @@ class OoshopScraper(BaseScraper):
 				- code : was the request successfull? (200 = OK)
 		"""
 		is_served = False
+		# Clearing cookies
+		self.crawler.empty_cookie_jar()
 
 		# Verification url
 		url = 'http://www.ooshop.com/courses-en-ligne/WebForms/Utilisateur/VerifEligibilite.aspx'

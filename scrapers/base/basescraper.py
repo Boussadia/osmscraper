@@ -92,37 +92,48 @@ class BaseScraper(object):
 		"""
 		pass
 
-	def build_shipping_area(self):
+	def build_shipping_area(self, reg_filter = None):
 		"""
 			Building shipping area from cities.
+
+			Input : 
+				- reg_filter : regexp in order to filter postal codes (it has to be previously compiled)
+					i.e. : re.compile('94(\d{3})') -> one filter for cities in the 94 departement
 		"""
 		shipping_areas = []
 		for postal_code, city_name in cities:
-			is_shipping_area, code = self.is_served_area(postal_code)
-			if code == 200 and is_shipping_area:
-				# Passing result to database helper
-				self.databaseHelper.save_shipping_areas([{
-					'is_shipping_area': True,
-					'name': city_name,
-					'postal_code': postal_code
-				}])
-				print 'City : %s (%s) is OK'%(city_name, postal_code)
-			if code == 200 and not is_shipping_area:
-				print 'City : %s (%s) is NOT OK'%(city_name, postal_code)
-				
-			time.sleep(2) # In order not to flood server, 2s temporisation
+			is_matched = True
+			if reg_filter:
+				m = reg_filter.match(postal_code)
+				if not m:
+					is_matched = False
+
+			if is_matched:
+				is_shipping_area, code = self.is_served_area(postal_code)
+				if code == 200 and is_shipping_area:
+					# Passing result to database helper
+					self.databaseHelper.save_shipping_areas([{
+						'is_shipping_area': True,
+						'name': city_name,
+						'postal_code': postal_code
+					}])
+					print 'City : %s (%s) is OK'%(city_name, postal_code)
+				if code == 200 and not is_shipping_area:
+					print 'City : %s (%s) is NOT OK'%(city_name, postal_code)
+					
+				time.sleep(2) # In order not to flood server, 2s temporisation
 
 		# Adding default location (non set) to shipping areas
 		self.databaseHelper.save_shipping_areas([{
 					'is_shipping_area': False,
-					'name': '',
-					'postal_code': '',
+					'name': 'DEFAULT',
+					'postal_code': '00000',
 				}])
 
 
 	def what_to_do_next(self):
 		"""
-			Defines the logic of the scraper.
+			Defines the logic of the scraper. (See Google Drive documentation for further explanation)
 		"""
 		pass
 
