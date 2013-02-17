@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import simplejson as json
+from django.core import serializers
+
 class BaseDatabaseHelper(object):
 	"""
 		This class si responsible for interfacing with the database.
@@ -89,3 +92,24 @@ class BaseDatabaseHelper(object):
 				- shipping_area (list of hash) : {'city_name': ..., 'postal_code': ....., 'is_shipping_area': Bool}
 		"""
 		pass
+
+	def empty_database(self):
+		pass
+
+	def serialize(self, models):
+		"""
+			Input :
+				- models : Queryset, list of models
+			Output :
+				- hash representing model with all database fields as keys
+		"""
+		models_hash = json.loads(serializers.serialize("json", models))
+		for s in models_hash:
+			s.update(s['fields'])
+			s.update({'id': s['pk']})
+			s.update({'id': s['pk']})
+			del s['pk']
+			del s['model']
+			del s['fields']
+
+		return models_hash

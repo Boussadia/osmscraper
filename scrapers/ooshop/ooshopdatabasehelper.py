@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from datetime import date
+import simplejson as json
 
 from django.db import connection
 from django.db import DatabaseError
+from django.conf import settings
+from django.core import serializers
 
 from scrapers.base.basedatabasehelper import BaseDatabaseHelper
 
@@ -62,7 +65,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 
 
 
-	def save_products(self, products, id_parent_category = None, shipping_area = None):
+	def save_products(self, products, id_parent_category, shipping_area = None):
 		"""
 			Method responsible for saving products to database
 
@@ -241,7 +244,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 						promotion.save()
 					promotion.content.add(product_db)
 			elif product['is_product'] == False and product['is_promotion'] and product['promotion']['type'] == 'multi':
-				# TO DO : Multi promotion
+				# Multi promotion
 				promotion, created = Promotion.objects.get_or_create(reference = reference, shipping_area = shipping_area, defaults = {'type': Promotion.MULTI, 'url': url, 'image_url': image_url, 'before': before, 'after': after, 'unit_price': unit_price, 'start': start, 'end': end, 'availability': availability, 'html': html})
 				if created:
 					promotion.type = Promotion.MULTI
@@ -300,24 +303,40 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 			Input :
 				- option (hash) : 
 					1. {
-						'type': 'single',
-						'filter':{
-							'reference': '...' (optional)
-							'image_url': '...',(optional, if reference is not set),
-						}
+						'reference': '...' (optional)
+						'image_url': '...',(optional, if reference is not set),
 					}
 					2. {
-						'type': 'multi',
-						'filter': {
-							'after_date': 'datetime' (optional retrieve products updated after date),
-							'before_date': 'datetime' (optional retrieve products older than date),
-							'category_id': id (optional)
-						}
+						'after_date': 'datetime' (optional retrieve products updated after date),
+						'before_date': 'datetime' (optional retrieve products older than date),
+						'categories_id': list of ids id (optional),
+						'locations': list of locations...
 					}
 			Output : 
 				- list of products (represented by hash)
 		"""
-		pass
+		products = []
+		if 'reference' in options:
+			product_db = Product.objects.filter(reference = options['reference'])
+			if len(product_db) == 1:
+				product_db = product_db[0]
+				return [self.serialize(product)]
+
+
+		if 'categories_id' in options:
+			products = Product.objects.filter(categories__id__in = options['categories_id'])
+		
+		if 'locations' in options:
+			products = products.filter(history__shipping_area__postal_code__in = options['locations'])
+
+		if 'before_date' in options:
+			products = products.filter(history__created__lte = options['before_date'])
+
+		products = self.serialize(products)
+		# Getting locations of all products and 
+		[ p.update({'locations' : [s.postal_code for s in list(ShippingArea.objects.filter(history__product__id = p['id']))]}) for p in products]
+
+		return products
 
 	def get_categories(self, options = {}):
 		"""
@@ -364,11 +383,11 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 				else:
 					# This is not a leaf, remove it and add sub categories to end of list
 					categories.pop(i)
-					categories = categories + list(sub_categories)
+					categories = categories + filter(lambda sub_cat:sub_cat not in categories, list(sub_categories))
 					continue
 
 		# Organizing categories
-		categories = [ {'id': cat.id, 'name': cat.name, 'parent_category_id': cat.parent_category_id, 'url': cat.url} for cat in categories]
+		categories = [ {'id': cat.id, 'name': cat.name, 'parent_category_id': cat.parent_category_id, 'url': cat.url, 'updated': cat.updated} for cat in categories]
 
 		return categories
 
@@ -382,7 +401,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 				- category model entity if exists, None otherwise
 		"""
 		category = Category.objects.filter(url = category_url)
-		if len(category) ==0:
+		if len(category) == 0:
 			return None
 		else:
 			return category[0]
@@ -395,7 +414,23 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 			Output :
 				- list of hash : {'id':..., 'city_name': ..., 'postal_code': .....}
 		"""
-		pass
+		shipping_areas = ShippingArea.objects.all()
+		return self.serialize(shipping_areas)
+
+	def get_shipping_area(self, location):
+		"""
+			Method reponsible for retrieving shipping areas
+
+			Output :
+				- location = postal code
+		"""
+
+		shipping_area = ShippingArea.objects.filter(postal_code = location, is_shipping_area = True)
+
+		if len(shipping_area) > 0:
+			return shipping_area[0]
+		elif len(shipping_area) == 0:
+			return None
 
 	def save_shipping_areas(self, shipping_areas):
 		"""
@@ -415,4 +450,22 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 				area.is_shipping_area = is_shipping_area
 				area.save()
 
+	def empty_database(self):
+		"""
+			This method is only for developement purposes, DO NOT EXECUTE ON PRODUCTION WHEN DEBUG = False!!!
+			IF YOU DO THAT I WILL LOOK FOR YOU, I WILL FIND YOU, AND I WILL KILL YOU! (http://www.youtube.com/watch?v=1SXsCkKuvOU)
+		"""
+		if settings.DEBUG:
+			answer = raw_input("ARE YOU SURE? (YES DALLIZ-> yes, anything else ->no): ")
+			if answer == 'YES DALLIZ':
+				print 'Deleting'
+				Category.objects.all().delete()
+				History.objects.all().delete()
+				Promotion.objects.all().delete()
+				Product.objects.all().delete()
+
+			else:
+				print 'Aborted'
+		else:
+			print 'YOU ARE SO DUMB, YOU ARE REALLY DUMB, FOR REAL! (http://www.youtube.com/watch?v=bobp5OHVsWY) (DEBUG = False -> production server)'
 

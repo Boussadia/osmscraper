@@ -3,9 +3,12 @@
 
 import re
 import time
+from datetime import datetime, timedelta, date
+from urlparse import urlparse, parse_qs, urlunparse
+
+from django.utils.timezone import utc
 
 from scrapers.base.cities import cities
-from urlparse import urlparse, parse_qs, urlunparse
 
 class BaseScraper(object):
 	"""
@@ -135,9 +138,89 @@ class BaseScraper(object):
 		"""
 			Defines the logic of the scraper. (See Google Drive documentation for further explanation)
 		"""
-		pass
+		# First are there categories stored?
+		categories = self.databaseHelper.get_categories(options={'leaves':True})
+
+		if len(categories) == 0:
+			# No categories in database
+			return {'type':'categories'}
+		else:
+			# Was the last time categories where updated more than 2 weeks ago?
+			old_updated_categories = filter(lambda cat: cat['updated'].replace(tzinfo=None) + timedelta(days = 15)<datetime.today(), categories)
+			if len(old_updated_categories) > 0:
+				# Need to update categories list
+				return {'type':'categories'}
+			else:
+				pass
+
+		# Getting all shipping areas
+
+		shipping_areas = self.databaseHelper.get_shipping_areas()
+
+		# Getting count of products for categories
+		options = {
+			'categories_id': [c['id'] for c in categories],
+			'locations': [s['postal_code'] for s in shipping_areas],
+		}
+		# Building list of combinations between locations and categories [(category_id, location)]
+		categories_locations_temp = [[(c['id'], s['postal_code']) for c in categories] for s in shipping_areas]
+		categories_locations = []
+		[categories_locations.extend(tup) for tup in categories_locations_temp]
+
+		# Get products corresponding to filters
+		products = self.databaseHelper.get_products(options=options)
+		# For every product, build list of tuple of [(category_id, location)]
+		products_categories_locations_temp_1 = [[[ (cid, pc) for cid in p['categories']] for pc in p['locations'] ]for p in products]
+		products_categories_locations = []
+		[[[ products_categories_locations.append(tup) for tup in p_2 if tup not in products_categories_locations]for p_2 in p_1] for p_1 in products_categories_locations_temp_1]
+		
+		# Now extract from categories_locations tuples of categories and locations to scrape:
+		categories_locations_to_scrape = [tup for tup in categories_locations if tup not in products_categories_locations]
+
+		# Is the list empty?
+		if len(categories_locations_to_scrape)>0:
+			# Building list to return
+			# changing categories and location to speed up process
+			categories = { c['id']:c for c in categories}
+			return {
+				'type': 'category_products',
+				'categories': [{'url': categories[cat_id]['url'], 'location': cp} for cat_id, cp in categories_locations_to_scrape]
+			}
 
 
+		# Same process than above but filtering with time
+		options.update({'before_date': datetime.utcnow().replace(tzinfo=utc)-timedelta(hours = 24)})
+		categories_locations_temp = [[(c['id'], s['postal_code']) for c in categories] for s in shipping_areas]
+		categories_locations = []
+		[categories_locations.extend(tup) for tup in categories_locations_temp]
+
+		# Get products corresponding to filters
+		products = self.databaseHelper.get_products(options=options)
+		# For every product, build list of tuple of [(category_id, location)]
+		products_categories_locations_temp_1 = [[[ (cid, pc) for cid in p['categories']] for pc in p['locations'] ]for p in products]
+		products_categories_locations = []
+		[[[ products_categories_locations.append(tup) for tup in p_2 if tup not in products_categories_locations]for p_2 in p_1] for p_1 in products_categories_locations_temp_1]
+		
+		# Now extract from categories_locations tuples of categories and locations to scrape:
+		categories_locations_to_scrape = [tup for tup in categories_locations if tup in products_categories_locations]
+
+		# Is the list empty?
+		if len(categories_locations_to_scrape)>0:
+			# Building list to return
+			# changing categories and location to speed up process
+			categories = { c['id']:c for c in categories}
+			return {
+				'type': 'category_products',
+				'categories': [{'url': categories[cat_id]['url'], 'location': cp} for cat_id, cp in categories_locations_to_scrape]
+			}
+
+		# TO DO : Check if products that were not fetch still exit on osm website
+
+		# Nothing more to do, return task to execute in 1 hour
+		return {
+			'type': 'global',
+			'delay': 3600 # seconds
+		}
 
 	def properurl(self, url_to_format):
 		"""
@@ -150,3 +233,6 @@ class BaseScraper(object):
 		scheme, netloc, path, params, query, fragment = urlparse(url_to_format)
 
 		return urlunparse((scheme_base, netloc_base, path, params, query, fragment))
+
+	def empty_database(self):
+		self.databaseHelper.empty_database()

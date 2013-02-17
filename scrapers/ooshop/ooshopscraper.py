@@ -80,8 +80,13 @@ class OoshopScraper(BaseScraper):
 				- category_url (string) : url to a category parsed_page
 				- location (string) : postal code of the location, 'default' -> no location
 		"""
-		# Setting location & initializing products
-		self.set_location(location)
+		# Setting location, & initializing products
+		is_LAD, code = self.set_location(location)
+
+		if is_LAD and code == 200:
+			shipping_area = self.databaseHelper.get_shipping_area(location)
+		else:
+			shipping_area = None
 		products = []
 
 		# Getting html
@@ -116,9 +121,9 @@ class OoshopScraper(BaseScraper):
 			# Getting category
 			category = self.databaseHelper.get_category_by_url(category_url)
 			if category:
-				self.databaseHelper.save_products(products, category.id, None)
+				self.databaseHelper.save_products(products, category.id, shipping_area)
 			else:
-				self.databaseHelper.save_products(products, None, None)
+				self.databaseHelper.save_products(products, None, shipping_area)
 		else:
 			return products
 
@@ -249,11 +254,5 @@ class OoshopScraper(BaseScraper):
 	def is_available(self, product_url):
 		"""
 			This method checks if the product is still available in the osm website
-		"""
-		pass
-
-	def what_to_do_next(self):
-		"""
-			Defines the logic of the scraper.
 		"""
 		pass
