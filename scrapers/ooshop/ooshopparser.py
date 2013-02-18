@@ -352,10 +352,10 @@ class OoshopParser(BaseParser):
 		}
 		# encapsulatating in try except block
 
-		product_html = self.parsed_page.find(id='ctl00_ucDetProd_upProd')
-		product['html'] = product_html.prettify()
+		product_html = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_upProd')
 
 		if product_html:
+			product['html'] = product_html.prettify()
 			# Common to promotion and normal product
 			# Is the product available ?
 			img_unavailable = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_imgOther')
@@ -379,9 +379,16 @@ class OoshopParser(BaseParser):
 
 			# Getting images
 			product_image = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_imgVisu')
-			product_image_url = product_image.attrs['src']
+			if product_image:
+				product_image_url = product_image.attrs['src']
+			else:
+				product_image_url = None
 			brand_image = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_iLogo')
-			brand_image_url = brand_image.attrs['src']
+			if brand_image:
+				brand_image_url = brand_image.attrs['src']
+			else:
+				brand_image_url = None
+			
 			product['product_image_url'] = product_image_url
 			product['brand_image_url'] = brand_image_url
 
@@ -436,13 +443,14 @@ class OoshopParser(BaseParser):
 				origin_parsed = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_lOrigine')
 				if origin_parsed:
 					information['origin'] = self.strip_string(origin_parsed.find('span',{'class' : 'origine'}).text)
-				# First : nutritional information
-				nutritional_info = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_pIg')
-				if nutritional_info:
-					# Information found
-					title_info = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_lTig').text
-					tds = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_lHig').find_all('td')
-					information[title_info] = dict([[self.strip_string(string) for string in td.findAll(text=True) if self.strip_string(string) != ''] for td in tds])
+				# # First : nutritional information
+				# nutritional_info = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_pIg')
+				# if nutritional_info:
+				# 	# Information found
+				# 	title_info = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_lTig').text
+				# 	tds = self.parsed_page.find(id='ctl00_cphC_pn3T1_ctl01_lHig').find_all('td')
+				# 	print [[self.strip_string(string) for string in td.findAll(text=True) if self.strip_string(string) != ''] for td in tds]
+				# 	information[title_info] = dict([[self.strip_string(string) for string in td.findAll(text=True) if self.strip_string(string) != ''] for td in tds])
 
 				# Then all the other information
 				information_titles_html = self.parsed_page.find_all(id = re.compile(r'ctl00_cphC_pn3T1_ctl01_lTitre\d'))
@@ -456,6 +464,7 @@ class OoshopParser(BaseParser):
 
 		else:
 			product['is_product'] = False
+			product['exists'] = False
 
 		return product
 

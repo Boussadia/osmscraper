@@ -54,6 +54,15 @@ class BaseDatabaseHelper(object):
 		"""
 		pass
 
+	def get_uncomplete_products(self):
+		"""
+			This method retrieves products and promotion hat are not complete
+
+			- Output :
+				- products : [{'url':...}]
+		"""
+		pass
+
 	def get_categories(self, id_parent_category = None, start_date = None, end_date = None):
 		"""
 			Method that retrieves all categories in a hash.

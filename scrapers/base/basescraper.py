@@ -75,13 +75,18 @@ class BaseScraper(object):
 				- code : was the request successfull? (200 = OK)
 
 		"""
-		# Clearing cookie jar
-		self.crawler.empty_cookie_jar()
-		if re.match(r'(\d{5})', code_postal):
-			return self.is_served_area(code_postal)
+		if code_postal:
+			# Clearing cookie jar
+			self.crawler.empty_cookie_jar()
+			if re.match(r'(\d{5})', code_postal):
+				return self.is_served_area(code_postal)
+			else:
+				# Location not abiding by postal code standard
+				return False, -1
 		else:
 			# Location not abiding by postal code standard
 			return False, -1
+
 
 	def is_served_area(self, code_postal = 'default'):
 		"""
@@ -152,6 +157,14 @@ class BaseScraper(object):
 				return {'type':'categories'}
 			else:
 				pass
+
+		# Get complete products informations
+		products = self.databaseHelper.get_uncomplete_products()
+		if len(products)>0:
+			return{
+				'type': 'products',
+				'products': products
+			}
 
 		# Getting all shipping areas
 

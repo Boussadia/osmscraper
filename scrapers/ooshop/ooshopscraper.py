@@ -149,8 +149,10 @@ class OoshopScraper(BaseScraper):
 		for product in products:
 			# Clean urls
 			product['url'] = self.properurl(product['url'])
-			product['brand_image_url'] = self.properurl(product['brand_image_url'])
-			product['product_image_url'] = self.properurl(product['product_image_url'])
+			if 'brand_image_url' in product:
+				product['brand_image_url'] = self.properurl(product['brand_image_url'])
+			if 'product_image_url' in product:
+				product['product_image_url'] = self.properurl(product['product_image_url'])
 			
 			if not product['is_product'] and product['is_promotion'] and product['promotion']['type'] == 'multi' and 'product_image_urls' in product['promotion']:
 				# Setting proper full urls
@@ -171,10 +173,16 @@ class OoshopScraper(BaseScraper):
 				- hash representing the product 
 				- code (int) : was the request successfull (200 = OK)
 		"""
-		# Setting location 
-		self.set_location(location)
+		# Setting location, & initializing products
+		is_LAD, code = self.set_location(location)
+
+		if is_LAD and code == 200:
+			shipping_area = self.databaseHelper.get_shipping_area(location)
+		else:
+			shipping_area = None
 
 		# Retrieve html page
+		print product_url
 		html, code = self.crawler.get(product_url)
 
 		if code == 200:
@@ -189,7 +197,7 @@ class OoshopScraper(BaseScraper):
 
 			# save product in database
 			if save:
-				self.databaseHelper.save_products([product], None, None)
+				self.databaseHelper.save_products([product], None, shipping_area = shipping_area)
 			else:
 				return product
 

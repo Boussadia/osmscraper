@@ -1,13 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from datetime import date
+from datetime import date, datetime, timedelta
 import simplejson as json
 
 from django.db import connection
 from django.db import DatabaseError
+from django.db.models import Q
+
 from django.conf import settings
 from django.core import serializers
+
 
 from scrapers.base.basedatabasehelper import BaseDatabaseHelper
 
@@ -78,12 +81,30 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 			# try:
 			product = products[i]
 
+			if 'exists' in product and not product['exists'] and shipping_area is None:
+				# Product does not exist, set it in database
+				product_db = Product.objects.filter(reference = product['reference'])
+				if len(product_db)>0:
+					product_db = product_db[0]
+					product_db.exists = False
+					product_db.save()
+
+				return []
+
 			# Common
 			reference = product['reference']
-			name = product['name']
 			url = product['url']
-			html = product['html']
-			if product['brand'] != '':
+			if 'name' in product:
+				name = product['name']
+			else:
+				name = None
+
+			if 'html' in product:
+				html = product['html']
+			else:
+				html = None
+
+			if 'brand' in product and product['brand'] != '':
 				brand = self.save_brand(product['brand'], product['brand_image_url'])
 			else:
 				brand = None
@@ -93,7 +114,10 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 			else:
 				unit = None
 
-			image_url = product['product_image_url']
+			if 'product_image_url' in product:
+				image_url = product['product_image_url']
+			else:
+				image_url = None
 			availability = product['is_available']
 
 			# Promotion specific
@@ -110,40 +134,29 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 
 			if product['is_product']:
 				# Detailed information
-				if 'information' in product and 'Information' in product['information']:
-					informations = product['information']['Information']
-				else:
-					informations = None
-
-				if 'information' in product and 'Conservation' in product['information']:
-					conservation = product['information']['Conservation']
-				else:
-					conservation = None
-
-				if 'information' in product and 'origin' in product['information']:
-					origine = product['information']['origin']
-				else:
-					origine = None
-
-				if 'information' in product and u"Conseils d'utilisation" in product['information']:
-					conseils = product['information'][u"Conseils d'utilisation"]
-				else:
-					conseils = None
-
-				if 'information' in product and 'Ingredients' in product['information']:
-					ingredients = product['information']['Ingredients']
-				else:
-					ingredients = None
-
-				if 'information' in product and 'Composition' in product['information']:
-					composition = product['information']['Composition']
-				else:
-					composition = None
-
-				if 'information' in product and 'Avertissements' in product['information']:
-					avertissements = product['information']['Avertissements']
-				else:
-					avertissements = None
+				informations = None
+				conservation = None
+				conseils = None
+				origine = None
+				ingredients = None
+				composition = None
+				avertissements = None
+				if 'information' in product:
+					for key in product['information'].keys():
+						if 'information' in key.lower():
+							informations = product['information'][key]
+						elif 'conservation' in key.lower():
+							conservation = product['information'][key]
+						elif 'origin' in key.lower():
+							origine = product['information'][key]
+						elif u"conseils d'utilisation" in key.lower():
+							conseils = product['information'][key]
+						elif u'ingrédients' in key.lower():
+							ingredients = product['information'][key]
+						elif 'composition' in key.lower():
+							composition = product['information'][key]
+						elif 'avertissements' in key.lower():
+							avertissements = product['information'][key]
 
 				# Package
 				if 'package' in product and 'unit' in product['package']:
@@ -162,28 +175,48 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 					package_quantity = None
 
 				# Saving product to database
-				product_db, created = Product.objects.get_or_create(image_url = image_url, defaults={
-					'name': name,
-					'url': url,
-					'reference': reference,
-					'brand': brand,
-					'unit': unit,
-					'informations': informations,
-					'conservation': conservation,
-					'origine': origine,
-					'conseils': conseils,
-					'ingredients': ingredients,
-					'composition': composition,
-					'avertissements': avertissements,
-					'package_unit': package_unit,
-					'package_quantity': package_quantity,
-					'package_measure': package_measure
-					})
+				if image_url:
+					product_db, created = Product.objects.get_or_create(image_url = image_url, defaults={
+						'name': name,
+						'url': url,
+						'reference': reference,
+						'brand': brand,
+						'unit': unit,
+						'informations': informations,
+						'conservation': conservation,
+						'origine': origine,
+						'conseils': conseils,
+						'ingredients': ingredients,
+						'composition': composition,
+						'avertissements': avertissements,
+						'package_unit': package_unit,
+						'package_quantity': package_quantity,
+						'package_measure': package_measure
+						})
+				else:
+					product_db, created = Product.objects.get_or_create(reference = reference, defaults={
+						'name': name,
+						'url': url,
+						'image_url': image_url,
+						'brand': brand,
+						'unit': unit,
+						'informations': informations,
+						'conservation': conservation,
+						'origine': origine,
+						'conseils': conseils,
+						'ingredients': ingredients,
+						'composition': composition,
+						'avertissements': avertissements,
+						'package_unit': package_unit,
+						'package_quantity': package_quantity,
+						'package_measure': package_measure
+						})
 
 				if not created:
 					product_db.name = name
 					product_db.url = url
 					product_db.reference = reference
+					product_db.image_url = image_url
 					product_db.brand = brand
 					product_db.unit = unit
 					product_db.informations = informations
@@ -228,8 +261,8 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 						product_db.save()
 				elif product['promotion']['type'] == 'simple':
 					# Simple promotion
-					promotion, created = Promotion.objects.get_or_create(reference = reference, defaults = {'type': Promotion.SIMPLE, 'url': url, 'image_url': image_url, 'before': before, 'after': after, 'unit_price': unit_price, 'start': start, 'end': end, 'shipping_area': shipping_area, 'availability': availability, 'html': html})
-					if created:
+					promotion, created = Promotion.objects.get_or_create(reference = reference, shipping_area = shipping_area, defaults = {'type': Promotion.SIMPLE, 'url': url, 'image_url': image_url, 'before': before, 'after': after, 'unit_price': unit_price, 'start': start, 'end': end, 'availability': availability, 'html': html})
+					if not created:
 						promotion.type = Promotion.SIMPLE
 						promotion.url = url
 						promotion.image_url= image_url
@@ -238,7 +271,6 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 						promotion.unit_price = unit_price
 						promotion.start = start
 						promotion.end = end
-						promotion.shipping_area = shipping_area
 						promotion.availability = availability
 						promotion.html =  html
 						promotion.save()
@@ -246,7 +278,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 			elif product['is_product'] == False and product['is_promotion'] and product['promotion']['type'] == 'multi':
 				# Multi promotion
 				promotion, created = Promotion.objects.get_or_create(reference = reference, shipping_area = shipping_area, defaults = {'type': Promotion.MULTI, 'url': url, 'image_url': image_url, 'before': before, 'after': after, 'unit_price': unit_price, 'start': start, 'end': end, 'availability': availability, 'html': html})
-				if created:
+				if not created:
 					promotion.type = Promotion.MULTI
 					promotion.url = url
 					promotion.image_url= image_url
@@ -337,6 +369,27 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 		[ p.update({'locations' : [s.postal_code for s in list(ShippingArea.objects.filter(history__product__id = p['id']))]}) for p in products]
 
 		return products
+
+	def get_uncomplete_products(self):
+		"""
+			This method retrieves products and promotion hat are not complete
+
+			- Output :
+				- products : [{'url':...}]
+		"""
+		# Getting products first, defined by : all informations fields are null and was created less than a month ago
+		products = Product.objects.filter(created__gte=datetime.today() - timedelta(days = 30)) # filter by date
+		products = products.filter(url__isnull = False, origine__isnull=True, informations__isnull=True, ingredients__isnull=True,conservation__isnull=True,avertissements__isnull=True, composition__isnull=True,conseils__isnull=True)
+		# products = products.filter(html__isnull=True)
+		products = [{'url' :p.url} for p in products]
+
+		# Getting promotions : defined by start and end date of promotion are null
+		promotions_db = Promotion.objects.filter(Q(start__isnull = True)|Q(end__isnull = True))
+		promotions = [{'url' :p.url, 'location' : p.shipping_area.postal_code} for p in promotions_db if p.shipping_area is not None]
+		promotions = promotions+[{'url' :p.url} for p in promotions_db if p.shipping_area is None]
+
+		return promotions + products
+
 
 	def get_categories(self, options = {}):
 		"""
