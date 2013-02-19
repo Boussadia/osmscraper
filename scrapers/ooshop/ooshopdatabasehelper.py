@@ -379,12 +379,12 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 		"""
 		# Getting products first, defined by : all informations fields are null and was created less than a month ago
 		products = Product.objects.filter(created__gte=datetime.today() - timedelta(days = 30)) # filter by date
-		products = products.filter(url__isnull = False, origine__isnull=True, informations__isnull=True, ingredients__isnull=True,conservation__isnull=True,avertissements__isnull=True, composition__isnull=True,conseils__isnull=True)
-		# products = products.filter(html__isnull=True)
+		# products = products.filter(url__isnull = False, origine__isnull=True, informations__isnull=True, ingredients__isnull=True,conservation__isnull=True,avertissements__isnull=True, composition__isnull=True,conseils__isnull=True)
+		products = products.filter(url__isnull = False, exists = True, html__isnull=True)
 		products = [{'url' :p.url} for p in products]
 
 		# Getting promotions : defined by start and end date of promotion are null
-		promotions_db = Promotion.objects.filter(Q(start__isnull = True)|Q(end__isnull = True))
+		promotions_db = Promotion.objects.filter(Q(start__isnull = True)|Q(end__isnull = True), Q(availability = True))
 		promotions = [{'url' :p.url, 'location' : p.shipping_area.postal_code} for p in promotions_db if p.shipping_area is not None]
 		promotions = promotions+[{'url' :p.url} for p in promotions_db if p.shipping_area is None]
 
