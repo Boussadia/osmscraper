@@ -26,7 +26,6 @@ define([
 	}
 
 	App.prototype.subBrand = function(list_url){
-		console.log(list_url);
 		if(!this.parentBrandView){
 			this.parentBrandView = new BrandCollectionView({'init_data': this.init_data, 'vent': this.vent, 'level':-1, 'current_selected': list_url[0] });
 		}else{

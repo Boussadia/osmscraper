@@ -27,7 +27,6 @@ define([
 						}else{
 							that.reset();
 						}
-						// 
 					},
 					error: function(jqXHR, textStatus, errorThrown){
 						console.log(jqXHR);
@@ -42,7 +41,7 @@ define([
 			},
 			save: function(model){
 				// Saving new Model
-				console.log(this.url);
+				// console.log(this.url);
 				var that = this;
 				var url = that.url;
 				if (!url){

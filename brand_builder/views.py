@@ -40,21 +40,6 @@ def sub_brands(request, id):
 				do = False
 		response['status'] = '200'
 
-		if request.method == 'GET':
-
-			sub_brands = Brand.objects.filter(parent_brand__id__exact=id)
-			basic_json_models = json.loads(serializers.serialize("json", sub_brands))
-			models = [{'id': j['pk']} for j in basic_json_models]
-			for i in xrange(0, len(models)):
-				models[i].update(basic_json_models[i]['fields'])
-			for i in xrange(0,len(models)):
-				models[i]['url'] = url_parents+ '/'+ str(models[i]['id'])
-				models[i]['parent_id'] = brand.id
-				models[i]['id'] = sub_brands[i].id
-
-
-			response['models'] = models
-
 		if request.method == 'POST':
 			response['status'] = '404'
 			name = request.POST['name']
@@ -76,6 +61,20 @@ def sub_brands(request, id):
 				model['parent_id'] = brand.id
 				model['id'] = new_sub_brand.id
 				response['model'] = model
+
+
+		sub_brands = Brand.objects.filter(parent_brand__id__exact=id)
+		basic_json_models = json.loads(serializers.serialize("json", sub_brands))
+		models = [{'id': j['pk']} for j in basic_json_models]
+		for i in xrange(0, len(models)):
+			models[i].update(basic_json_models[i]['fields'])
+		for i in xrange(0,len(models)):
+			models[i]['url'] = url_parents+ '/'+ str(models[i]['id'])
+			models[i]['parent_id'] = brand.id
+			models[i]['id'] = sub_brands[i].id
+
+
+		response['models'] = models
 	elif id == 0 or id=='0':
 		if request.method == 'POST':
 			try:

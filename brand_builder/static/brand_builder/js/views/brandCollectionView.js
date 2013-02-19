@@ -51,11 +51,11 @@ define([
 				});
 				this.bindTo(this.brandCollection, 'add', function(){
 					this.fetched = true;
-					this.vent.trigger('render');
+					this.vent.trigger('route:setSubBrand');
 				});
 				this.bindTo(this.brandCollection, 'remove', function(){
 					this.fetched = true;
-					this.vent.trigger('render');
+					this.vent.trigger('route:setSubBrand');
 				});
 			},
 			fetch : function(){
@@ -67,6 +67,12 @@ define([
 				'click button.btn-close': 'closeModal',
 				'click button.save': 'saveBrand',
 				'click button.remove': 'removeBrand',
+				'keypress :input': 'logKey'
+			},
+			logKey: function(e){
+				if(e.keyCode == 13){
+					this.saveBrand(e);
+				};
 			},
 			removeBrand: function(e){
 				if(confirm('Si vous supprimer cette marque, toutes les marques filles vont être suprimée, voulez vous proceder?')){
@@ -83,6 +89,9 @@ define([
 				var modal_template = _.template(modal_html);
 				var modal_rendered = modal_template({'level': this.level, 'parent_url': this.parent_url});
 				this.$el.append(modal_rendered);
+				$(modal_rendered).keypress(function(e){
+					console.log(e);
+				})
 			},
 			closeModal: function(e){
 				e.preventDefault();
@@ -94,7 +103,6 @@ define([
 				var name = this.$el.find('#name_brand').val();
 				var id = this.$el.find('#id_brand').val();
 				if (!id) id = -1;
-				console.log(id);
 				this.brandCollection.addNewBrand({'name': name, 'id': id});
 			},
 			set_current: function(id_current){
