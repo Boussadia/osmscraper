@@ -67,7 +67,8 @@ define([
 				'click button.btn-close': 'closeModal',
 				'click button.save': 'saveBrand',
 				'click button.remove': 'removeBrand',
-				'keyup :input': 'logKey'
+				'keyup :input': 'logKey',
+				'keypress :input': 'logKey'
 			},
 			logKey: function(e){
 				if(e.keyCode == 13){
