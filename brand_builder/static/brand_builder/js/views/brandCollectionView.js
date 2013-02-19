@@ -67,11 +67,14 @@ define([
 				'click button.btn-close': 'closeModal',
 				'click button.save': 'saveBrand',
 				'click button.remove': 'removeBrand',
-				'keypress :input': 'logKey'
+				'keyup :input': 'logKey'
 			},
 			logKey: function(e){
 				if(e.keyCode == 13){
 					this.saveBrand(e);
+				};
+				if(e.keyCode == 27){
+					this.closeModal(e);
 				};
 			},
 			removeBrand: function(e){
@@ -89,8 +92,8 @@ define([
 				var modal_template = _.template(modal_html);
 				var modal_rendered = modal_template({'level': this.level, 'parent_url': this.parent_url});
 				this.$el.append(modal_rendered);
-				$(modal_rendered).keypress(function(e){
-					console.log(e);
+				_.defer(function(){
+					$('#name_brand').focus()
 				})
 			},
 			closeModal: function(e){
