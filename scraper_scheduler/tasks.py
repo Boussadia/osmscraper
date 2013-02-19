@@ -9,7 +9,7 @@ from celery import Celery
 
 from osmscraper.matching import *
 
-from scrapers.monoprix import Monoprix
+from scrapers.monoprix_old import Monoprix
 from scrapers.telemarket import Telemarket
 from scrapers.place_du_marche import Place_du_marche
 from scrapers.coursengo import Coursengo

@@ -4,7 +4,7 @@
 from django.conf import settings
 from django.core.mail import send_mail
 
-from scrapers.monoprix import Monoprix
+from scrapers.monoprix_old import Monoprix
 from models import *
 
 monoprix = Monoprix()
