@@ -53,4 +53,6 @@ class BaseHTMLStemmer(object):
 			else:
 				new_words.append(word)
 
-		return new_words
+		# Reconstucting text and returning it
+		return ' '.join(new_words)
+		

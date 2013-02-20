@@ -14,6 +14,8 @@ from django.core import serializers
 
 from scrapers.base.basedatabasehelper import BaseDatabaseHelper
 
+from matcher.ooshop.ooshopstemmer import OoshopStemmer
+
 from ooshop.models import Category
 from ooshop.models import NewBrand as Brand
 from ooshop.models import Unit
@@ -101,8 +103,11 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 
 			if 'html' in product:
 				html = product['html']
+				# Stemming html
+				stemmed_text = OoshopStemmer(html).stem_text()
 			else:
 				html = None
+				stemmed_text = None
 
 			if 'brand' in product and product['brand'] != '':
 				brand = self.save_brand(product['brand'], product['brand_image_url'])
@@ -234,6 +239,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 				# Do we need to save the html in the product?
 				if 'information' in product:
 					product_db.html = html
+					product_db.stemmed_text = stemmed_text
 					product_db.save()
 
 				# Adding category to Product

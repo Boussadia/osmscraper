@@ -168,6 +168,7 @@ class NewProduct(models.Model):
 	composition = models.TextField(null=True)
 	avertissements = models.TextField(null=True)
 	html = models.TextField(max_length=9999999999999999999999, null = True) # html of product 
+	stemmed_text = models.TextField(max_length=9999999999999999999999, null = True) # stemmed text of product 
 
 	# Content of product
 	package_quantity = models.IntegerField(null=True)
