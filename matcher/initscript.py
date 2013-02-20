@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+"""
+	Populating the database of stems
+"""
 import os
 import codecs
 
