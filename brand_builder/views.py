@@ -20,6 +20,8 @@ def index(request):
 
 def sub_brands(request, id):
 	response = {}
+	# Main brand
+
 	# Getting element corresponding to url
 	brand = Brand.objects.filter(id = id)
 	if len(brand) == 1:
@@ -76,6 +78,17 @@ def sub_brands(request, id):
 
 		response['models'] = models
 	elif id == 0 or id=='0':
+		if request.method == 'GET':
+			brands = Brand.objects.filter(parent_brand__isnull=True)
+			basic_json_models = json.loads(serializers.serialize("json", brands))
+			models = [{'id': j['pk']} for j in basic_json_models]
+			for i in xrange(0, len(models)):
+				models[i].update(basic_json_models[i]['fields'])
+			for i in xrange(0,len(models)):
+				models[i]['url'] = str(models[i]['id'])
+				models[i]['parent_id'] = None
+
+			response = {'status':  '200', 'models': models}
 		if request.method == 'POST':
 			try:
 				name = request.POST['name']

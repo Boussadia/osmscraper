@@ -2,6 +2,9 @@
 <html>
 	<head>
 		<title>Brands Dalliz</title>
+		<script type="text/javascript">
+			var parent_brands = {{brands|safe}}
+		</script>
 		<script data-main="{{STATIC_URL}}brand_builder/js/main.js" src="{% static brand_builder/js/libs/require/require.js%}"></script>
 
 		<!-- CSS-->
@@ -12,9 +15,6 @@
 		<div id="content"> 
 
 		</div>
-		<script type="text/javascript">
-			var parent_brands = {{brands|safe}}
-		</script>
 
 		<script id="template_brand" type='text/template'>
 			<tr class="brand {% templatetag openvariable %} class_current {% templatetag closevariable %}" data-id='{% templatetag openvariable %} id {% templatetag closevariable %}'>

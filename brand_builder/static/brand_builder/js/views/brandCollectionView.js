@@ -37,7 +37,7 @@ define([
 
 			},
 			initialize: function(option){
-				this.url = option.url || null;
+				this.url = option.url || 0;
 				this.vent = option.vent || null;
 				this.init_data = option.init_data || null;
 				this.level = option.level;

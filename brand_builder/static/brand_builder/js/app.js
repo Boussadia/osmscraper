@@ -30,6 +30,7 @@ define([
 			this.parentBrandView = new BrandCollectionView({'init_data': this.init_data, 'vent': this.vent, 'level':-1, 'current_selected': list_url[0] });
 		}else{
 			this.parentBrandView.set_current(list_url[0]);
+			// this.parentBrandView.fetch();
 		}
 
 		this.closeViews();
