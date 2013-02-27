@@ -25,3 +25,4 @@ python-openid==2.2.5
 pytz==2012f
 simplejson==2.6.2
 wsgiref==0.1.2
+mechanize==0.2.5
