@@ -180,25 +180,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 					package_quantity = None
 
 				# Saving product to database
-				if image_url:
-					product_db, created = Product.objects.get_or_create(image_url = image_url, defaults={
-						'name': name,
-						'url': url,
-						'reference': reference,
-						'brand': brand,
-						'unit': unit,
-						'informations': informations,
-						'conservation': conservation,
-						'origine': origine,
-						'conseils': conseils,
-						'ingredients': ingredients,
-						'composition': composition,
-						'avertissements': avertissements,
-						'package_unit': package_unit,
-						'package_quantity': package_quantity,
-						'package_measure': package_measure
-						})
-				else:
+				if reference:
 					product_db, created = Product.objects.get_or_create(reference = reference, defaults={
 						'name': name,
 						'url': url,
@@ -216,6 +198,25 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 						'package_quantity': package_quantity,
 						'package_measure': package_measure
 						})
+				else:
+					product_db, created = Product.objects.get_or_create(image_url = image_url, defaults={
+						'name': name,
+						'url': url,
+						'reference': reference,
+						'brand': brand,
+						'unit': unit,
+						'informations': informations,
+						'conservation': conservation,
+						'origine': origine,
+						'conseils': conseils,
+						'ingredients': ingredients,
+						'composition': composition,
+						'avertissements': avertissements,
+						'package_unit': package_unit,
+						'package_quantity': package_quantity,
+						'package_measure': package_measure
+						})
+					
 
 				if not created:
 					product_db.name = name

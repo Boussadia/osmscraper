@@ -1,12 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from datetime import date
+from datetime import date, datetime, timedelta
 
 from django.db import connection
 from django.db import DatabaseError
+from django.db.models import Q
 
 from scrapers.base.basedatabasehelper import BaseDatabaseHelper
+from matcher.monoprix.monoprixstemmer import MonoprixStemmer
 
 from monoprix.models import Category
 from monoprix.models import NewBrand as Brand
@@ -122,13 +124,13 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 
 			if product['is_product']:
 				# Detailed information
-				if 'information' in product and 'Description' in product['information']:
-					description = product['information']['Description']
+				if 'information' in product and u'Description' in product['information']:
+					description = product['information'][u'Description']
 				else:
 					description = None
 				#
-				if 'information' in product and 'Conservation' in product['information']:
-					conservation = product['information']['Conservation']
+				if 'information' in product and u'Conservation' in product['information']:
+					conservation = product['information'][u'Conservation']
 				else:
 					conservation = None
 
@@ -138,17 +140,17 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 					conseil = None
 				# done
 				if 'information' in product and u'Ingrédients' in product['information']:
-					ingredients = product['information']['Ingrédients']
+					ingredients = product['information'][u'Ingrédients']
 				else:
 					ingredients = None
 
-				if 'information' in product and 'Composition' in product['information']:
-					composition = product['information']['Composition']
+				if 'information' in product and u'Composition' in product['information']:
+					composition = product['information'][u'Composition']
 				else:
 					composition = None
 				#
-				if 'information' in product and 'Valeur nutritionnelle' in product['information']:
-					valeur_nutritionnelle = product['information']['Avertissements']
+				if 'information' in product and u'Valeur nutritionnelle' in product['information']:
+					valeur_nutritionnelle = product['information'][u'Valeur nutritionnelle']
 				else:
 					valeur_nutritionnelle = None
 
@@ -169,10 +171,10 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 					package_quantity = None
 
 				# Saving product to database
-				product_db, created = Product.objects.get_or_create(image_url = image_url, defaults={
+				product_db, created = Product.objects.get_or_create(reference = reference, defaults={
 					'name': name,
 					'url': url,
-					'reference': reference,
+					'image_url': image_url,
 					'brand': brand,
 					'unit': unit,
 					'description': description,
@@ -206,6 +208,7 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 				# Do we need to save the html in the product?
 				if 'information' in product:
 					product_db.html = html
+					product_db.stemmed_text = MonoprixStemmer(html).stem_text()
 					product_db.save()
 
 				# Adding category to Product
@@ -227,10 +230,6 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 					history = History(product = product_db, price = price, unit_price = unit_price, availability = availability, html = html, store = store)
 					history.save()
 
-					# Is it a goodie?
-					if price == 0 and product_db.goodie == False:
-						product_db.goodie = True
-						product_db.save()
 				elif product['promotion']['type'] == 'simple':
 					# Simple promotion
 					promotion, created = Promotion.objects.get_or_create(reference = reference, defaults = {'type': Promotion.SIMPLE, 'url': url, 'image_url': image_url, 'before': before, 'after': after, 'unit_price': unit_price, 'start': start, 'end': end, 'store': store, 'availability': availability, 'html': html})
@@ -271,7 +270,7 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 						if len(content_product)>0:
 							content_product = content_product[0]
 						else:
-							content_product = Product(image_url = reference)
+							content_product = Product(reference = reference)
 							content_product.save()
 						promotion.content.add(content_product)
 			# except DatabaseError, e:
@@ -322,7 +321,48 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 			Output : 
 				- list of products (represented by hash)
 		"""
-		pass
+		products = []
+		if 'reference' in options:
+			product_db = Product.objects.filter(reference = options['reference'])
+			if len(product_db) == 1:
+				product_db = product_db[0]
+				return [self.serialize(product)]
+
+
+		if 'categories_id' in options:
+			products = Product.objects.filter(categories__id__in = options['categories_id'])
+		
+		if 'locations' in options:
+			products = products.filter(history__store__postal_code__in = [l['postal_code'] for l in options['locations']])
+
+		if 'before_date' in options:
+			products = products.filter(history__created__lte = options['before_date'])
+
+		products = self.serialize(products)
+		# Getting locations of all products
+		[ p.update({'locations' : [{'id':s.id,'name': s.name, 'postal_code':s.postal_code, 'city_name':s.city_name, 'address':s.address, 'is_LAD': s.is_LAD} for s in list(Store.objects.filter(history__product__id = p['id']))]}) for p in products]
+
+		return products
+
+	def get_uncomplete_products(self):
+		"""
+			This method retrieves products and promotion hat are not complete
+
+			- Output :
+				- products : [{'url':...}]
+		"""
+		# Getting products first, defined by : all informations fields are null and was created less than a month ago
+		products = Product.objects.filter(created__gte=datetime.today() - timedelta(days = 30)) # filter by date
+		# products = products.filter(url__isnull = False, origine__isnull=True, informations__isnull=True, ingredients__isnull=True,conservation__isnull=True,avertissements__isnull=True, composition__isnull=True,conseils__isnull=True)
+		products = products.filter(url__isnull = False, exists = True, html__isnull=True)
+		products = [{'url' :p.url} for p in products]
+
+		# Getting promotions : defined by start and end date of promotion are null
+		promotions_db = Promotion.objects.filter(Q(start__isnull = True)|Q(end__isnull = True), Q(availability = True))
+		promotions = [{'url' :p.url, 'location' : p.shipping_area.postal_code} for p in promotions_db if p.shipping_area is not None]
+		promotions = promotions+[{'url' :p.url} for p in promotions_db if p.shipping_area is None]
+
+		return promotions + products
 
 	def get_categories(self, options = {}):
 		"""
@@ -374,11 +414,12 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 				else:
 					# This is not a leaf, remove it and add sub categories to end of list
 					categories.pop(i)
-					categories = categories + list(sub_categories)
+					categories = categories + filter(lambda sub_cat:sub_cat not in categories, list(sub_categories))
 					continue
 
 		# Organizing categories
-		categories = [ {'id': cat.id, 'name': cat.name, 'parent_category_id': cat.parent_category_id, 'url': cat.url, 'db_entity': cat} for cat in categories]
+		categories = [ {'id': cat.id, 'name': cat.name, 'parent_category_id': cat.parent_category_id, 'url': cat.url, 'updated': cat.updated, 'db_entity': cat} for cat in categories]
+
 
 		return categories
 

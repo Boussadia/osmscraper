@@ -194,7 +194,9 @@ class MonoprixParser(BaseParser):
 
 						products.append( product )
 					except Exception, e:
-						raise e
+						print 'Error while scraping category page'
+						print child.prettify()
+						print e
 
 		return products
 

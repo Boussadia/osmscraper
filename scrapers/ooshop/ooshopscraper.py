@@ -63,12 +63,17 @@ class OoshopScraper(BaseScraper):
 						if code == 200:
 							self.parser.set_html(html)
 							level_2_category['sub_categories'] = self.parser.get_categories(level = 3)
+							# Setting proper urls
+							[ cat.update({'url': self.properurl(cat['url'])}) for cat in level_2_category['sub_categories']]
+							# Save categories
+							[level_2_category] = self.databaseHelper.save_categories([level_2_category], level_1_category['id'])
+							level_2_category['sub_categories'] = self.databaseHelper.save_categories(level_2_category['sub_categories'], level_2_category['id'])
 							level_1_category['sub_categories'][k] = level_2_category
 						else:
 							print "Something went wrong when fetching level 3 categories for Ooshop"
 
 					# Save categories
-					level_1_category['sub_categories'] = self.databaseHelper.save_categories(level_1_category['sub_categories'], level_1_category['id'])					
+					# level_1_category['sub_categories'] = self.databaseHelper.save_categories(level_1_category['sub_categories'], level_1_category['id'])					
 				else:
 					print "Something went wrong when fetching level 2 categories for Ooshop"
 
@@ -182,7 +187,6 @@ class OoshopScraper(BaseScraper):
 			shipping_area = None
 
 		# Retrieve html page
-		print product_url
 		html, code = self.crawler.get(product_url)
 
 		if code == 200:

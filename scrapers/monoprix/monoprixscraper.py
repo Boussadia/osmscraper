@@ -3,6 +3,7 @@
 
 import re
 from urlparse import urlparse, parse_qs, urlunparse
+from datetime import date, datetime, timedelta
 
 from scrapers.base.basescraper import BaseScraper
 from scrapers.monoprix.monoprixparser import MonoprixParser
@@ -119,34 +120,37 @@ class MonoprixScraper(BaseScraper):
 
 		if code == 200:
 			self.parser.set_html(html)
-			brands = self.parser.get_brands_values_in_category_page()
+			try:
+				brands = self.parser.get_brands_values_in_category_page()
 
-			for i in xrange(0,len(brands)):
-				brand = brands[i]
-				html, code = self.crawler.brand_filter(brand['value'])
+				for i in xrange(0,len(brands)):
+					brand = brands[i]
+					html, code = self.crawler.brand_filter(brand['value'])
 
-				if code == 200:
-					self.parser.set_html(html)
-					# are all the products on in this page ?
-					current_page_all_products, url_all_products = self.parser.pagination_link_all()
-					if not current_page_all_products:
-						products = products + self.parser.get_products()
-					else:
-						html, code = self.crawler.get(url_all_products)
-						if code == 200:
-							html, code = self.crawler.brand_filter(brand['value'])
+					if code == 200:
+						self.parser.set_html(html)
+						# are all the products on in this page ?
+						current_page_all_products, url_all_products = self.parser.pagination_link_all()
+						if not current_page_all_products:
+							products = products + self.parser.get_products()
+						else:
+							html, code = self.crawler.get(url_all_products)
 							if code == 200:
-								self.parser.set_html(html)
-								products = products + self.parser.get_products()
+								html, code = self.crawler.brand_filter(brand['value'])
+								if code == 200:
+									self.parser.set_html(html)
+									products = products + self.parser.get_products()
+								else:
+									print "Something went wrong when fetching category page for Monoprix : code %d"%(code)
 							else:
 								print "Something went wrong when fetching category page for Monoprix : code %d"%(code)
-						else:
-							print "Something went wrong when fetching category page for Monoprix : code %d"%(code)
-				else:
-					print "Something went wrong when fetching category page (%d) for Monoprix : code %d"%(i+1,code)
-				# Setting brand name to product
-				for j in xrange(0, len(products)):
-					products[j]['brand'] = brand['name']
+					else:
+						print "Something went wrong when fetching category page (%d) for Monoprix : code %d"%(i+1,code)
+					# Setting brand name to product
+					for j in xrange(0, len(products)):
+						products[j]['brand'] = brand['name']
+			except Exception, e:
+				print e
 		else:
 			print "Something went wrong when fetching category page for Monoprix : code %d"%(code)
 
@@ -357,6 +361,96 @@ class MonoprixScraper(BaseScraper):
 
 	def what_to_do_next(self):
 		"""
-			Defines the logic of the scraper.
+			Defines the logic of the scraper. (See Google Drive documentation for further explanation)
 		"""
-		pass
+		# First are there categories stored?
+		categories = self.databaseHelper.get_categories(options={'leaves':True})
+
+		if len(categories) == 0:
+			# No categories in database
+			return {'type':'categories'}
+		else:
+			# Was the last time categories where updated more than 2 weeks ago?
+			old_updated_categories = filter(lambda cat: cat['updated'].replace(tzinfo=None) + timedelta(days = 15)<datetime.today(), categories)
+			if len(old_updated_categories) > 0:
+				# Need to update categories list
+				return {'type':'categories'}
+			else:
+				pass
+
+		# # Get complete products informations
+		products = self.databaseHelper.get_uncomplete_products()
+		if len(products)>0:
+			return{
+				'type': 'products',
+				'products': products
+			}
+
+		# Getting all shipping areas
+
+		stores = [s for s in self.databaseHelper.get_stores() if s['is_LAD']]
+
+		# Getting count of products for categories
+		options = {
+			'categories_id': [c['id'] for c in categories],
+			'locations': stores,
+		}
+		# Building list of combinations between locations and categories [(category_id, location)]
+		categories_locations_temp = [[(c['id'], s) for c in categories] for s in stores]
+		categories_locations = []
+		[categories_locations.extend(tup) for tup in categories_locations_temp]
+
+		# Get products corresponding to filters
+		products = self.databaseHelper.get_products(options=options)
+		# For every product, build list of tuple of [(category_id, location)]
+		products_categories_locations_temp_1 = [[[ (cid, loc) for cid in p['categories']] for loc in p['locations'] ]for p in products]
+		products_categories_locations = []
+		[[[ products_categories_locations.append(tup) for tup in p_2 if tup not in products_categories_locations]for p_2 in p_1] for p_1 in products_categories_locations_temp_1]
+		
+		# Now extract from categories_locations tuples of categories and locations to scrape:
+		categories_locations_to_scrape = [tup for tup in categories_locations if tup not in products_categories_locations]
+
+		# Is the list empty?
+		if len(categories_locations_to_scrape)>0:
+			# Building list to return
+			# changing categories and location to speed up process
+			categories = { c['id']:c for c in categories}
+			return {
+				'type': 'category_products',
+				'categories': [{'url': categories[cat_id]['url'], 'location': loc} for cat_id, loc in categories_locations_to_scrape]
+			}
+
+
+		# Same process than above but filtering with time
+		options.update({'before_date': datetime.utcnow().replace(tzinfo=utc)-timedelta(hours = 24)})
+		categories_locations_temp = [[(c['id'], s['postal_code']) for c in categories] for s in stores]
+		categories_locations = []
+		[categories_locations.extend(tup) for tup in categories_locations_temp]
+
+		# Get products corresponding to filters
+		products = self.databaseHelper.get_products(options=options)
+		# For every product, build list of tuple of [(category_id, location)]
+		products_categories_locations_temp_1 = [[[ (cid, loc) for cid in p['categories']] for loc in p['locations'] ]for p in products]
+		products_categories_locations = []
+		[[[ products_categories_locations.append(tup) for tup in p_2 if tup not in products_categories_locations]for p_2 in p_1] for p_1 in products_categories_locations_temp_1]
+		
+		# Now extract from categories_locations tuples of categories and locations to scrape:
+		categories_locations_to_scrape = [tup for tup in categories_locations if tup in products_categories_locations]
+
+		# Is the list empty?
+		if len(categories_locations_to_scrape)>0:
+			# Building list to return
+			# changing categories and location to speed up process
+			categories = { c['id']:c for c in categories}
+			return {
+				'type': 'category_products',
+				'categories': [{'url': categories[cat_id]['url'], 'location': loc} for cat_id, loc in categories_locations_to_scrape]
+			}
+
+		# TO DO : Check if products that were not fetch still exit on osm website
+
+		# Nothing more to do, return task to execute in 1 hour
+		return {
+			'type': 'global',
+			'delay': 3600 # seconds
+		}
