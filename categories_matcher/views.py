@@ -10,112 +10,62 @@ import monoprix
 import coursengo
 import dalliz
 import ooshop
+import auchan
 
 def index(request):
 	categories = {}
-	sub_categories = dalliz.models.Category_sub.objects.all()
-	for i in xrange(0,len(sub_categories)):
-		categories[sub_categories[i].id] = sub_categories[i].name
-	return render(request, 'categories_matcher/index.html', {"categories": categories})
+	categories = dalliz.models.Category.objects.all()
+	# Keeping only category leaves, i.e. category that are not parent of another category
+	# if a parent category is in categories_entities, remove it but get its children
+	i = 0
+	categories = list(categories)
+	while i<len(categories):
+		category = categories[i]
+		sub_categories = dalliz.models.Category.objects.filter(parent_category = category)
+		if len(sub_categories) == 0:
+			# This category is a leaf keep going
+			i = i+1
+			continue
+		else:
+			# This is not a leaf, remove it and add sub categories to end of list
+			categories.pop(i)
+			categories = categories + filter(lambda sub_cat:sub_cat not in categories, list(sub_categories))
+			continue
 
-def categories(request, osm, level, parent="1"):
-	response = {"final":False}
+	return render(request, 'categories_matcher/index.html', {"categories": { cat.id : cat.name for cat in categories}})
 
-	# Telemarket get response
-	if osm == "telemarket":
-		if level == "1":
-			main_categories = telemarket.models.Category_main.objects.all()
-			for i in xrange(0, len(main_categories)):
-				response[main_categories[i].id] = main_categories[i].name
-		elif level == "2":
-			sub_categories = telemarket.models.Category_sub_1.objects.all().filter(parent_category_id=parent)
-			for i in xrange(0, len(sub_categories)):
-				response[sub_categories[i].id] = sub_categories[i].name
-		elif level == "3":
-			sub_categories = telemarket.models.Category_sub_2.objects.all().filter(parent_category_id=parent)
-			for i in xrange(0, len(sub_categories)):
-				response[sub_categories[i].id] = sub_categories[i].name
-		elif level == "4":
-			sub_categories = telemarket.models.Category_sub_3.objects.all().filter(parent_category_id=parent)
-			for i in xrange(0, len(sub_categories)):
-				response[sub_categories[i].id] = sub_categories[i].name
-		elif level == "5":
-			sub_categories = telemarket.models.Category_final.objects.all().filter(parent_category_id=parent)
-			for i in xrange(0, len(sub_categories)):
-				response[sub_categories[i].id] = sub_categories[i].name
-			response["final"] = True
+def categories(request, osm, level, parent='0'):
+	response = {}
+	Category = None
 
-	# Monoprix get response
 	if osm == "monoprix":
-		if level == "1":
-			main_categories = monoprix.models.Category_main.objects.all()
-			for i in xrange(0, len(main_categories)):
-				response[main_categories[i].id] = main_categories[i].name
-		elif level == "2":
-			sub_categories = monoprix.models.Category_sub_level_1.objects.all().filter(parent_category_id=parent)
-			for i in xrange(0, len(sub_categories)):
-				response[sub_categories[i].id] = sub_categories[i].name
-		elif level == "3":
-			sub_categories = monoprix.models.Category_sub_level_2.objects.all().filter(parent_category_id=parent)
-			for i in xrange(0, len(sub_categories)):
-				response[sub_categories[i].id] = sub_categories[i].name
-		elif level == "4":
-			sub_categories = monoprix.models.Category_final.objects.all().filter(parent_category_id=parent)
-			for i in xrange(0, len(sub_categories)):
-				response[sub_categories[i].id] = sub_categories[i].name
-			response["final"] = True
-
-	# Place du marche get response
-	if osm == "place_du_marche":
-		if level == "1":
-			main_categories = place_du_marche.models.Category_main.objects.all()
-			for i in xrange(0, len(main_categories)):
-				response[main_categories[i].id] = main_categories[i].name
-		elif level == "2":
-			sub_categories = place_du_marche.models.Category_sub.objects.all().filter(parent_category_id=parent)
-			for i in xrange(0, len(sub_categories)):
-				response[sub_categories[i].id] = sub_categories[i].name
-		elif level == "3":
-			sub_categories = place_du_marche.models.Category_final.objects.all().filter(parent_category_id=parent)
-			for i in xrange(0, len(sub_categories)):
-				response[sub_categories[i].id] = sub_categories[i].name
-			response["final"] = True
-
-	# Ooshop get response
+		Category = monoprix.models.Category
+	
 	if osm == "ooshop":
-		if level == "1":
-			main_categories = ooshop.models.Category_main.objects.all()
-			for i in xrange(0, len(main_categories)):
-				response[main_categories[i].id] = main_categories[i].name
-		elif level == "2":
-			sub_categories = ooshop.models.Category_sub_level_1.objects.all().filter(parent_category_id=parent)
-			for i in xrange(0, len(sub_categories)):
-				response[sub_categories[i].id] = sub_categories[i].name
-		elif level == "3":
-			sub_categories = ooshop.models.Category_sub_level_2.objects.all().filter(parent_category_id=parent)
-			for i in xrange(0, len(sub_categories)):
-				response[sub_categories[i].id] = sub_categories[i].name
-		elif level == "4":
-			sub_categories = ooshop.models.Category_final.objects.all().filter(parent_category_id=parent)
-			for i in xrange(0, len(sub_categories)):
-				response[sub_categories[i].id] = sub_categories[i].name
-			response["final"] = True
+		Category = ooshop.models.Category
 
-	# Coursengo get response
-	if osm == "coursengo":
-		if level == "1":
-			main_categories = coursengo.models.Category_main.objects.all()
-			for i in xrange(0, len(main_categories)):
-				response[main_categories[i].id] = main_categories[i].name
-		elif level == "2":
-			sub_categories = coursengo.models.Category_sub_level_1.objects.all().filter(parent_category_id=parent)
-			for i in xrange(0, len(sub_categories)):
-				response[sub_categories[i].id] = sub_categories[i].name
-		elif level == "3":
-			sub_categories = coursengo.models.Category_final.objects.all().filter(parent_category_id=parent)
-			for i in xrange(0, len(sub_categories)):
-				response[sub_categories[i].id] = sub_categories[i].name
-			response["final"] = True
+	if osm == "auchandirect":
+		Category = auchan.models.Category
+
+	if Category:
+		categories = Category.objects.all()
+		print parent == '0'
+		if parent != '0':
+			categories = categories.filter(parent_category_id = parent)
+		else:
+			categories = categories.filter(parent_category__isnull = True)
+		
+
+		# Are they final categories?
+		for cat in categories:
+			j = {'name': cat.name}
+			sub_categories = Category.objects.filter(parent_category = cat)
+			if sub_categories.count() == 0:
+				j['final'] = True
+			else:
+				j['final'] = False
+			response.update({cat.id: j})
+
 
 	return HttpResponse(json.dumps(response))
 
@@ -127,19 +77,15 @@ def add_link(request):
 		id_category_final = post["id_category_final"]
 		id_dalliz_category = post["id_dalliz_category"]
 
-		category_dalliz = dalliz.models.Category_sub.objects.get(id=id_dalliz_category)
+		category_dalliz = dalliz.models.Category.objects.get(id=id_dalliz_category)
 		category_final = None
 
-		if osm == "telemarket":
-			category_final = telemarket.models.Category_final.objects.get(id=id_category_final)
-		elif osm == "coursengo":
-			category_final = coursengo.models.Category_final.objects.get(id=id_category_final)
-		elif osm == "place_du_marche":
-			category_final = place_du_marche.models.Category_final.objects.get(id=id_category_final)
+		if osm == "auchandirect":
+			category_final = auchan.models.Category.objects.get(id=id_category_final)
 		elif osm == "monoprix":
-			category_final = monoprix.models.Category_final.objects.get(id=id_category_final)
+			category_final = monoprix.models.Category.objects.get(id=id_category_final)
 		elif osm == "ooshop":
-			category_final = ooshop.models.Category_final.objects.get(id=id_category_final)
+			category_final = ooshop.models.Category.objects.get(id=id_category_final)
 
 		if category_final is not None:
 			category_final.dalliz_category.add(category_dalliz)
@@ -155,19 +101,15 @@ def delete_link(request):
 		id_category_final = post["id_category_final"]
 		id_dalliz_category = post["id_dalliz_category"]
 
-		category_dalliz = dalliz.models.Category_sub.objects.get(id=id_dalliz_category)
+		category_dalliz = dalliz.models.Category.objects.get(id=id_dalliz_category)
 		category_final = None
 
-		if osm == "telemarket":
-			category_final = telemarket.models.Category_final.objects.get(id=id_category_final)
-		elif osm == "coursengo":
-			category_final = coursengo.models.Category_final.objects.get(id=id_category_final)
-		elif osm == "place_du_marche":
-			category_final = place_du_marche.models.Category_final.objects.get(id=id_category_final)
+		if osm == "auchandirect":
+			category_final = auchan.models.Category.objects.get(id=id_category_final)
 		elif osm == "monoprix":
-			category_final = monoprix.models.Category_final.objects.get(id=id_category_final)
+			category_final = monoprix.models.Category.objects.get(id=id_category_final)
 		elif osm == "ooshop":
-			category_final = ooshop.models.Category_final.objects.get(id=id_category_final)
+			category_final = ooshop.models.Category.objects.get(id=id_category_final)
 
 		if category_final is not None:
 			category_final.dalliz_category.remove(category_dalliz)
@@ -179,16 +121,12 @@ def delete_link(request):
 		return HttpResponse(json.dumps())
 
 def get_links(request, osm, category_id):
-	if osm == "telemarket":
-		dalliz_categories = dalliz.models.Category_sub.objects.filter(telemarket_category_final_category_dalliz=category_id)
-	elif osm == "coursengo":
-		dalliz_categories = dalliz.models.Category_sub.objects.filter(coursengo_category_final_category_dalliz=category_id)
-	elif osm == "place_du_marche":
-		dalliz_categories = dalliz.models.Category_sub.objects.filter(place_du_marche_category_final_category_dalliz=category_id)
+	if osm == "auchandirect":
+		dalliz_categories = dalliz.models.Category.objects.filter(auchan_category_dalliz_category=category_id)
 	elif osm == "monoprix":
-		dalliz_categories = dalliz.models.Category_sub.objects.filter(monoprix_category_final_category_dalliz=category_id)
+		dalliz_categories = dalliz.models.Category.objects.filter(monoprix_category_dalliz_category=category_id)
 	elif osm == "ooshop":
-		dalliz_categories = dalliz.models.Category_sub.objects.filter(ooshop_category_final_category_dalliz=category_id)
+		dalliz_categories = dalliz.models.Category.objects.filter(ooshop_category_dalliz_category=category_id)
 
 	response = {}
 

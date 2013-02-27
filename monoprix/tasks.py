@@ -6,6 +6,9 @@ import time
 from django.conf import settings
 from django.core.mail import send_mail
 
+from celery import Celery
+from celery.task import periodic_task, task
+
 from scrapers.monoprix.monoprixscraper import MonoprixScraper
 
 celery = Celery('tasks', broker=settings.BROKER_URL)

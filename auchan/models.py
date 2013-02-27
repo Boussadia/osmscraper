@@ -1,6 +1,6 @@
 from django.db import models
 
-# Create your models here.
+from dalliz.models import Category as Dalliz_category
 
 class ShippingArea(models.Model):
 	city_name = models.TextField(null=True)
@@ -19,6 +19,9 @@ class Category(models.Model):
 	url = models.CharField(max_length=9999, null=True, unique = True)
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True, auto_now_add=True)
+
+		# Dalliz category association
+	dalliz_category = models.ManyToManyField(Dalliz_category, related_name="auchan_category_dalliz_category")
 
 	class Meta:
 		unique_together = ("name", "parent_category")

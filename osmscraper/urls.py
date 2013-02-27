@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
-    # Dalliz categories builder
+    # Dalliz backend categories builder
     url(r'^backend/categorie/?$', 'categories_builder.views.index'),
     url(r'^backend/categorie/delete/(?P<id>(\d+))/?$', 'categories_builder.views.delete_category'),
     url(r'^backend/categorie/(?P<url>(.+))/?$', 'categories_builder.views.sub_categories'),
@@ -30,12 +30,12 @@ urlpatterns = patterns('',
     url(r'^backend/brand/delete/(?P<id>(\d+))/?$', 'brand_builder.views.delete_brand'),
     url(r'^backend/brand/(?P<id>(\d+))/?$', 'brand_builder.views.sub_brands'),
 
-    # Categories matcher app
-    url(r'^categories_matcher/?$', 'categories_matcher.views.index'),
-    url(r'^categories_matcher/(?P<osm>(\w)+)/(?P<level>\d+)(/(?P<parent>\d+))?/?$', 'categories_matcher.views.categories'),
-    url(r'^categories_matcher/add_link/?$', 'categories_matcher.views.add_link'),
-    url(r'^categories_matcher/delete_link/?$', 'categories_matcher.views.delete_link'),
-    url(r'^categories_matcher/get_links/(?P<osm>(\w)+)/(?P<category_id>\d+)/?$', 'categories_matcher.views.get_links'),
+    # Dalliz backend categories matcher app
+    url(r'^backend/categories_matcher/?$', 'categories_matcher.views.index'),
+    url(r'^backend/categories_matcher/(?P<osm>(\w)+)/(?P<level>\d+)(/(?P<parent>\d+))?/?$', 'categories_matcher.views.categories'),
+    url(r'^backend/categories_matcher/add_link/?$', 'categories_matcher.views.add_link'),
+    url(r'^backend/categories_matcher/delete_link/?$', 'categories_matcher.views.delete_link'),
+    url(r'^backend/categories_matcher/get_links/(?P<osm>(\w)+)/(?P<category_id>\d+)/?$', 'categories_matcher.views.get_links'),
 
     # Telemarket/Monoprix products validation
     url(r'^telemarket_monoprix/products/?$', 'telemarket_monoprix.views.index'),
