@@ -132,6 +132,7 @@ INSTALLED_APPS = (
     'south',
     'storages',
     'cachebuster',
+    'auchan',
     'place_du_marche',
     'telemarket',
     'telemarket_monoprix',
@@ -147,6 +148,7 @@ INSTALLED_APPS = (
     'ooshop_monoprix',
     'dalliz',
     'pystache',
+    'matcher',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:

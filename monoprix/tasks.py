@@ -1,235 +1,93 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import time
+
 from django.conf import settings
 from django.core.mail import send_mail
 
-from scrapers.monoprix_old import Monoprix
-from models import *
+from scrapers.monoprix.monoprixscraper import MonoprixScraper
 
-monoprix = Monoprix()
+celery = Celery('tasks', broker=settings.BROKER_URL)
 
-def save_categories(categories):
+@celery.task
+def get_categories():
 	"""
-		Saving categories in database.
-
-		Input:
-			- categories : dictionnary corresponding to the exit of monoprix scraper, containing architecture of categories and sub categories.
-		Return:
-			- sub_categories_final_list : list of database entity of final categories saved
-
+		This task is reponsible for retrieving all categories.
 	"""
+	scraper = MonoprixScraper()
+	scraper.get_all_categories()
 
-	sub_categories_final_list = []
+	# VERY IMPORTANT, ALWAYS CALL THIS TASK IN ORDER TO HAVE AN INFINITE LOOP
+	what_to_do_next.delay()
 
-	for name_category in categories:
-		print "Saving Main Category "+name_category
-		url_category = categories[name_category]["url"]
-		category, created = Category_main.objects.get_or_create(name=name_category, defaults={"url":url_category})
-		sub_categories = categories[name_category]["sub_categories"]
-
-		for name_sub_category in sub_categories:
-			print "Saving Sub Category Level 1 "+name_sub_category
-			url_sub_category = sub_categories[name_sub_category]["url"]
-			sub_category , created = Category_sub_level_1.objects.get_or_create(name=name_sub_category, parent_category = category, defaults={"url":url_sub_category,})
-			sub_categories_level_2 = sub_categories[name_sub_category]["sub_categories"]
-
-			for name_sub_category_level_2 in sub_categories_level_2:
-				print "Saving Sub Category Level 2 "+name_sub_category_level_2
-				url_sub_category_level_2 = sub_categories_level_2[name_sub_category_level_2]["url"]
-				sub_category_level_2, created = Category_sub_level_2.objects.get_or_create(name=name_sub_category_level_2, parent_category=sub_category, defaults={"url":url_sub_category_level_2,})
-				sub_categories_final = sub_categories_level_2[name_sub_category_level_2]["sub_categories"]
-
-				if len(sub_categories_final)>0:
-					for name_sub_category_final in sub_categories_final:
-						print "Saving Sub Category Final "+name_sub_category_final
-						url_sub_category_final = sub_categories_final[name_sub_category_final]["url"]
-						sub_category_final, created = Category_final.objects.get_or_create(name=name_sub_category_final, parent_category=sub_category_level_2, defaults={"url":url_sub_category_final,})
-						sub_categories_final_list.append(sub_category_final)
-				else:
-					# No sub categories for sub category level 2, creating final category equal to sub category level 2
-					print "Saving Sub Category Final "+name_sub_category_level_2
-					sub_category_final, created = Category_final.objects.get_or_create(name=name_sub_category_level_2, parent_category=sub_category_level_2, defaults={"url":url_sub_category_level_2,})
-					sub_categories_final_list.append(sub_category_final)
-
-	return sub_categories_final_list
-
-def get_product_list(sub_categories_final_list):
+@celery.task
+def get_products_category(categories):
 	"""
-		Controls process of products fetching and saving.
+		This task is reponsible for retrieving products of a category and location.
 
 		Input :
-			- sub_categories_final_list : list of database entity of final categories saved (correcponding to return of save_categories)
-		Return :
-			Nothing
+			- categories = [{
+				'url':...,
+				'location':...
+			}]
 	"""
-
-	for i in xrange(0, len(sub_categories_final_list)):
-		sub_category_final = sub_categories_final_list[i]
-		url_products = sub_category_final.url
-		product_lists = extract_products(url_products)
-
-		# Going through every product and saving it
-		for reference_product in product_lists:
-			# First we retrive information about product
-			product = monoprix.extract_product(product_lists[reference_product]["url"])
-			save_product(product, sub_category_final)
-		
-
-def extract_products(url):
-	"""
-		Fetches produts list from url and parses it.
-
-		Input : 
-			- url : string of the url of the produts page
-
-		Return :
-			- products : list of dictionnaries to save.
-	"""
-	return monoprix.extract_product_list(url)
-
-def save_product(product, sub_category_final):
-	"""
-		Saves produt to database.
-
-		Input : 
-			- product : dictionnary representing product to save
-			- sub_category_final : database entity of parent category
-		Return :
-			Nothing
-	"""
-
-	if product["status"] == 200:
-		# Saving brand
-		brand = save_brand(product["brand"])
-
-		# Saving Unit
-		unit = save_unit(product["unit"])
-
-		title = "a".join("e".join(product["title"].split('{')).split("@"))
-		url = product["url"].split(";jsessionid")[0]
-		reference = url.split('/')[-1].split('-')[-1]
-		if 'LV' in reference:
-			reference = reference.split('_')[1]
-		price = product["price"]
-		unit_price = product["unit_price"]
-		image_url = product["image_url"]
-		promotion = product["promotion"]
-
-		# Optionnal fields
-		description = None
-		ingredients = None
-		valeur_nutritionnelle = None
-		conservation = None
-		conseil = None
-		composition = None
-
-		if "Description" in product.keys():
-			description = unicode(product["Description"])
-
-		if "Ingr\xe9dients" in product.keys():
-			ingredients = unicode(product["Ingr\xe9dients"])
-
-		if "Valeur nutritionnelle" in product.keys():
-			valeur_nutritionnelle = unicode(product["Valeur nutritionnelle"])
-
-		if "Conservation" in product.keys():
-			conservation = unicode(product["Conservation"])
-
-		if "Composition" in product.keys():
-			composition = unicode(product["Composition"])
-
-		if "Conseil" in product.keys():
-			conseil = unicode(product["Conseil"])
-
-		product_db, created = Product.objects.get_or_create(reference = reference, defaults={"title": unicode(title), "url": unicode(url),"unit": unit, "brand":brand, "image_url":unicode(image_url), "description":description, "valeur_nutritionnelle":valeur_nutritionnelle, "conservation":conservation, "composition":composition, "conseil":conseil, "ingredients":ingredients })
-		if created:
-			print "Saving new product "+ title+" to database..."
-		else:
-			print "Updating product "+ title+" to database..."
-			
-		product_db.category.clear()
-		product_db.category.add(sub_category_final)
-		print "Adding category "+unicode(sub_category_final)
-
-		# Saving record
-		history = Product_history(product = product_db, price = price, unit_price=unit_price, promotion=promotion)
-		history.save()
-
-	elif product["status"] == 404:
-		print "Product not found, removing if exists in database"
-		if Product.objects.filter(url=product["url"]).exists():
-			Product.objects.get(url=product["url"]).delete()
-	else:
-		print "Aborting product saving because of error while fetching data"
-	
-	
-
-def save_brand(brand_name):
-	"""
-		Saves brand in database.
-
-		Input :
-			- brand_name : name of the brand to save
-
-		Return :
-			- brand : database entity of the associated brand
-	"""
-	print "Saving brand "+ brand_name+" to database..."
-	brand, created_brand = Brand.objects.get_or_create(name = brand_name)
-	return brand
-
-def save_unit(unit_name):
-	"""
-		Saves unit in database.
-
-		Input :
-			- unit_name : name of the unit to save
-
-		Return :
-			- unit : database entity of the associated unit
-	"""
-	print "Saving Unit "+ unit_name+" to database..."
-	unit, created_unit = Unit.objects.get_or_create(name = unit_name)
-	return unit
-
-def perform_complete_scraping():
-	monoprix.get_menu()
-	categories = monoprix.get_categories()
-	sub_categories_final_list = save_categories(categories)
-	get_product_list(sub_categories_final_list)
-
-def perform_update_scraping():
-	categories = Category_final.objects.all()
-	new_products_reference = []
+	scraper = MonoprixScraper()
 
 	for category in categories:
+		scraper.get_list_products_for_category(category_url = category['url'], location = category['location'], save = True)
+		time.sleep(1) # Temporisation in order not to flood server
+
+
+	# VERY IMPORTANT, ALWAYS CALL THIS TASK IN ORDER TO HAVE AN INFINITE LOOP
+	what_to_do_next.delay()
+
+@celery.task
+def get_products(products):
+	"""
+		This task is reponsible for retrieving products of a product and location.
+
+		Input :
+			- products = [{
+				'url':...,
+				'location':...
+			}]
+	"""
+	scraper = MonoprixScraper()
+
+	for product in products:
 		try:
-			products = monoprix.extract_product_list(category.url)
-			for reference, product in products.iteritems():
-				print product['title']+' ('+reference+')'
-				product_db = Product.objects.filter(reference = reference)
-				
-				if len(product_db)>0:
-					print "Product already in database, creating history entry"
-					history = Product_history(product = product_db[0], price = product['price'], unit_price = product['unit_price'], promotion = product['promotion'])
-					history.save()
-				else:
-					new_products_reference.append(reference)
-					new_product = monoprix.extract_product(product['url'])
-					save_product(new_product, category)
+			url = product['url']
+			location = {}
+			if 'location' in product:
+				location = product['location']
+			scraper.get_product_info(product_url = url, location = location, save = True)
+			time.sleep(1) # Temporisation in order not to flood server
 		except Exception, e:
-			print 'ERROR OCCURED WHILE SAVING PRODUCTS TO DB : '+str(e)
-
-	send_mail_new_products(new_products_reference)
-
-def send_mail_new_products(new_products_reference):
-	if len(new_products_reference)>0:
-		subject = "New products monoprix"
-		message = "New products (%d)\n" %(len(new_products_reference))
-		for ref in new_products_reference:
-			message = message+"\t%s\n" %(ref)
-		send_mail(subject, message, 'admin@dalliz.com', ['ahmed@dalliz.com'], fail_silently=False)
+			print 'Error in get_products tasks :'
+			print product
+			print e
 
 
+	# VERY IMPORTANT, ALWAYS CALL THIS TASK IN ORDER TO HAVE AN INFINITE LOOP
+	what_to_do_next.delay()
+
+
+
+@celery.task
+def what_to_do_next():
+	scraper = MonoprixScraper()
+	rule = scraper.what_to_do_next()
+
+	if rule['type'] == 'categories':
+		get_categories.delay()
+	elif rule['type'] == 'category_products':
+		categories = rule['categories']
+		get_products_category.delay(categories = categories)
+	elif rule['type'] == 'products':
+		products = rule['products']
+		get_products.delay(products = products)
+	elif rule['type'] == 'global':
+		delay = rule['delay']
+		what_to_do_next.delay(countdown=delay)
 
