@@ -86,7 +86,7 @@ def what_to_do_next():
 		get_categories.delay()
 	elif rule['type'] == 'category_products':
 		categories = rule['categories']
-		get_products_category.delay(categories = categories[:100])
+		get_products_category.delay(categories = categories)
 	elif rule['type'] == 'products':
 		products = rule['products']
 		get_products.delay(products = products)
