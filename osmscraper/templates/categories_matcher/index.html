@@ -5,11 +5,7 @@
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 		<script type="text/javascript" src="{% static categories_matcher/js/categories_matcher.js %}"></script>
 		<script type="text/javascript">
-			var dalliz_categories = {
-				{% for id, name in categories.iteritems %}
-					{{ id }} : '{{ name }}',
-				{% endfor %}
-			} 
+			var dalliz_categories = {{categories|safe}}
 		</script>
 
 		<link rel="stylesheet" type="text/css" href="{% static categories_matcher/css/categories_matcher.css %}">
@@ -34,9 +30,11 @@
 		<div id="pop_over_window">
 			<h2>Add Category link</h2>
 			<button class="close">X</button>
-			<div class="add"><button>Add Link</button></div>
-<!-- 			<div class="row"> <select><option>test1</option><option>test1</option></select><button>X</button></div>
- -->
+			<div class="add">
+				<select id="first"></select><select id="second"></select><select id="third"></select>
+				<button>Add Link</button></div>
 		</div>
+		<!-- 			<div class="row"> <select><option>test1</option><option>test1</option></select><button>X</button></div>
+ -->
 	</body>
 </html>

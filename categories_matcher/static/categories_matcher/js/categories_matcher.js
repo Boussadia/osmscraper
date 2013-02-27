@@ -1,13 +1,42 @@
 $(document).ready(function(){
 
 	// Populating select field for adding link between categories
-	$(".add").prepend(
-		$("<select>")
-	);
+	fill_select('first', dalliz_categories);
+	id_category_first = $(".add select#first").find(":selected").val();
+	set_sub_categories('first', id_category_first)
+
+	function fill_select(id_element, categories){
+		$(".add select#"+id_element).empty();
+		for (id in categories){
+			name = categories[id]['name'];
+			$(".add select#"+id_element).append(
+				$("<option>").text(name).val(id)
+			)
+		}
+
+		$(".add select#"+id_element).change(function(){
+			id_category = $(".add select#"+id_element).find(":selected").val()
+			set_sub_categories(id_element, id_category)
+		})
+
+	}
+
+	function set_sub_categories(id_element, id_category){
+		if (id_element === "first"){
+			fill_select('second', dalliz_categories[id_category]['subs']);
+			id_category_second = $(".add select#second").find(":selected").val();
+			if (dalliz_categories[id_category]['subs'][id_category_second]){
+				fill_select('third', dalliz_categories[id_category]['subs'][id_category_second]['subs'])
+			}
+		}else if(id_element === "second"){
+			id_category_first = $(".add select#first").find(":selected").val();
+			fill_select('third', dalliz_categories[id_category_first]['subs'][id_category]['subs'])
+		}
+	}
 
 	$(".add button").click(function(){
 		var id_category = $(this).parent().attr("data-id_category");
-		var id_dalliz = $(".add select").val();
+		var id_dalliz = $(".add select#third").val();
 		var osm = $(this).parent().attr("data-osm");
 		console.log(id_category);
 		console.log(id_dalliz);
@@ -30,7 +59,10 @@ $(document).ready(function(){
 				console.log(textStatus);
 				console.log(jqXHR);
 				if(data["status"] === 200 ){
-					var div = get_row_link(dalliz_categories[id_dalliz], id_dalliz, osm, id_category);
+					id_category_first = $(".add select#first").find(":selected").val();
+					id_category_second = $(".add select#second").find(":selected").val();
+					var category_name = dalliz_categories[id_category_first]['subs'][id_category_second]['subs'][id_dalliz]['name'];
+					var div = get_row_link(category_name, id_dalliz, osm, id_category);
 					$("#pop_over_window").append(div);
 
 				}
@@ -45,13 +77,6 @@ $(document).ready(function(){
 			}
 		});
 	});
-
-	for (id in dalliz_categories){
-		name = dalliz_categories[id];
-		$(".add select").append(
-			$("<option>").text(name).val(id)
-		)
-	}
 
 	// Handler close button pop over window
 	$("#pop_over_window button.close").click(function(){

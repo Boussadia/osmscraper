@@ -12,27 +12,25 @@ import dalliz
 import ooshop
 import auchan
 
-def index(request):
-	categories = {}
-	categories = dalliz.models.Category.objects.all()
-	# Keeping only category leaves, i.e. category that are not parent of another category
-	# if a parent category is in categories_entities, remove it but get its children
-	i = 0
-	categories = list(categories)
-	while i<len(categories):
-		category = categories[i]
-		sub_categories = dalliz.models.Category.objects.filter(parent_category = category)
-		if len(sub_categories) == 0:
-			# This category is a leaf keep going
-			i = i+1
-			continue
-		else:
-			# This is not a leaf, remove it and add sub categories to end of list
-			categories.pop(i)
-			categories = categories + filter(lambda sub_cat:sub_cat not in categories, list(sub_categories))
-			continue
+def get_subs_dalliz(id = None):
+	if id:
+		return dalliz.models.Category.objects.filter(parent_category__id = id)
+	else:
+		return dalliz.models.Category.objects.filter(parent_category__isnull = True)
 
-	return render(request, 'categories_matcher/index.html', {"categories": { cat.id : cat.name for cat in categories}})
+def buil_dalliz_tree(id = None):
+	categories = get_subs_dalliz(id)
+	response = { cat.id : {'name': cat.name, 'subs':buil_dalliz_tree(cat.id)} for cat in categories}
+	return response
+
+def index(request):
+	response = {}
+	# Getting parent categories
+	response = buil_dalliz_tree()
+
+	return render(request, 'categories_matcher/index.html', {"categories": json.dumps(response)})
+
+
 
 def categories(request, osm, level, parent='0'):
 	response = {}
