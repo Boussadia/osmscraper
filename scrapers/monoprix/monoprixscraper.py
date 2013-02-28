@@ -125,6 +125,7 @@ class MonoprixScraper(BaseScraper):
 
 				for i in xrange(0,len(brands)):
 					brand = brands[i]
+					fetched_products = []
 					html, code = self.crawler.brand_filter(brand['value'])
 
 					if code == 200:
@@ -132,23 +133,24 @@ class MonoprixScraper(BaseScraper):
 						# are all the products on in this page ?
 						current_page_all_products, url_all_products = self.parser.pagination_link_all()
 						if not current_page_all_products:
-							products = products + self.parser.get_products()
+							fetched_products = self.parser.get_products()
 						else:
 							html, code = self.crawler.get(url_all_products)
 							if code == 200:
 								html, code = self.crawler.brand_filter(brand['value'])
 								if code == 200:
 									self.parser.set_html(html)
-									products = products + self.parser.get_products()
+									fetched_products = self.parser.get_products()
 								else:
 									print "Something went wrong when fetching category page for Monoprix : code %d"%(code)
 							else:
 								print "Something went wrong when fetching category page for Monoprix : code %d"%(code)
 					else:
 						print "Something went wrong when fetching category page (%d) for Monoprix : code %d"%(i+1,code)
-					# Setting brand name to product
-					for j in xrange(0, len(products)):
-						products[j]['brand'] = brand['name']
+					# Setting brand name to products
+					for j in xrange(0, len(fetched_products)):
+						fetched_products[j]['brand'] = brand['name']
+					products = products + fetched_products
 			except Exception, e:
 				print e
 		else:
@@ -379,12 +381,12 @@ class MonoprixScraper(BaseScraper):
 				pass
 
 		# # Get complete products informations
-		products = self.databaseHelper.get_uncomplete_products()
-		if len(products)>0:
-			return{
-				'type': 'products',
-				'products': products
-			}
+		# products = self.databaseHelper.get_uncomplete_products()
+		# if len(products)>0:
+		# 	return{
+		# 		'type': 'products',
+		# 		'products': products
+		# 	}
 
 		# Getting all shipping areas
 
