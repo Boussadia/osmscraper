@@ -5,10 +5,14 @@
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 		<script type="text/javascript" src="{% static tags/js/tags.js %}"></script>
 		<script type="text/javascript">
-			var dalliz_categories = {{categories|safe}}
+			var dalliz_categories = {{categories|safe}};
+			var tags = {{tags|safe}};
 		</script>
+		<script src="{% static tags/js/jquery.autocomplete.js %}"></script> 
 
 		<link rel="stylesheet" type="text/css" href="{% static tags/css/tags.css %}">
+		<link rel="stylesheet" href="{% static tags/css/autocomplete.css %}" />	 
+
 	</head>
 	<body>
 		<h1>Tags Generator</h1>
@@ -19,7 +23,11 @@
 			<h2>Add Category link</h2>
 			<button class="close">X</button>
 			<div class="add">
-				<input value = "" />
+				<textarea style="width: 400px; height: 25px; resize: none;"></textarea>
+<!-- 				<div id="contries">
+					<textarea style="width: 400px; height: 250px; resize: none;"></textarea>
+				</div> -->
+				<div id="outter"></div>
 				<button>Save</button></div>
 		</div>
 	</body>

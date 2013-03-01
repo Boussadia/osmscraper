@@ -1,5 +1,20 @@
 $(document).ready(function(){
 
+	$("div.add textarea").autocomplete({
+		wordCount:1,
+		mode: "outter",
+		on: {
+			query: function(text,cb){
+				var words = [];
+				for( var i=0; i<tags.length; i++ ){
+					if( tags[i].toLowerCase().indexOf(text.toLowerCase()) == 0 ) words.push(tags[i]);
+					if( words.length > 5 ) break;
+				}
+				cb(words);								
+			}
+		}
+	});
+
 	// Bootstraping app
 	$('#main').empty()
 	div = get_template_bloc(dalliz_categories, 0, 0)
@@ -37,16 +52,16 @@ $(document).ready(function(){
 						dataType:"json",
 						data:{},
 						beforeSend: function(jqXHR, settings){
-							console.log(jqXHR);
-							console.log(settings);
+							// console.log(jqXHR);
+							// console.log(settings);
 						},
 						success: function(data, textStatus, jqXHR){
-							console.log(data);
-							console.log(textStatus);
-							console.log(jqXHR);
+							// console.log(data);
+							// console.log(textStatus);
+							// console.log(jqXHR);
 							if(data["status"] === 200 ){
 								console.log(data['tags'])
-								$('#pop_over_window input').val(data['tags'])
+								$('#pop_over_window textarea').val(data['tags'])
 							}
 
 						},
@@ -121,20 +136,27 @@ $(document).ready(function(){
 
 	$(".add button").click(function(){
 		var id_category = $(this).parent().attr("data-id_category");
-		var tags = $('#pop_over_window input').val();
+		var tags_string = $('#pop_over_window textarea').val();
 		$.ajax({
-			url:'/backend/tags/'+id_category+'/'+tags,
+			url:'/backend/tags/'+id_category+'/'+tags_string,
 			type:"POST",
 			dataType:"json",
 			data:{},
 			beforeSend: function(jqXHR, settings){
-				console.log(jqXHR);
-				console.log(settings);
+				// console.log(jqXHR);
+				// console.log(settings);
 			},
 			success: function(data, textStatus, jqXHR){
-				console.log(data);
-				console.log(textStatus);
-				console.log(jqXHR);
+				// console.log(data);
+				// console.log(textStatus);
+				// console.log(jqXHR);
+				if (data['status'] === 200) {
+					for(i in tags_string.split(" ")){
+						if ( !(tags_string.split(" ")[i] in tags)){
+							tags.push(tags_string.split(" ")[i]);
+						}
+					}
+				};
 
 			},
 			error: function(jqXHR, textStatus, errorThrown){
@@ -146,78 +168,5 @@ $(document).ready(function(){
 			}
 		});
 	});
-
-	// // Populating select field for adding link between categories
-	// fill_select('first', dalliz_categories);
-	// id_category_first = $(".add select#first").find(":selected").val();
-	// set_sub_categories('first', id_category_first)
-
-	// function fill_select(id_element, categories){
-	// 	$(".add select#"+id_element).empty();
-	// 	for (id in categories){
-	// 		name = categories[id]['name'];
-	// 		$(".add select#"+id_element).append(
-	// 			$("<option>").text(name).val(id)
-	// 		)
-	// 	}
-
-	// 	$(".add select#"+id_element).change(function(){
-	// 		id_category = $(".add select#"+id_element).find(":selected").val()
-	// 		set_sub_categories(id_element, id_category)
-	// 	})
-
-	// }
-
-	// function set_sub_categories(id_element, id_category){
-	// 	if (id_element === "first"){
-	// 		fill_select('second', dalliz_categories[id_category]['subs']);
-	// 		id_category_second = $(".add select#second").find(":selected").val();
-	// 		if (dalliz_categories[id_category]['subs'][id_category_second]){
-	// 			fill_select('third', dalliz_categories[id_category]['subs'][id_category_second]['subs'])
-	// 		}
-	// 	}else if(id_element === "second"){
-	// 		id_category_first = $(".add select#first").find(":selected").val();
-	// 		fill_select('third', dalliz_categories[id_category_first]['subs'][id_category]['subs'])
-	// 	}
-	// }
-
-	// function get_row_link(name_category_dalliz, id_category_dalliz, osm, id_category){
-	// 	var div = $("<div>").addClass("row").attr("data-osm", osm).attr("data-id_dalliz", id_category_dalliz).attr("data-id_category",id_category).text(name_category_dalliz);
-	// 	var button = $("<button>").text("X");
-	// 	button.click(function(){
-	// 		$.ajax({
-	// 			url:'/backend/categories_matcher/delete_link',
-	// 			type:"POST",
-	// 			dataType:"json",
-	// 			data:{
-	// 				"osm": osm,
-	// 				"id_category_final": id_category,
-	// 				"id_dalliz_category": id_category_dalliz
-	// 			},
-	// 			success: function(data, textStatus, jqXHR){
-	// 				console.log(data);
-	// 				console.log(textStatus);
-	// 				console.log(jqXHR);
-	// 				if(data["status"] === 200 ){
-	// 					$(".row[data-id_dalliz='"+id_category_dalliz+"']").remove();
-
-	// 				}
-
-	// 			},
-	// 			error: function(jqXHR, textStatus, errorThrown){
-	// 				console.log(jqXHR);
-	// 				console.log(textStatus);
-	// 				console.log(errorThrown);
-
-	// 				// alert("L'opération ne s'est pas déroulée avec succès, réessayez ultérieurement!");
-	// 			}
-	// 		});
-
-	// 	});
-	// 	div.append(button);
-	// 	return div
-	// }
-
-	// $("#osm li").click(click_handler);
 
 });
