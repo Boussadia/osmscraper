@@ -1,4 +1,5 @@
 from django.db import models
+from tags.models import Tag
 
 
 class Category_main(models.Model):
@@ -82,6 +83,7 @@ class Category(models.Model):
 	parent_category = models.ForeignKey('self', null = True)
 	url = models.CharField(max_length=9999, null=True, unique = True)
 	position = models.IntegerField(default=0)
+	tags = models.ManyToManyField(Tag)
 
 	class Meta:
 		unique_together = ("name", "parent_category")

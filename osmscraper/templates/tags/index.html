@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<title>Tags Generator by Categories</title>
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+		<script type="text/javascript" src="{% static tags/js/tags.js %}"></script>
+		<script type="text/javascript">
+			var dalliz_categories = {{categories|safe}}
+		</script>
+
+		<link rel="stylesheet" type="text/css" href="{% static tags/css/tags.css %}">
+	</head>
+	<body>
+		<h1>Tags Generator</h1>
+		<div id="main" class="">
+
+		</div>
+		<div id="pop_over_window">
+			<h2>Add Category link</h2>
+			<button class="close">X</button>
+			<div class="add">
+				<input value = "" />
+				<button>Save</button></div>
+		</div>
+	</body>
+</html>

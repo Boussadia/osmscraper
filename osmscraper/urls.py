@@ -20,6 +20,10 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
+    # Tags creator app
+    url(r'^backend/tags/(?P<id_category>(\d+))(/(?P<tags>(.+)))?/?$', 'tags.views.tags'),
+    url(r'^backend/tags/?$', 'tags.views.index'),
+
     # Dalliz backend categories builder
     url(r'^backend/categorie/?$', 'categories_builder.views.index'),
     url(r'^backend/categorie/delete/(?P<id>(\d+))/?$', 'categories_builder.views.delete_category'),

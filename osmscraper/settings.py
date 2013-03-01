@@ -149,6 +149,7 @@ INSTALLED_APPS = (
     'dalliz',
     'pystache',
     'matcher',
+    'tags',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
