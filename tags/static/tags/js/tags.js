@@ -150,9 +150,9 @@ $(document).ready(function(){
 				// console.log(textStatus);
 				// console.log(jqXHR);
 				if (data['status'] === 200) {
-					for(i in tags_string.split(" ")){
-						if ( !(tags_string.split(" ")[i] in tags)){
-							tags.push(tags_string.split(" ")[i]);
+					for(i in tags_string.split(";")){
+						if (tags.indexOf(tags_string.split(";")[i])===-1){
+							tags.push(tags_string.split(";")[i]);
 						}
 					}
 				};
