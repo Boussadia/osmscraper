@@ -60,7 +60,6 @@ $(document).ready(function(){
 							// console.log(textStatus);
 							// console.log(jqXHR);
 							if(data["status"] === 200 ){
-								console.log(data['tags'])
 								$('#pop_over_window textarea').val(data['tags'])
 							}
 

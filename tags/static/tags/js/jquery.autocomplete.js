@@ -143,7 +143,7 @@
 		
 	function setCharSize(data){
 		for( var ch in data.chars ){
-			if( ch == ' ' ) $(data.clone).html("<span id='test-width_"+data.id+"' style='line-block'>&nbsp;</span>");
+			if( ch == ';' ) $(data.clone).html("<span id='test-width_"+data.id+"' style='line-block'>&nbsp;</span>");
 			else $(data.clone).html("<span id='test-width_"+data.id+"' style='line-block'>"+ch+"</span>");
 			var testWidth = $("#test-width_"+data.id).width();
 			data.chars[ch] = testWidth;
@@ -288,14 +288,14 @@
 		var selectionEnd = getTextAreaSelectionEnd(data.ta);//.selectionEnd;
 		var text = data.ta.value;
 		text = text.substr(0,selectionEnd);
-		if( text.charAt(text.length-1) == ' ' || text.charAt(text.length-1) == '\n' ) return "";
+		if( text.charAt(text.length-1) == ';' || text.charAt(text.length-1) == '\n' ) return "";
 		var ret = [];
 		var wordsFound = 0;
 		var pos = text.length-1;
 		while( wordsFound < data.wordCount && pos >= 0 && text.charAt(pos) != '\n'){
 			ret.unshift(text.charAt(pos));
 			pos--;
-			if( text.charAt(pos) == ' ' || pos < 0 ){
+			if( text.charAt(pos) == ';' || pos < 0 ){
 				wordsFound++;
 			}
 		}
@@ -347,7 +347,7 @@
 			line2 += ch.replace(" ","&nbsp;");
 			var size = (typeof chSize[ch] == 'undefined' ) ? 0 : chSize[ch];
 			line2Width += size;
-			if( ch == ' '|| ch == '-' ){
+			if( ch == ';'|| ch == '-' ){
 				if( line1Width + line2Width < width-1 ){
 					line1 = line1 + line2;
 					line1Width = line1Width + line2Width;
@@ -482,7 +482,7 @@
 		while( wordsFound < data.wordCount && pos >= 0 && text.charAt(pos) != '\n'){
 			//ret.unshift(text.charAt(pos));
 			pos--;
-			if( text.charAt(pos) == ' ' || pos < 0 ){
+			if( text.charAt(pos) == ';' || pos < 0 ){
 				wordsFound++;
 			}
 		}

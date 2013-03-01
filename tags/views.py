@@ -38,14 +38,14 @@ def tags(request, id_category, tags =''):
 	if request.method == 'POST':
 		category.tags.clear() # Removing exsisting relationships
 		if tags:
-			tags_string = tags.split()
+			tags_string = tags.split(';')
 		else:
 			tags_string = []
 		for tag in tags_string:
 			tag_db, created = Tag.objects.get_or_create(name = tag)
 			category.tags.add(tag_db)
 	if request.method == 'GET':
-		tags = ' '.join([ t.name for t in category.tags.all()])
+		tags = ';'.join([ t.name for t in category.tags.all()])
 		response['tags'] = tags
 
 	return HttpResponse(json.dumps(response))
