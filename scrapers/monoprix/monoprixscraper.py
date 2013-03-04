@@ -159,7 +159,6 @@ class MonoprixScraper(BaseScraper):
 
 		# Cleaning urls
 		products = self.clean_urls_in_products(products)
-		print len(products)
 
 		# Saing products
 		if save:

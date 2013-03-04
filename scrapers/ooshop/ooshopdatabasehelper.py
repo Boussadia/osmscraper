@@ -371,6 +371,8 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 		if 'before_date' in options:
 			products = products.filter(history__created__lte = options['before_date'])
 
+		products = products.filter(exists = True)
+
 		products = self.serialize(products)
 		# Getting locations of all products and 
 		[ p.update({'locations' : [s.postal_code for s in list(ShippingArea.objects.filter(history__product__id = p['id']))]}) for p in products]
@@ -385,7 +387,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 				- products : [{'url':...}]
 		"""
 		# Getting products first, defined by : all informations fields are null and was created less than a month ago
-		products = Product.objects.filter(created__gte=datetime.today() - timedelta(days = 30)) # filter by date
+		products = Product.objects.filter(exists = True, created__gte=datetime.today() - timedelta(days = 30)) # filter by date
 		# products = products.filter(url__isnull = False, origine__isnull=True, informations__isnull=True, ingredients__isnull=True,conservation__isnull=True,avertissements__isnull=True, composition__isnull=True,conseils__isnull=True)
 		products = products.filter(url__isnull = False, exists = True, html__isnull=True)
 		products = [{'url' :p.url} for p in products]
