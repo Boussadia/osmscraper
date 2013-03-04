@@ -414,7 +414,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 			Output :
 				- categories : list of hashs representing categories.
 		"""
-		categories_entities = Category.objects.all()
+		categories_entities = Category.objects.filter(exists = True)
 		if 'id_parent_category' in options and options['id_parent_category']:
 			id_parent_category = options['id_parent_category']
 			categories_entities = categories_entities.filter(parent_category_id = id_parent_category)
