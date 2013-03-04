@@ -92,5 +92,5 @@ def what_to_do_next():
 		get_products.delay(products = products)
 	elif rule['type'] == 'global':
 		delay = rule['delay']
-		what_to_do_next.delay(countdown=delay)
+		what_to_do_next.apply_async(countdown=delay)
 

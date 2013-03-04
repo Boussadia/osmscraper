@@ -5,7 +5,7 @@ from monoprix.models import Store
 
 def populate_db():
     for m in magasins_monoprix:
-        store, created = Store.objects.get_or_create(name = m['nom'], city_name = m['ville'], postal_code = m['cp'], adress = m['adresse'], defaults = {
+        store, created = Store.objects.get_or_create(name = m['nom'], city_name = m['ville'], postal_code = m['cp'], address = m['adresse'], defaults = {
             'latitude': m['lat'],
             'longitude': m['lng'],
             'fax': m['fax'],
