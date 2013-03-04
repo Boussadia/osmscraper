@@ -14,10 +14,12 @@ def index(request):
 		json_categories[i]['id'] = categories[i].id
 	return render(request, 'categories_builder/index.html', {'categories': json.dumps(json_categories)})
 
-def sub_categories(request, url):
+def sub_categories(request, parent_url = None, url = ''):
 	response = {}
 	# Getting element corresponding to url
 	category = Category.objects.filter(url = url)
+	if parent_url is not None:
+		category = category.filter(parent_category__url = parent_url)
 	if len(category) == 1:
 		# Found category
 		category = category[0]

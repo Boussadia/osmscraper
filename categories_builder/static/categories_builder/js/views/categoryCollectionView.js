@@ -58,6 +58,7 @@ define([
 				this.current_selected = option.current_selected;
 				this.categoryCollection = new CategoryCollection(this.init_data);
 				this.categoryCollection.set_url(this.url);
+				this.categoryCollection.set_parent_url(this.parent_url);
 				this.bindTo(this.categoryCollection, 'reset', function(){
 					this.fetched = true;
 					this.vent.trigger('render');

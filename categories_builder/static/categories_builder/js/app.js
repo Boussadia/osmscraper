@@ -47,7 +47,8 @@ define([
 		var i = 0;
 		_.each(list_url, function(url){
 			var current_selected = list_url[i+1];
-			var view = new CategoryCollectionView({'url': url, 'vent': this.vent, 'level':i, 'parent_url': url, 'current_selected': current_selected});
+			var parent_url = list_url[i-1]; 
+			var view = new CategoryCollectionView({'url': url, 'vent': this.vent, 'level':i, 'parent_url': parent_url, 'current_selected': current_selected});
 			this.viewsSubCategory.push(view);
 			view.fetch();
 			i = i+1;

@@ -13,11 +13,16 @@ define([
 			set_url : function(url){
 				this.url = url;
 			},
+			set_parent_url : function(parent_url){
+				this.parent_url = parent_url;
+			},
 			fetch : function(){
 				// Fetching data here
 				var that = this;
+				var url = that.url;
+				if(that.parent_url) url = that.parent_url+'/'+url;
 				$.ajax({
-					url:'categorie/'+that.url,
+					url:'categorie/'+url,
 					type:"GET",
 					dataType:"json",
 					data:{},
@@ -43,8 +48,10 @@ define([
 			save: function(model){
 				// Saving new Model
 				var that = this;
+				var url = that.url;
+				if(that.parent_url) url = that.parent_url+'/'+url;
 				$.ajax({
-					url:'categorie/'+that.url,
+					url:'categorie/'+url,
 					type:"POST",
 					dataType:"json",
 					data:model,
