@@ -59,6 +59,15 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 			Method responsible for saving products to database
 		"""
 		for product in products:
+			if 'exists' in product and not product['exists']:
+				# Product does not exist, set it in database
+				product_db = Product.objects.filter(reference = product['reference'])
+				if len(product_db)>0:
+					product_db = product_db[0]
+					product_db.exists = False
+					product_db.save()
+
+				return []
 			reference = product['reference']
 			url = product['url']
 

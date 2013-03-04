@@ -202,15 +202,22 @@ class OoshopScraper(BaseScraper):
 			product['url'] = product_url
 			[product] = self.clean_urls_in_products([product])
 
-			# save product in database
-			if save:
-				self.databaseHelper.save_products([product], None, shipping_area = shipping_area)
-			else:
-				return product
-
 		else:
 			print 'Error while retrieving product page : error %d'%(code)
-			return None
+			product = {
+				'is_available': False,
+				'exists': False,
+				'url': product_url,
+				'reference': product_url.split('-')[-1]
+				}
+
+		[product] = self.clean_urls_in_products([product])
+
+		# save product in database
+		if save:
+			self.databaseHelper.save_products([product], None, store)
+		else:
+			return product
 
 	def is_served_area(self, code_postal = 'default'):
 		"""

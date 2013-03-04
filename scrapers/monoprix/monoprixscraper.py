@@ -236,29 +236,22 @@ class MonoprixScraper(BaseScraper):
 			# Clean urls
 			product['reference'] = product_url.split('-')[-1]
 			product['url'] = product_url
-			[product] = self.clean_urls_in_products([product])
-
-			# save product in database
-			if save:
-				self.databaseHelper.save_products([product], None, store)
-			else:
-				return product
-
-		elif code == 404:
+		else:
+			print 'Error while retrieving product page : error %d'%(code)
 			product = {
 				'is_available': False,
+				'exists': False,
 				'url': product_url,
 				'reference': product_url.split('-')[-1]
 				}
 
-			# save product in database
-			if save:
-				self.databaseHelper.save_products([product], None, store)
-			else:
-				return product
+		[product] = self.clean_urls_in_products([product])
+
+		# save product in database
+		if save:
+			self.databaseHelper.save_products([product], None, store)
 		else:
-			print 'Error while retrieving product page : error %d'%(code)
-			return None
+			return product
 
 	def is_served_area(self, location):
 		"""
@@ -386,7 +379,7 @@ class MonoprixScraper(BaseScraper):
 			else:
 				pass
 
-		# # Get complete products informations
+		# Get complete products informations
 		products = self.databaseHelper.get_uncomplete_products()
 		if len(products)>0:
 			return{

@@ -304,6 +304,8 @@ class AuchanParser(BaseParser):
 
 
 		else:
+			product['is_product'] = False
+			product['exists'] = False
 			print 'This is not a product page'
 
 		return product

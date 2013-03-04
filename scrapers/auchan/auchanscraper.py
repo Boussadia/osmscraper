@@ -93,7 +93,11 @@ class AuchanScraper(BaseScraper):
 
 		#Saing products
 		if save:
-			self.databaseHelper.save_products(products, category, shipping_area)
+			if len(products) == 0:
+				# Category does not exist anymore
+				self.databaseHelper.shut_down_category(category)
+			else:
+				self.databaseHelper.save_products(products, category, shipping_area)
 		else:
 			return products
 
@@ -131,6 +135,12 @@ class AuchanScraper(BaseScraper):
 			[product] = self.clean_urls_in_products([product])
 		else:
 			print 'Error while fetching product : %d'%(code)
+			product = {
+				'is_available': False,
+				'exists': False,
+				'url': product_url,
+				'reference': product_url.split('-')[-1]
+				}
 
 		#Saving product
 		if save:
