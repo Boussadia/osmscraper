@@ -391,6 +391,8 @@ class MonoprixParser(BaseParser):
 				product['information'][li.find("h4").text] = li.find("p",{"class","Para04"}).text
 		else:
 			product["status"] = 404
+			product['is_product'] = False
+			product['exists'] = False
 
 		return product
 

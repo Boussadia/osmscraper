@@ -159,10 +159,14 @@ class MonoprixScraper(BaseScraper):
 
 		# Cleaning urls
 		products = self.clean_urls_in_products(products)
+		print len(products)
 
 		# Saing products
 		if save:
-			if category:
+			if category and len(products) == 0:
+				# Category does not exist anymore
+				self.databaseHelper.shut_down_category(category)
+			elif category:
 				self.databaseHelper.save_products(products, category.id, store)
 			else:
 				self.databaseHelper.save_products(products, None, store)
@@ -191,7 +195,8 @@ class MonoprixScraper(BaseScraper):
 		for product in products:
 			# Clean urls
 			product['url'] = self.properurl(product['url'])
-			product['product_image_url'] = self.properurl(product['product_image_url'])
+			if 'product_image_url' in product:
+				product['product_image_url'] = self.properurl(product['product_image_url'])
 			
 			if not product['is_product'] and product['is_promotion'] and product['promotion']['type'] == 'multi' and 'product_image_urls' in product['promotion']:
 				# Setting proper full urls
@@ -382,12 +387,12 @@ class MonoprixScraper(BaseScraper):
 				pass
 
 		# # Get complete products informations
-		# products = self.databaseHelper.get_uncomplete_products()
-		# if len(products)>0:
-		# 	return{
-		# 		'type': 'products',
-		# 		'products': products
-		# 	}
+		products = self.databaseHelper.get_uncomplete_products()
+		if len(products)>0:
+			return{
+				'type': 'products',
+				'products': products
+			}
 
 		# Getting all shipping areas
 

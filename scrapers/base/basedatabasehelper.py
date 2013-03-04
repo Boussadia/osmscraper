@@ -122,3 +122,10 @@ class BaseDatabaseHelper(object):
 			del s['fields']
 
 		return models_hash
+
+	def shut_down_category(self, category):
+		"""
+			If a category does not exist in the osm, set its argument exists to False
+		"""
+		category.exists = False
+		category.save()

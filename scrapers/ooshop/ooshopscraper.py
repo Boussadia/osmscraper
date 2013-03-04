@@ -125,10 +125,13 @@ class OoshopScraper(BaseScraper):
 		if save:
 			# Getting category
 			category = self.databaseHelper.get_category_by_url(category_url)
-			if category:
-				self.databaseHelper.save_products(products, category.id, shipping_area)
+			if category and len(products) == 0:
+				# Category does not exist anymore
+				self.databaseHelper.shut_down_category(category)
+			elif category:
+				self.databaseHelper.save_products(products, category.id, store)
 			else:
-				self.databaseHelper.save_products(products, None, shipping_area)
+				self.databaseHelper.save_products(products, None, store)
 		else:
 			return products
 

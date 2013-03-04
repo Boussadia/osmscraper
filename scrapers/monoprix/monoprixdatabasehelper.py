@@ -79,6 +79,16 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 		for i in xrange(0, len(products)):
 			# try:
 			product = products[i]
+			if 'exists' in product and not product['exists']:
+				# Product does not exist, set it in database
+				product_db = Product.objects.filter(reference = product['reference'])
+				if len(product_db)>0:
+					product_db = product_db[0]
+					product_db.exists = False
+					product_db.save()
+
+				return []
+				
 			availability = product['is_available']
 
 			if not availability:
