@@ -4,6 +4,7 @@
 import re
 import time
 from datetime import datetime, timedelta, date
+from pytz import utc
 from urlparse import urlparse, parse_qs, urlunparse
 
 from django.utils.timezone import utc

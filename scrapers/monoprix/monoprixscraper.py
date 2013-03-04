@@ -4,6 +4,7 @@
 import re
 from urlparse import urlparse, parse_qs, urlunparse
 from datetime import date, datetime, timedelta
+from pytz import utc
 
 from scrapers.base.basescraper import BaseScraper
 from scrapers.monoprix.monoprixparser import MonoprixParser
