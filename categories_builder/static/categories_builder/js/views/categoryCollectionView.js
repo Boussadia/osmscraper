@@ -31,11 +31,14 @@ define([
 				var template = _.template(this.template);
 				content = template({'content': content});
 				this.$el.html(content);
+				var that = this;
+				this.$el.find('button.remove').click(function(e){
+					e.preventDefault();
+					that.removeCategory(e);
+				});
 				if(this.level>-1){
 					var button = $("#add_category").text();
 					this.$el.append(button);
-					var that = this;
-					console.log(that);
 					this.$el.find('button.add').click(function(e){
 						e.preventDefault();
 						that.modal();
@@ -75,8 +78,8 @@ define([
 			events: {
 				// 'click button.add': 'modal',
 				// 'click button.btn-close': 'closeModal',
-				'click button.save': 'saveCategory',
-				'click button.remove': 'removeCategory',
+				// 'click button.save': 'saveCategory',
+				// 'click button.remove': 'removeCategory',
 			},
 			removeCategory: function(e){
 				if(confirm('Si vous supprimer cette categorie, toutes les categories filles vont être suprimée, voulez vous proceder?')){
@@ -98,6 +101,10 @@ define([
 				this.$el.find("button.btn-close").click(function(e){
 						e.preventDefault();
 						that.closeModal(e);
+					});
+				this.$el.find("button.save").click(function(e){
+						e.preventDefault();
+						that.saveCategory(e);
 					});
 			},
 			closeModal: function(e){
