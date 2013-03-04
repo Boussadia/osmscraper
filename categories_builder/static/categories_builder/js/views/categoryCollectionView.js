@@ -99,6 +99,14 @@ define([
 				var modal_rendered = modal_template({'level': this.level, 'parent_url': this.parent_url});
 				this.$el.append(modal_rendered);
 				var that = this;
+				this.$el.keypress(function(e){
+					if(e.keyCode == 13){
+						that.saveCategory(e);
+					};
+					if(e.keyCode == 27){
+						that.closeModal(e);
+					};
+				})
 				this.$el.find("button.btn-close").click(function(e){
 						e.preventDefault();
 						that.closeModal(e);
