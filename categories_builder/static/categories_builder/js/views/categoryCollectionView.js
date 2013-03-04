@@ -34,6 +34,12 @@ define([
 				if(this.level>-1){
 					var button = $("#add_category").text();
 					this.$el.append(button);
+					var that = this;
+					console.log(that);
+					this.$el.find('button.add').click(function(e){
+						e.preventDefault();
+						that.modal();
+					});
 				}else{
 					this.$el.find('.remove').remove();
 				}
@@ -67,8 +73,8 @@ define([
 				this.categoryCollection.fetch();
 			},
 			events: {
-				'click button.add': 'modal',
-				'click button.btn-close': 'closeModal',
+				// 'click button.add': 'modal',
+				// 'click button.btn-close': 'closeModal',
 				'click button.save': 'saveCategory',
 				'click button.remove': 'removeCategory',
 			},
@@ -83,10 +89,16 @@ define([
 				}
 			},
 			modal: function(){
+				console.log('modal');
 				var modal_html = $('#modal').text();
 				var modal_template = _.template(modal_html);
 				var modal_rendered = modal_template({'level': this.level, 'parent_url': this.parent_url});
 				this.$el.append(modal_rendered);
+				var that = this;
+				this.$el.find("button.btn-close").click(function(e){
+						e.preventDefault();
+						that.closeModal(e);
+					});
 			},
 			closeModal: function(e){
 				e.preventDefault();
