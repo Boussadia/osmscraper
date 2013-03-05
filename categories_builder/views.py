@@ -15,11 +15,16 @@ def index(request):
 	return render(request, 'categories_builder/index.html', {'categories': json.dumps(json_categories)})
 
 def sub_categories(request, parent_url = None, url = ''):
+	print 'Start'
 	response = {}
 	# Getting element corresponding to url
 	category = Category.objects.filter(url = url)
+	print url
+	print parent_url
+	print category
 	if parent_url is not None:
 		category = category.filter(parent_category__url = parent_url)
+	print category
 	if len(category) == 1:
 		# Found category
 		category = category[0]
@@ -32,7 +37,7 @@ def sub_categories(request, parent_url = None, url = ''):
 			parent =  current_parent.parent_category
 
 			if parent:
-				url_parents = url_parents+'/'+parent.url
+				url_parents = parent.url+'/'+url_parents
 				current_parent = parent
 			else:
 				do = False
