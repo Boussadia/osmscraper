@@ -19,12 +19,8 @@ def sub_categories(request, parent_url = None, url = ''):
 	response = {}
 	# Getting element corresponding to url
 	category = Category.objects.filter(url = url)
-	print url
-	print parent_url
-	print category
 	if parent_url is not None:
 		category = category.filter(parent_category__url = parent_url)
-	print category
 	if len(category) == 1:
 		# Found category
 		category = category[0]
@@ -46,7 +42,7 @@ def sub_categories(request, parent_url = None, url = ''):
 		if request.method == 'GET':
 
 			# print url_parents
-			sub_categories = Category.objects.filter(parent_category__url__exact=url)
+			sub_categories = Category.objects.filter(parent_category = category)
 			models = [j['fields'] for j in json.loads(serializers.serialize("json", sub_categories))]
 			for i in xrange(0,len(models)):
 				models[i]['url'] = url_parents+ '/'+ models[i]['url']
