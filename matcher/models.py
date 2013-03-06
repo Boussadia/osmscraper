@@ -31,14 +31,51 @@ class Similarity(models.Model):
 	ooshop_product = models.ForeignKey(OoshopProduct, null = True)
 	auchan_product = models.ForeignKey(AuchanProduct, null = True)
 
+	score = models.FloatField()
+
+	created = models.DateTimeField(auto_now_add=True)
+
+	def __unicode__(self):
+		query_from = -1
+		index_to = -1
+		if query_osm == 'ooshop':
+			query_from = ooshop_product
+		if query_osm == 'monoprix':
+			query_from = monoprix_product
+		if query_osm == 'auchan':
+			query_from = auchan_product
+
+		if index_osm == 'ooshop':
+			index_to = ooshop_product
+		if index_osm == 'monoprix':
+			index_to = monoprix_product
+		if index_osm == 'auchan':
+			index_to = auchan_product
+
+		return 'From %s to %s, %s -> %s with score %f'%(query_osm, index_osm, query_from, index_to)
+
 class PossibleMatch(models.Model):
 	# TO DO : add user id
 	monoprix_product = models.ForeignKey(MonoprixProduct, null = True)
 	ooshop_product = models.ForeignKey(OoshopProduct, null = True)
 	auchan_product = models.ForeignKey(AuchanProduct, null = True)
+	created = models.DateTimeField(auto_now_add=True)
+
+	def __unicode__(self):
+		return '%s | %s | %s'%(str(monoprix_product), str(ooshop_product), str(auchan_product))
 
 class Match(models.Model):
-	# TO DO : add user id
 	monoprix_product = models.ForeignKey(MonoprixProduct, null = True)
 	ooshop_product = models.ForeignKey(OoshopProduct, null = True)
 	auchan_product = models.ForeignKey(AuchanProduct, null = True)
+	created = models.DateTimeField(auto_now_add=True)
+
+	def __unicode__(self):
+		return '%s | %s | %s'%(str(monoprix_product), str(ooshop_product), str(auchan_product))
+
+class MatcherLog(models.Model):
+	osm = models.TextField()
+	created = models.DateTimeField(auto_now_add=True)
+
+	def __unicode__(self):
+		return 'Last update for %s : %s'%(osm, updated)
