@@ -3,6 +3,8 @@
 """
 	Populating the database of stems
 """
+from __future__ import absolute_import # Import because of modules names
+
 import os
 import codecs
 
