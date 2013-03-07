@@ -1,19 +1,29 @@
 $(document).ready(function(){
 
-	$("div.add textarea").autocomplete({
-		wordCount:1,
-		mode: "outter",
-		on: {
-			query: function(text,cb){
-				var words = [];
-				for( var i=0; i<tags.length; i++ ){
-					if( tags[i].toLowerCase().indexOf(text.toLowerCase()) == 0 ) words.push(tags[i]);
-					if( words.length > 5 ) break;
-				}
-				cb(words);								
-			}
-		}
+	$('#tags').tagsInput({
+		'onAddTag': function(t){
+			save_tags(t);
+		},
+		'onRemoveTag': function(t){
+			save_tags(t);
+		},
+		'autocomplete_url': '/backend/tags/autocomplete/',
 	});
+
+	// $("div.add textarea").autocomplete({
+	// 	wordCount:1,
+	// 	mode: "outter",
+	// 	on: {
+	// 		query: function(text,cb){
+	// 			var words = [];
+	// 			for( var i=0; i<tags.length; i++ ){
+	// 				if( tags[i].toLowerCase().indexOf(text.toLowerCase()) == 0 ) words.push(tags[i]);
+	// 				if( words.length > 5 ) break;
+	// 			}
+	// 			cb(words);								
+	// 		}
+	// 	}
+	// });
 
 	// Bootstraping app
 	$('#main').empty()
@@ -60,7 +70,7 @@ $(document).ready(function(){
 							// console.log(textStatus);
 							// console.log(jqXHR);
 							if(data["status"] === 200 ){
-								$('#pop_over_window textarea').val(data['tags'])
+								$('#tags').importTags(data['tags']);
 							}
 
 						},
@@ -133,9 +143,10 @@ $(document).ready(function(){
 		$("#pop_over_window .row").remove();
 	})
 
-	$(".add button").click(function(){
-		var id_category = $(this).parent().attr("data-id_category");
-		var tags_string = $('#pop_over_window textarea').val();
+	// Function that saves tags
+	var save_tags = function(t){
+		var id_category = $("div.add").attr('data-id_category');
+		var tags_string = $('#tags').val();
 		$.ajax({
 			url:'/backend/tags/'+id_category+'/'+tags_string,
 			type:"POST",
@@ -166,6 +177,6 @@ $(document).ready(function(){
 				// alert("L'opération ne s'est pas déroulée avec succès, réessayez ultérieurement!");
 			}
 		});
-	});
+	}
 
 });
