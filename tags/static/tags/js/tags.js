@@ -1,6 +1,7 @@
 $(document).ready(function(){
 
 	$('#tags').tagsInput({
+		'removeWithBackspace' : false,
 		'onAddTag': function(t){
 			save_tags(t);
 		},
