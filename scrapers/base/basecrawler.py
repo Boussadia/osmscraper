@@ -6,6 +6,13 @@ import urllib
 import mechanize
 import cookielib
 
+class Singleton(object):
+  _instances = {}
+  def __new__(class_, *args, **kwargs):
+    if class_ not in class_._instances:
+        class_._instances[class_] = super(Singleton, class_).__new__(class_, *args, **kwargs)
+    return class_._instances[class_]
+
 
 class BaseCrawler(object):
 	"""
@@ -28,6 +35,7 @@ class BaseCrawler(object):
 
 	# The number of times the crawler has to retry to fetch html page when a network failure error occurs
 	MAX_NETWORK_FAILURE_TRIES = 10
+	INTERVAL = 1 # interval between 2 http request in seconds
 
 	def __init__(self):
 		# Mechanize Browser
@@ -47,6 +55,9 @@ class BaseCrawler(object):
 
 		self.__network_failures_retry__ = 0
 
+		# time of last http request
+		self.last_time = time.time()
+
 	def do_request(self, url ='', data = {}, request = None):
 		"""
 			Base method to perform a request to a url.
@@ -58,6 +69,15 @@ class BaseCrawler(object):
 			Output:
 				- (html, code) : html as string and code as defined in the class docstring.
 		"""
+		print self
+		# Request cannot happen inside a cetain lapse of time (INTERVAL seconds in between)
+		now = time.time()
+		if now-self.last_time<BaseCrawler.INTERVAL:
+			print 'Waiting in order not to flood server'
+			time.sleep(BaseCrawler.INTERVAL+self.last_time-now)
+			return do_request(self, url, data, request)
+		self.last_time = now
+
 		# Encapsulating request in try block in order to catch HTTPError 
 		try:
 			if request is not None:

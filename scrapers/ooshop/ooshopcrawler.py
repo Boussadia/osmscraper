@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from scrapers.base.basecrawler import BaseCrawler
+from scrapers.base.basecrawler import BaseCrawler, Singleton
 
-class OoshopCrawler(BaseCrawler):
+class OoshopCrawler(BaseCrawler, Singleton):
 
 	def __init__(self):
 		super(OoshopCrawler, self).__init__()

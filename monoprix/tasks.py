@@ -39,7 +39,7 @@ def get_products_category(categories):
 
 	for category in categories:
 		scraper.get_list_products_for_category(category_url = category['url'], location = category['location'], save = True)
-		time.sleep(1) # Temporisation in order not to flood server
+		# time.sleep(1) # Temporisation in order not to flood server
 
 
 	# VERY IMPORTANT, ALWAYS CALL THIS TASK IN ORDER TO HAVE AN INFINITE LOOP
@@ -65,7 +65,7 @@ def get_products(products):
 			if 'location' in product:
 				location = product['location']
 			scraper.get_product_info(product_url = url, location = location, save = True)
-			time.sleep(1) # Temporisation in order not to flood server
+			# time.sleep(1) # Temporisation in order not to flood server
 		except Exception, e:
 			print 'Error in get_products tasks :'
 			print product

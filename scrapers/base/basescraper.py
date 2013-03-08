@@ -130,7 +130,7 @@ class BaseScraper(object):
 				if code == 200 and not is_shipping_area:
 					print 'City : %s (%s) is NOT OK'%(city_name, postal_code)
 					
-				time.sleep(2) # In order not to flood server, 2s temporisation
+				# time.sleep(2) # In order not to flood server, 2s temporisation
 
 		# Adding default location (non set) to shipping areas
 		self.databaseHelper.save_shipping_areas([{

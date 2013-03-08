@@ -4,13 +4,14 @@
 import mechanize
 from urllib import urlencode
 
-from scrapers.base.basecrawler import BaseCrawler
+from scrapers.base.basecrawler import BaseCrawler, Singleton
 
 
-class AuchanCrawler(BaseCrawler):
+class AuchanCrawler(BaseCrawler, Singleton):
 	
 	def __init__(self):
 		BaseCrawler.MAX_NETWORK_FAILURE_TRIES = 20
+		BaseCrawler.INTERVAL = 2
 		super(AuchanCrawler, self).__init__()
 
 	def category_tag(self, tag):
