@@ -215,7 +215,7 @@ class OoshopScraper(BaseScraper):
 
 		# save product in database
 		if save:
-			self.databaseHelper.save_products([product], None, store)
+			self.databaseHelper.save_products([product], None, shipping_area)
 		else:
 			return product
 
