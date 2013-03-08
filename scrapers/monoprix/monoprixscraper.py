@@ -197,7 +197,7 @@ class MonoprixScraper(BaseScraper):
 			if 'product_image_url' in product:
 				product['product_image_url'] = self.properurl(product['product_image_url'])
 			
-			if not product['is_product'] and product['is_promotion'] and product['promotion']['type'] == 'multi' and 'product_image_urls' in product['promotion']:
+			if 'is_product' in product and not product['is_product'] and product['is_promotion'] and product['promotion']['type'] == 'multi' and 'product_image_urls' in product['promotion']:
 				# Setting proper full urls
 				product['promotion']['references'] = [ self.properurl(url) for url in product['promotion']['product_image_urls']]
 			new_products.append(product)
