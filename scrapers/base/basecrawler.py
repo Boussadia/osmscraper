@@ -69,13 +69,12 @@ class BaseCrawler(object):
 			Output:
 				- (html, code) : html as string and code as defined in the class docstring.
 		"""
-		print self
 		# Request cannot happen inside a cetain lapse of time (INTERVAL seconds in between)
 		now = time.time()
 		if now-self.last_time<BaseCrawler.INTERVAL:
-			print 'Waiting in order not to flood server'
+			print 'Waiting %d ms in order not to flood server'%((BaseCrawler.INTERVAL+self.last_time-now)*1000)
 			time.sleep(BaseCrawler.INTERVAL+self.last_time-now)
-			return do_request(self, url, data, request)
+			return self.do_request( url, data, request)
 		self.last_time = now
 
 		# Encapsulating request in try block in order to catch HTTPError 
