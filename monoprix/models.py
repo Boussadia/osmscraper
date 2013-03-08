@@ -5,6 +5,7 @@ from dalliz.models import Category as Dalliz_category
 from dalliz.models import Brand as Brand_dalliz
 from dalliz.models import Unit as Unit_dalliz
 from dalliz.models import Product as Dalliz_product
+from tags.models import Tag
 
 class Category_main(models.Model):
 	name = models.CharField(max_length=100, unique=True)
@@ -210,6 +211,10 @@ class NewProduct(models.Model):
 	package_quantity = models.IntegerField(null=True)
 	package_measure = models.FloatField(null=True)
 	package_unit = models.TextField(null=True)
+
+	# Final tags and dalliz_categories
+	dalliz_category = models.ManyToManyField(Dalliz_category, related_name="monoprix_product_dalliz_category")
+	tag = models.ManyToManyField(Tag, related_name="monoprix_product_tag_dalliz_tag")
 
 	def __unicode__(self):
 		if self.name is not None:
