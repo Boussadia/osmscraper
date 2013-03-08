@@ -150,7 +150,7 @@ class MonoprixScraper(BaseScraper):
 						print "Something went wrong when fetching category page (%d) for Monoprix : code %d"%(i+1,code)
 					# Setting brand name to products
 					for j in xrange(0, len(fetched_products)):
-						fetched_products[j]['brand'] = brand['name']
+						fetched_products[j]['parent_brand'] = brand['name']
 					products = products + fetched_products
 			except Exception, e:
 				print e

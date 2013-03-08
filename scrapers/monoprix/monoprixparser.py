@@ -158,6 +158,7 @@ class MonoprixParser(BaseParser):
 						html = child.prettify()
 						url = child.findChildren(recursive=False)[0].get("href")
 						name = child.findChildren(recursive=False)[0].find("img").get("alt")
+						brand = child.find('div', {'class': 'SubBox06'}).find('p').find('span').text
 						product_image_url = 'g-'.join(child.findChildren(recursive=False)[0].find("img").get("src").split('p-'))
 						reference = url.split('/')[-1].split('-')[-1].split(';jsessionid=')[0]
 						if 'LV' in reference:
@@ -165,6 +166,7 @@ class MonoprixParser(BaseParser):
 						product.update({
 							'name': name,
 							'url': url,
+							'brand': brand,
 							'reference': reference,
 							'html': html,
 							'product_image_url': product_image_url
@@ -357,6 +359,7 @@ class MonoprixParser(BaseParser):
 			product_infos = product_section.find("div",{"class","InfoProduit"})
 
 			product["name"] = self.strip_string(product_infos.find("p",{"class":"Style02"}).text)
+			product["brand"] = self.strip_string(product_infos.find("p",{"class":"Style01"}).text)
 
 			# Is it a promotion?
 			if product_section.find('p', {'class': 'promoPriceBox'}):

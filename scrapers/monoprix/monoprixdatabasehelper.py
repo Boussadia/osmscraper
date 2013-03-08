@@ -108,8 +108,13 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 			name = product['name']
 			url = product['url'].split(';jsessionid=')[0]
 			html = product['html']
+			if 'parent_brand' in product:
+				parent_brand = product['parent_brand']
+			else:
+				parent_brand = None
+
 			if 'brand' in product and product['brand'] != '':
-				brand = self.save_brand(product['brand'])
+				brand = self.save_brand(product['brand'], parent_brand = parent_brand)
 			else:
 				brand = None
 
@@ -290,11 +295,18 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 			# 	raise e
 			
 
-	def save_brand(self, brand_name):
+	def save_brand(self, brand_name, parent_brand = None):
 		"""
 			Saves and return brand entity.
 		"""
+		if parent_brand == '':
+			parent_brand = None
+		else:
+			parent_brand, created = Brand.objects.get_or_create(name = unicode(parent_brand))
 		brand, created = Brand.objects.get_or_create(name = unicode(brand_name))
+		if parent_brand is not None and brand != parent_brand:
+			brand.parent_brand = parent_brand
+			brand.save()
 		return brand
 
 	def save_unit(self, unit_name):
