@@ -65,9 +65,9 @@ class PossibleMatch(models.Model):
 		return '%s | %s | %s'%(str(monoprix_product), str(ooshop_product), str(auchan_product))
 
 class Match(models.Model):
-	monoprix_product = models.ForeignKey(MonoprixProduct, null = True)
-	ooshop_product = models.ForeignKey(OoshopProduct, null = True)
-	auchan_product = models.ForeignKey(AuchanProduct, null = True)
+	monoprix_product = models.ForeignKey(MonoprixProduct, null = True, unique = True)
+	ooshop_product = models.ForeignKey(OoshopProduct, null = True, unique = True)
+	auchan_product = models.ForeignKey(AuchanProduct, null = True, unique = True)
 	created = models.DateTimeField(auto_now_add=True)
 
 	def __unicode__(self):
