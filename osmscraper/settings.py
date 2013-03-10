@@ -187,8 +187,8 @@ LOGGING = {
 
 
 # Backend with Celery
-BROKER_BACKEND = 'django'
-BROKER_URL = 'django://ahmed:2asefthukom,rabbit3@localhost:5672/myvhost'
+# BROKER_BACKEND = 'django'
+BROKER_URL = 'amqp://ahmed:2asefthukom,rabbit3@localhost:5672/myvhost'
 
 import djcelery
 djcelery.setup_loader()
