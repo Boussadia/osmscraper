@@ -144,7 +144,7 @@ INSTALLED_APPS = (
     'categories_matcher',
     'categories_builder',
     'brand_builder',
-    'ooshop_brand_matcher',
+    'brand_matcher',
     'ooshop_monoprix',
     'dalliz',
     'pystache',
@@ -189,6 +189,7 @@ LOGGING = {
 # Backend with Celery
 # BROKER_BACKEND = 'django'
 BROKER_URL = 'amqp://ahmed:2asefthukom,rabbit3@localhost:5672/myvhost'
+CELERYD_MAX_TASKS_PER_CHILD = 4
 
 import djcelery
 djcelery.setup_loader()

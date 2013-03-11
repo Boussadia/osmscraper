@@ -34,7 +34,7 @@ def hijax(function):
 	return wrapper
 
 @hijax
-def selector(request, id):
+def selector(request, osm, id):
 	template = templates.Brand_selector()
 	brand = Brand.objects.get(id= id)
 	ooshop_brand_template_value = {
@@ -73,7 +73,7 @@ def selector(request, id):
 
 
 
-def cancel(request, id):
+def cancel(request, osm, id):
 	response = {}
 	if request.method == 'POST':
 		ooshop_brand = Brand.objects.filter(id=id)
@@ -95,10 +95,10 @@ def cancel(request, id):
 
 	return HttpResponse(json.dumps(response))
 
-def set(request, ooshop_brand_id, dalliz_brand_id):
+def set(request, osm, osm_brand_id, dalliz_brand_id):
 	response = {}
 	if request.method == 'POST':
-		ooshop_brand = Brand.objects.filter(id=ooshop_brand_id)
+		ooshop_brand = Brand.objects.filter(id=osm_brand_id)
 		dalliz_brand = Dalliz_brand.objects.filter(id=dalliz_brand_id)
 
 		if len(ooshop_brand) == 1 and len(dalliz_brand) == 1:
