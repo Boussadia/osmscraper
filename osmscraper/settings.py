@@ -192,7 +192,8 @@ LOGGING = {
 # BROKER_BACKEND = 'django'
 BROKER_URL = 'amqp://ahmed:2asefthukom,rabbit3@localhost:5672/myvhost'
 CELERYD_MAX_TASKS_PER_CHILD = 4
-
+CELERYD_TASK_TIME_LIMIT = 86400*7
+CELERYD_TASK_SOFT_TIME_LIMIT = 86400*7
 import djcelery
 djcelery.setup_loader()
 
