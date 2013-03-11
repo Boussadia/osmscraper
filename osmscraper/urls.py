@@ -56,10 +56,10 @@ urlpatterns = patterns('',
     url(r'^ooshop_monoprix/products/previous/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.previous'),
     url(r'^ooshop_monoprix/products/cancel/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.cancel'),
 
-    # Ooshop brand matcher
-    url(r'^brand/ooshop/(?P<id>\d+)/?$','ooshop_brand_matcher.views.selector'),
-    url(r'^brand/ooshop/cancel/(?P<id>\d+)/?$', 'ooshop_brand_matcher.views.cancel'),
-    url(r'^brand/ooshop/set/(?P<ooshop_brand_id>\d+)/(?P<dalliz_brand_id>\d+)/?$', 'ooshop_brand_matcher.views.set'),
+    # Brand matcher
+    url(r'^backend/matcher/(?P<osm>(\w)+)/brand/(?P<id>\d+)/?$','brand_matcher.views.selector'),
+    url(r'^backend/matcher/(?P<osm>(\w)+)/brand/cancel/(?P<id>\d+)/?$', 'brand_matcher.views.cancel'),
+    url(r'^backend/matcher/(?P<osm>(\w)+)/brand/set/(?P<osm_brand_id>\d+)/(?P<dalliz_brand_id>\d+)/?$', 'brand_matcher.views.set'),
 
     # Dalliz website
     url(r'^/?$', 'dalliz.views.index'),
