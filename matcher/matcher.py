@@ -142,8 +142,8 @@ class ProductMatcher(Matcher):
 					auchan_product_id = id_doc
 
 				sim_db = self.SimilarityEntity(
-					query_osm = s['query_name'],
-					index_osm = s['indexer_name'],
+					query_name = s['query_name'],
+					index_name = s['indexer_name'],
 					monoprix_product_id = monoprix_product_id,
 					ooshop_product_id = ooshop_product_id,
 					auchan_product_id = auchan_product_id,
