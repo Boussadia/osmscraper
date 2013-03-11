@@ -16,6 +16,8 @@ ADMINS = (
     ('Ahmed Boussadia', 'ahmed@dalliz.com'),
 )
 
+ALLOWED_HOSTS =[('127.0.0.1'), ('*.dalliz.com'), ('dalliz.cloudapp.net')]
+
 MANAGERS = ADMINS
 
 import dj_database_url
