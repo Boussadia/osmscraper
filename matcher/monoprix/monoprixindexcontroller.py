@@ -2,13 +2,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import # Import because of modules names
 
-from matcher.base.indexcontroller import IndexController
+from matcher.base.indexcontroller import ProductIndexController
+from matcher.base.indexcontroller import BrandIndexController
 
 from monoprix.models import NewProduct as Product
+from monoprix.models import NewBrand as Brand
 
-class MonoprixIndexController(IndexController):
+class MonoprixProductIndexController(ProductIndexController):
 	"""
 
 	"""
 	def __init__(self):
-		super(MonoprixIndexController, self).__init__(osm = 'monoprix', ProductModel = Product)
+		super(MonoprixProductIndexController, self).__init__(osm = 'monoprix', ProductModel = Product)
+
+class MonoprixBrandIndexController(BrandIndexController):
+	"""
+
+	"""
+	def __init__(self):
+		super(MonoprixBrandIndexController, self).__init__(osm = 'monoprix', BrandModel = Brand)

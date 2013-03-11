@@ -7,6 +7,9 @@ from django.db import models
 from ooshop.models import NewProduct as OoshopProduct
 from monoprix.models import NewProduct as MonoprixProduct
 from auchan.models import Product as AuchanProduct
+from ooshop.models import NewBrand as OoshopBrand
+from monoprix.models import NewBrand as MonoprixBrand
+from auchan.models import Brand as AuchanBrand
 
 # Stems
 class Stem(models.Model):
@@ -23,9 +26,9 @@ class BaseWord(models.Model):
 		return '%s -> %s'%(self.text, self.stem)
 
 # Matcher results
-class Similarity(models.Model):
-	query_osm = models.TextField()
-	index_osm = models.TextField()
+class ProductSimilarity(models.Model):
+	query_name = models.TextField()
+	index_name = models.TextField()
 
 	monoprix_product = models.ForeignKey(MonoprixProduct, null = True)
 	ooshop_product = models.ForeignKey(OoshopProduct, null = True)
@@ -38,21 +41,52 @@ class Similarity(models.Model):
 	def __unicode__(self):
 		query_from = -1
 		index_to = -1
-		if query_osm == 'ooshop':
+		if query_name == 'ooshop':
 			query_from = ooshop_product
-		if query_osm == 'monoprix':
+		if query_name == 'monoprix':
 			query_from = monoprix_product
-		if query_osm == 'auchan':
+		if query_name == 'auchan':
 			query_from = auchan_product
 
-		if index_osm == 'ooshop':
+		if index_name == 'ooshop':
 			index_to = ooshop_product
-		if index_osm == 'monoprix':
+		if index_name == 'monoprix':
 			index_to = monoprix_product
-		if index_osm == 'auchan':
+		if index_name == 'auchan':
 			index_to = auchan_product
 
-		return 'From %s to %s, %s -> %s with score %f'%(query_osm, index_osm, query_from, index_to)
+		return 'From %s to %s, %s -> %s with score %f'%(query_name, index_name, query_from, index_to)
+
+class BrandSimilarity(models.Model):
+	query_name = models.TextField()
+	index_name = models.TextField()
+
+	monoprix_brand = models.ForeignKey(MonoprixBrand, null = True)
+	ooshop_brand = models.ForeignKey(OoshopBrand, null = True)
+	auchan_brand = models.ForeignKey(AuchanBrand, null = True)
+
+	score = models.FloatField()
+
+	created = models.DateTimeField(auto_now_add=True)
+
+	def __unicode__(self):
+		query_from = -1
+		index_to = -1
+		if query_name == 'ooshop':
+			query_from = ooshop_brand
+		if query_name == 'monoprix':
+			query_from = monoprix_brand
+		if query_name == 'auchan':
+			query_from = auchan_brand
+
+		if index_name == 'ooshop':
+			index_to = ooshop_brand
+		if index_name == 'monoprix':
+			index_to = monoprix_brand
+		if index_name == 'auchan':
+			index_to = auchan_brand
+
+		return 'From %s to %s, %s -> %s with score %f'%(query_name, index_name, query_from, index_to)
 
 class PossibleMatch(models.Model):
 	# TO DO : add user id
@@ -64,7 +98,7 @@ class PossibleMatch(models.Model):
 	def __unicode__(self):
 		return '%s | %s | %s'%(str(monoprix_product), str(ooshop_product), str(auchan_product))
 
-class Match(models.Model):
+class ProductMatch(models.Model):
 	monoprix_product = models.ForeignKey(MonoprixProduct, null = True, unique = True)
 	ooshop_product = models.ForeignKey(OoshopProduct, null = True, unique = True)
 	auchan_product = models.ForeignKey(AuchanProduct, null = True, unique = True)
@@ -73,9 +107,19 @@ class Match(models.Model):
 	def __unicode__(self):
 		return '%s | %s | %s'%(str(monoprix_product), str(ooshop_product), str(auchan_product))
 
-class MatcherLog(models.Model):
-	osm = models.TextField()
+class BrandMatch(models.Model):
+	monoprix_brand = models.ForeignKey(MonoprixBrand, null = True, unique = True)
+	ooshop_brand = models.ForeignKey(OoshopBrand, null = True, unique = True)
+	auchan_brand = models.ForeignKey(AuchanBrand, null = True, unique = True)
 	created = models.DateTimeField(auto_now_add=True)
 
 	def __unicode__(self):
-		return 'Last update for %s : %s'%(osm, updated)
+		return '%s | %s | %s'%(str(monoprix_brand), str(ooshop_brand), str(auchan_brand))
+
+class MatcherLog(models.Model):
+	name = models.TextField()
+	type = models.TextField()
+	created = models.DateTimeField(auto_now_add=True)
+
+	def __unicode__(self):
+		return 'Last update for %s : %s'%(name, updated)
