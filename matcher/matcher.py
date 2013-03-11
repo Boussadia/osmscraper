@@ -152,7 +152,7 @@ class ProductMatcher(Matcher):
 				similarities_db_list.append(sim_db)
 
 		# Creating data in bulk
-		self.SimilarityEntity.objects.bulk_create(similarities_db_list)
+		self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = 100)
 
 class BrandMatcher(Matcher):
 	"""
@@ -211,7 +211,7 @@ class BrandMatcher(Matcher):
 				similarities_db_list.append(sim_db)
 
 		# Creating data in bulk
-		self.SimilarityEntity.objects.bulk_create(similarities_db_list)
+		self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = 100)
 
 
 
