@@ -102,7 +102,7 @@ class ProductIndexController(IndexController):
 				- osm : 'ooshop', 'monoprix' ...
 				- ProductModel : database entity model for exemple : MonoprixProduct
 		"""
-		super(BrandIndexController, self).__init__(osm, 'products', ProductModel)
+		super(ProductIndexController, self).__init__(osm, 'products', ProductModel)
 
 	def build_all_index(self):
 		"""
