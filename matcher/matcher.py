@@ -9,6 +9,8 @@ from matcher.ooshop.ooshopindexcontroller import OoshopProductIndexController
 from matcher.monoprix.monoprixindexcontroller import MonoprixProductIndexController
 from matcher.ooshop.ooshopindexcontroller import OoshopBrandIndexController
 from matcher.monoprix.monoprixindexcontroller import MonoprixBrandIndexController
+from matcher.dalliz.dallizindexcontroller import DallizBrandIndexController
+
 
 from matcher.models import MatcherLog
 from matcher.models import ProductSimilarity
@@ -161,7 +163,7 @@ class BrandMatcher(Matcher):
 		and saves matches in database.
 
 	"""
-	DEFAULT_INDEXER_CLASSES = [OoshopBrandIndexController, MonoprixBrandIndexController]
+	DEFAULT_INDEXER_CLASSES = [OoshopBrandIndexController, MonoprixBrandIndexController, DallizBrandIndexController]
 	def __init__(self, indexer_classes = DEFAULT_INDEXER_CLASSES):
 		super(BrandMatcher, self).__init__(indexer_classes, MatcherLog, BrandSimilarity)
 
@@ -184,6 +186,7 @@ class BrandMatcher(Matcher):
 			ooshop_brand_id = None
 			monoprix_brand_id = None
 			auchan_brand_id = None
+			dalliz_brand_id = id_doc
 
 			if s['query_name'] == 'ooshop':
 				ooshop_brand_id = s['id']
@@ -191,6 +194,8 @@ class BrandMatcher(Matcher):
 				monoprix_brand_id = s['id']
 			if s['query_name'] == 'auchan':
 				auchan_brand_id = s['id']
+			if s['query_name'] == 'dalliz':
+				dalliz_brand_id = s['id']
 
 			for id_doc, score, last_arg in s['sims']:
 				if s['indexer_name'] == 'ooshop':
@@ -199,6 +204,8 @@ class BrandMatcher(Matcher):
 					monoprix_brand_id = id_doc
 				if s['indexer_name'] == 'auchan':
 					auchan_brand_id = id_doc
+				if s['indexer_name'] == 'dalliz':
+					dalliz_brand_id = id_doc
 
 				sim_db = self.SimilarityEntity(
 					query_name = s['query_name'],
@@ -206,6 +213,7 @@ class BrandMatcher(Matcher):
 					monoprix_brand_id = monoprix_brand_id,
 					ooshop_brand_id = ooshop_brand_id,
 					auchan_brand_id = auchan_brand_id,
+					dalliz_brand_id = dalliz_brand_id,
 					score = score
 				)
 				similarities_db_list.append(sim_db)

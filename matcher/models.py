@@ -10,6 +10,7 @@ from auchan.models import Product as AuchanProduct
 from ooshop.models import NewBrand as OoshopBrand
 from monoprix.models import NewBrand as MonoprixBrand
 from auchan.models import Brand as AuchanBrand
+from dalliz.models import NewBrand as DallizBrand
 
 # Stems
 class Stem(models.Model):
@@ -64,6 +65,7 @@ class BrandSimilarity(models.Model):
 	monoprix_brand = models.ForeignKey(MonoprixBrand, null = True)
 	ooshop_brand = models.ForeignKey(OoshopBrand, null = True)
 	auchan_brand = models.ForeignKey(AuchanBrand, null = True)
+	dalliz_brand = models.ForeignKey(DallizBrand, null = True)
 
 	score = models.FloatField()
 
@@ -111,6 +113,7 @@ class BrandMatch(models.Model):
 	monoprix_brand = models.ForeignKey(MonoprixBrand, null = True, unique = True)
 	ooshop_brand = models.ForeignKey(OoshopBrand, null = True, unique = True)
 	auchan_brand = models.ForeignKey(AuchanBrand, null = True, unique = True)
+	dalliz_brand = models.ForeignKey(DallizBrand, null = True, unique = True)
 	created = models.DateTimeField(auto_now_add=True)
 
 	def __unicode__(self):
