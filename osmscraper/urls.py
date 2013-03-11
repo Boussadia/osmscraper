@@ -3,7 +3,8 @@
 
 from django.conf.urls import patterns, include, url
 from django.conf import settings
-from django.views.generic.simple import direct_to_template, redirect_to
+# from django.views.generic.simple import direct_to_template, redirect_to
+from django.views.generic import TemplateView, RedirectView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -68,11 +69,11 @@ urlpatterns = patterns('',
     url(r'^mentions-legales/?$','dalliz.views.mentions'),
     url(r'^partenariat/?$', 'dalliz.views.partenariat'),
     url(r'^conditions-generale-d-utilisation/?$','dalliz.views.cgu'),
-    url(r'^robots\.txt$', direct_to_template, {'template': 'dalliz/robots.txt', 'mimetype': 'text/plain'}),
-    url(r'^google0b72a6d52b859293\.html$', direct_to_template, {'template': 'dalliz/google0b72a6d52b859293.html', 'mimetype': 'html'}),
-    url(r'^sitemap\.xml$', direct_to_template, {'template': 'dalliz/sitemap.xml', 'mimetype': 'xml'}),
+    url(r'^robots\.txt$', TemplateView.as_view(template_name='dalliz/robots.txt') ),#, {'template': 'dalliz/robots.txt', 'mimetype': 'text/plain'}),
+    url(r'^google0b72a6d52b859293\.html$', TemplateView.as_view(template_name='dalliz/google0b72a6d52b859293.html') ),#, {'template': 'dalliz/google0b72a6d52b859293.html', 'mimetype': 'html'}),
+    url(r'^sitemap\.xml$', TemplateView.as_view(template_name='dalliz/sitemap.xml') ),#direct_to_template, {'template': 'dalliz/sitemap.xml', 'mimetype': 'xml'}),
     
-    url(r'^.*$', redirect_to, {'url': '/'}),
+    url(r'^.*$', RedirectView.as_view(url='/')),#redirect_to, {'url': '/'}),
     
     url(r'^produit/(?P<name>((\w)+-?)+)/?$','dalliz.views.product'),
     url(r'^categorie/(?P<sub_category>((\w)+-?)+)/?$','dalliz.views.category'),
