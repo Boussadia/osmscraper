@@ -110,7 +110,7 @@ class ProductIndexController(IndexController):
 
 		"""
 		reg = re.compile(r'\b[a-zA-Z]{3,}\b')
-		products = self.ProductModel.objects.filter(stemmed_text__isnull=False)
+		products = self.Model.objects.filter(stemmed_text__isnull=False)
 		documents = [{'id': p.id, 'tokens': reg.findall(p.stemmed_text)} for p in products]
 		self.service.train(documents, method=IndexController.METHOD)
 		self.service.index(documents)
@@ -121,7 +121,7 @@ class ProductIndexController(IndexController):
 			provided datetime.
 		"""
 		reg = re.compile(r'\b[a-zA-Z]{3,}\b')
-		products = self.ProductModel.objects.filter(stemmed_text__isnull=False)
+		products = self.Model.objects.filter(stemmed_text__isnull=False)
 		if datetime is not None:
 			products = products.filter(created__gte=datetime)
 		return [{'id': p.id, 'tokens': reg.findall(p.stemmed_text)} for p in products]
