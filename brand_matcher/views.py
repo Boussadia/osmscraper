@@ -10,7 +10,7 @@ import re
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
-from ooshop_brand_matcher.templates import templates
+from brand_matcher.templates import templates
 
 from ooshop.models import *
 from dalliz.models import Brand as Dalliz_brand
@@ -69,7 +69,7 @@ def selector(request, osm, id):
 
 	template_content = template.get_template(template.template_name)
 
-	return request, u'ooshop_brand_matcher/index.html', {u'content': template.render(), u'template': template_content, u'template_value': json.dumps(template_value)}
+	return request, u'brand_matcher/index.html', {u'content': template.render(), u'template': template_content, u'template_value': json.dumps(template_value)}
 
 
 
