@@ -5,3 +5,4 @@ sqlite_dbs
 .DS_Store
 osmscraper/static/*
 scrapers/run.py
+matcher/base/test.py
