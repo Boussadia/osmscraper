@@ -186,7 +186,7 @@ class BrandMatcher(Matcher):
 			ooshop_brand_id = None
 			monoprix_brand_id = None
 			auchan_brand_id = None
-			dalliz_brand_id = id_doc
+			dalliz_brand_id = None
 
 			if s['query_name'] == 'ooshop':
 				ooshop_brand_id = s['id']

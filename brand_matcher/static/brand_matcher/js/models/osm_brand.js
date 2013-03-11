@@ -3,18 +3,19 @@ define([
 	'underscore',
 	'backbone'
 ], function($,_, Backbone){
-	var Ooshop_brand = Backbone.Model.extend({
+	var osm_brand = Backbone.Model.extend({
 		defaults: {
-			'name': 'Marque Ooshop'
+			'name': 'Marque Brand',
+			'osm': 'ooshop'
 		},
 		initialize: function(){
 			return this;
 		},
 		cancel_match: function(){
 			var id = this.get('id');
-
+			var osm = this.get('osm');
 			$.ajax({
-				url: '/brand/ooshop/cancel/'+id,
+				url: '/backend/matcher/'+osm+'/brand/cancel/'+id,
 				type:"POST",
 				dataType:"json",
 				data:{},
@@ -32,6 +33,6 @@ define([
 		}
 	});
 
-	return Ooshop_brand;
+	return osm_brand;
 
 });

@@ -13,11 +13,11 @@ define([
 		initialize: function(){
 			return this;
 		},
-		set_match: function(id_ooshop_brand){
+		set_match: function(id_osm_brand, osm){
 			var dalliz_brand_id = this.get('id');
 
 			$.ajax({
-				url: '/brand/ooshop/set/'+id_ooshop_brand+'/'+dalliz_brand_id,
+				url: '/backend/matcher/'+osm+'/brand/set/'+id_osm_brand+'/'+dalliz_brand_id,
 				type:"POST",
 				dataType:"json",
 				data:{},

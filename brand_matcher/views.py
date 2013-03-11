@@ -12,8 +12,11 @@ from django.shortcuts import render
 
 from brand_matcher.templates import templates
 
-from ooshop.models import *
-from dalliz.models import Brand as Dalliz_brand
+from ooshop.models import NewBrand as OoshopBrand
+from monoprix.models import NewBrand as MonoprixBrand
+from auchan.models import Brand as AuchanBrand
+from dalliz.models import NewBrand as DallizBrand
+from matcher.models import BrandMatch
 
 
 
@@ -36,33 +39,41 @@ def hijax(function):
 @hijax
 def selector(request, osm, id):
 	template = templates.Brand_selector()
+	if osm == 'ooshop':
+		Brand = OoshopBrand
+	elif osm == 'monoprix':
+		Brand = MonoprixBrand
+
 	brand = Brand.objects.get(id= id)
-	ooshop_brand_template_value = {
+	osm_brand_template_value = {
 		'name': brand.name,
 		'id': brand.id,
-		'dalliz_brand_ids': [dalliz_brand.id for dalliz_brand in brand.dalliz_brand_m2m.all()],
+		'dalliz_brand_ids': [brandmatch.dalliz_brand.id for brandmatch in brand.brandmatch_set.all()],
 		'is_set_next_id': False,
-		'is_set_previous_id': False
+		'is_set_previous_id': False,
+		'osm': osm
 	}
+
 
 	# Next and previous elements : 
 	next_brands = Brand.objects.filter(id__gte = int(id)+1).order_by('id')
 	previous = Brand.objects.filter(id__lte= int(id)-1).order_by('-id')
 
 	if len(next_brands)>0:
-		ooshop_brand_template_value['is_set_next_id'] = True
-		ooshop_brand_template_value['next_id'] = next_brands[0].id
+		osm_brand_template_value['is_set_next_id'] = True
+		osm_brand_template_value['next_id'] = next_brands[0].id
 	if len(previous)>0:
-		ooshop_brand_template_value['is_set_previous_id'] = True
-		ooshop_brand_template_value['previous_id'] = previous[0].id
+		osm_brand_template_value['is_set_previous_id'] = True
+		osm_brand_template_value['previous_id'] = previous[0].id
 
-	template.set_ooshop_brand(ooshop_brand_template_value)
+	template.set_osm_brand(osm_brand_template_value)
 
-	matches_template_value = [ { 'id': match.dalliz_brand.id, 'name': match.dalliz_brand.name, 'score': match.score, 'is_match': (match.dalliz_brand.id in ooshop_brand_template_value['dalliz_brand_ids']) } for match in Brand_matching.objects.filter(ooshop_brand = brand).order_by('-score')]
+	matches_template_value = [ { 'id': match.dalliz_brand.id, 'name': match.dalliz_brand.name, 'score': match.score, 'is_match': (match.dalliz_brand.id in osm_brand_template_value['dalliz_brand_ids']) } for match in brand.brandsimilarity_set.filter(index_name='dalliz').distinct('dalliz_brand', 'score').order_by('-score')]
+
 	template.set_dalliz_brands(matches_template_value)
 
 	template_value = {
-		'ooshop_brand': ooshop_brand_template_value,
+		'osm_brand': osm_brand_template_value,
 		'dalliz_brands': matches_template_value
 	}
 
@@ -76,16 +87,20 @@ def selector(request, osm, id):
 def cancel(request, osm, id):
 	response = {}
 	if request.method == 'POST':
-		ooshop_brand = Brand.objects.filter(id=id)
+		if osm == 'ooshop':
+			Brand = OoshopBrand
+		elif osm == 'monoprix':
+			Brand = MonoprixBrand
+		osm_brand = Brand.objects.filter(id=id)
 
-		if len(ooshop_brand) == 1:
+		if len(osm_brand) == 1:
 			# Found entities in database
-			ooshop_brand = ooshop_brand[0]
+			osm_brand = osm_brand[0]
 
 			# Setting match
-			# ooshop_brand.dalliz_brand = None
-			# ooshop_brand.save()
-			ooshop_brand.dalliz_brand_m2m.clear()
+			# osm_brand.dalliz_brand = None
+			# osm_brand.save()
+			osm_brand.brandmatch_set.clear()
 
 			response = {'status': 200}
 		else:
@@ -98,18 +113,24 @@ def cancel(request, osm, id):
 def set(request, osm, osm_brand_id, dalliz_brand_id):
 	response = {}
 	if request.method == 'POST':
-		ooshop_brand = Brand.objects.filter(id=osm_brand_id)
-		dalliz_brand = Dalliz_brand.objects.filter(id=dalliz_brand_id)
+		if osm == 'ooshop':
+			Brand = OoshopBrand
+		elif osm == 'monoprix':
+			Brand = MonoprixBrand
+		osm_brand = Brand.objects.filter(id=osm_brand_id)
+		dalliz_brand = DallizBrand.objects.filter(id=dalliz_brand_id)
 
-		if len(ooshop_brand) == 1 and len(dalliz_brand) == 1:
+		if len(osm_brand) == 1 and len(dalliz_brand) == 1:
 			# Found entities in database
-			ooshop_brand = ooshop_brand[0]
+			osm_brand = osm_brand[0]
 			dalliz_brand = dalliz_brand[0]
 
 			# Setting match
-			# ooshop_brand.dalliz_brand = dalliz_brand
-			# ooshop_brand.save()
-			ooshop_brand.dalliz_brand_m2m.add(dalliz_brand)
+			# osm_brand.dalliz_brand = dalliz_brand
+			# osm_brand.save()
+			match, created = BrandMatch.objects.get_or_create(dalliz_brand = dalliz_brand)
+			osm_brand.brandmatch_set.clear()
+			osm_brand.brandmatch_set.add(match)
 
 			response = {'status': 200}
 		else:

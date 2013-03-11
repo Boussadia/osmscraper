@@ -40,8 +40,8 @@ logger = logging.getLogger('gensim.similarities.simserver')
 
 
 
-MODEL_METHOD = 'lsi' # use LSI to represent documents
-#MODEL_METHOD = 'tfidf'
+# MODEL_METHOD = 'lsi' # use LSI to represent documents
+MODEL_METHOD = 'tfidf'
 LSI_TOPICS = 1000
 TOP_SIMS = 100 # when precomputing similarities, only consider this many "most similar" documents
 SHARD_SIZE = 65536 # spill index shards to disk in SHARD_SIZE-ed chunks of documents
@@ -352,7 +352,7 @@ class SimModel(gensim.utils.SaveLoad):
         corpus = lambda: (self.dictionary.doc2bow(tokens) for tokens in preprocessed())
         if method == 'lsi':
             logger.info("training TF-IDF model")
-            self.tfidf = gensim.models.TfidfModel(corpus(), id2word=self.dictionary)
+            self.tfidf = gensim.models.TfidfModel(corpus(), id2word=self.dictionary, normalize=True)
             logger.info("training LSI model")
             tfidf_corpus = self.tfidf[corpus()]
             self.lsi = gensim.models.LsiModel(tfidf_corpus, id2word=self.dictionary, num_topics=LSI_TOPICS)
@@ -364,7 +364,7 @@ class SimModel(gensim.utils.SaveLoad):
             self.num_features = len(self.dictionary)
         elif method == 'tfidf':
             logger.info("training TF-IDF model")
-            self.tfidf = gensim.models.TfidfModel(corpus(), id2word=self.dictionary)
+            self.tfidf = gensim.models.TfidfModel(corpus(), normalize=True)
             self.num_features = len(self.dictionary)
         else:
             msg = "unknown semantic method %s" % method

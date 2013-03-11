@@ -11,14 +11,14 @@ define([
 			this.selector_view = new SelectorView();
 			this.selector_view.set_router(this);
 
-			// Regex route : /brand/ooshop/:id
-			this.route(/^brand\/ooshop\/(\d+)\/?$/, 'selector');
+			// Regex route : /brand/osm/:id
+			this.route(/^backend\/matcher\/(\w+)\/brand\/(\d+)\/?$/, 'selector');
 			return this;
 		},
-		selector: function(id){
+		selector: function(osm, id){
 			var router = this;
 			$.ajax({
-				url: '/brand/ooshop/'+id+'/',
+				url: '/backend/matcher/'+osm+'/brand/'+id+'/',
 				type:"GET",
 				dataType:"json",
 				data:{},
