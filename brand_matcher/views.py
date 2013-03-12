@@ -125,11 +125,25 @@ def set(request, osm, osm_brand_id, dalliz_brand_id):
 			osm_brand = osm_brand[0]
 			dalliz_brand = dalliz_brand[0]
 
-			# Setting match
-			# osm_brand.dalliz_brand = dalliz_brand
-			# osm_brand.save()
-			match, created = BrandMatch.objects.get_or_create(dalliz_brand = dalliz_brand)
-			osm_brand.brandmatch_set.clear()
+			# matches = BrandMatch.objects.filter(dalliz_brand = dalliz_brand)
+			# if osm == 'ooshop':
+			# 	matches = matches.filter(ooshop_brand = osm_brand)
+			# elif osm == 'monoprix':
+			# 	matches = matches.filter(monoprix_brand = osm_brand)
+
+			# if len(matches) == 0:
+			# 	match = BrandMatch(dalliz_brand = dalliz_brand)
+			# 	if osm == 'ooshop':
+			# 		match.ooshop_brand = osm_brand
+			# 	elif osm == 'monoprix':
+			# 		matches = matches.filter(monoprix_brand = osm_brand)
+
+			if osm == 'ooshop':
+				match, created = BrandMatch.objects.get_or_create(ooshop_brand = osm_brand)
+			elif osm == 'monoprix':
+				match, created = BrandMatch.objects.get_or_create(monoprix_brand = osm_brand)
+			match.dalliz_brand = dalliz_brand
+			# osm_brand.brandmatch_set.clear()
 			osm_brand.brandmatch_set.add(match)
 
 			response = {'status': 200}

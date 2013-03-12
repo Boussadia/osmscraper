@@ -113,7 +113,7 @@ class BrandMatch(models.Model):
 	monoprix_brand = models.ForeignKey(MonoprixBrand, null = True)
 	ooshop_brand = models.ForeignKey(OoshopBrand, null = True)
 	auchan_brand = models.ForeignKey(AuchanBrand, null = True)
-	dalliz_brand = models.ForeignKey(DallizBrand, null = True)
+	dalliz_brand = models.ForeignKey(DallizBrand)
 	created = models.DateTimeField(auto_now_add=True)
 
 	class Meta:
