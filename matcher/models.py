@@ -110,11 +110,14 @@ class ProductMatch(models.Model):
 		return '%s | %s | %s'%(str(monoprix_product), str(ooshop_product), str(auchan_product))
 
 class BrandMatch(models.Model):
-	monoprix_brand = models.ForeignKey(MonoprixBrand, null = True, unique = True)
-	ooshop_brand = models.ForeignKey(OoshopBrand, null = True, unique = True)
-	auchan_brand = models.ForeignKey(AuchanBrand, null = True, unique = True)
-	dalliz_brand = models.ForeignKey(DallizBrand, null = True, unique = True)
+	monoprix_brand = models.ForeignKey(MonoprixBrand, null = True)
+	ooshop_brand = models.ForeignKey(OoshopBrand, null = True)
+	auchan_brand = models.ForeignKey(AuchanBrand, null = True)
+	dalliz_brand = models.ForeignKey(DallizBrand, null = True)
 	created = models.DateTimeField(auto_now_add=True)
+
+	class Meta:
+		unique_together = (("dalliz_brand", "auchan_brand"),("dalliz_brand", "ooshop_brand"),("dalliz_brand", "monoprix_brand"),)
 
 	def __unicode__(self):
 		return '%s | %s | %s'%(str(monoprix_brand), str(ooshop_brand), str(auchan_brand))
