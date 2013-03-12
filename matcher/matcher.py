@@ -166,6 +166,7 @@ class BrandMatcher(Matcher):
 	DEFAULT_INDEXER_CLASSES = [OoshopBrandIndexController, MonoprixBrandIndexController, DallizBrandIndexController]
 	def __init__(self, indexer_classes = DEFAULT_INDEXER_CLASSES):
 		super(BrandMatcher, self).__init__(indexer_classes, MatcherLog, BrandSimilarity)
+		print self.indexers
 
 	def set_new_documents(self):
 		self.documents = {}

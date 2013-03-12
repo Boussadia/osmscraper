@@ -343,7 +343,7 @@ class SimModel(gensim.utils.SaveLoad):
         if dictionary is None:
             self.dictionary = gensim.corpora.Dictionary(preprocessed())
             if len(docids) >= 1000:
-                self.dictionary.filter_extremes(no_below=5, no_above=0.2, keep_n=50000)
+                self.dictionary.filter_extremes(no_below=0, no_above=1.0, keep_n=50000)
             else:
                 logger.warning("training model on only %i documents; is this intentional?" % len(docids))
                 self.dictionary.filter_extremes(no_below=0, no_above=1.0, keep_n=50000)
@@ -364,7 +364,7 @@ class SimModel(gensim.utils.SaveLoad):
             self.num_features = len(self.dictionary)
         elif method == 'tfidf':
             logger.info("training TF-IDF model")
-            self.tfidf = gensim.models.TfidfModel(corpus(), normalize=True)
+            self.tfidf = gensim.models.TfidfModel(corpus(), id2word=self.dictionary, normalize=True)
             self.num_features = len(self.dictionary)
         else:
             msg = "unknown semantic method %s" % method
