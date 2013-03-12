@@ -77,179 +77,196 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 		store = location
 
 		for i in xrange(0, len(products)):
-			# try:
-			product = products[i]
-			if 'exists' in product and not product['exists']:
-				# Product does not exist, set it in database
-				product_db = Product.objects.filter(reference = product['reference'])
-				if len(product_db)>0:
-					product_db = product_db[0]
-					product_db.exists = False
-					product_db.save()
+			try:
+				product = products[i]
+				if 'exists' in product and not product['exists']:
+					# Product does not exist, set it in database
+					product_db = Product.objects.filter(reference = product['reference'])
+					if len(product_db)>0:
+						product_db = product_db[0]
+						product_db.exists = False
+						product_db.save()
 
-				return []
+					return []
 
-			availability = product['is_available']
+				availability = product['is_available']
 
-			if not availability:
+				if not availability:
+					reference = product['reference']
+
+					# Getting product from database, and saving history indicating non availability
+					product = Product.objects.filter(reference = reference)
+					if len(product):
+						product = product[0]
+						history = History(product = product, availability = False, store = store)
+						history.save()
+						return
+
+
+				# Common
 				reference = product['reference']
-
-				# Getting product from database, and saving history indicating non availability
-				product = Product.objects.filter(reference = reference)
-				if len(product):
-					product = product[0]
-					history = History(product = product, availability = False, store = store)
-					history.save()
-					return
-
-
-			# Common
-			reference = product['reference']
-			name = product['name']
-			url = product['url'].split(';jsessionid=')[0]
-			html = product['html']
-			if 'parent_brand' in product:
-				parent_brand = product['parent_brand']
-			else:
-				parent_brand = None
-
-			if 'brand' in product and product['brand'] != '':
-				brand = self.save_brand(product['brand'], parent_brand = parent_brand)
-			else:
-				brand = None
-
-			if 'unit' in product and product['unit'] != '':
-				unit = self.save_unit(product['unit'])
-			else:
-				unit = None
-
-			image_url = product['product_image_url'].split(';jsessionid=')[0]
-
-			# Promotion specific
-			if product['is_promotion']:
-				after = product['promotion']['after']
-				before = product['promotion']['before']
-				unit_price = product['promotion']['unit_price']
-				if 'date_start' in product['promotion'] and 'date_end' in product['promotion']:
-					start = date(year = int(product['promotion']['date_start']['year']), month = int(product['promotion']['date_start']['month']), day = int(product['promotion']['date_start']['day']))
-					end = date(year = int(product['promotion']['date_end']['year']), month = int(product['promotion']['date_end']['month']), day = int(product['promotion']['date_end']['day']))
+				name = product['name']
+				url = product['url'].split(';jsessionid=')[0]
+				html = product['html']
+				if 'parent_brand' in product:
+					parent_brand = product['parent_brand']
 				else:
-					start = None
-					end = None
+					parent_brand = None
 
-			if product['is_product']:
-				# Detailed information
-				if 'information' in product and u'Description' in product['information']:
-					description = product['information'][u'Description']
+				if 'brand' in product and product['brand'] != '':
+					brand = self.save_brand(product['brand'], parent_brand = parent_brand)
 				else:
-					description = None
-				#
-				if 'information' in product and u'Conservation' in product['information']:
-					conservation = product['information'][u'Conservation']
+					brand = None
+
+				if 'unit' in product and product['unit'] != '':
+					unit = self.save_unit(product['unit'])
 				else:
-					conservation = None
+					unit = None
 
-				if 'information' in product and u"Conseil" in product['information']:
-					conseil = product['information'][u"Conseil"]
-				else:
-					conseil = None
-				# done
-				if 'information' in product and u'Ingrédients' in product['information']:
-					ingredients = product['information'][u'Ingrédients']
-				else:
-					ingredients = None
+				image_url = product['product_image_url'].split(';jsessionid=')[0]
 
-				if 'information' in product and u'Composition' in product['information']:
-					composition = product['information'][u'Composition']
-				else:
-					composition = None
-				#
-				if 'information' in product and u'Valeur nutritionnelle' in product['information']:
-					valeur_nutritionnelle = product['information'][u'Valeur nutritionnelle']
-				else:
-					valeur_nutritionnelle = None
+				# Promotion specific
+				if product['is_promotion']:
+					after = product['promotion']['after']
+					before = product['promotion']['before']
+					unit_price = product['promotion']['unit_price']
+					if 'date_start' in product['promotion'] and 'date_end' in product['promotion']:
+						start = date(year = int(product['promotion']['date_start']['year']), month = int(product['promotion']['date_start']['month']), day = int(product['promotion']['date_start']['day']))
+						end = date(year = int(product['promotion']['date_end']['year']), month = int(product['promotion']['date_end']['month']), day = int(product['promotion']['date_end']['day']))
+					else:
+						start = None
+						end = None
 
-				# Package
-				if 'package' in product and 'unit' in product['package']:
-					package_unit = product['package']['unit']
-				else:
-					package_unit = None
+				if product['is_product']:
+					# Detailed information
+					if 'information' in product and u'Description' in product['information']:
+						description = product['information'][u'Description']
+					else:
+						description = None
+					#
+					if 'information' in product and u'Conservation' in product['information']:
+						conservation = product['information'][u'Conservation']
+					else:
+						conservation = None
 
-				if 'package' in product and 'quantity_measure' in product['package']:
-					package_measure = float(product['package']['quantity_measure'])
-				else:
-					package_measure = None
+					if 'information' in product and u"Conseil" in product['information']:
+						conseil = product['information'][u"Conseil"]
+					else:
+						conseil = None
+					# done
+					if 'information' in product and u'Ingrédients' in product['information']:
+						ingredients = product['information'][u'Ingrédients']
+					else:
+						ingredients = None
 
-				if 'package' in product and 'quantity' in product['package']:
-					package_quantity = int(product['package']['quantity'])
-				else:
-					package_quantity = None
+					if 'information' in product and u'Composition' in product['information']:
+						composition = product['information'][u'Composition']
+					else:
+						composition = None
+					#
+					if 'information' in product and u'Valeur nutritionnelle' in product['information']:
+						valeur_nutritionnelle = product['information'][u'Valeur nutritionnelle']
+					else:
+						valeur_nutritionnelle = None
 
-				# Saving product to database
-				product_db, created = Product.objects.get_or_create(reference = reference, defaults={
-					'name': name,
-					'url': url,
-					'image_url': image_url,
-					'brand': brand,
-					'unit': unit,
-					'description': description,
-					'ingredients': ingredients,
-					'valeur_nutritionnelle': valeur_nutritionnelle,
-					'conservation': conservation,
-					'conseil': conseil,
-					'composition': composition,
-					'package_unit': package_unit,
-					'package_quantity': package_quantity,
-					'package_measure': package_measure
-					})
+					# Package
+					if 'package' in product and 'unit' in product['package']:
+						package_unit = product['package']['unit']
+					else:
+						package_unit = None
 
-				if not created:
-					product_db.name = name
-					product_db.url = url
-					product_db.reference = reference
-					product_db.brand = brand
-					product_db.unit = unit
-					product_db.description = description
-					product_db.ingredients = ingredients
-					product_db.valeur_nutritionnelle = valeur_nutritionnelle
-					product_db.conservation = conservation
-					product_db.conseil = conseil
-					product_db.composition = composition
-					product_db.package_unit = package_unit
-					product_db.package_quantity = package_quantity
-					product_db.package_measure = package_measure
-					product_db.save()
+					if 'package' in product and 'quantity_measure' in product['package']:
+						package_measure = float(product['package']['quantity_measure'])
+					else:
+						package_measure = None
 
-				# Do we need to save the html in the product?
-				if 'information' in product:
-					product_db.html = html
-					product_db.stemmed_text = MonoprixStemmer(html).stem_text()
-					product_db.save()
+					if 'package' in product and 'quantity' in product['package']:
+						package_quantity = int(product['package']['quantity'])
+					else:
+						package_quantity = None
 
-				# Adding category to Product
-				if id_parent_category:
-					cat = Category.objects.filter(id = id_parent_category)
-					if len(cat) == 1:
-						product_db.categories.add(cat[0])
+					# Saving product to database
+					product_db, created = Product.objects.get_or_create(reference = reference, defaults={
+						'name': name,
+						'url': url,
+						'image_url': image_url,
+						'brand': brand,
+						'unit': unit,
+						'description': description,
+						'ingredients': ingredients,
+						'valeur_nutritionnelle': valeur_nutritionnelle,
+						'conservation': conservation,
+						'conseil': conseil,
+						'composition': composition,
+						'package_unit': package_unit,
+						'package_quantity': package_quantity,
+						'package_measure': package_measure
+						})
 
-				if not product['is_promotion']:
-					# Saving image
-					product_db.image_url = image_url
-					product_db.save()
+					if not created:
+						product_db.name = name
+						product_db.url = url
+						product_db.reference = reference
+						product_db.brand = brand
+						product_db.unit = unit
+						product_db.description = description
+						product_db.ingredients = ingredients
+						product_db.valeur_nutritionnelle = valeur_nutritionnelle
+						product_db.conservation = conservation
+						product_db.conseil = conseil
+						product_db.composition = composition
+						product_db.package_unit = package_unit
+						product_db.package_quantity = package_quantity
+						product_db.package_measure = package_measure
+						product_db.save()
 
-					# Prices for history
-					price = product['price']
-					unit_price = product['unit_price']
+					# Do we need to save the html in the product?
+					if 'information' in product:
+						product_db.html = html
+						product_db.stemmed_text = MonoprixStemmer(html).stem_text()
+						product_db.save()
 
-					# Saving history to database
-					history = History(product = product_db, price = price, unit_price = unit_price, availability = availability, html = html, store = store)
-					history.save()
+					# Adding category to Product
+					if id_parent_category:
+						cat = Category.objects.filter(id = id_parent_category)
+						if len(cat) == 1:
+							product_db.categories.add(cat[0])
 
-				elif product['promotion']['type'] == 'simple':
-					# Simple promotion
-					promotion, created = Promotion.objects.get_or_create(reference = reference, defaults = {'type': Promotion.SIMPLE, 'url': url, 'image_url': image_url, 'before': before, 'after': after, 'unit_price': unit_price, 'start': start, 'end': end, 'store': store, 'availability': availability, 'html': html})
+					if not product['is_promotion']:
+						# Saving image
+						product_db.image_url = image_url
+						product_db.save()
+
+						# Prices for history
+						price = product['price']
+						unit_price = product['unit_price']
+
+						# Saving history to database
+						history = History(product = product_db, price = price, unit_price = unit_price, availability = availability, html = html, store = store)
+						history.save()
+
+					elif product['promotion']['type'] == 'simple':
+						# Simple promotion
+						promotion, created = Promotion.objects.get_or_create(reference = reference, defaults = {'type': Promotion.SIMPLE, 'url': url, 'image_url': image_url, 'before': before, 'after': after, 'unit_price': unit_price, 'start': start, 'end': end, 'store': store, 'availability': availability, 'html': html})
+						if created:
+							promotion.type = Promotion.SIMPLE
+							promotion.url = url
+							promotion.image_url= image_url
+							promotion.before = before
+							promotion.after = after
+							promotion.unit_price = unit_price
+							promotion.start = start
+							promotion.end = end
+							promotion.store = store
+							promotion.availability = availability
+							promotion.html =  html
+							promotion.save()
+						promotion.content.add(product_db)
+				elif product['is_product'] == False and product['is_promotion'] and product['promotion']['type'] == 'multi':
+					# Multi promotion
+					promotion, created = Promotion.objects.get_or_create(reference = reference, store = store, defaults = {'type': Promotion.MULTI, 'url': url, 'image_url': image_url, 'before': before, 'after': after, 'unit_price': unit_price, 'start': start, 'end': end, 'availability': availability, 'html': html})
 					if created:
-						promotion.type = Promotion.SIMPLE
+						promotion.type = Promotion.MULTI
 						promotion.url = url
 						promotion.image_url= image_url
 						promotion.before = before
@@ -257,42 +274,25 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 						promotion.unit_price = unit_price
 						promotion.start = start
 						promotion.end = end
-						promotion.store = store
 						promotion.availability = availability
 						promotion.html =  html
 						promotion.save()
-					promotion.content.add(product_db)
-			elif product['is_product'] == False and product['is_promotion'] and product['promotion']['type'] == 'multi':
-				# Multi promotion
-				promotion, created = Promotion.objects.get_or_create(reference = reference, store = store, defaults = {'type': Promotion.MULTI, 'url': url, 'image_url': image_url, 'before': before, 'after': after, 'unit_price': unit_price, 'start': start, 'end': end, 'availability': availability, 'html': html})
-				if created:
-					promotion.type = Promotion.MULTI
-					promotion.url = url
-					promotion.image_url= image_url
-					promotion.before = before
-					promotion.after = after
-					promotion.unit_price = unit_price
-					promotion.start = start
-					promotion.end = end
-					promotion.availability = availability
-					promotion.html =  html
-					promotion.save()
-				# Adding content of package
-				if 'references' in product['promotion']:
-					for reference in product['promotion']['references']:
-						# Is there a product with reference?
-						content_product = Product.objects.filter(reference = reference)
-						if len(content_product)>0:
-							content_product = content_product[0]
-						else:
-							content_product = Product(reference = reference)
-							content_product.save()
-						promotion.content.add(content_product)
-			# except DatabaseError, e:
-			# 	connection._rollback()
-			# 	print 'Failed to save product to database %s'%(e)
-			# 	print product, id_parent_category, store
-			# 	raise e
+					# Adding content of package
+					if 'references' in product['promotion']:
+						for reference in product['promotion']['references']:
+							# Is there a product with reference?
+							content_product = Product.objects.filter(reference = reference)
+							if len(content_product)>0:
+								content_product = content_product[0]
+							else:
+								content_product = Product(reference = reference)
+								content_product.save()
+							promotion.content.add(content_product)
+			except DatabaseError, e:
+				connection._rollback()
+				print 'Failed to save product to database %s'%(e)
+				print product, id_parent_category, store
+				raise e
 			
 
 	def save_brand(self, brand_name, parent_brand = None):
@@ -301,10 +301,10 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 		"""
 		if parent_brand == '':
 			parent_brand = None
-		else:
-			parent_brand, created = Brand.objects.get_or_create(name = unicode(parent_brand))
+
 		brand, created = Brand.objects.get_or_create(name = unicode(brand_name))
-		if parent_brand is not None and brand != parent_brand:
+		if parent_brand is not None and unicode(brand_name) != unicode(parent_brand):
+			parent_brand, created = Brand.objects.get_or_create(name = unicode(parent_brand))
 			brand.parent_brand = parent_brand
 			brand.save()
 		return brand
