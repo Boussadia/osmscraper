@@ -139,10 +139,11 @@ def set(request, osm, osm_brand_id, dalliz_brand_id):
 			# 		matches = matches.filter(monoprix_brand = osm_brand)
 
 			if osm == 'ooshop':
-				match, created = BrandMatch.objects.get_or_create(ooshop_brand = osm_brand)
+				match, created = BrandMatch.objects.get_or_create(ooshop_brand = osm_brand, defaults = {'dalliz_brand': dalliz_brand})
 			elif osm == 'monoprix':
-				match, created = BrandMatch.objects.get_or_create(monoprix_brand = osm_brand)
+				match, created = BrandMatch.objects.get_or_create(monoprix_brand = osm_brand, defaults = {'dalliz_brand': dalliz_brand})
 			match.dalliz_brand = dalliz_brand
+			match.save()
 			# osm_brand.brandmatch_set.clear()
 			osm_brand.brandmatch_set.add(match)
 
