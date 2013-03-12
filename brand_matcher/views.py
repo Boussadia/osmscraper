@@ -68,7 +68,7 @@ def selector(request, osm, id):
 
 	template.set_osm_brand(osm_brand_template_value)
 
-	matches_template_value = [ { 'id': match.dalliz_brand.id, 'name': match.dalliz_brand.name, 'score': match.score, 'is_match': (match.dalliz_brand.id in osm_brand_template_value['dalliz_brand_ids']) } for match in brand.brandsimilarity_set.filter(index_name='dalliz').distinct('dalliz_brand', 'score').order_by('-score')]
+	matches_template_value = [ { 'id': match.dalliz_brand.id, 'name': match.dalliz_brand.name, 'score': match.score, 'is_match': (match.dalliz_brand.id in osm_brand_template_value['dalliz_brand_ids']) } for match in brand.brandsimilarity_set.filter(index_name='dalliz').distinct('dalliz_brand').order_by('-score')]
 
 	template.set_dalliz_brands(matches_template_value)
 
