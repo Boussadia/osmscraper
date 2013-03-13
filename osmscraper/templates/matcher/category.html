@@ -1,0 +1,79 @@
+<html>
+	<head>
+		<title>{{ category.name }}</title>
+		<link rel="stylesheet" type="text/css" href="{% static matcher/css/tags.css %}">
+		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+	</head>
+	<body>
+
+		<h1> Catégorie Dalliz : {{ category.name }}</h1>
+
+		{% for cat in categories %}
+			<h2> Catégorie {{ category.osm }} : {{ cat.name }}</h2>
+			<ul class='main'>
+				{% for product in cat.products %}
+					<li class='product'>
+						<ul class='line'>
+							<li class='first'>
+								<div class='block'>
+									<a href="{{product.url}}" target="_blank"><img src="{{product.image_url}}"></a>
+								</div>
+								<div class='block'>
+									<p class='brand'>{{product.brand}}</p>
+									<p class='name'>{{product.name}}</p>
+									<p class='quantity'>{{product.quantity}} {{product.unit}}</p>
+								</div>
+								<div class='block'>
+									<h3> Catégories</h3>
+									{% for c in product.possible_categories %}
+										<p class='cat'>{{c.name}}</p>
+									{% endfor %}
+								</div>
+								<div class='block'>
+									<h3> Tags</h3>
+									{% for t in product.possible_tags %}
+										<p class='tag'>{{t.name}}</p>
+									{% endfor %}
+								</div>
+								<div class='block'>
+									<h3> Save </h3>
+									<button class='save btn-success'>Save</button>
+									<button class='reset btn-info'>Reset</button>
+								</div>
+							</li>
+							{% for osm, sim in product.similarities.items %}
+								{% for p in sim %}
+									<li class='sim'>
+										<div class='block'>
+											<a href="{{p.url}}" target="_blank"><img src="{{p.image_url}}"></a>
+											<br/>
+											<button class='merge btn-danger'> Merge</button>
+										</div>
+										<div class='block'>
+											<p class='brand'>{{p.brand}}</p>
+											<p class='name'>{{p.name}}</p>
+											<p class='quantity'>{{p.quantity}} {{p.unit}}</p>
+										</div>
+										<div class='block'>
+											<h3> Catégories</h3>
+											{% for c in p.possible_categories %}
+												<p class='cat'>{{c.name}}</p>
+											{% endfor %}
+										</div>
+										<div class='block'>
+											<h3> Tags</h3>
+											{% for t in p.possible_tags %}
+												<p class='tag'>{{t.name}}</p>
+											{% endfor %}
+										</div>
+									</li>
+								{% endfor %}
+							{% endfor %}
+						</ul>
+					</li>
+				{% endfor%}
+			</ul>
+		{% endfor %}
+
+	</body>
+</html>
