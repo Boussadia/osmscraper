@@ -47,7 +47,7 @@ def categories(request, osm, level, parent='0'):
 
 	if Category:
 		categories = Category.objects.all()
-		print parent == '0'
+
 		if parent != '0':
 			categories = categories.filter(parent_category_id = parent)
 		else:

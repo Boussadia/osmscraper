@@ -42,21 +42,21 @@ class ProductSimilarity(models.Model):
 	def __unicode__(self):
 		query_from = -1
 		index_to = -1
-		if query_name == 'ooshop':
-			query_from = ooshop_product
-		if query_name == 'monoprix':
-			query_from = monoprix_product
-		if query_name == 'auchan':
-			query_from = auchan_product
+		if self.query_name == 'ooshop':
+			query_from = self.ooshop_product
+		if self.query_name == 'monoprix':
+			query_from = self.monoprix_product
+		if self.query_name == 'auchan':
+			query_from = self.auchan_product
 
-		if index_name == 'ooshop':
-			index_to = ooshop_product
-		if index_name == 'monoprix':
-			index_to = monoprix_product
-		if index_name == 'auchan':
-			index_to = auchan_product
+		if self.index_name == 'ooshop':
+			index_to = self.ooshop_product
+		if self.index_name == 'monoprix':
+			index_to = self.monoprix_product
+		if self.index_name == 'auchan':
+			index_to = self.auchan_product
 
-		return 'From %s to %s, %s -> %s with score %f'%(query_name, index_name, query_from, index_to)
+		return 'From %s to %s, %s -> %s with score %f'%(self.query_name, self.index_name, query_from, index_to, self.score)
 
 class BrandSimilarity(models.Model):
 	query_name = models.TextField()
@@ -74,21 +74,21 @@ class BrandSimilarity(models.Model):
 	def __unicode__(self):
 		query_from = -1
 		index_to = -1
-		if query_name == 'ooshop':
-			query_from = ooshop_brand
-		if query_name == 'monoprix':
-			query_from = monoprix_brand
-		if query_name == 'auchan':
-			query_from = auchan_brand
+		if self.query_name == 'ooshop':
+			query_from = self.ooshop_brand
+		if self.query_name == 'monoprix':
+			query_from = self.monoprix_brand
+		if self.query_name == 'auchan':
+			query_from = self.auchan_brand
 
-		if index_name == 'ooshop':
-			index_to = ooshop_brand
-		if index_name == 'monoprix':
-			index_to = monoprix_brand
-		if index_name == 'auchan':
-			index_to = auchan_brand
+		if self.index_name == 'ooshop':
+			index_to = self.ooshop_brand
+		if self.index_name == 'monoprix':
+			index_to = self.monoprix_brand
+		if self.index_name == 'auchan':
+			index_to = self.auchan_brand
 
-		return 'From %s to %s, %s -> %s with score %f'%(query_name, index_name, query_from, index_to)
+		return 'From %s to %s, %s -> %s with score %f'%(self.query_name, self.index_name, query_from, index_to, self.score)
 
 class PossibleMatch(models.Model):
 	# TO DO : add user id

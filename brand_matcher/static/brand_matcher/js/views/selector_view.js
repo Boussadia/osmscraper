@@ -4,7 +4,8 @@ define([
 	'backbone',
 	'mustache',
 	'models/choices',
-	'models/osm_brand'
+	'models/osm_brand',
+	'jqueryUi'
 ], function($,_, Backbone, Mustache, Choices, osm_brand){
 	var SelectorView = Backbone.View.extend({
 		el: $('section#content'),
@@ -14,6 +15,24 @@ define([
 			var template = $('#template').text();
 			var out = Mustache.render(template, template_value);
 			this.$el.html(out);
+			var suggested = {};
+			var that = this;
+
+			$('input#autocomplete').autocomplete({
+				autoFocus: true,
+				source: "/backend/matcher/brand/autocomplete/",
+				select: function( event, ui ) {
+					suggested = ui['item'];
+				}
+			});
+
+			$('#more button').click(function(){
+				if (Object.keys(suggested).length > 0){
+					template_value['dalliz_brands'].push(suggested);
+					that.render().$el.find('button[data-id='+suggested['id']+']')
+										.click();
+				}
+			})
 			// Keybord listener on previous and next
 			$('html').keyup(function(e){
 				if(e.keyCode === 39){
@@ -24,6 +43,7 @@ define([
 					$('#btn-previous').click();
 				}
 			})
+			return this
 		},
 		set_proper_data: function(){
 			this.choices = new Choices(template_value['dalliz_brands']);

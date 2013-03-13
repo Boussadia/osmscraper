@@ -43,24 +43,14 @@ urlpatterns = patterns('',
     url(r'^backend/categories_matcher/delete_link/?$', 'categories_matcher.views.delete_link'),
     url(r'^backend/categories_matcher/get_links/(?P<osm>(\w)+)/(?P<category_id>\d+)/?$', 'categories_matcher.views.get_links'),
 
-    # Telemarket/Monoprix products validation
-    url(r'^telemarket_monoprix/products/?$', 'telemarket_monoprix.views.index'),
-    url(r'^telemarket_monoprix/products/suggestions/(?P<id>\d+)/?$', 'telemarket_monoprix.views.suggestions'),
-    url(r'^telemarket_monoprix/products/next/(?P<id>\d+)/?$', 'telemarket_monoprix.views.next'),
-    url(r'^telemarket_monoprix/products/previous/(?P<id>\d+)/?$', 'telemarket_monoprix.views.previous'),
-    url(r'^telemarket_monoprix/products/cancel/(?P<id>\d+)/?$', 'telemarket_monoprix.views.cancel'),
-
-    # Ooshop/Monoprix products validation
-    url(r'^ooshop_monoprix/products/?$', 'ooshop_monoprix.views.index'),
-    url(r'^ooshop_monoprix/products/suggestions/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.suggestions'),
-    url(r'^ooshop_monoprix/products/next/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.next'),
-    url(r'^ooshop_monoprix/products/previous/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.previous'),
-    url(r'^ooshop_monoprix/products/cancel/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.cancel'),
-
     # Brand matcher
     url(r'^backend/matcher/(?P<osm>(\w)+)/brand/(?P<id>\d+)/?$','brand_matcher.views.selector'),
     url(r'^backend/matcher/(?P<osm>(\w)+)/brand/cancel/(?P<id>\d+)/?$', 'brand_matcher.views.cancel'),
+    url(r'^backend/matcher/brand/autocomplete/?$', 'brand_matcher.views.autocomplete'),
     url(r'^backend/matcher/(?P<osm>(\w)+)/brand/set/(?P<osm_brand_id>\d+)/(?P<dalliz_brand_id>\d+)/?$', 'brand_matcher.views.set'),
+
+    # Product tags cleaner
+    url(r'^backend/matcher/(?P<osm>(\w)+)/tags/(?P<category_id>\d+)/?$','matcher.views.category'),
 
     # Dalliz website
     url(r'^/?$', 'dalliz.views.index'),
@@ -83,6 +73,20 @@ urlpatterns = patterns('',
     url(r'^login/?$','dalliz.views.login'),
     url(r'^logout/?$','dalliz.views.logout'),
     url(r'^compte/?$','dalliz.views.account'),
+
+    # # Telemarket/Monoprix products validation
+    # url(r'^telemarket_monoprix/products/?$', 'telemarket_monoprix.views.index'),
+    # url(r'^telemarket_monoprix/products/suggestions/(?P<id>\d+)/?$', 'telemarket_monoprix.views.suggestions'),
+    # url(r'^telemarket_monoprix/products/next/(?P<id>\d+)/?$', 'telemarket_monoprix.views.next'),
+    # url(r'^telemarket_monoprix/products/previous/(?P<id>\d+)/?$', 'telemarket_monoprix.views.previous'),
+    # url(r'^telemarket_monoprix/products/cancel/(?P<id>\d+)/?$', 'telemarket_monoprix.views.cancel'),
+
+    # # Ooshop/Monoprix products validation
+    # url(r'^ooshop_monoprix/products/?$', 'ooshop_monoprix.views.index'),
+    # url(r'^ooshop_monoprix/products/suggestions/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.suggestions'),
+    # url(r'^ooshop_monoprix/products/next/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.next'),
+    # url(r'^ooshop_monoprix/products/previous/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.previous'),
+    # url(r'^ooshop_monoprix/products/cancel/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.cancel'),
 )
 
 

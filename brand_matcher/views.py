@@ -6,9 +6,12 @@ import simplejson as json
 import hashlib
 from time import time
 import re
+import itertools
 
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+
+from osmscraper.unaccent import unaccent
 
 from brand_matcher.templates import templates
 
@@ -17,6 +20,11 @@ from monoprix.models import NewBrand as MonoprixBrand
 from auchan.models import Brand as AuchanBrand
 from dalliz.models import NewBrand as DallizBrand
 from matcher.models import BrandMatch
+
+available_osm = {
+	'ooshop':OoshopBrand,
+	'monoprix': MonoprixBrand
+}
 
 
 
@@ -39,16 +47,15 @@ def hijax(function):
 @hijax
 def selector(request, osm, id):
 	template = templates.Brand_selector()
-	if osm == 'ooshop':
-		Brand = OoshopBrand
-	elif osm == 'monoprix':
-		Brand = MonoprixBrand
+	if osm in available_osm:
+		Brand = available_osm[osm]
 
 	brand = Brand.objects.get(id= id)
 	osm_brand_template_value = {
 		'name': brand.name,
 		'id': brand.id,
 		'dalliz_brand_ids': [brandmatch.dalliz_brand.id for brandmatch in brand.brandmatch_set.all()],
+		'dalliz_brand_names': {brandmatch.dalliz_brand.id:brandmatch.dalliz_brand.name for brandmatch in brand.brandmatch_set.all()},
 		'is_set_next_id': False,
 		'is_set_previous_id': False,
 		'osm': osm
@@ -56,8 +63,8 @@ def selector(request, osm, id):
 
 
 	# Next and previous elements : 
-	next_brands = Brand.objects.filter(id__gte = int(id)+1).order_by('id')
-	previous = Brand.objects.filter(id__lte= int(id)-1).order_by('-id')
+	next_brands = Brand.objects.filter(parent_brand__isnull=True).filter(id__gte = int(id)+1).order_by('id')
+	previous = Brand.objects.filter(parent_brand__isnull=True).filter(id__lte= int(id)-1).order_by('-id')
 
 	if len(next_brands)>0:
 		osm_brand_template_value['is_set_next_id'] = True
@@ -69,6 +76,7 @@ def selector(request, osm, id):
 	template.set_osm_brand(osm_brand_template_value)
 
 	matches_template_value = [ { 'id': match.dalliz_brand.id, 'name': match.dalliz_brand.name, 'score': match.score, 'is_match': (match.dalliz_brand.id in osm_brand_template_value['dalliz_brand_ids']) } for match in brand.brandsimilarity_set.filter(index_name='dalliz').distinct('dalliz_brand', 'score').order_by('-score')]
+	[matches_template_value.append( item ) for item in [ {'id': dalliz_brand_id, 'name': osm_brand_template_value['dalliz_brand_names'][dalliz_brand_id], 'is_match': True } for dalliz_brand_id in  osm_brand_template_value['dalliz_brand_ids'] if dalliz_brand_id not in [m['id'] for m in matches_template_value]]]
 
 	template.set_dalliz_brands(matches_template_value)
 
@@ -87,10 +95,8 @@ def selector(request, osm, id):
 def cancel(request, osm, id):
 	response = {}
 	if request.method == 'POST':
-		if osm == 'ooshop':
-			Brand = OoshopBrand
-		elif osm == 'monoprix':
-			Brand = MonoprixBrand
+		if osm in available_osm:
+			Brand = available_osm[osm]
 		osm_brand = Brand.objects.filter(id=id)
 
 		if len(osm_brand) == 1:
@@ -113,10 +119,8 @@ def cancel(request, osm, id):
 def set(request, osm, osm_brand_id, dalliz_brand_id):
 	response = {}
 	if request.method == 'POST':
-		if osm == 'ooshop':
-			Brand = OoshopBrand
-		elif osm == 'monoprix':
-			Brand = MonoprixBrand
+		if osm in available_osm:
+			Brand = available_osm[osm]
 		osm_brand = Brand.objects.filter(id=osm_brand_id)
 		dalliz_brand = DallizBrand.objects.filter(id=dalliz_brand_id)
 
@@ -153,5 +157,14 @@ def set(request, osm, osm_brand_id, dalliz_brand_id):
 	else:
 		response = {'status': 404}
 
+	return HttpResponse(json.dumps(response))
+
+def autocomplete(request):
+	response = {}
+	term = ''
+	if request.method == 'GET':
+		term = unaccent(request.GET['term']).lower()
+	possible_brands = DallizBrand.objects.raw( "SELECT * FROM dalliz_newbrand WHERE LOWER(UNACCENT(name)) LIKE %s", ('%'+term+'%',))
+	response = [{'id':b.id,'label':b.name,'value':b.name, 'name':b.name} for b in possible_brands]
 	return HttpResponse(json.dumps(response))
 
