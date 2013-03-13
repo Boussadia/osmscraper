@@ -56,7 +56,7 @@ class ProductSimilarity(models.Model):
 		if self.index_name == 'auchan':
 			index_to = self.auchan_product
 
-		return 'From %s to %s, %s -> %s with score %f'%(self.query_name, self.index_name, query_from, index_to, self.score)
+		return '%s : From %s to %s, %s -> %s with score %f'%(self.created, self.query_name, self.index_name, query_from, index_to, self.score)
 
 class BrandSimilarity(models.Model):
 	query_name = models.TextField()
@@ -80,6 +80,8 @@ class BrandSimilarity(models.Model):
 			query_from = self.monoprix_brand
 		if self.query_name == 'auchan':
 			query_from = self.auchan_brand
+		if self.query_name == 'dalliz':
+			query_from = self.dalliz_brand
 
 		if self.index_name == 'ooshop':
 			index_to = self.ooshop_brand
@@ -87,8 +89,10 @@ class BrandSimilarity(models.Model):
 			index_to = self.monoprix_brand
 		if self.index_name == 'auchan':
 			index_to = self.auchan_brand
+		if self.index_name == 'dalliz':
+			index_to = self.dalliz_brand
 
-		return 'From %s to %s, %s -> %s with score %f'%(self.query_name, self.index_name, query_from, index_to, self.score)
+		return '%s : From %s to %s, %s -> %s with score %f'%(self.created, self.query_name, self.index_name, query_from, index_to, self.score)
 
 class PossibleMatch(models.Model):
 	# TO DO : add user id

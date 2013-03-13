@@ -70,7 +70,8 @@ class Product(models.Model):
 	pratique = models.TextField(null=True)
 	ingredients = models.TextField(null=True)
 	complement = models.CharField(max_length=1000, null = True)
-	html = models.TextField(max_length=9999999999999999999999, null = True) # html of product 
+	html = models.TextField(max_length=9999999999999999999999, null = True) # html of product
+	stemmed_text = models.TextField(max_length=9999999999999999999999, null = True) # stemmed text from product html  
 
 	# Content of product
 	package_quantity = models.IntegerField(null=True)

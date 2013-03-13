@@ -5,6 +5,7 @@ import time
 import urllib
 import mechanize
 import cookielib
+import sys
 
 class Singleton(object):
   _instances = {}
@@ -124,10 +125,10 @@ class BaseCrawler(object):
 			else:
 				print "Error when retrieving "+url
 				return None, -1
-		except Exception, e:
-			print 'Unexpected error occured.'
-			print e
-			return None, -1
+		# except Exception, e:
+		# 	print 'Unexpected error occured.'
+		# 	print e
+		# 	return None, -1
 
 	def get(self,url):
 		"""

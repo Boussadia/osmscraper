@@ -11,7 +11,7 @@ from scrapers.auchan.auchandatabasehelper import AuchanDatabaseHelper
 
 class AuchanScraper(BaseScraper):
 	def __init__(self):
-		super(AuchanScraper, self).__init__('http://www.refonte.auchandirect.fr', AuchanCrawler, AuchanParser, AuchanDatabaseHelper)
+		super(AuchanScraper, self).__init__('http://www.auchandirect.fr', AuchanCrawler, AuchanParser, AuchanDatabaseHelper)
 
 	def get_all_categories(self):
 		"""
@@ -207,11 +207,3 @@ class AuchanScraper(BaseScraper):
 			new_products.append(product)
 
 		return new_products
-
-
-
-	def what_to_do_next(self):
-		"""
-			Defines the logic of the scraper.
-		"""
-		pass

@@ -1,10 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from datetime import date
+from datetime import date, datetime, timedelta
+import simplejson as json
 
 from django.db import connection
 from django.db import DatabaseError
+from django.db.models import Q
+from django.conf import settings
+from django.core import serializers
+
+from matcher.auchan.auchanstemmer import AuchanStemmer
 
 from scrapers.base.basedatabasehelper import BaseDatabaseHelper
 
@@ -16,6 +22,10 @@ from auchan.models import Product
 from auchan.models import Promotion
 from auchan.models import History
 from auchan.models import ShippingArea
+
+
+from scrapers.base.basedatabasehelper import BaseDatabaseHelper
+
 
 class AuchanDatabaseHelper(BaseDatabaseHelper):
 
@@ -168,24 +178,63 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 			Input :
 				- option (hash) : 
 					1. {
-						'type': 'single',
-						'filter':{
-							'reference': '...' (optional)
-							'image_url': '...',(optional, if reference is not set),
-						}
+						'reference': '...' (optional)
+						'image_url': '...',(optional, if reference is not set),
 					}
 					2. {
-						'type': 'multi',
-						'filter': {
-							'after_date': 'datetime' (optional retrieve products updated after date),
-							'before_date': 'datetime' (optional retrieve products older than date),
-							'category_id': id (optional)
-						}
+						'after_date': 'datetime' (optional retrieve products updated after date),
+						'before_date': 'datetime' (optional retrieve products older than date),
+						'categories_id': list of ids id (optional),
+						'locations': list of locations...
 					}
 			Output : 
 				- list of products (represented by hash)
 		"""
-		pass
+		products = []
+		if 'reference' in options:
+			product_db = Product.objects.filter(reference = options['reference'])
+			if len(product_db) == 1:
+				product_db = product_db[0]
+				return [self.serialize(product)]
+
+
+		if 'categories_id' in options:
+			products = Product.objects.filter(categories__id__in = options['categories_id'])
+		
+		if 'locations' in options:
+			products = products.filter(history__shipping_area__postal_code__in = options['locations'])
+
+		if 'before_date' in options:
+			products = products.filter(history__created__lte = options['before_date'])
+
+		products = products.filter(exists = True)
+
+		products = self.serialize(products)
+		# Getting locations of all products and 
+		[ p.update({'locations' : [s.postal_code for s in list(ShippingArea.objects.filter(history__product__id = p['id']))]}) for p in products]
+
+		return products
+
+	def get_uncomplete_products(self):
+		"""
+			This method retrieves products and promotion hat are not complete
+
+			- Output :
+				- products : [{'url':...}]
+		"""
+		# Getting products first, defined by : all informations fields are null and was created less than a month ago
+		products = Product.objects.filter(exists = True, created__gte=datetime.today() - timedelta(days = 30)) # filter by date
+		# products = products.filter(url__isnull = False, origine__isnull=True, informations__isnull=True, ingredients__isnull=True,conservation__isnull=True,avertissements__isnull=True, composition__isnull=True,conseils__isnull=True)
+		products = products.filter(url__isnull = False, exists = True, html__isnull=True)
+		products = [{'url' :p.url} for p in products]
+
+		# Getting promotions : defined by start and end date of promotion are null
+		promotions_db = Promotion.objects.filter(Q(start__isnull = True)|Q(end__isnull = True), Q(availability = True))
+		promotions = [{'url' :p.url, 'location' : p.shipping_area.postal_code} for p in promotions_db if p.shipping_area is not None]
+		promotions = promotions+[{'url' :p.url} for p in promotions_db if p.shipping_area is None]
+
+		return promotions + products
+
 
 	def get_categories(self, options = {}):
 		"""
@@ -237,13 +286,24 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 				else:
 					# This is not a leaf, remove it and add sub categories to end of list
 					categories.pop(i)
-					categories = categories + list(sub_categories)
+					categories = categories + filter(lambda sub_cat:sub_cat not in categories, list(sub_categories))
 					continue
 
 		# Organizing categories
-		categories = [ {'id': cat.id, 'name': cat.name, 'parent_category_id': cat.parent_category_id, 'url': cat.url, 'db_entity': cat} for cat in categories]
+		categories = [ {'id': cat.id, 'name': cat.name, 'parent_category_id': cat.parent_category_id, 'url': cat.url, 'updated': cat.updated, 'db_entity': cat} for cat in categories]
+
 
 		return categories
+
+	def get_shipping_areas(self):
+		"""
+			Method reponsible for retrieving shipping areas
+
+			Output :
+				- list of hash : {'id':..., 'city_name': ..., 'postal_code': .....}
+		"""
+		shipping_areas = ShippingArea.objects.all()
+		return self.serialize(shipping_areas)
 
 	def get_shipping_area(self, location):
 		"""

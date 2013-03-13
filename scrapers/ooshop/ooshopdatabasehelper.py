@@ -409,6 +409,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 					1. {
 						'leaves' : boolean, get categories with no childs (optional),
 						'id_parent_category': id of parent category (optional),
+						'url': url of category (optionnal)
 						'start_date':  (datetime) retireve category updated after this date (optional),
 						'end_date':  (datetime) retireve category updated before this date (optional),
 					}
@@ -420,6 +421,10 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 		if 'id_parent_category' in options and options['id_parent_category']:
 			id_parent_category = options['id_parent_category']
 			categories_entities = categories_entities.filter(parent_category_id = id_parent_category)
+
+		if 'url' in options and options['url']:
+			url = options['url']
+			categories_entities = categories_entities.filter(url = url)
 
 		if 'start_date' in options and options['start_date']:
 			start_date = options['start_date']
@@ -449,7 +454,8 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 					continue
 
 		# Organizing categories
-		categories = [ {'id': cat.id, 'name': cat.name, 'parent_category_id': cat.parent_category_id, 'url': cat.url, 'updated': cat.updated} for cat in categories]
+		categories = [ {'id': cat.id, 'name': cat.name, 'parent_category_id': cat.parent_category_id, 'url': cat.url, 'updated': cat.updated, 'db_entity': cat} for cat in categories]
+
 
 		return categories
 
