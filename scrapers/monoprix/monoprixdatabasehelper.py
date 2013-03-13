@@ -299,15 +299,19 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 		"""
 			Saves and return brand entity.
 		"""
-		if parent_brand == '':
-			parent_brand = None
+		# if parent_brand == '':
+		# 	parent_brand = None
 
-		brand, created = Brand.objects.get_or_create(name = unicode(brand_name))
-		if parent_brand is not None and unicode(brand_name) != unicode(parent_brand):
+		# brand, created = Brand.objects.get_or_create(name = unicode(brand_name))
+		# if parent_brand is not None and unicode(brand_name) != unicode(parent_brand):
+		# 	parent_brand, created = Brand.objects.get_or_create(name = unicode(parent_brand))
+		# 	brand.parent_brand = parent_brand
+		# 	brand.save()
+		# return brand
+		if parent_brand is not None or parent_brand != '':
 			parent_brand, created = Brand.objects.get_or_create(name = unicode(parent_brand))
-			brand.parent_brand = parent_brand
-			brand.save()
-		return brand
+			return parent_brand
+
 
 	def save_unit(self, unit_name):
 		"""
