@@ -147,6 +147,7 @@ class Category(models.Model):
 class NewBrand(models.Model):
 	name = models.CharField(max_length=100, unique=True)
 	image_url = models.CharField(max_length=9999, null = True)
+	parent_brand = models.ForeignKey('self', null = True)
 
 	def __unicode__(self):
 		return self.name
