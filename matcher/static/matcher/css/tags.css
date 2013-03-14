@@ -1,0 +1,26 @@
+ul, li{
+	list-style: none;
+	display: inline-block;
+}
+
+li.product{
+	border-top: solid black 10px;
+}
+
+li.product, ul.line{
+	width: 100%;
+}
+
+ul.line li{
+	width: 100%;
+}
+
+div.block{
+	/*display: inline-block;*/
+	float: left;
+	width: 18%;
+	height: 300px;
+	border: solid black 1px;
+	padding-left: 10px;
+	overflow-y: scroll;
+}

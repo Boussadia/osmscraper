@@ -207,6 +207,41 @@ class BrandMatcher(Matcher):
 			type = indexer.type
 			self.documents[name] = indexer.get_documents()
 
+	def run(self, override = False):
+		"""
+			This method will go through every brand indexer, get new brands and perform query.
+			It will then save the similarities into the database.
+		"""
+
+		if not override:
+			# Update with new documents
+			self.set_new_documents()
+
+			# Update all indexes
+			for name, documents in self.documents.iteritems():
+				if len(documents) >0:
+					# New documents detected, building new index for corresponding indexer
+					indexer = self.get_indexer_by_name(name)
+					indexer.add_documents(documents)
+		else:
+			# Set all documents
+			self.set_all_documents()
+			# Cleaning all indexes amd rebuilding
+			[(indexer.service.drop_index(), indexer.build_all_index()) for indexer in self.indexers]
+
+		
+		# Performing queries
+		for name_query, documents in self.documents.iteritems():
+			for indexer in self.indexers:
+				if indexer.name != 'dalliz' or name_query == indexer.name:
+					# Do not perform query
+					continue
+				# Performing query
+				similarities = [ {'id':document['id'], 'indexer_name':indexer.name, 'query_name':name_query, 'sims': indexer.query(document)} for document in documents]
+				self.save_log(name_query, indexer.type)
+				self.save_similarities(similarities)
+				self.clean_database(name_query, indexer.name)
+
 	def save_similarities(self, similarities):
 		"""
 			Saving similarities to database
