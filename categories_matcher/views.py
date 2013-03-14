@@ -20,7 +20,7 @@ def get_subs_dalliz(id = None):
 
 def buil_dalliz_tree(id = None):
 	categories = get_subs_dalliz(id)
-	response = { cat.id : {'name': cat.name, 'subs':buil_dalliz_tree(cat.id)} for cat in categories}
+	response = { cat.id : {'name': cat.name, 'display': (lambda x : x.parent_category.name+' / '+x.name if x.parent_category is not None else x.name)(cat),'subs':buil_dalliz_tree(cat.id)} for cat in categories}
 	return response
 
 def index(request):
@@ -129,7 +129,7 @@ def get_links(request, osm, category_id):
 	response = {}
 
 	for i in xrange(0, len(dalliz_categories)):
-		response[dalliz_categories[i].id] = dalliz_categories[i].name
+		response[dalliz_categories[i].id] = (lambda x : x.parent_category.name+' / '+x.name if x.parent_category is not None else x.name)(dalliz_categories[i])
 
 	return HttpResponse(json.dumps(response))
 	

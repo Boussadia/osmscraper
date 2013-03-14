@@ -61,7 +61,7 @@ $(document).ready(function(){
 				if(data["status"] === 200 ){
 					id_category_first = $(".add select#first").find(":selected").val();
 					id_category_second = $(".add select#second").find(":selected").val();
-					var category_name = dalliz_categories[id_category_first]['subs'][id_category_second]['subs'][id_dalliz]['name'];
+					var category_name = dalliz_categories[id_category_first]['subs'][id_category_second]['subs'][id_dalliz]['display'];
 					var div = get_row_link(category_name, id_dalliz, osm, id_category);
 					$("#pop_over_window").append(div);
 
