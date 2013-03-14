@@ -81,10 +81,6 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 			reference = product['reference']
 			url = product['url']
 
-			if 'html' in product:
-				html = product['html']
-				# Stemming html
-				stemmed_text = AuchanStemmer(html).stem_text()
 
 			# Common to product page and category page
 			# less detailed information on the product
@@ -140,7 +136,11 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 				if product['is_product'] and ( not product['is_promotion'] or ( product['is_promotion'] and (product['promotion']['type'] == 'simple' or product['promotion']['type'] == 'plus'))):
 					brand, c = Brand.objects.get_or_create(name = product['brand'])
 					product_db.brand = brand
-					product_db.html = product['html']
+					if 'html' in product:
+						product_db.html = product['html']
+						# Stemming html
+						product_db.stemmed_text = AuchanStemmer(product_db.html).stem_text()
+
 					product_db.image_url = product['product_image_url']
 					product_db.name = product['name']
 					product_db.complement = product['complement']
