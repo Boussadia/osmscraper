@@ -52,13 +52,14 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 			name = unicode(category['name'])
 			url = unicode(category['url'])
 			if id_parent_category:
-				category_db, created = Category.objects.get_or_create(url = url, defaults={'name': name, 'parent_category_id': id_parent_category})
+				category_db, created = Category.objects.get_or_create( name = name, parent_category_id = id_parent_category, defaults={'url': url})
 			else:
 				category_db, created = Category.objects.get_or_create(name = name, defaults={'url': url})
 
 			if not created:
 				category_db.name = name
 				category_db.parent_category_id = id_parent_category
+				category_db.url = url
 				category_db.save()
 
 			# Setting id to categories

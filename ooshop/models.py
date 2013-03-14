@@ -130,7 +130,7 @@ class ShippingArea(models.Model):
 class Category(models.Model):
 	name = models.CharField(max_length=100)
 	parent_category = models.ForeignKey('self', null = True)
-	url = models.CharField(max_length=9999, null=True, unique = True)
+	url = models.CharField(max_length=9999, null=True)
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True, auto_now_add=True)
 	exists = models.BooleanField(default = True)
