@@ -81,6 +81,11 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 			reference = product['reference']
 			url = product['url']
 
+			if 'html' in product:
+				html = product['html']
+				# Stemming html
+				stemmed_text = AuchanStemmer(html).stem_text()
+
 			# Common to product page and category page
 			# less detailed information on the product
 			if product['is_product']:
