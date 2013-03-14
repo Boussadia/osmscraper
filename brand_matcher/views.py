@@ -23,7 +23,8 @@ from matcher.models import BrandMatch
 
 available_osm = {
 	'ooshop':OoshopBrand,
-	'monoprix': MonoprixBrand
+	'monoprix': MonoprixBrand,
+	'auchan': AuchanBrand
 }
 
 
@@ -129,23 +130,13 @@ def set(request, osm, osm_brand_id, dalliz_brand_id):
 			osm_brand = osm_brand[0]
 			dalliz_brand = dalliz_brand[0]
 
-			# matches = BrandMatch.objects.filter(dalliz_brand = dalliz_brand)
-			# if osm == 'ooshop':
-			# 	matches = matches.filter(ooshop_brand = osm_brand)
-			# elif osm == 'monoprix':
-			# 	matches = matches.filter(monoprix_brand = osm_brand)
-
-			# if len(matches) == 0:
-			# 	match = BrandMatch(dalliz_brand = dalliz_brand)
-			# 	if osm == 'ooshop':
-			# 		match.ooshop_brand = osm_brand
-			# 	elif osm == 'monoprix':
-			# 		matches = matches.filter(monoprix_brand = osm_brand)
-
 			if osm == 'ooshop':
 				match, created = BrandMatch.objects.get_or_create(ooshop_brand = osm_brand, defaults = {'dalliz_brand': dalliz_brand})
 			elif osm == 'monoprix':
 				match, created = BrandMatch.objects.get_or_create(monoprix_brand = osm_brand, defaults = {'dalliz_brand': dalliz_brand})
+			elif osm == 'auchan':
+				match, created = BrandMatch.objects.get_or_create(auchan_brand = osm_brand, defaults = {'dalliz_brand': dalliz_brand})
+
 			match.dalliz_brand = dalliz_brand
 			match.save()
 			# osm_brand.brandmatch_set.clear()
