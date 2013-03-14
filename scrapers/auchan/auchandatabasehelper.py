@@ -146,7 +146,7 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 						product_db.package_unit =product['package']['unit']
 
 					# Complementary information:
-					if 'information' in product and u'Donn\xe9es nutritionnelles' in product['information'][u'Donn\xe9es nutritionnelles']:
+					if 'information' in product and u'Donn\xe9es nutritionnelles' in product['information']:
 						product_db.valeur_nutritionnelle =  product['information'][u'Donn\xe9es nutritionnelles']
 
 					if 'information' in product and u'Avantages' in product['information']:
