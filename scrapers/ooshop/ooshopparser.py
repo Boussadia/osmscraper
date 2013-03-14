@@ -165,6 +165,11 @@ class OoshopParser(BaseParser):
 					'eventTarget': eventTarget,
 					'__VIEWSTATE': view_state
 					})
+				# making sure everithing is properly encoded
+				for brand in brands:
+					for key in brand:
+						if isinstance(brand[key], unicode):
+							brand[key] = brand[key].encode('utf-8', 'ignore')
 
 		return brands
 
