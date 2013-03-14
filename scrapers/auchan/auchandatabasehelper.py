@@ -164,7 +164,7 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 					product_db.save()
 				elif not product['is_product'] and product['is_promotion']:
 					if product['promotion']['type'] == 'multi':
-						for reference_product in product['promotion']['references']:
+						for reference_product in product['promotion']['content']:
 							product_in_promotion, created = Product.objects.get_or_create(reference = reference)
 							promotion_db.content.add(product_in_promotion)
 
