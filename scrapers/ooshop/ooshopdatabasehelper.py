@@ -111,7 +111,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 				stemmed_text = None
 
 			if 'brand' in product and product['brand'] != '':
-				brand = self.save_brand(product['brand'], product['brand_image_url'])
+				brand = self.save_brand(product['brand'], product['brand_image_url'], product['parent_brand'])
 			else:
 				brand = None
 
@@ -316,15 +316,17 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 			# 	raise e
 			
 
-	def save_brand(self, brand_name, brand_image_url):
+	def save_brand(self, brand_name, brand_image_url, parent_brand_name):
 		"""
 			Saves and return brand entity.
 		"""
-		brand, created = Brand.objects.get_or_create(name = brand_name, defaults = {'image_url': brand_image_url})
+		parent_brand, created = Brand.objects.get_or_create(name = parent_brand_name)
+		brand, created = Brand.objects.get_or_create(name = brand_name, defaults = {'image_url': brand_image_url, 'parent_brand': parent_brand})
 		if not created:
 			brand.image_url = brand_image_url
+			brand.parent_brand = parent_brand
 			brand.save()
-		return brand
+		return parent_brand
 
 	def save_unit(self, unit_name):
 		"""

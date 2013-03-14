@@ -141,6 +141,33 @@ class OoshopParser(BaseParser):
 		el = self.parsed_page.find_all("div",{"class":"Elig"})
 		return len(el)>0
 
+	def get_brands_values_in_category_page(self):
+		"""
+			In a category page, extract list of brands in a select field.
+
+			Output :
+				- list of hash : {'name': brand, value: 'brand_value'}
+		"""
+		parsed_page = self.parsed_page
+		brands = []
+		select = parsed_page.find('select', {'class': 'voir'})
+		options = select.find_all('option')
+		eventTarget = select.attrs['name']
+		view_state = parsed_page.find(id = '__VIEWSTATE').attrs['value']
+
+		for o in options:
+			value = o.attrs['value']
+			name = o.text
+			if value and value.lower() != 'all':
+				brands.append({
+					'name': name,
+					'value': value,
+					'eventTarget': eventTarget,
+					'__VIEWSTATE': view_state
+					})
+
+		return brands
+
 	def get_products(self):
 		"""
 			Extracts products from a category page.
