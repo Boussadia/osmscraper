@@ -70,6 +70,8 @@ class BaseCrawler(object):
 			Output:
 				- (html, code) : html as string and code as defined in the class docstring.
 		"""
+		# Making sure it is utf8 encoded
+		url = url.encode('utf8')
 		# Request cannot happen inside a cetain lapse of time (INTERVAL seconds in between)
 		now = time.time()
 		if now-self.last_time<BaseCrawler.INTERVAL:

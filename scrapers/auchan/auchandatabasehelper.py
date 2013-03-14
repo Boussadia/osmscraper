@@ -97,8 +97,9 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 				if parent_category:
 					product_db.categories.add(parent_category)
 					# Saving associated tags
-					tag, c = Tag.objects.get_or_create(name = product['tag']['name'])
-					product_db.tags.add(tag)
+					if 'tag' in product:
+						tag, c = Tag.objects.get_or_create(name = product['tag']['name'])
+						product_db.tags.add(tag)
 
 
 			if product['is_promotion']:
