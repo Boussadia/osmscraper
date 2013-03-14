@@ -67,12 +67,35 @@ def selector(request, osm, id):
 	next_brands = Brand.objects.filter(parent_brand__isnull=True).filter(id__gte = int(id)+1).order_by('id')
 	previous = Brand.objects.filter(parent_brand__isnull=True).filter(id__lte= int(id)-1).order_by('-id')
 
-	if len(next_brands)>0:
-		osm_brand_template_value['is_set_next_id'] = True
-		osm_brand_template_value['next_id'] = next_brands[0].id
-	if len(previous)>0:
-		osm_brand_template_value['is_set_previous_id'] = True
-		osm_brand_template_value['previous_id'] = previous[0].id
+	if osm == 'ooshop':
+		for i in xrange(0, len(next_brands)):
+			if len(next_brands[i].newproduct_set.all())>0:
+				osm_brand_template_value['is_set_next_id'] = True
+				osm_brand_template_value['next_id'] = next_brands[i].id
+				break
+		for i in xrange(0, len(previous)):
+			if len(previous[i].newproduct_set.all())>0:
+				osm_brand_template_value['is_set_previous_id'] = True
+				osm_brand_template_value['previous_id'] = previous[i].id
+				break
+	else:
+		# for i in xrange(0, len(next_brands)):
+		# 	if len(next_brands[i].product_set.all())>0:
+		# 		osm_brand_template_value['is_set_next_id'] = True
+		# 		osm_brand_template_value['next_id'] = next_brands[i].id
+		# 		break
+		# for i in xrange(0, len(previous)):
+		# 	if len(previous[i].product_set.all())>0:
+		# 		osm_brand_template_value['is_set_previous_id'] = True
+		# 		osm_brand_template_value['previous_id'] = previous[i].id
+		# 		break
+
+		if len(next_brands)>0:
+			osm_brand_template_value['is_set_next_id'] = True
+			osm_brand_template_value['next_id'] = next_brands[0].id
+		if len(previous)>0:
+			osm_brand_template_value['is_set_previous_id'] = True
+			osm_brand_template_value['previous_id'] = previous[0].id
 
 	template.set_osm_brand(osm_brand_template_value)
 
