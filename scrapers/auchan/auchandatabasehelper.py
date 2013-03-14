@@ -86,7 +86,10 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 			# less detailed information on the product
 			if product['is_product']:
 				unit = product['unit']
-				unit_db, c = Unit.objects.get_or_create(name = unit)
+				if unit is not None:
+					unit_db, c = Unit.objects.get_or_create(name = unit)
+				else:
+					unit_db = None
 				product_db, created = Product.objects.get_or_create(reference = reference, defaults = {'url': url,'unit': unit_db})
 				if not created:
 					product_db.url = url
