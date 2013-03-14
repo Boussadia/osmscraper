@@ -123,76 +123,79 @@ class AuchanParser(BaseParser):
 		products = []
 
 		for bloc_product in parsed_page.find_all('div',{'class': 'bloc-produit'}):
-			product = {
-				'from': 'category_page',
-				'is_promotion': False,
-				'is_product': False,
-				'is_available': False,
-			}
-			bloc_product_classes =  bloc_product.attrs['class']
-			
-			if 'promotion' in bloc_product_classes:
-				product['is_promotion'] = True
-			else:
-				product['is_product'] = True
+			try:
+				product = {
+					'from': 'category_page',
+					'is_promotion': False,
+					'is_product': False,
+					'is_available': False,
+				}
+				bloc_product_classes =  bloc_product.attrs['class']
+				
+				if 'promotion' in bloc_product_classes:
+					product['is_promotion'] = True
+				else:
+					product['is_product'] = True
 
-			if 'bientot-dispo' not in bloc_product_classes:
-				product['is_available'] = True
+				if 'bientot-dispo' not in bloc_product_classes:
+					product['is_available'] = True
 
-			# Common to promotion and product:
-			url = bloc_product.find('a').attrs['href']
-			reference = url.split('/')[-1].split(';jsessionid=')[0]
+				# Common to promotion and product:
+				url = bloc_product.find('a').attrs['href']
+				reference = url.split('/')[-1].split(';jsessionid=')[0]
 
-			p_html = bloc_product.find('div',{'class':'infos-produit-2'}).find('p')
-			p_content = [p for p in p_html.text.split('\n') if p != '']
-			if len(p_content) == 2:
-				[package, unit_price_text] = p_content
-			elif len(p_content) == 1:
-				if u'€'  in p_content[0]:
-					unit_price_text = p_content[0]
+				p_html = bloc_product.find('div',{'class':'infos-produit-2'}).find('p')
+				p_content = [p for p in p_html.text.split('\n') if p != '']
+				if len(p_content) == 2:
+					[package, unit_price_text] = p_content
+				elif len(p_content) == 1:
+					if u'€'  in p_content[0]:
+						unit_price_text = p_content[0]
+					else:
+						unit_price = ''
 				else:
 					unit_price = ''
-			else:
-				unit_price = ''
 
-			[unit_price, unit] = unit_price_text.split(u'€/')
-			unit_price = float(unit_price)
+				[unit_price, unit] = unit_price_text.split(u'€/')
+				unit_price = float(unit_price)
 
-			product.update({
-				'url': url,
-				'reference': reference,
-				'unit_price': float(unit_price),
-				'unit': unit
-			})
+				product.update({
+					'url': url,
+					'reference': reference,
+					'unit_price': float(unit_price),
+					'unit': unit
+				})
 
-			if not product['is_promotion']:
-				price = float(bloc_product.find('div', {'class': 'prix-actuel'}).find('span').text.replace(u'€', ''))
-				product['price'] = price
-			else:
-				promotion = {}
-				if bloc_product.find('div',{'class': 'prix-old'}):
-					before = float(bloc_product.find('div',{'class': 'prix-old'}).text.replace(u'€', ''))
-					after = float(bloc_product.find('div',{'class': 'prix-promo'}).text.replace(u'€', ''))
+				if not product['is_promotion']:
+					price = float(bloc_product.find('div', {'class': 'prix-actuel'}).find('span').text.replace(u'€', ''))
+					product['price'] = price
 				else:
-					before = float(bloc_product.find('div',{'class': 'prix-actuel'}).find('span').text.replace(u'€', ''))
-					after = before
+					promotion = {}
+					if bloc_product.find('div',{'class': 'prix-old'}):
+						before = float(bloc_product.find('div',{'class': 'prix-old'}).text.replace(u'€', ''))
+						after = float(bloc_product.find('div',{'class': 'prix-promo'}).text.replace(u'€', ''))
+					else:
+						before = float(bloc_product.find('div',{'class': 'prix-actuel'}).find('span').text.replace(u'€', ''))
+						after = before
 
-				promotion ={
-						'before': before,
-						'after': after,
-						'unit_price': float(unit_price)
-					}
-				product['promotion'] = promotion
+					promotion ={
+							'before': before,
+							'after': after,
+							'unit_price': float(unit_price)
+						}
+					product['promotion'] = promotion
 
-			if 'LV' in reference:
-				product['promotion']['type'] = 'multi'
-			elif product['is_promotion']:
-				product['promotion']['type'] = 'undef'
-				product['is_product'] = True
-			else:
-				product['is_product'] = True
+				if 'LV' in reference:
+					product['promotion']['type'] = 'multi'
+				elif product['is_promotion']:
+					product['promotion']['type'] = 'undef'
+					product['is_product'] = True
+				else:
+					product['is_product'] = True
 
-			products.append(product)
+				products.append(product)
+			except Exception, e:
+				print e
 
 
 		return products
