@@ -250,7 +250,9 @@ class AuchanParser(BaseParser):
 			brand = product_info.find('span', {'class': 'titre-principal'}).text
 			name = product_info.find('span', {'class': 'titre-annexe'}).text
 			complement = product_info.find('span', {'class': 'titre-secondaire'})
-			[unit_price, unit] = product_info.find('div', {'class': 'prix-annexe'}).find('p').text.split(u'€/')
+			prix_annexe = product_info.find('div', {'class': 'prix-annexe'});
+			if prix_annexe is not None:
+				[unit_price, unit] = prix_annexe.find('p').text.split(u'€/')
 			if complement:
 				complement = complement.text
 			else:
