@@ -92,7 +92,7 @@ class History(models.Model):
 	product = models.ForeignKey(Product)
 	created = models.DateTimeField(auto_now_add=True)
 	price = models.FloatField()
-	unit_price = models.FloatField()
+	unit_price = models.FloatField(null = True)
 	shipping_area = models.ForeignKey(ShippingArea, null = True)
 	availability = models.BooleanField(default = True)
 	html = models.TextField(max_length=9999999999999999999999, null = True) # html of product 
