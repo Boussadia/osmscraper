@@ -347,7 +347,7 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 			Output : 
 				- list of products (represented by hash)
 		"""
-		products = []
+		products = Product.objects.all()
 		if 'reference' in options:
 			product_db = Product.objects.filter(reference = options['reference'])
 			if len(product_db) == 1:
