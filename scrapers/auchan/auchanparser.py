@@ -253,6 +253,7 @@ class AuchanParser(BaseParser):
 			prix_annexe = product_info.find('div', {'class': 'prix-annexe'});
 			if prix_annexe is not None:
 				[unit_price, unit] = prix_annexe.find('p').text.split(u'€/')
+				unit_price = float(unit_price)
 			else:
 				[unit_price, unit] = [None, None]
 			if complement:
@@ -278,7 +279,6 @@ class AuchanParser(BaseParser):
 				# This is not a promotion
 				product['is_product'] = True
 				price = float(product_info.find('div',{'class': 'prix-actuel'}).find('span').text.split(u'€')[0])
-				unit_price = float(unit_price)
 				product.update({
 					'price': price,
 					'unit_price': unit_price
