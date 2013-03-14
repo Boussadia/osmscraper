@@ -253,6 +253,8 @@ class AuchanParser(BaseParser):
 			prix_annexe = product_info.find('div', {'class': 'prix-annexe'});
 			if prix_annexe is not None:
 				[unit_price, unit] = prix_annexe.find('p').text.split(u'€/')
+			else:
+				[unit_price, unit] = [None, None]
 			if complement:
 				complement = complement.text
 			else:
