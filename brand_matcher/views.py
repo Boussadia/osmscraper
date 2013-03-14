@@ -76,10 +76,13 @@ def selector(request, osm, id):
 
 	template.set_osm_brand(osm_brand_template_value)
 
-	matches_template_value = [ { 'id': match.dalliz_brand.id, 'name': match.dalliz_brand.name, 'score': match.score, 'is_match': (match.dalliz_brand.id in osm_brand_template_value['dalliz_brand_ids']) } for match in brand.brandsimilarity_set.filter(index_name='dalliz').distinct('dalliz_brand', 'score').order_by('-score')]
+	matches_template_value = [ { 'id': match.dalliz_brand.id, 'name': (lambda x : x.parent_brand.name+' / '+x.name if x.parent_brand is not None else x.name)(match.dalliz_brand), 'score': match.score, 'is_match': (match.dalliz_brand.id in osm_brand_template_value['dalliz_brand_ids']) } for match in brand.brandsimilarity_set.filter(index_name='dalliz').distinct('dalliz_brand', 'score').order_by('-score')]
 	[matches_template_value.append( item ) for item in [ {'id': dalliz_brand_id, 'name': osm_brand_template_value['dalliz_brand_names'][dalliz_brand_id], 'is_match': True } for dalliz_brand_id in  osm_brand_template_value['dalliz_brand_ids'] if dalliz_brand_id not in [m['id'] for m in matches_template_value]]]
 
 	template.set_dalliz_brands(matches_template_value)
+
+	# Adding parent brand to name if exits for dalliz brands
+	# [ m.update({'name':m.dalliz_brand.parent_brand.name+'/'+m['name']}) for m in matches_template_value if m.dalliz_brand.parent_brand is not None]
 
 	template_value = {
 		'osm_brand': osm_brand_template_value,
