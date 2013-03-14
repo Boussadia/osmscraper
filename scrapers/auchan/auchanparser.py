@@ -237,77 +237,83 @@ class AuchanParser(BaseParser):
 				'from': 'product_page',
 				'is_promotion': False,
 				'is_product': False,
-				'is_available': True
+				'is_available': True,
+				'exists': True
 			}
 		parsed_page = self.parsed_page
 		container = parsed_page.find('div', {'class': 'main-content'})
 		if container:
-			product_info = container.find(id='produit-infos')
-			product_annexes =container.find(id = 'produit-infos-annexes') 
-			html =  container.prettify()
+			try:
+				product_info = container.find(id='produit-infos')
+				product_annexes =container.find(id = 'produit-infos-annexes') 
+				html =  container.prettify()
 
-			# Dealing with product infos
-			brand = product_info.find('span', {'class': 'titre-principal'}).text
-			name = product_info.find('span', {'class': 'titre-annexe'}).text
-			complement = product_info.find('span', {'class': 'titre-secondaire'})
-			prix_annexe = product_info.find('div', {'class': 'prix-annexe'});
-			if prix_annexe is not None:
-				[unit_price, unit] = prix_annexe.find('p').text.split(u'€/')
-				unit_price = float(unit_price)
-			else:
-				[unit_price, unit] = [None, None]
-			if complement:
-				complement = complement.text
-			else:
-				complement = ''
-			product_image_url = product_info.find('img',{'class':'produit'}).attrs['src']
-			if product_info.find('div',{'class': 'bientot-dispo'}):
-				product['is_available'] = False
+				# Dealing with product infos
+				brand = product_info.find('span', {'class': 'titre-principal'}).text
+				name = product_info.find('span', {'class': 'titre-annexe'}).text
+				complement = product_info.find('span', {'class': 'titre-secondaire'})
+				prix_annexe = product_info.find('div', {'class': 'prix-annexe'});
+				if prix_annexe is not None:
+					[unit_price, unit] = prix_annexe.find('p').text.split(u'€/')
+					unit_price = float(unit_price)
+				else:
+					[unit_price, unit] = [None, None]
+				if complement:
+					complement = complement.text
+				else:
+					complement = ''
+				product_image_url = product_info.find('img',{'class':'produit'}).attrs['src']
+				if product_info.find('div',{'class': 'bientot-dispo'}):
+					product['is_available'] = False
 
-			product.update({
-				'brand': brand,
-				'name': name,
-				'unit': unit,
-				'complement': complement,
-				'product_image_url': product_image_url,
-				'html': html
-				})
-
-			# Is this a promotion ?
-			promotion = self.parse_promotion_full()
-			if promotion == { 'type': 'undef' }:
-				# This is not a promotion
-				product['is_product'] = True
-				price = float(product_info.find('div',{'class': 'prix-actuel'}).find('span').text.split(u'€')[0])
 				product.update({
-					'price': price,
-					'unit_price': unit_price
+					'brand': brand,
+					'name': name,
+					'unit': unit,
+					'complement': complement,
+					'product_image_url': product_image_url,
+					'html': html
 					})
 
-			else:
-				product['is_promotion'] = True
-				if promotion['type'] != 'multi':
+				# Is this a promotion ?
+				promotion = self.parse_promotion_full()
+				if promotion == { 'type': 'undef' }:
+					# This is not a promotion
 					product['is_product'] = True
+					price = float(product_info.find('div',{'class': 'prix-actuel'}).find('span').text.split(u'€')[0])
+					product.update({
+						'price': price,
+						'unit_price': unit_price
+						})
 
-				product['promotion'] = promotion
-
-			# Dealing with extra information
-			if product['is_product']:
-				# Package information
-				if product_info.find('span',{'class':'texte-info-normal'}):
-					package = self.extract_package_content(product_info.find('span',{'class':'texte-info-normal'}).text.split('Composition : ')[1])
 				else:
-					package = {}
-				information = {}
-				product['package'] = package
-				information_block = product_annexes.find(id = 'panel-infos-detaillees')
-				if information_block:
-					titles = information_block.find_all('h3')
-					for title in titles:
-						p = title.findNext('p')
-						information[title.text] = p.text
+					product['is_promotion'] = True
+					if promotion['type'] != 'multi':
+						product['is_product'] = True
 
-					product['information'] = information
+					product['promotion'] = promotion
+
+				# Dealing with extra information
+				if product['is_product']:
+					# Package information
+					if product_info.find('span',{'class':'texte-info-normal'}):
+						package = self.extract_package_content(product_info.find('span',{'class':'texte-info-normal'}).text.split('Composition : ')[1])
+					else:
+						package = {}
+					information = {}
+					product['package'] = package
+					information_block = product_annexes.find(id = 'panel-infos-detaillees')
+					if information_block:
+						titles = information_block.find_all('h3')
+						for title in titles:
+							p = title.findNext('p')
+							information[title.text] = p.text
+
+						product['information'] = information
+			except Exception, e:
+				product['exists'] = False
+				print 'Error while parsing product page'
+				print e
 
 
 		else:
