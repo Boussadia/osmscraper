@@ -39,6 +39,7 @@ class Tag(models.Model):
 
 class Brand(models.Model):
 	name = models.CharField(max_length=100, unique=True)
+	parent_brand = models.ForeignKey('self', null = True)
 
 	def __unicode__(self):
 		return self.name
