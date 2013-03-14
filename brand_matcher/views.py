@@ -23,7 +23,8 @@ from matcher.models import BrandMatch
 
 available_osm = {
 	'ooshop':OoshopBrand,
-	'monoprix': MonoprixBrand
+	'monoprix': MonoprixBrand,
+	'auchan': AuchanBrand
 }
 
 
