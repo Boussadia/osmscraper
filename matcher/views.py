@@ -72,7 +72,11 @@ def category(request, osm, category_id):
 			# Get products for each category
 			response['categories'] = []
 			for cat in osm_categories:
-				products = [ serialize_product(p) for p in cat.newproduct_set.all() ]
+				try:
+					products = [ serialize_product(p) for p in cat.newproduct_set.all() ]
+				except Exception, e:
+					products = [ serialize_product(p) for p in cat.product_set.all() ]
+
 				# gettings similarities
 				for p in products:
 					p['similarities'] = {}
