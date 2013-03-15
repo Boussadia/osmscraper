@@ -63,7 +63,7 @@ class AuchanParser(BaseParser):
 					}
 
 					# Now getting sub categories level 2
-					as_level_2 = li_level_1.find_all('a')
+					as_level_2 = li_level_1.find('ul',{'class':'menu'}).find_all('a')
 					for a_level_2 in as_level_2:
 						category_level_2 = {
 							'name': a_level_2.text,
