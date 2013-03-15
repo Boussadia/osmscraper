@@ -52,6 +52,70 @@ $(document).ready(function(){
 		'delimiter': '|',
 	});
 
+	// Merge button
+	$('button.merge').click(function(e){
+		$that = $(this);
+		var osm = $that.attr('data-osm');
+		var product = $that.attr('data-product');
+		var osm_from = $that.attr('data-osm_from');
+		var product_from = $that.attr('data-product_from');
+
+		console.log([osm, osm_from, product, product_from]);
+		$.ajax({
+			url:'/backend/matcher/'+osm+'/tags/match/'+osm_from+'/'+product+'/'+product_from,
+			type:"POST",
+			dataType:"json",
+			data:{},
+			success: function(data, textStatus, jqXHR){
+				console.log(data);
+				// console.log(textStatus);
+				// console.log(jqXHR);
+
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				console.log(jqXHR);
+				console.log(textStatus);
+				console.log(errorThrown);
+			}
+		});
+		
+	})
+	// UnMerge button
+	$('button.unmerge').click(function(e){
+		$that = $(this);
+		var osm = $that.attr('data-osm');
+		var product = $that.attr('data-product');
+		var osm_from = $that.attr('data-osm_from');
+		var product_from = $that.attr('data-product_from');
+
+		console.log([osm, osm_from, product, product_from]);
+		$.ajax({
+			url:'/backend/matcher/'+osm+'/tags/match/'+osm_from+'/'+product+'/'+product_from,
+			type:"DELETE",
+			dataType:"json",
+			data:{},
+			success: function(data, textStatus, jqXHR){
+				console.log(data);
+				// console.log(textStatus);
+				// console.log(jqXHR);
+
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				console.log(jqXHR);
+				console.log(textStatus);
+				console.log(errorThrown);
+			}
+		});
+		
+	})
+
+	// Les zones matchées
+	$( ".accordion" ).accordion({
+      collapsible: true,
+      active: false,
+      heightStyleType: 'content'
+    });
+
 	// Function that saves tags
 	var save_tags = function(input){
 		var id_product = input.attr('data-product');

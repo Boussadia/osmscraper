@@ -44,6 +44,38 @@
 									<textarea class='comment' data-product='{{product.id}}' data-osm='{{product.osm}}'>{{product.comment}}</textarea>
 								</div>
 							</li>
+							{% for osm, match in product.matches.items %}
+							<div class="accordion">
+								<h3> {{osm}} : matché ! :)</h3>
+								<div>
+										<li class='match'>
+											<div class='block'>
+												<a href="{{match.url}}" target="_blank"><img src="{{match.image_url}}"></a>
+												<br/>
+												<button data-osm='{{product.osm}}' data-osm_from='{{osm}}' data-product='{{product.id}}' data-product_from='{{match.id}}' class='unmerge btn-danger'> Cancel</button>
+											</div>
+											<div class='block'>
+												<p class='brand'>{{match.brand}}</p>
+												<p class='name'>{{match.name}}</p>
+												<p class='quantity'>{{match.quantity}} {{match.unit}}</p>
+												<p class='price'>{{match.price}} €</p>
+											</div>
+											<div class='block'>
+												<h3> Catégories</h3>
+												<input name="cat" class='cat' data-product='{{match.id}}' data-osm='{{match.osm}}' value="{% for c in match.categories %}{{c.name}} - {{c.id}}|{% endfor %}" />
+											</div>
+											<div class='block'>
+												<h3> Tags</h3>
+												<input name="tags" class='tags' data-product='{{match.id}}' data-osm='{{match.osm}}' value="{% for t in match.tags %}{{t.name}},{% endfor %}" />
+											</div>
+											<div class='block'>
+												<h3>Commentaires</h3>
+												<textarea class='comment' data-product='{{match.id}}' data-osm='{{match.osm}}'>{{match.comment}}</textarea>
+											</div>
+										</li>
+								</div>
+							</div>
+							{% endfor %}
 							{% for osm, sim in product.similarities.items %}
 								{% for p in sim %}
 									<h4>{{osm}}</h4>
@@ -51,7 +83,7 @@
 										<div class='block'>
 											<a href="{{p.url}}" target="_blank"><img src="{{p.image_url}}"></a>
 											<br/>
-											<button class='merge btn-danger'> Merge</button>
+											<button data-osm='{{product.osm}}' data-osm_from='{{osm}}' data-product='{{product.id}}' data-product_from='{{p.id}}' class='merge btn-danger'> Merge</button>
 										</div>
 										<div class='block'>
 											<p class='brand'>{{p.brand}}</p>

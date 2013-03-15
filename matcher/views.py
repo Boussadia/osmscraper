@@ -106,7 +106,36 @@ def category(request, osm, category_id):
 					p['similarities'] = {}
 					for osm_index in available_osms:
 						if osm != osm_index:
-							p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
+							p['matches'] = {}
+							p['similarities'] = {}
+							# Getting match
+							match = ProductMatch.objects.all()
+							if osm == 'auchan':
+								match = match.filter(auchan_product = p['id'])
+							if osm == 'ooshop':
+								match = match.filter(ooshop_product = p['id'])
+							if osm == 'monoprix':
+								match = match.filter(monoprix_product = p['id'])
+
+							if len(match) != 0:
+								match = match[0]
+								if osm_index == 'ooshop':
+									if match.ooshop_product is not None:
+										p['matches'][osm_index] = serialize_product(match.ooshop_product, osm_index)
+									else:
+										p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
+								if osm_index == 'auchan':
+									if match.auchan_product is not None:
+										p['matches'][osm_index] = available_osms[osm]['query'][osm_index](serialize_product(match.auchan_product, osm_index))
+									else:
+										p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
+								if osm_index == 'monoprix':
+									if match.monoprix_product is not None:
+										p['matches'][osm_index] = available_osms[osm]['query'][osm_index](serialize_product(match.monoprix_product, osm_index))
+									else:
+										p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
+							else:
+								p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
 
 				response['categories'].append( {
 					'name' : cat.name,
@@ -121,6 +150,65 @@ def category(request, osm, category_id):
 	# return HttpResponse(json.dumps(response))
 
 	return render(request, 'matcher/category.html', response);
+
+def get_match(product, osm):
+	#Getting matched osms products
+	if osm == 'auchan':
+		match = ProductMatch.objects.filter(auchan_product = product)
+	if osm == 'ooshop':
+		match = ProductMatch.objects.filter(ooshop_product = product)
+	if osm == 'monoprix':
+		match = ProductMatch.objects.filter(monoprix_product = product)
+
+	if len(match) ==0:
+		return None
+	else:
+		match = match[0]
+
+	return match
+
+
+def set_categories_to_product(product, dalliz_categories, osm, set_match = True):
+	"""
+		Setting dalliz categories to a product
+	"""
+	if product is not None:
+		product.dalliz_category.clear()
+		[product.dalliz_category.add(c) for c in dalliz_categories]
+		if set_match:
+			#Getting matched osms products
+			match = get_match(product, osm)
+			if match:
+				for other_osm in available_osms.keys():
+					if other_osm != osm:
+						if other_osm == 'auchan':
+							set_categories_to_product(match.auchan_product, dalliz_categories, other_osm, set_match = False) 
+						if other_osm == 'ooshop':
+							set_categories_to_product(match.ooshop_product, dalliz_categories, other_osm, set_match = False)
+						if other_osm == 'monoprix':
+							set_categories_to_product(match.monoprix_product, dalliz_categories, other_osm, set_match = False)
+
+
+def set_tags_to_product(product, tags, osm, set_match = True):
+	"""
+		Setting tags to a product
+	"""
+	# Clearing tags of products
+	if product is not None:
+		product.tag.clear()
+		[product.tag.add(t) for t in tags]
+		if set_match:
+			#Getting matched osms products
+			match = get_match(product, osm)
+			if match:
+				for other_osm in available_osms.keys():
+					if other_osm != osm:
+						if other_osm == 'auchan':
+							set_tags_to_product(match.auchan_product, tags, other_osm, set_match = False) 
+						if other_osm == 'ooshop':
+							set_tags_to_product(match.ooshop_product, tags, other_osm, set_match = False)
+						if other_osm == 'monoprix':
+							set_tags_to_product(match.monoprix_product, tags, other_osm, set_match = False)
 
 def comment(request, osm, product_id):
 	"""
@@ -164,13 +252,15 @@ def tags(request, osm, product_id, tags):
 			response['msg'] = 'Product Not found, not able to save tags'
 		else:
 			product = product[0]
-			# Clearing tags of products
-			product.tag.clear()
 			if tags != ',':
 				tags = tags.split(',')
+				db_tags = []
 				for t in tags:
 					tag, created = Tag.objects.get_or_create(name = t)
-					product.tag.add(tag)
+					db_tags.append(tag)
+			else:
+				db_tags = []
+			set_tags_to_product(product, db_tags, osm, set_match = True)
 			response['status'] = 200
 	else:
 		response['status'] = 404
@@ -193,8 +283,7 @@ def set_categories(request, osm, product_id):
 				else:
 					product = product[0]
 					# Clearing dalliz categories of products
-					product.dalliz_category.clear()
-					[product.dalliz_category.add(c) for c in categories]
+					set_categories_to_product(product, categories, osm, set_match = True)
 					response['status'] = 200
 			else:
 				response['status'] = 404
@@ -224,4 +313,67 @@ def autocomplete_category(request):
 			categories.append(p)
 	response = [{'id':t.id,'label':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(t)+' - '+str(t.id),'value':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(t)+' - '+str(t.id)} for t in categories]	
 	return HttpResponse(json.dumps(response))
+
+def set_match(request, osm, osm_from, product_id_to, product_id_from):
+	response = {}
+	# Getting product
+	ProductFrom = available_osms[osm_from]['product']
+	ProductTo = available_osms[osm]['product']
+	product_from = ProductFrom.objects.get(id = product_id_from)
+	product_to = ProductTo.objects.get(id = product_id_to)
+	if request.method == 'POST':
+		# Clearing match
+		match_from = get_match(product_from, osm_from) # update this if exists
+		if match_from is not None:
+			if osm_from == 'auchan':
+				match_from.auchan_product = None
+				match_from.save()
+			if osm_from == 'ooshop':
+				match_from.ooshop_product = None
+				match_from.save()
+			if osm_from == 'monoprix':
+				match_from.monoprix_product = None
+				match_from.save()
+
+		match_to = get_match(product_to, osm) # update/create this
+		if match_to is None:
+			if osm == 'auchan':
+				match_to = ProductMatch(auchan_product = product_to)
+			if osm == 'ooshop':
+				match_to = ProductMatch(ooshop_product = product_to)
+			if osm == 'monoprix':
+				match_to = ProductMatch(monoprix_product = product_to)
+
+		if osm_from == 'auchan':
+			match_to.auchan_product = product_from
+			match_to.save()
+		if osm_from == 'ooshop':
+			match_to.ooshop_product = product_from
+			match_to.save()
+		if osm_from == 'monoprix':
+			match_to.monoprix_product = product_from
+			match_to.save()
+
+		# Setting same categories and tags
+		dalliz_categories = product_to.dalliz_category.all()
+		tags = product_to.tag.all()
+		set_categories_to_product(product_from, dalliz_categories,osm_from, set_match = False)
+		set_tags_to_product(product_from, tags, osm_from, set_match = False)
+
+	if request.method == 'DELETE':
+		# Clearing match
+		match_to = get_match(product_to, osm) # update this
+		if match_to is not None:
+			if osm_from == 'auchan':
+				match_to.auchan_product = None
+				match_to.save()
+			if osm_from == 'ooshop':
+				match_to.ooshop_product = None
+				match_to.save()
+			if osm_from == 'monoprix':
+				match_to.monoprix_product = None
+				match_to.save()
+
+	return HttpResponse(json.dumps(response))
+
 
