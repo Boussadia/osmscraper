@@ -1,7 +1,7 @@
 from django.db import models
 
 from dalliz.models import Category as Dalliz_category
-from tags.models import Tag
+from tags.models import Tag as GeneralTag
 
 class ShippingArea(models.Model):
 	city_name = models.TextField(null=True)
@@ -81,7 +81,7 @@ class Product(models.Model):
 
 	# Final tags and dalliz_categories
 	dalliz_category = models.ManyToManyField(Dalliz_category, related_name="auchan_product_dalliz_category")
-	tag = models.ManyToManyField(Tag, related_name="auchan_product_tag_dalliz_tag")
+	tag = models.ManyToManyField(GeneralTag, related_name="auchan_product_tag_dalliz_tag")
 
 	def __unicode__(self):
 		if self.name is not None:
