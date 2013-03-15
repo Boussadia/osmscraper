@@ -47,21 +47,22 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 		"""
 
 		for main_category in categories:
-			main_category_db, created = Category.objects.get_or_create(name = main_category['name'])
+			main_category_db, created = Category.objects.get_or_create(name = main_category['name'], parent_category__isnull = True)
 
 			for category_level_1 in main_category['sub_categories']:
-				category_level_1_db, created = Category.objects.get_or_create(name = category_level_1['name'], defaults = {'url': category_level_1['url'], 'parent_category': main_category_db})
+				category_level_1_db, created = Category.objects.get_or_create(url= category_level_1['url'], defaults = {'name': category_level_1['name'], 'parent_category': main_category_db})
 
 				if not created:
-					category_level_1_db.url = category_level_1['url']
+					category_level_1_db.name = category_level_1['name']
 					category_level_1_db.parent_category = main_category_db
 
+
 				for category_level_2 in category_level_1['sub_categories']:
-					category_level_2_db, created = Category.objects.get_or_create(name = category_level_2['name'], defaults = {'url': category_level_2['url'], 'parent_category': category_level_1_db})
+					category_level_2_db, created = Category.objects.get_or_create(url= category_level_2['url'], defaults = {'name': category_level_2['name'], 'parent_category': category_level_1_db})
+					category_level_2_db.parent_category = category_level_1_db
 
 					if not created:
-						category_level_2_db.url = category_level_2['url']
-						category_level_2_db.parent_category = category_level_1_db
+						category_level_2_db.name = category_level_2['name']
 		
 
 	def save_products(self, products, parent_category = None, location = None):
