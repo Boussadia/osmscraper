@@ -93,7 +93,6 @@ def migrate():
 			[product.tag.add(t) for t in tags_to_add] # adding tag
 
 
-
 def get_subs_dalliz(id = None):
 	if id:
 		return Category.objects.filter(parent_category__id = id)
