@@ -86,12 +86,7 @@ def migrate():
 
 		# Setting tags :
 		for product in products:
-			tags = product.tag.all()
-			tags_to_remove = [t for t in tags if t in removed]
-			tags_to_add = new
-			[product.tag.remove(t) for t in tags_to_remove] # removing tag
 			[product.tag.add(t) for t in tags_to_add] # adding tag
-
 
 
 def get_subs_dalliz(id = None):
