@@ -49,7 +49,7 @@ def set_tags_to_products(old_tags, new_tags, category):
 		products = products + list(cat.newproduct_set.all())
 	# Auchan
 	for cat in category.auchan_category_dalliz_category.all():
-		products = products + list(cat.newproduct_set.all())
+		products = products + list(cat.product_set.all())
 	# Ooshop
 	for cat in category.ooshop_category_dalliz_category.all():
 		products = products + list(cat.newproduct_set.all())
@@ -79,7 +79,7 @@ def migrate():
 			products = products + list(cat.newproduct_set.all())
 		# Auchan
 		for cat in category.auchan_category_dalliz_category.all():
-			products = products + list(cat.newproduct_set.all())
+			products = products + list(cat.product_set.all())
 		# Ooshop
 		for cat in category.ooshop_category_dalliz_category.all():
 			products = products + list(cat.newproduct_set.all())

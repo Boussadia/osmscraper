@@ -92,7 +92,7 @@ def migrate():
 			products = products + list(cat.newproduct_set.all())
 		# Auchan
 		for cat in category.auchan_category_dalliz_category.all():
-			products = products + list(cat.newproduct_set.all())
+			products = products + list(cat.product_set.all())
 		# Ooshop
 		for cat in category.ooshop_category_dalliz_category.all():
 			products = products + list(cat.newproduct_set.all())
