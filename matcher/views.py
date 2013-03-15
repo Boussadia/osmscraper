@@ -9,6 +9,8 @@ from time import time
 import re
 import itertools
 
+from osmscraper.unaccent import unaccent
+
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
@@ -159,7 +161,7 @@ def tags(request, osm, product_id, tags):
 		product = Product.objects.filter(id = product_id)
 		if len(product)==0:
 			response['status'] = 404
-			response['msg'] = 'Product Not found, not able to save comment'
+			response['msg'] = 'Product Not found, not able to save tags'
 		else:
 			product = product[0]
 			# Clearing tags of products
@@ -173,5 +175,53 @@ def tags(request, osm, product_id, tags):
 	else:
 		response['status'] = 404
 		response['msg'] = 'Osm not handled'
+	return HttpResponse(json.dumps(response))
+
+def set_categories(request, osm, product_id):
+	response = {}
+	if request.method == 'POST':
+		id_categories = request.POST.getlist('categories[]')
+		if id_categories is not None:
+			# Getting dalliz_categories
+			categories = [ DallizCategory.objects.get(id = id_cat) for  id_cat in id_categories]
+			if osm in available_osms:
+				Product = available_osms[osm]['product']
+				product = Product.objects.filter(id = product_id)
+				if len(product)==0:
+					response['status'] = 404
+					response['msg'] = 'Product Not found, not able to save categories'
+				else:
+					product = product[0]
+					# Clearing dalliz categories of products
+					product.dalliz_category.clear()
+					[product.dalliz_category.add(c) for c in categories]
+					response['status'] = 200
+			else:
+				response['status'] = 404
+				response['msg'] = 'Osm not handled'
+		else:
+			response['status'] = 404
+			response['msg'] = 'No categories were sent'
+	else:
+		response['status'] = 404
+		response['msg'] = 'Not handling this method'
+	return HttpResponse(json.dumps(response))
+
+def autocomplete_category(request):
+	"""
+		Get all categories that are like term
+
+		For instance : term = 'fr' -> resultats : 'fraise', 'africe' etc..
+	"""
+	term = ''
+	if request.method == 'GET':
+		term = unaccent(request.GET['term']).lower()
+	possible_categories = DallizCategory.objects.raw( "SELECT * FROM dalliz_category WHERE LOWER(UNACCENT(name)) LIKE %s", ('%'+term+'%',))
+	# Filtering possibile categories, removing categories with childs
+	categories = []
+	for p in possible_categories:
+		if len(DallizCategory.objects.filter(parent_category = p))==0:
+			categories.append(p)
+	response = [{'id':t.id,'label':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(t)+' - '+str(t.id),'value':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(t)+' - '+str(t.id)} for t in categories]	
 	return HttpResponse(json.dumps(response))
 

@@ -33,7 +33,7 @@
 								</div>
 								<div class='block'>
 									<h3> Catégories</h3>
-									<input name="cat" class='cat' data-product='{{product.id}}' data-osm='{{product.osm}}' data-category='{{c.id}}' value="{% for c in product.categories %}{{c.name}},{% endfor %}" />
+									<input name="cat" class='cat' data-product='{{product.id}}' data-osm='{{product.osm}}' value="{% for c in product.categories %}{{c.name}} - {{c.id}}|{% endfor %}" />
 								</div>
 								<div class='block'>
 									<h3> Tags</h3>
@@ -61,11 +61,11 @@
 										</div>
 										<div class='block'>
 											<h3> Catégories</h3>
-											<input name="cat" class='cat' value="{% for c in p.categories %}{{c.name}} - {{c.id}},{% endfor %}" />
+											<input name="cat" class='cat' data-product='{{p.id}}' data-osm='{{p.osm}}' value="{% for c in p.categories %}{{c.name}} - {{c.id}}|{% endfor %}" />
 										</div>
 										<div class='block'>
 											<h3> Tags</h3>
-											<input name="tags" class='tags' value="{% for t in p.tags %}{{t.name}},{% endfor %}" />
+											<input name="tags" class='tags' data-product='{{p.id}}' data-osm='{{p.osm}}' value="{% for t in p.tags %}{{t.name}},{% endfor %}" />
 										</div>
 										<div class='block'>
 											<h3>Commentaires</h3>
