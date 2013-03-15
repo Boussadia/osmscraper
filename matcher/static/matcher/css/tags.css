@@ -24,3 +24,11 @@ div.block{
 	padding-left: 10px;
 	overflow-y: scroll;
 }
+
+.tagsinput span.tag{
+	cursor: pointer;
+}
+
+textarea.comment{
+	height: 75%;
+}

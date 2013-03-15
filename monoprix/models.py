@@ -217,6 +217,9 @@ class NewProduct(models.Model):
 	dalliz_category = models.ManyToManyField(Dalliz_category, related_name="monoprix_product_dalliz_category")
 	tag = models.ManyToManyField(Tag, related_name="monoprix_product_tag_dalliz_tag")
 
+	# for admins
+	comment = models.TextField(default = "")
+
 	def __unicode__(self):
 		if self.name is not None:
 			return self.name

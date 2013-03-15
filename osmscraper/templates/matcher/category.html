@@ -1,8 +1,16 @@
 <html>
 	<head>
 		<title>{{ category.name }}</title>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+		<script src="{% static matcher/js/jquery.tagsinput.js %}"></script>
+		<script type="text/javascript" src="{% static matcher/js/tags.js %}"></script>
+
+
 		<link rel="stylesheet" type="text/css" href="{% static matcher/css/tags.css %}">
 		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/start/jquery-ui.css">
+		<link rel="stylesheet" type="text/css" href="{% static matcher/css/jquery.tagsinput.css %}" />
 	</head>
 	<body>
 
@@ -25,24 +33,20 @@
 								</div>
 								<div class='block'>
 									<h3> Catégories</h3>
-									{% for c in product.categories %}
-										<p class='cat'>{{c.name}}</p>
-									{% endfor %}
+									<input name="cat" class='cat' value="{% for c in product.categories %}{{c.name}} - {{c.id}},{% endfor %}" />
 								</div>
 								<div class='block'>
 									<h3> Tags</h3>
-									{% for t in product.tags %}
-										<p class='tag'>{{t.name}}</p>
-									{% endfor %}
+									<input name="tags" class='tags' value="{% for t in product.tags %}{{t.name}},{% endfor %}" />
 								</div>
 								<div class='block'>
-									<h3> Save </h3>
-									<button class='save btn-success'>Save</button>
-									<button class='reset btn-info'>Reset</button>
+									<h3>Commentaires</h3>
+									<textarea class='comment' data-product='{{product.id}}' data-osm='{{product.osm}}'>{{product.comment}}</textarea>
 								</div>
 							</li>
 							{% for osm, sim in product.similarities.items %}
 								{% for p in sim %}
+									<h4>{{osm}}</h4>
 									<li class='sim'>
 										<div class='block'>
 											<a href="{{p.url}}" target="_blank"><img src="{{p.image_url}}"></a>
@@ -56,15 +60,15 @@
 										</div>
 										<div class='block'>
 											<h3> Catégories</h3>
-											{% for c in p.categories %}
-												<p class='cat'>{{c.name}}</p>
-											{% endfor %}
+											<input name="cat" class='cat' value="{% for c in p.categories %}{{c.name}} - {{c.id}},{% endfor %}" />
 										</div>
 										<div class='block'>
 											<h3> Tags</h3>
-											{% for t in p.tags %}
-												<p class='tag'>{{t.name}}</p>
-											{% endfor %}
+											<input name="tags" class='tags' value="{% for t in p.tags %}{{t.name}},{% endfor %}" />
+										</div>
+										<div class='block'>
+											<h3>Commentaires</h3>
+											<textarea class='comment' data-product='{{p.id}}' data-osm='{{p.osm}}'>{{p.comment}}</textarea>
 										</div>
 									</li>
 								{% endfor %}
