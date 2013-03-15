@@ -83,7 +83,22 @@ def set_dalliz_categories_to_products(old_dalliz_categories, new_dalliz_categori
 
 	return dalliz_categories_to_add, dalliz_categories_to_remove
 
+def migrate():
+	# putting all dalliz category to corresponding products
+	for category in dalliz.models.Category.objects.all():
+		# Getting all products
+		products = []
+		for cat in category.monoprix_category_dalliz_category.all():
+			products = products + list(cat.newproduct_set.all())
+		# Auchan
+		for cat in category.auchan_category_dalliz_category.all():
+			products = products + list(cat.newproduct_set.all())
+		# Ooshop
+		for cat in category.ooshop_category_dalliz_category.all():
+			products = products + list(cat.newproduct_set.all())
 
+		# Setting dalliz categories :
+		[product.dalliz_category.add(category) for product in products] # adding category
 
 def index(request):
 	response = {}

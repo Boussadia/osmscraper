@@ -64,9 +64,34 @@ def set_tags_to_products(old_tags, new_tags, category):
 		# print common
 		# print removed
 		[product.tag.remove(t) for t in tags_to_remove] # removing tag
-		[product.tag.add(t) for t in tags_to_add] # removing tag
+		[product.tag.add(t) for t in tags_to_add] # adding tag
 
 	return tags_to_add, tags_to_remove
+
+def migrate():
+	# putting all category tags to corresponding products
+	for category in Category.objects.all():
+		# Gettings tags
+		tags = category.tags.all()
+		# Getting all products
+		products = []
+		for cat in category.monoprix_category_dalliz_category.all():
+			products = products + list(cat.newproduct_set.all())
+		# Auchan
+		for cat in category.auchan_category_dalliz_category.all():
+			products = products + list(cat.newproduct_set.all())
+		# Ooshop
+		for cat in category.ooshop_category_dalliz_category.all():
+			products = products + list(cat.newproduct_set.all())
+
+		# Setting tags :
+		for product in products:
+			tags = product.tag.all()
+			tags_to_remove = [t for t in tags if t in removed]
+			tags_to_add = new
+			[product.tag.remove(t) for t in tags_to_remove] # removing tag
+			[product.tag.add(t) for t in tags_to_add] # adding tag
+
 
 
 def get_subs_dalliz(id = None):
