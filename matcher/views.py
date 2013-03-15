@@ -22,15 +22,25 @@ from matcher.models import ProductSimilarity
 available_osms = {
 	'auchan':{
 		'category': AuchanCategory,
-		'query': lambda p, index_name: [serialize_product(sim.ooshop_product) for sim in ProductSimilarity.objects.filter(index_name = index_name, query_name = 'auchan', auchan_product__id = p['id']).order_by('-score')[:1]],
+		'query':{
+			'ooshop':lambda p: [serialize_product(sim.ooshop_product) for sim in ProductSimilarity.objects.filter(index_name = 'auchan', query_name = 'ooshop', monoprix_product__id = p['id']).order_by('-score')[:1]],
+			'monoprix':lambda p: [serialize_product(sim.monoprix_product) for sim in ProductSimilarity.objects.filter(index_name = 'auchan', query_name = 'monoprix', ooshop_product__id = p['id']).order_by('-score')[:1]],
+		}
 	},
 	'monoprix':{
 		'category': MonoprixCategory,
-		'query': lambda p, index_name: [serialize_product(sim.ooshop_product) for sim in ProductSimilarity.objects.filter(index_name = index_name, query_name = 'monoprix', monoprix_product__id = p['id']).order_by('-score')[:1]],
+		'query':{
+			'auchan':lambda p: [serialize_product(sim.auchan_product) for sim in ProductSimilarity.objects.filter(index_name = 'monoprix', query_name = 'auchan', monoprix_product__id = p['id']).order_by('-score')[:1]],
+			'ooshop':lambda p: [serialize_product(sim.ooshop_product) for sim in ProductSimilarity.objects.filter(index_name = 'monoprix', query_name = 'ooshop', monoprix_product__id = p['id']).order_by('-score')[:1]],
+
+		} 
 	},
 	'ooshop':{
 		'category': OoshopCategory,
-		'query': lambda p, index_name: [serialize_product(sim.ooshop_product) for sim in ProductSimilarity.objects.filter(index_name = index_name, query_name = 'ooshop', ooshop_product__id = p['id']).order_by('-score')[:1]],
+		'query':{
+			'auchan':lambda p: [serialize_product(sim.auchan_product) for sim in ProductSimilarity.objects.filter(index_name = 'ooshop', query_name = 'auchan', monoprix_product__id = p['id']).order_by('-score')[:1]],
+			'monoprix':lambda p: [serialize_product(sim.monoprix_product) for sim in ProductSimilarity.objects.filter(index_name = 'ooshop', query_name = 'monoprix', ooshop_product__id = p['id']).order_by('-score')[:1]],
+		}
 	}
 }
 
@@ -82,7 +92,7 @@ def category(request, osm, category_id):
 					p['similarities'] = {}
 					for osm_index in available_osms:
 						if osm != osm_index:
-							p['similarities'][osm_index] =  available_osms[osm]['query'](p, osm_index)
+							p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
 
 				response['categories'].append( {
 					'name' : cat.name,
