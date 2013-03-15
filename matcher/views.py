@@ -12,6 +12,7 @@ import itertools
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
+from tags.models import Tag
 
 from ooshop.models import Category as OoshopCategory
 from monoprix.models import Category as MonoprixCategory
@@ -149,5 +150,28 @@ def comment(request, osm, product_id):
 		response['status'] = 404
 		response['msg'] = 'Not handling this method'
 
+	return HttpResponse(json.dumps(response))
+
+def tags(request, osm, product_id, tags):
+	response = {}
+	if osm in available_osms:
+		Product = available_osms[osm]['product']
+		product = Product.objects.filter(id = product_id)
+		if len(product)==0:
+			response['status'] = 404
+			response['msg'] = 'Product Not found, not able to save comment'
+		else:
+			product = product[0]
+			# Clearing tags of products
+			product.tag.clear()
+			if tags != ',':
+				tags = tags.split(',')
+				for t in tags:
+					tag, created = Tag.objects.get_or_create(name = t)
+					product.tag.add(tag)
+			response['status'] = 200
+	else:
+		response['status'] = 404
+		response['msg'] = 'Osm not handled'
 	return HttpResponse(json.dumps(response))
 

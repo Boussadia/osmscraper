@@ -6,11 +6,10 @@
 		<script src="{% static matcher/js/jquery.tagsinput.js %}"></script>
 		<script type="text/javascript" src="{% static matcher/js/tags.js %}"></script>
 
-
-		<link rel="stylesheet" type="text/css" href="{% static matcher/css/tags.css %}">
 		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/start/jquery-ui.css">
 		<link rel="stylesheet" type="text/css" href="{% static matcher/css/jquery.tagsinput.css %}" />
+		<link rel="stylesheet" type="text/css" href="{% static matcher/css/tags.css %}">
 	</head>
 	<body>
 
@@ -30,14 +29,15 @@
 									<p class='brand'>{{product.brand}}</p>
 									<p class='name'>{{product.name}}</p>
 									<p class='quantity'>{{product.quantity}} {{product.unit}}</p>
+									<p class='price'>{{product.price}} €</p>
 								</div>
 								<div class='block'>
 									<h3> Catégories</h3>
-									<input name="cat" class='cat' value="{% for c in product.categories %}{{c.name}} - {{c.id}},{% endfor %}" />
+									<input name="cat" class='cat' data-product='{{product.id}}' data-osm='{{product.osm}}' data-category='{{c.id}}' value="{% for c in product.categories %}{{c.name}},{% endfor %}" />
 								</div>
 								<div class='block'>
 									<h3> Tags</h3>
-									<input name="tags" class='tags' value="{% for t in product.tags %}{{t.name}},{% endfor %}" />
+									<input name="tags" class='tags' data-product='{{product.id}}' data-osm='{{product.osm}}' value="{% for t in product.tags %}{{t.name}},{% endfor %}" />
 								</div>
 								<div class='block'>
 									<h3>Commentaires</h3>
@@ -57,6 +57,7 @@
 											<p class='brand'>{{p.brand}}</p>
 											<p class='name'>{{p.name}}</p>
 											<p class='quantity'>{{p.quantity}} {{p.unit}}</p>
+											<p class='price'>{{p.price}} €</p>
 										</div>
 										<div class='block'>
 											<h3> Catégories</h3>

@@ -60,9 +60,6 @@ def set_tags_to_products(old_tags, new_tags, category):
 		tags = product.tag.all()
 		tags_to_remove = [t for t in tags if t in removed]
 		tags_to_add = new
-		# print new
-		# print common
-		# print removed
 		[product.tag.remove(t) for t in tags_to_remove] # removing tag
 		[product.tag.add(t) for t in tags_to_add] # adding tag
 

@@ -25,7 +25,11 @@ div.block{
 	overflow-y: scroll;
 }
 
-.tagsinput span.tag{
+div.tagsinput{
+	height: 70% !important;
+	width: 200px !important;
+}
+div.tagsinput span.tag{
 	cursor: pointer;
 }
 

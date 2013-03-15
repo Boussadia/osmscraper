@@ -51,6 +51,7 @@ urlpatterns = patterns('',
 
     # Product tags cleaner
     url(r'^backend/matcher/(?P<osm>(\w)+)/tags/(?P<category_id>\d+)/?$','matcher.views.category'),
+    url(r'^backend/matcher/(?P<osm>(\w)+)/tags/set/(?P<product_id>\d+)/(?P<tags>(.+))/?$','matcher.views.tags'),
     url(r'^backend/matcher/(?P<osm>(\w)+)/tags/comment/(?P<product_id>\d+)/?$','matcher.views.comment'),
 
 
