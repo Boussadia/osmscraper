@@ -86,7 +86,7 @@ def migrate():
 
 		# Setting tags :
 		for product in products:
-			[product.tag.add(t) for t in tags_to_add] # adding tag
+			[product.tag.add(t) for t in tags] # adding tag
 
 
 def get_subs_dalliz(id = None):
