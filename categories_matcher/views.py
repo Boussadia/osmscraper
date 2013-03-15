@@ -70,7 +70,10 @@ def set_dalliz_categories_to_products(old_dalliz_categories, new_dalliz_categori
 	new, common, removed = diff(old_dalliz_categories, new_dalliz_categories)
 
 	# Get all products of Category from osm
-	products = list(category.newproduct_set.all())
+	try:
+		products = list(category.newproduct_set.all())
+	except Exception, e:
+		products = list(category.product_set.all())
 
 
 	# Setting tags :
