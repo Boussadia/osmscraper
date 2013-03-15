@@ -25,13 +25,13 @@
 								</div>
 								<div class='block'>
 									<h3> Catégories</h3>
-									{% for c in product.possible_categories %}
+									{% for c in product.categories %}
 										<p class='cat'>{{c.name}}</p>
 									{% endfor %}
 								</div>
 								<div class='block'>
 									<h3> Tags</h3>
-									{% for t in product.possible_tags %}
+									{% for t in product.tags %}
 										<p class='tag'>{{t.name}}</p>
 									{% endfor %}
 								</div>
@@ -56,13 +56,13 @@
 										</div>
 										<div class='block'>
 											<h3> Catégories</h3>
-											{% for c in p.possible_categories %}
+											{% for c in p.categories %}
 												<p class='cat'>{{c.name}}</p>
 											{% endfor %}
 										</div>
 										<div class='block'>
 											<h3> Tags</h3>
-											{% for t in p.possible_tags %}
+											{% for t in p.tags %}
 												<p class='tag'>{{t.name}}</p>
 											{% endfor %}
 										</div>

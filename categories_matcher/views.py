@@ -12,6 +12,19 @@ import dalliz
 import ooshop
 import auchan
 
+
+available_osms = {
+	'ooshop':{
+		'category':ooshop.models.Category
+	},
+	'auchandirect':{
+		'category':auchan.models.Category
+	},
+	'monoprix':{
+		'category':monoprix.models.Category
+	}
+}
+
 def get_subs_dalliz(id = None):
 	if id:
 		return dalliz.models.Category.objects.filter(parent_category__id = id)
@@ -22,6 +35,55 @@ def buil_dalliz_tree(id = None):
 	categories = get_subs_dalliz(id)
 	response = { cat.id : {'name': cat.name, 'display': (lambda x : x.parent_category.name+' / '+x.name if x.parent_category is not None else x.name)(cat),'subs':buil_dalliz_tree(cat.id)} for cat in categories}
 	return response
+
+def diff(l1,l2):
+	"""
+		Compute difference between 2 lists. Returns new, common and removed items.
+		Example : 
+			l1 = [1,2,3]
+			l2 = [1,3,4]
+			ouput : new = [4], common = [1,3], removed = [2]
+
+		Input :
+			- l1 : a list
+			- l2 : a list
+		Ouput : 
+			- new, common, removed : a tupple of 3 lists
+	"""
+	removed = [t for t in l1 if t not in l2]
+	new = [t for t in l2 if t not in l1]
+	common = [t for t in l1 if t in l2]
+	return new, common,removed
+
+def set_dalliz_categories_to_products(old_dalliz_categories, new_dalliz_categories, category):
+	"""
+		Sets dalliz_category for products in osm category.
+		For every product of the category, remove dalliz categories that are not in new categories and add new categories from new dalliz categories.
+		If a dalliz category is in common to both lists but is not present in product dalliz categories, do not add it.
+
+		Input:
+			- new_dalliz_categories : list of dalliz category entities
+			- old_dalliz_categories : list of dalliz category entities
+			- category : osm category entity
+	"""
+	# Compute difference between tags list
+	new, common, removed = diff(old_dalliz_categories, new_dalliz_categories)
+
+	# Get all products of Category from osm
+	products = list(category.newproduct_set.all())
+
+
+	# Setting tags :
+	for product in products:
+		dalliz_categories = product.dalliz_category.all()
+		dalliz_categories_to_remove = [c for c in dalliz_categories if c in removed]
+		dalliz_categories_to_add = new
+		[product.dalliz_category.remove(c) for c in dalliz_categories_to_remove] # removing category
+		[product.dalliz_category.add(c) for c in dalliz_categories_to_add] # adding category
+
+	return dalliz_categories_to_add, dalliz_categories_to_remove
+
+
 
 def index(request):
 	response = {}
@@ -36,14 +98,8 @@ def categories(request, osm, level, parent='0'):
 	response = {}
 	Category = None
 
-	if osm == "monoprix":
-		Category = monoprix.models.Category
-	
-	if osm == "ooshop":
-		Category = ooshop.models.Category
-
-	if osm == "auchandirect":
-		Category = auchan.models.Category
+	if osm in available_osms.keys():
+		Category = available_osms[osm]['category']
 
 	if Category:
 		categories = Category.objects.all()
@@ -78,15 +134,15 @@ def add_link(request):
 		category_dalliz = dalliz.models.Category.objects.get(id=id_dalliz_category)
 		category_final = None
 
-		if osm == "auchandirect":
-			category_final = auchan.models.Category.objects.get(id=id_category_final)
-		elif osm == "monoprix":
-			category_final = monoprix.models.Category.objects.get(id=id_category_final)
-		elif osm == "ooshop":
-			category_final = ooshop.models.Category.objects.get(id=id_category_final)
+		if osm in available_osms.keys():
+			category_final = available_osms[osm]['category'].objects.get(id=id_category_final)
 
 		if category_final is not None:
+			old_dalliz_categories = list(category_final.dalliz_category.all())
 			category_final.dalliz_category.add(category_dalliz)
+			new_dalliz_categories = list(category_final.dalliz_category.all())
+			set_dalliz_categories_to_products(old_dalliz_categories, new_dalliz_categories, category_final)
+
 
 			return HttpResponse(json.dumps({"status":200}))
 		else:
@@ -102,15 +158,14 @@ def delete_link(request):
 		category_dalliz = dalliz.models.Category.objects.get(id=id_dalliz_category)
 		category_final = None
 
-		if osm == "auchandirect":
-			category_final = auchan.models.Category.objects.get(id=id_category_final)
-		elif osm == "monoprix":
-			category_final = monoprix.models.Category.objects.get(id=id_category_final)
-		elif osm == "ooshop":
-			category_final = ooshop.models.Category.objects.get(id=id_category_final)
+		if osm in available_osms.keys():
+			category_final = available_osms[osm]['category'].objects.get(id=id_category_final)
 
 		if category_final is not None:
+			old_dalliz_categories = list(category_final.dalliz_category.all())
 			category_final.dalliz_category.remove(category_dalliz)
+			new_dalliz_categories = list(category_final.dalliz_category.all())
+			set_dalliz_categories_to_products(old_dalliz_categories, new_dalliz_categories, category_final)
 
 			return HttpResponse(json.dumps({"status":200}))
 		else:
