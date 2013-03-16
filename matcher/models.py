@@ -102,7 +102,7 @@ class PossibleMatch(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 
 	def __unicode__(self):
-		return '%s | %s | %s'%(str(monoprix_product), str(ooshop_product), str(auchan_product))
+		return '%s | %s | %s'%(str(self.monoprix_product), str(self.ooshop_product), str(self.auchan_product))
 
 class ProductMatch(models.Model):
 	monoprix_product = models.ForeignKey(MonoprixProduct, null = True, unique = True)
@@ -111,7 +111,7 @@ class ProductMatch(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 
 	def __unicode__(self):
-		return '%s | %s | %s'%(str(monoprix_product), str(ooshop_product), str(auchan_product))
+		return '%s | %s | %s'%(str(self.monoprix_product), str(self.ooshop_product), str(self.auchan_product))
 
 class BrandMatch(models.Model):
 	monoprix_brand = models.ForeignKey(MonoprixBrand, null = True)
@@ -124,7 +124,7 @@ class BrandMatch(models.Model):
 		unique_together = (("dalliz_brand", "auchan_brand"),("dalliz_brand", "ooshop_brand"),("dalliz_brand", "monoprix_brand"),)
 
 	def __unicode__(self):
-		return '%s | %s | %s'%(str(monoprix_brand), str(ooshop_brand), str(auchan_brand))
+		return '%s | %s | %s'%(str(self.monoprix_brand), str(self.ooshop_brand), str(self.auchan_brand))self.
 
 class MatcherLog(models.Model):
 	name = models.TextField()
@@ -132,4 +132,4 @@ class MatcherLog(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 
 	def __unicode__(self):
-		return 'Last update for %s : %s'%(name, updated)
+		return 'Last update for %s : %s'%(self.name, self.updated)
