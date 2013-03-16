@@ -120,7 +120,7 @@ def categories(request, osm, level, parent='0'):
 		Category = available_osms[osm]['category']
 
 	if Category:
-		categories = Category.objects.all()
+		categories = Category.objects.filter(exists = True)
 
 		if parent != '0':
 			categories = categories.filter(parent_category_id = parent)
@@ -131,7 +131,7 @@ def categories(request, osm, level, parent='0'):
 		# Are they final categories?
 		for cat in categories:
 			j = {'name': cat.name}
-			sub_categories = Category.objects.filter(parent_category = cat)
+			sub_categories = Category.objects.filter(parent_category = cat, exists = True)
 			if sub_categories.count() == 0:
 				j['final'] = True
 			else:
