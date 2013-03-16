@@ -92,8 +92,8 @@ class Matcher(object):
 				# Performing query
 				similarities = [ {'id':document['id'], 'indexer_name':indexer.name, 'query_name':name_query, 'sims': indexer.query(document)} for document in documents]
 				self.save_log(name_query, indexer.type)
-				self.save_similarities(similarities)
-				self.clean_database(name_query, indexer.name)
+				similarities_db = self.save_similarities(similarities)
+				self.clean_database(similarities_db)
 
 	def save_similarities(self, similarities):
 		"""
@@ -101,11 +101,13 @@ class Matcher(object):
 		"""
 		pass
 
-	def clean_database(self, query_name, indexer_name):
+	def clean_database(self, exculde_similarities_db):
 		"""
-			To be implemented in child class.
+			Removes database entities that are not in the exclude list.
 		"""
-		pass
+		if len(exculde_similarities_db)>0:
+			similarities = self.SimilarityEntity.objects.exclude(id__in = [sim.id for sim in exculde_similarities_db])
+			similarities.delete()
 
 
 	def save_log(self, name, type):
@@ -166,22 +168,27 @@ class ProductMatcher(Matcher):
 		# Creating data in bulk
 		self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = 100)
 
-	def clean_database(self, query_name, indexer_name):
-		"""
-			Cleaning similarities databaes, keeping only earliest entry.
-		"""
-		similarities = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name)
-		for index in self.indexers:
-			similarities = similarities.order_by(index.name+'_product')
+		return similarities_db_list
 
-		list_sims = []
-		current = None
+	# def clean_database(self, query_name, indexer_name, similarities_db):
+	# 	"""
+	# 		Cleaning similarities databaes, keeping only earliest entry.
+	# 	"""
+	# 	# similarities = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name)
+	# 	# for index in self.indexers:
+	# 	# 	similarities = similarities.order_by(index.name+'_product')
 
-		for sim in similarities:
-			# print sim.created
-			tmp = ( sim.auchan_product, sim.monoprix_product, sim.ooshop_product)
-			same_sims = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name, auchan_product = sim.auchan_product, monoprix_product = sim.monoprix_product, ooshop_product = sim.ooshop_product).order_by('-created')
-			same_sims[1:].delete()
+	# 	# list_sims = []
+	# 	# current = None
+
+	# 	# for sim in similarities:
+	# 	# 	# print sim.created
+	# 	# 	tmp = ( sim.auchan_product, sim.monoprix_product, sim.ooshop_product)
+	# 	# 	same_sims = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name, auchan_product = sim.auchan_product, monoprix_product = sim.monoprix_product, ooshop_product = sim.ooshop_product).order_by('-created')
+	# 	# 	same_sims[1:].delete()
+	# 	similarities = self.SimilarityEntity.objects.exclude(id__in = [sim.id for sim in similarities_db_list])
+	# 	similarities.delete()
+
 
 class BrandMatcher(Matcher):
 	"""
@@ -233,8 +240,8 @@ class BrandMatcher(Matcher):
 				# Performing query
 				similarities = [ {'id':document['id'], 'indexer_name':indexer.name, 'query_name':name_query, 'sims': indexer.query(document)} for document in documents]
 				self.save_log(name_query, indexer.type)
-				self.save_similarities(similarities)
-				self.clean_database(name_query, indexer.name)
+				similarities_db = self.save_similarities(similarities)
+				self.clean_database(similarities_db)
 
 	def save_similarities(self, similarities):
 		"""
@@ -282,23 +289,24 @@ class BrandMatcher(Matcher):
 
 		# Creating data in bulk
 		self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = 100)
+		return similarities_db_list
 
-	def clean_database(self, query_name, indexer_name):
-		"""
-			Cleaning similarities databaes, keeping only earliest entry.
-		"""
-		similarities = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name)
-		for index in self.indexers:
-			similarities = similarities.order_by(index.name+'_brand')
+	# def clean_database(self, query_name, indexer_name):
+	# 	"""
+	# 		Cleaning similarities databaes, keeping only earliest entry.
+	# 	"""
+	# 	similarities = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name)
+	# 	for index in self.indexers:
+	# 		similarities = similarities.order_by(index.name+'_brand')
 
-		list_sims = []
-		current = None
+	# 	list_sims = []
+	# 	current = None
 
-		for sim in similarities:
-			# print sim.created
-			tmp = (sim.dalliz_brand, sim.auchan_brand, sim.monoprix_brand, sim.ooshop_brand)
-			same_sims = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name, dalliz_brand = sim.dalliz_brand, auchan_brand = sim.auchan_brand, monoprix_brand = sim.monoprix_brand, ooshop_brand = sim.ooshop_brand).order_by('-created')
-			same_sims[1:].delete()
+	# 	for sim in similarities:
+	# 		# print sim.created
+	# 		tmp = (sim.dalliz_brand, sim.auchan_brand, sim.monoprix_brand, sim.ooshop_brand)
+	# 		same_sims = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name, dalliz_brand = sim.dalliz_brand, auchan_brand = sim.auchan_brand, monoprix_brand = sim.monoprix_brand, ooshop_brand = sim.ooshop_brand).order_by('-created')
+	# 		same_sims[1:].delete()
 
 
 
