@@ -181,8 +181,7 @@ class ProductMatcher(Matcher):
 			# print sim.created
 			tmp = ( sim.auchan_product, sim.monoprix_product, sim.ooshop_product)
 			same_sims = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name, auchan_product = sim.auchan_product, monoprix_product = sim.monoprix_product, ooshop_product = sim.ooshop_product).order_by('-created')
-			for x in xrange(1, len(same_sims)):
-				same_sims[x].delete()
+			same_sims[1:].delete()
 
 class BrandMatcher(Matcher):
 	"""
@@ -299,8 +298,7 @@ class BrandMatcher(Matcher):
 			# print sim.created
 			tmp = (sim.dalliz_brand, sim.auchan_brand, sim.monoprix_brand, sim.ooshop_brand)
 			same_sims = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name, dalliz_brand = sim.dalliz_brand, auchan_brand = sim.auchan_brand, monoprix_brand = sim.monoprix_brand, ooshop_brand = sim.ooshop_brand).order_by('-created')
-			for x in xrange(1, len(same_sims)):
-				same_sims[x].delete()
+			same_sims[1:].delete()
 
 
 
