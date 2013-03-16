@@ -124,7 +124,7 @@ class BrandMatch(models.Model):
 		unique_together = (("dalliz_brand", "auchan_brand"),("dalliz_brand", "ooshop_brand"),("dalliz_brand", "monoprix_brand"),)
 
 	def __unicode__(self):
-		return '%s | %s | %s'%(str(self.monoprix_brand), str(self.ooshop_brand), str(self.auchan_brand))self.
+		return '%s | %s | %s'%(str(self.monoprix_brand), str(self.ooshop_brand), str(self.auchan_brand))
 
 class MatcherLog(models.Model):
 	name = models.TextField()
