@@ -31,9 +31,9 @@ def get_subs_dalliz(id = None):
 	else:
 		return dalliz.models.Category.objects.filter(parent_category__isnull = True)
 
-def buil_dalliz_tree(id = None):
+def build_dalliz_tree(id = None):
 	categories = get_subs_dalliz(id)
-	response = { cat.id : {'name': cat.name, 'display': (lambda x : x.parent_category.name+' / '+x.name if x.parent_category is not None else x.name)(cat),'subs':buil_dalliz_tree(cat.id)} for cat in categories}
+	response = { cat.id : {'name': cat.name, 'display': (lambda x : x.parent_category.name+' / '+x.name if x.parent_category is not None else x.name)(cat),'subs':build_dalliz_tree(cat.id)} for cat in categories}
 	return response
 
 def diff(l1,l2):
@@ -106,7 +106,7 @@ def migrate():
 def index(request):
 	response = {}
 	# Getting parent categories
-	response = buil_dalliz_tree()
+	response = build_dalliz_tree()
 
 	return render(request, 'categories_matcher/index.html', {"categories": json.dumps(response)})
 

@@ -10,8 +10,17 @@
 		<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/start/jquery-ui.css">
 		<link rel="stylesheet" type="text/css" href="{% static matcher/css/jquery.tagsinput.css %}" />
 		<link rel="stylesheet" type="text/css" href="{% static matcher/css/tags.css %}">
+		<script type="text/javascript">
+			var dalliz_categories = {{dalliz_categories|safe}}
+			var osm = "{{osm}}";
+		</script>
 	</head>
 	<body>
+
+		<div class="add">
+				<select id="first"></select><select id="second"></select><select id="third"></select>
+				<button id='go' class = ' go btn btn-success'>Go </button></div>
+		</div>
 
 		<h1> Catégorie Dalliz : {{ category.name }}</h1>
 

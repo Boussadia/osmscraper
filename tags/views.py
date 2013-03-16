@@ -92,15 +92,15 @@ def get_subs_dalliz(id = None):
 	else:
 		return Category.objects.filter(parent_category__isnull = True)
 
-def buil_dalliz_tree(id = None):
+def build_dalliz_tree(id = None):
 	categories = get_subs_dalliz(id)
-	response = { cat.id : {'name': cat.name, 'subs':buil_dalliz_tree(cat.id)} for cat in categories}
+	response = { cat.id : {'name': cat.name, 'subs':build_dalliz_tree(cat.id)} for cat in categories}
 	return response
 
 def index(request):
 	response = {}
 	# Getting parent categories
-	categories = buil_dalliz_tree()
+	categories = build_dalliz_tree()
 	tags = [ t.name for t in Tag.objects.all()]
 
 	return render(request, 'tags/index.html', {"categories": json.dumps(categories), "tags": json.dumps(tags)})

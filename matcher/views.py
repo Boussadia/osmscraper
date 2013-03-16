@@ -33,16 +33,16 @@ available_osms = {
 		'category': AuchanCategory,
 		'product': AuchanProduct,
 		'query':{
-			'ooshop':lambda p: [serialize_product(sim.ooshop_product, 'ooshop') for sim in ProductSimilarity.objects.filter(index_name = 'auchan', query_name = 'ooshop', monoprix_product__id = p['id']).order_by('-score')[:1]],
-			'monoprix':lambda p: [serialize_product(sim.monoprix_product, 'monoprix') for sim in ProductSimilarity.objects.filter(index_name = 'auchan', query_name = 'monoprix', ooshop_product__id = p['id']).order_by('-score')[:1]],
+			'ooshop':lambda p: [serialize_product(sim.ooshop_product, 'ooshop') for sim in ProductSimilarity.objects.filter(index_name = 'ooshop', query_name = 'auchan', auchan_product__id = p['id'], ).order_by('-score')[:1]],
+			'monoprix':lambda p: [serialize_product(sim.monoprix_product, 'monoprix') for sim in ProductSimilarity.objects.filter(index_name = 'monoprix', query_name = 'auchan', auchan_product__id = p['id']).order_by('-score')[:1]],
 		}
 	},
 	'monoprix':{
 		'category': MonoprixCategory,
 		'product': MonoprixProduct,
 		'query':{
-			'auchan':lambda p: [serialize_product(sim.auchan_product, 'auchan') for sim in ProductSimilarity.objects.filter(index_name = 'monoprix', query_name = 'auchan', monoprix_product__id = p['id']).order_by('-score')[:1]],
-			'ooshop':lambda p: [serialize_product(sim.ooshop_product, 'ooshop') for sim in ProductSimilarity.objects.filter(index_name = 'monoprix', query_name = 'ooshop', monoprix_product__id = p['id']).order_by('-score')[:1]],
+			'auchan':lambda p: [serialize_product(sim.auchan_product, 'auchan') for sim in ProductSimilarity.objects.filter(index_name = 'auchan', query_name = 'monoprix', monoprix_product__id = p['id']).order_by('-score')[:1]],
+			'ooshop':lambda p: [serialize_product(sim.ooshop_product, 'ooshop') for sim in ProductSimilarity.objects.filter(index_name = 'ooshop', query_name = 'monoprix', monoprix_product__id = p['id']).order_by('-score')[:1]],
 
 		} 
 	},
@@ -50,11 +50,22 @@ available_osms = {
 		'category': OoshopCategory,
 		'product': OoshopProduct,
 		'query':{
-			'auchan':lambda p: [serialize_product(sim.auchan_product, 'auchan') for sim in ProductSimilarity.objects.filter(index_name = 'ooshop', query_name = 'auchan', monoprix_product__id = p['id']).order_by('-score')[:1]],
-			'monoprix':lambda p: [serialize_product(sim.monoprix_product, 'monoprix') for sim in ProductSimilarity.objects.filter(index_name = 'ooshop', query_name = 'monoprix', ooshop_product__id = p['id']).order_by('-score')[:1]],
+			'auchan':lambda p: [serialize_product(sim.auchan_product, 'auchan') for sim in ProductSimilarity.objects.filter(index_name = 'auchan', query_name = 'ooshop', ooshop_product__id = p['id']).order_by('-score')[:1]],
+			'monoprix':lambda p: [serialize_product(sim.monoprix_product, 'monoprix') for sim in ProductSimilarity.objects.filter(index_name = 'monoprix', query_name = 'ooshop', ooshop_product__id = p['id']).order_by('-score')[:1]],
 		}
 	}
 }
+
+def get_subs_dalliz(id = None):
+	if id:
+		return DallizCategory.objects.filter(parent_category__id = id)
+	else:
+		return DallizCategory.objects.filter(parent_category__isnull = True)
+
+def build_dalliz_tree(id = None):
+	categories = get_subs_dalliz(id)
+	response = { cat.id : {'name': cat.name, 'display': (lambda x : x.parent_category.name+' / '+x.name if x.parent_category is not None else x.name)(cat),'subs':build_dalliz_tree(cat.id)} for cat in categories}
+	return response
 
 def serialize_product(product, osm):
 	return {
@@ -65,6 +76,8 @@ def serialize_product(product, osm):
 				'name':product.name,
 				'comment': product.comment,
 				'brand':(lambda x: x.brand.name if x.brand is not None else '')(product),
+				'brand_db':product.brand,
+				'dalliz_brand':(lambda x: x.brand.brandmatch_set.all()[0].dalliz_brand if x.brand is not None and len(x.brand.brandmatch_set.all())>0 else None)(product),
 				'unit_price':(lambda x: x[0].unit_price if len(x)>0 else 0 )(product.history_set.all().order_by('-created')),
 				'price': (lambda x: x[0].price if len(x)>0 else 0 )(product.history_set.all().order_by('-created')),
 				'quantity': (lambda x: int(x[0].price/x[0].unit_price*1000)/1000.0 if len(x)>0 else 0 )(product.history_set.all().order_by('-created')),
@@ -83,6 +96,7 @@ def category(request, osm, category_id):
 		response['status'] = 404
 		response['msg'] = 'Dalliz category not found'
 	else:
+		
 		dalliz_category = dalliz_category[0]
 
 		# Getting osm corresponding categories
@@ -137,6 +151,9 @@ def category(request, osm, category_id):
 							else:
 								p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
 
+							# Filter similarities by  dalliz brand
+
+
 				response['categories'].append( {
 					'name' : cat.name,
 					'id' : cat.id,
@@ -146,6 +163,10 @@ def category(request, osm, category_id):
 			'name': dalliz_category.name,
 			'osm': osm
 		}
+		# dalliz categories
+		dalliz_categories = build_dalliz_tree()
+		response["dalliz_categories"] = json.dumps(dalliz_categories)
+		response['osm'] = osm
 
 	# return HttpResponse(json.dumps(response))
 
