@@ -127,7 +127,7 @@ class OoshopScraper(BaseScraper):
 							self.parser.set_html(html)
 							tmp = self.parser.get_products()
 							for k in xrange(0, len(tmp)):
-								tmp[k]['parent_brand'] = brand['name']
+								tmp[k]['parent_brand'] = brand['value']
 							fetched_products = fetched_products + tmp
 							# Setting brand name to products
 						else:

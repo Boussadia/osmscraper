@@ -322,7 +322,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 		"""
 		parent_brand, created = Brand.objects.get_or_create(name = parent_brand_name)
 		brand, created = Brand.objects.get_or_create(name = brand_name, defaults = {'image_url': brand_image_url, 'parent_brand': parent_brand})
-		if not created:
+		if not created and brand_name != parent_brand_name:
 			brand.image_url = brand_image_url
 			brand.parent_brand = parent_brand
 			brand.save()
