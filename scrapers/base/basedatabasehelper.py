@@ -127,5 +127,11 @@ class BaseDatabaseHelper(object):
 		"""
 			If a category does not exist in the osm, set its argument exists to False
 		"""
-		category.exists = False
-		category.save()
+		if category is not None:
+			category.exists = False
+			category.save()
+			# Getting all products associated with category and remove from m2m table
+			if hasattr(category, 'newproduct_set'):
+				c.newproduct_set.clear()
+			elif hasattr(category, 'product_set'):
+				c.newproduct_set.clear()
