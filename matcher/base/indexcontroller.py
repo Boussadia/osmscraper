@@ -112,8 +112,9 @@ class ProductIndexController(IndexController):
 		reg = re.compile(r'\b[a-zA-Z]{3,}\b')
 		products = self.Model.objects.filter(stemmed_text__isnull=False)
 		documents = [{'id': p.id, 'tokens': reg.findall(p.stemmed_text)} for p in products]
-		self.service.train(documents, method=IndexController.METHOD)
-		self.service.index(documents)
+		if len(documents)>0:
+			self.service.train(documents, method=IndexController.METHOD)
+			self.service.index(documents)
 
 	def get_documents(self, datetime = None):
 		"""

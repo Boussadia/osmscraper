@@ -103,32 +103,9 @@ class Matcher(object):
 
 	def clean_database(self, query_name, indexer_name):
 		"""
-			Cleaning similarities databaes, keeping only earliest entry.
+			To be implemented in child class.
 		"""
-		similarities = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name)
-		for index in self.indexers:
-			similarities = similarities.order_by(index.name+'_brand')
-
-		list_sims = []
-		current = None
-
-		for sim in similarities:
-			# print sim.created
-			tmp = (sim.dalliz_brand, sim.auchan_brand, sim.monoprix_brand, sim.ooshop_brand)
-			same_sims = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name, dalliz_brand = sim.dalliz_brand, auchan_brand = sim.auchan_brand, monoprix_brand = sim.monoprix_brand, ooshop_brand = sim.ooshop_brand).order_by('-created')
-			# print len(same_sims)
-			for x in xrange(1, len(same_sims)):
-				same_sims[x].delete()
-			# if current is None or current != tmp:
-			# 	list_sims.append({'tmp':tmp, 'count':1, 'keep':sim, 'del':[]})
-			# 	current = tmp
-			# else:
-			# 	count = list_sims[-1]['count']
-			# 	list_sims[-1]['count'] = count + 1
-			# 	list_sims[-1]['del'].append(sim)
-
-
-		# return list_sims
+		pass
 
 
 	def save_log(self, name, type):
@@ -188,6 +165,24 @@ class ProductMatcher(Matcher):
 
 		# Creating data in bulk
 		self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = 100)
+
+	def clean_database(self, query_name, indexer_name):
+		"""
+			Cleaning similarities databaes, keeping only earliest entry.
+		"""
+		similarities = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name)
+		for index in self.indexers:
+			similarities = similarities.order_by(index.name+'_product')
+
+		list_sims = []
+		current = None
+
+		for sim in similarities:
+			# print sim.created
+			tmp = ( sim.auchan_product, sim.monoprix_product, sim.ooshop_product)
+			same_sims = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name, auchan_product = sim.auchan_product, monoprix_product = sim.monoprix_product, ooshop_product = sim.ooshop_product).order_by('-created')
+			for x in xrange(1, len(same_sims)):
+				same_sims[x].delete()
 
 class BrandMatcher(Matcher):
 	"""
@@ -288,6 +283,24 @@ class BrandMatcher(Matcher):
 
 		# Creating data in bulk
 		self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = 100)
+
+	def clean_database(self, query_name, indexer_name):
+		"""
+			Cleaning similarities databaes, keeping only earliest entry.
+		"""
+		similarities = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name)
+		for index in self.indexers:
+			similarities = similarities.order_by(index.name+'_brand')
+
+		list_sims = []
+		current = None
+
+		for sim in similarities:
+			# print sim.created
+			tmp = (sim.dalliz_brand, sim.auchan_brand, sim.monoprix_brand, sim.ooshop_brand)
+			same_sims = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name, dalliz_brand = sim.dalliz_brand, auchan_brand = sim.auchan_brand, monoprix_brand = sim.monoprix_brand, ooshop_brand = sim.ooshop_brand).order_by('-created')
+			for x in xrange(1, len(same_sims)):
+				same_sims[x].delete()
 
 
 
