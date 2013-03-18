@@ -29,7 +29,7 @@ class OoshopScraper(BaseScraper):
 			self.parser.set_html(html)
 			categories = self.parser.get_categories(level = 0)
 			# Setting proper urls
-			[ cat.update({'url': self.properurl(cat['url'])}) for cat in categories]
+			[ cat.update({'url': self.set_proper_url_for_category(cat['url'])}) for cat in categories]
 			# Save categories
 			categories = self.databaseHelper.save_categories(categories)
 		else:
@@ -41,7 +41,7 @@ class OoshopScraper(BaseScraper):
 		for i in xrange(0, len(categories)):
 			main_category = categories[i]
 			# Setting proper urls
-			[ cat.update({'url': self.properurl(cat['url'])}) for cat in main_category['sub_categories']]
+			[ cat.update({'url': self.set_proper_url_for_category(cat['url'])}) for cat in main_category['sub_categories']]
 
 			for j in xrange(0, len(main_category['sub_categories'])):
 				level_1_category = main_category['sub_categories'][j]
@@ -51,7 +51,7 @@ class OoshopScraper(BaseScraper):
 					self.parser.set_html(html)
 					level_1_category['sub_categories'] = self.parser.get_categories(level = 2)
 					# Setting proper urls
-					[ cat.update({'url': self.properurl(cat['url'])}) for cat in level_1_category['sub_categories']]
+					[ cat.update({'url': self.set_proper_url_for_category(cat['url'])}) for cat in level_1_category['sub_categories']]
 					# Save categories
 					[level_1_category] = self.databaseHelper.save_categories([level_1_category], main_category['id'])
 
@@ -64,7 +64,7 @@ class OoshopScraper(BaseScraper):
 							self.parser.set_html(html)
 							level_2_category['sub_categories'] = self.parser.get_categories(level = 3)
 							# Setting proper urls
-							[ cat.update({'url': self.properurl(cat['url'])}) for cat in level_2_category['sub_categories']]
+							[ cat.update({'url': self.set_proper_url_for_category(cat['url'])}) for cat in level_2_category['sub_categories']]
 							# Save categories
 							[level_2_category] = self.databaseHelper.save_categories([level_2_category], level_1_category['id'])
 							level_2_category['sub_categories'] = self.databaseHelper.save_categories(level_2_category['sub_categories'], level_2_category['id'])
@@ -76,6 +76,18 @@ class OoshopScraper(BaseScraper):
 					# level_1_category['sub_categories'] = self.databaseHelper.save_categories(level_1_category['sub_categories'], level_1_category['id'])					
 				else:
 					print "Something went wrong when fetching level 2 categories for Ooshop"
+	def set_proper_url_for_category(self, category_url):
+		"""
+			We need to add /courses-en-ligne/ to category page because brand filter request wont work otherwise.
+		"""
+		url = self.properurl(category_url)
+		if '/courses-en-ligne/' not in url:
+			splitted = url.split(self.base_url)
+			splitted.insert(0, '/courses-en-ligne')
+			url = self.base_url+''.join(splitted)
+		return url
+
+
 
 	def get_list_products_for_category(self, category_url, location = 'default', save = False):
 		"""
@@ -87,6 +99,7 @@ class OoshopScraper(BaseScraper):
 		"""
 		# Setting location, & initializing products
 		is_LAD, code = self.set_location(location)
+		category_url = self.set_proper_url_for_category(category_url)
 
 		if is_LAD and code == 200:
 			shipping_area = self.databaseHelper.get_shipping_area(location)
