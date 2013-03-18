@@ -170,26 +170,6 @@ class ProductMatcher(Matcher):
 
 		return similarities_db_list
 
-	# def clean_database(self, query_name, indexer_name, similarities_db):
-	# 	"""
-	# 		Cleaning similarities databaes, keeping only earliest entry.
-	# 	"""
-	# 	# similarities = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name)
-	# 	# for index in self.indexers:
-	# 	# 	similarities = similarities.order_by(index.name+'_product')
-
-	# 	# list_sims = []
-	# 	# current = None
-
-	# 	# for sim in similarities:
-	# 	# 	# print sim.created
-	# 	# 	tmp = ( sim.auchan_product, sim.monoprix_product, sim.ooshop_product)
-	# 	# 	same_sims = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name, auchan_product = sim.auchan_product, monoprix_product = sim.monoprix_product, ooshop_product = sim.ooshop_product).order_by('-created')
-	# 	# 	same_sims[1:].delete()
-	# 	similarities = self.SimilarityEntity.objects.exclude(id__in = [sim.id for sim in similarities_db_list])
-	# 	similarities.delete()
-
-
 class BrandMatcher(Matcher):
 	"""
 		This class is responsible for managing the different indexes of osms brands.
@@ -290,23 +270,6 @@ class BrandMatcher(Matcher):
 		# Creating data in bulk
 		self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = 100)
 		return similarities_db_list
-
-	# def clean_database(self, query_name, indexer_name):
-	# 	"""
-	# 		Cleaning similarities databaes, keeping only earliest entry.
-	# 	"""
-	# 	similarities = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name)
-	# 	for index in self.indexers:
-	# 		similarities = similarities.order_by(index.name+'_brand')
-
-	# 	list_sims = []
-	# 	current = None
-
-	# 	for sim in similarities:
-	# 		# print sim.created
-	# 		tmp = (sim.dalliz_brand, sim.auchan_brand, sim.monoprix_brand, sim.ooshop_brand)
-	# 		same_sims = self.SimilarityEntity.objects.filter(query_name = query_name, index_name = indexer_name, dalliz_brand = sim.dalliz_brand, auchan_brand = sim.auchan_brand, monoprix_brand = sim.monoprix_brand, ooshop_brand = sim.ooshop_brand).order_by('-created')
-	# 		same_sims[1:].delete()
 
 
 

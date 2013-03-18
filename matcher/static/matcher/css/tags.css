@@ -36,3 +36,7 @@ div.tagsinput span.tag{
 textarea.comment{
 	height: 75%;
 }
+
+.brand{
+	font-weight: bold;
+}

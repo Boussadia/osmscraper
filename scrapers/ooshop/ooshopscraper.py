@@ -76,6 +76,7 @@ class OoshopScraper(BaseScraper):
 					# level_1_category['sub_categories'] = self.databaseHelper.save_categories(level_1_category['sub_categories'], level_1_category['id'])					
 				else:
 					print "Something went wrong when fetching level 2 categories for Ooshop"
+	
 	def set_proper_url_for_category(self, category_url):
 		"""
 			We need to add /courses-en-ligne/ to category page because brand filter request wont work otherwise.
