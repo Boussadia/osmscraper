@@ -82,10 +82,10 @@ def serialize_product(product, osm):
 				'price': (lambda x: x[0].price if len(x)>0 else 0 )(product.history_set.all().order_by('-created')),
 				'quantity': (lambda x: int(x[0].price/x[0].unit_price*1000)/1000.0 if len(x)>0 else 0 )(product.history_set.all().order_by('-created')),
 				'unit':(lambda x: x.name if x is not None else 'Unknown')(product.unit),
-				'possible_categories': [[{'id':x.id, 'name':x.name} for x in c.dalliz_category.all()] for c in product.categories.all()][0],
+				'possible_categories': (lambda p:[[{'id':x.id, 'name':x.name} for x in c.dalliz_category.all()] for c in p.categories.all()][0] if len(p.categories.all())>0 else [])(product),
 				'categories': [{'id':x.id, 'name':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(x)} for x in product.dalliz_category.all()],
 				'tags': [{'name':tag.name, 'id':tag.id} for tag in product.tag.all()],
-				'possible_tags':list(itertools.chain(*[[[{'id':t.id, 'name':t.name} for t in x.tags.all()] for x in c.dalliz_category.all()] for c in product.categories.all()][0]))
+				'possible_tags':(lambda p:list(itertools.chain(*[[[{'id':t.id, 'name':t.name} for t in x.tags.all()] for x in c.dalliz_category.all()] for c in p.categories.all()][0] if len(p.categories.all())>0 else [])(product) ))
 			}
 
 def category(request, osm, category_id):
