@@ -93,6 +93,8 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 					product_db.save()
 
 				return []
+			elif 'exists' not in product or ('exists' in product and  product['exists']):
+				exists = True
 
 			# Common
 			reference = product['reference']
@@ -110,7 +112,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 				html = None
 				stemmed_text = None
 
-			if 'brand' in product and product['brand'] != '':
+			if 'brand' in product and product['brand'] != '' and 'parent_brand' in product:
 				brand = self.save_brand(product['brand'], product['brand_image_url'], product['parent_brand'])
 			else:
 				brand = None
@@ -186,7 +188,6 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 						'name': name,
 						'url': url,
 						'image_url': image_url,
-						'brand': brand,
 						'unit': unit,
 						'informations': informations,
 						'conservation': conservation,
@@ -197,14 +198,14 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 						'avertissements': avertissements,
 						'package_unit': package_unit,
 						'package_quantity': package_quantity,
-						'package_measure': package_measure
+						'package_measure': package_measure,
+						'exists': exists
 						})
 				else:
 					product_db, created = Product.objects.get_or_create(image_url = image_url, defaults={
 						'name': name,
 						'url': url,
 						'reference': reference,
-						'brand': brand,
 						'unit': unit,
 						'informations': informations,
 						'conservation': conservation,
@@ -215,8 +216,13 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 						'avertissements': avertissements,
 						'package_unit': package_unit,
 						'package_quantity': package_quantity,
-						'package_measure': package_measure
+						'package_measure': package_measure,
+						'exists': exists
 						})
+
+				if brand is not None and created:
+					product_db.brand = brand
+					product_db.save()
 					
 
 				if not created:
@@ -236,6 +242,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 					product_db.package_unit = package_unit
 					product_db.package_quantity = package_quantity
 					product_db.package_measure = package_measure
+					product_db.exists = exists
 					product_db.save()
 
 				# Do we need to save the html in the product?
