@@ -117,39 +117,41 @@ class OoshopScraper(BaseScraper):
 			# Getting brand filter values
 			brands = self.parser.get_brands_values_in_category_page()
 
-			for i in xrange(0,len(brands)):
-				brand = brands[i]
-				fetched_products = []
-				# Getting html corresponding to filter
-				html, code = self.crawler.brand_filter(category_url, brand)
+			if brands is not None:
 
-				if code == 200:
-					# Getting pagination
-					self.parser.set_html(html)
-					pagination = self.parser.get_pagination()
+				for i in xrange(0,len(brands)):
+					brand = brands[i]
+					fetched_products = []
+					# Getting html corresponding to filter
+					html, code = self.crawler.brand_filter(category_url, brand)
 
-					for j in xrange(0,len(pagination)):
-						# Going through every page and get products
-						page = pagination[j]
-						if j == 0:
-							# page already fetched, no need to fetch it again
-							pass
-						else:
-							html, code = self.crawler.category_pagination(category_url, page)
+					if code == 200:
+						# Getting pagination
+						self.parser.set_html(html)
+						pagination = self.parser.get_pagination()
 
-						if code == 200:
-							self.parser.set_html(html)
-							tmp = self.parser.get_products()
-							for k in xrange(0, len(tmp)):
-								tmp[k]['parent_brand'] = brand['value']
-							fetched_products = fetched_products + tmp
-							# Setting brand name to products
-						else:
-							print "Something went wrong when fetching category page (%d) and brand %s for Ooshop : code %d"%(j+1, brand['name'],code)
-					# Updating products list
-					products = products + fetched_products
-				else:
-					print "Something went wrong when fetching brand page (%s) for Ooshop : code %d"%(brand['name'],code)
+						for j in xrange(0,len(pagination)):
+							# Going through every page and get products
+							page = pagination[j]
+							if j == 0:
+								# page already fetched, no need to fetch it again
+								pass
+							else:
+								html, code = self.crawler.category_pagination(category_url, page)
+
+							if code == 200:
+								self.parser.set_html(html)
+								tmp = self.parser.get_products()
+								for k in xrange(0, len(tmp)):
+									tmp[k]['parent_brand'] = brand['value']
+								fetched_products = fetched_products + tmp
+								# Setting brand name to products
+							else:
+								print "Something went wrong when fetching category page (%d) and brand %s for Ooshop : code %d"%(j+1, brand['name'],code)
+						# Updating products list
+						products = products + fetched_products
+					else:
+						print "Something went wrong when fetching brand page (%s) for Ooshop : code %d"%(brand['name'],code)
 		else:
 			print "Something went wrong when fetching category page for Ooshop : code %d"%(code)
 

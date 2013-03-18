@@ -151,27 +151,30 @@ class OoshopParser(BaseParser):
 		parsed_page = self.parsed_page
 		brands = []
 		select = parsed_page.find('select', {'class': 'voir'})
-		options = select.find_all('option')
-		eventTarget = select.attrs['name']
-		view_state = parsed_page.find(id = '__VIEWSTATE').attrs['value']
+		if select is not None:
+			options = select.find_all('option')
+			eventTarget = select.attrs['name']
+			view_state = parsed_page.find(id = '__VIEWSTATE').attrs['value']
 
-		for o in options:
-			value = o.attrs['value']
-			name = o.text
-			if value and value.lower() != 'all':
-				brands.append({
-					'name': name,
-					'value': value,
-					'eventTarget': eventTarget,
-					'__VIEWSTATE': view_state
-					})
-				# making sure everithing is properly encoded
-				for brand in brands:
-					for key in brand:
-						if isinstance(brand[key], unicode):
-							brand[key] = brand[key].encode('utf-8', 'ignore')
+			for o in options:
+				value = o.attrs['value']
+				name = o.text
+				if value and value.lower() != 'all':
+					brands.append({
+						'name': name,
+						'value': value,
+						'eventTarget': eventTarget,
+						'__VIEWSTATE': view_state
+						})
+					# making sure everithing is properly encoded
+					for brand in brands:
+						for key in brand:
+							if isinstance(brand[key], unicode):
+								brand[key] = brand[key].encode('utf-8', 'ignore')
 
-		return brands
+			return brands
+		else:
+			return None
 
 	def get_products(self):
 		"""
