@@ -1,4 +1,22 @@
 $(document).ready(function(){
+	var category_areas = $('.category_area').each(function(){
+		var not_category = $(this).find('.category_is_not_set').remove();
+		$(this).append(not_category);
+
+		not_category.accordion({
+			collapsible: true,
+			active: false,
+			heightStyleType: 'content'
+		});
+		var matched = $(this).find('.match_is_set:not(.category_area)').remove();
+		$(this).prepend(matched);
+
+		matched.accordion({
+			collapsible: true,
+			active: false,
+			heightStyleType: 'content'
+		});
+	});
 
 	// Go to category page
 	fill_select('first', dalliz_categories);
@@ -36,7 +54,6 @@ $(document).ready(function(){
 
 	$('#go').click(function(){
 		var id_category = $(".add select#third").find(":selected").val();
-		console.log('/backend/matcher/'+osm+'/tags/'+id_category);
 
 		if (id_category !== undefined) window.location.replace('/backend/matcher/'+osm+'/tags/'+id_category);
 	})
@@ -67,7 +84,7 @@ $(document).ready(function(){
 	});
 
 	// Tags
-	$('.tags').tagsInput({
+	var options_tags = {
 		'removeWithBackspace' : false,
 		onAddTag: function(tag){
 			save_tags($(this));
@@ -78,10 +95,11 @@ $(document).ready(function(){
 		onChange : function(x, y){
 		},
 		'autocomplete_url': '/backend/tags/autocomplete/',
-	});
+	};
+	$('.tags').tagsInput(options_tags);
 
 	// Categories
-	$('.cat').tagsInput({
+	var options_categories = {
 		'removeWithBackspace' : false,
 		'onAddTag': function(t){
 			save_categories($(this));
@@ -91,35 +109,18 @@ $(document).ready(function(){
 		},
 		'autocomplete_url': '/backend/matcher/tags/categorie/autocomplete/',
 		'delimiter': '|',
-	});
+	};
+	$('.cat').tagsInput(options_categories);
 
 	// Merge button
-	$('button.merge').click(function(e){
-		merge(e, this);
-	});
+	$('button.merge').bind('click', merge);
 
-	var merge = function(e){
+	function merge(e){
 		$that = $(e.target);
 		var osm = $that.attr('data-osm');
 		var product = $that.attr('data-product');
 		var osm_from = $that.attr('data-osm_from');
 		var product_from = $that.attr('data-product_from');
-		var matched_area = $('.product[data-product='+product+'][data-osm='+osm+'] .matched_area');
-		var merged_product = $('.product[data-product='+product+'][data-osm='+osm+'] .unmatched[data-product_from='+product_from+'][data-osm_from='+osm_from+']');
-		merged_product.removeClass('unmatched')
-						.addClass('matched')
-						.accordion({
-							collapsible: true,
-							active: false,
-							heightStyleType: 'content'
-						})
-							.find('button')
-								.unbind('click')
-								.text('Cancel')
-								.removeClass('merge')
-								.addClass('unmerge')
-								.click(unmerge);
-		matched_area.append(merged_product);
 
 		$.ajax({
 			url:'/backend/matcher/'+osm+'/tags/match/'+osm_from+'/'+product+'/'+product_from,
@@ -127,11 +128,43 @@ $(document).ready(function(){
 			dataType:"json",
 			data:{},
 			success: function(data, textStatus, jqXHR){
-				
-				// console.log(data);
-				// console.log(textStatus);
-				// console.log(jqXHR);
-
+				var categories = data['categories'];
+				var tags = data['tags'];
+				var matched_area = $('.product[data-product='+product+'][data-osm='+osm+'] .matched_area');
+				var merged_product = $('.product[data-product='+product+'][data-osm='+osm+'] .unmatched[data-product_from='+product_from+'][data-osm_from='+osm_from+']').remove();
+				merged_product.appendTo(matched_area);
+				merged_product.removeClass('unmatched')
+								.addClass('matched')
+								.accordion({
+									collapsible: true,
+									active: false,
+									heightStyleType: 'content'
+								})
+									.find('button')
+										.unbind('click')
+										.text('Cancel')
+										.removeClass('merge')
+										.addClass('unmerge')
+										.click(unmerge);
+				merged_product.find('input').val('');
+				merged_product.find('.cat + div').remove();
+				for (var i  = 0; i<categories.length; i++){
+					if(i > 0){
+						merged_product.find('input.cat').val(merged_product.find('input.cat').val()+'|'+categories[i]['name']+' - '+categories[i]['id']);
+					}else{
+						merged_product.find('input.cat').val(categories[i]['name']+' - '+categories[i]['id']);
+					}
+				}
+				merged_product.find('.cat').tagsInput(options_categories);
+				merged_product.find('.tags + div').remove();
+				for (var i  = 0; i<tags.length; i++){
+					if(i > 0){
+						merged_product.find('input.tags').val(merged_product.find('input.tags').val()+','+tags[i]['name']);
+					}else{
+						merged_product.find('input.tags').val(tags[i]['name']);
+					}
+				}
+				merged_product.find('.tags').tagsInput(options_tags);
 			},
 			error: function(jqXHR, textStatus, errorThrown){
 				console.log(jqXHR);
@@ -142,27 +175,14 @@ $(document).ready(function(){
 		
 	}
 	// UnMerge button
-	$('button.unmerge').click(function(e){
-		unmerge(e);
-	});
+	$('button.unmerge').bind('click', unmerge);
 
-	var unmerge = function(e){
+	function unmerge(e){
 		$that = $(e.target);
 		var osm = $that.attr('data-osm');
 		var product = $that.attr('data-product');
 		var osm_from = $that.attr('data-osm_from');
 		var product_from = $that.attr('data-product_from');
-		var unmatched_area = $('.product[data-product='+product+'][data-osm='+osm+'] .unmatched_area');
-		var unmerged_product = $('.product[data-product='+product+'][data-osm='+osm+'] .matched[data-product_from='+product_from+'][data-osm_from='+osm_from+']').accordion( "destroy" );
-		unmerged_product.removeClass('matched')
-						.addClass('unmatched')
-						.find('button')
-								.text('Merge')
-								.unbind('click')
-								.removeClass('unmerge')
-								.addClass('merge')
-								.click(merge);
-		unmatched_area.append(unmerged_product);
 
 		$.ajax({
 			url:'/backend/matcher/'+osm+'/tags/match/'+osm_from+'/'+product+'/'+product_from,
@@ -170,9 +190,44 @@ $(document).ready(function(){
 			dataType:"json",
 			data:{},
 			success: function(data, textStatus, jqXHR){
-				console.log(data);
-				// console.log(textStatus);
-				// console.log(jqXHR);
+				var categories = data['categories'];
+				var tags = data['tags'];
+
+				var unmatched_area = $('.product[data-product='+product+'][data-osm='+osm+'] .unmatched_area');
+				var unmerged_product = $('.product[data-product='+product+'][data-osm='+osm+'] .matched[data-product_from='+product_from+'][data-osm_from='+osm_from+']').accordion( "destroy" );
+				unmerged_product.removeClass('matched')
+								.addClass('unmatched')
+								.find('button')
+										.text('Merge')
+										.unbind('click')
+										.removeClass('unmerge')
+										.addClass('merge')
+										.bind('click', merge);
+				unmerged_product.appendTo(unmatched_area);
+				// unmerged_product.find('.cat + div').remove();
+				// unmerged_product.find('.cat').tagsInput(options_categories);
+				// unmerged_product.find('.tags + div').remove();
+				// unmerged_product.find('.tags').tagsInput(options_tags);
+
+				unmerged_product.find('input').val('');
+				unmerged_product.find('.cat + div').remove();
+				for (var i  = 0; i<categories.length; i++){
+					if(i > 0){
+						unmerged_product.find('input.cat').val(unmerged_product.find('input.cat').val()+'|'+categories[i]['name']+' - '+categories[i]['id']);
+					}else{
+						unmerged_product.find('input.cat').val(categories[i]['name']+' - '+categories[i]['id']);
+					}
+				}
+				unmerged_product.find('.cat').tagsInput(options_categories);
+				unmerged_product.find('.tags + div').remove();
+				for (var i  = 0; i<tags.length; i++){
+					if(i > 0){
+						unmerged_product.find('input.tags').val(unmerged_product.find('input.tags').val()+','+tags[i]['name']);
+					}else{
+						unmerged_product.find('input.tags').val(tags[i]['name']);
+					}
+				}
+				unmerged_product.find('.tags').tagsInput(options_tags);
 
 			},
 			error: function(jqXHR, textStatus, errorThrown){

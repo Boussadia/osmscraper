@@ -19,112 +19,116 @@
 
 		<div class="add">
 				<select id="first"></select><select id="second"></select><select id="third"></select>
-				<button id='go' class = ' go btn btn-success'>Go </button></div>
+				<button id='go' class = ' go btn btn-success'>Go </button>
+				<b > Catégorie Dalliz : {{ category.name }}</b>
 		</div>
-
-		<h1> Catégorie Dalliz : {{ category.name }}</h1>
 
 		{% for cat in categories %}
 			<h2> Catégorie {{ category.osm }} : {{ cat.name }}</h2>
-			<ul class='main'>
+			<ul class='main category_area' >
 				{% for product in cat.products %}
-					<li class='product' data-product='{{product.id}}' data-osm='{{osm}}'>
-						<ul class='line'>
-							<li class='first'>
-								<div class='block'>
-									<a href="{{product.url}}" target="_blank"><img src="{{product.image_url}}"></a>
-								</div>
-								<div class='block'>
-									<p class='brand'>{{product.brand}}</p>
-									<p class='name'>{{product.name}}</p>
-									<p class='quantity'>{{product.quantity}} {{product.unit}}</p>
-									<p class='price'>{{product.price}} €</p>
-								</div>
-								<div class='block'>
-									<h3> Catégories</h3>
-									<input name="cat" class='cat' data-product='{{product.id}}' data-osm='{{product.osm}}' value="{% for c in product.categories %}{{c.name}} - {{c.id}}|{% endfor %}" />
-								</div>
-								<div class='block'>
-									<h3> Tags</h3>
-									<input name="tags" class='tags' data-product='{{product.id}}' data-osm='{{product.osm}}' value="{% for t in product.tags %}{{t.name}},{% endfor %}" />
-								</div>
-								<div class='block'>
-									<h3>Commentaires</h3>
-									<textarea class='comment' data-product='{{product.id}}' data-osm='{{product.osm}}'>{{product.comment}}</textarea>
-								</div>
-							</li>
-							<div class="matched_area">
-								{% for osm, match in product.matches.items %}
-									<div class="matched" data-product_from='{{match.id}}' data-osm_from='{{osm}}'>
-										<h3> {{osm}}</h3>
-										<div>
+				<div class="{% if not product.is_in_category %} category_is_not_set {% endif %} {% if product.matches.items %} match_is_set {% endif %}{% if product.similarities.items %} similarities_is_set {% endif %}">
+					<h3> {% if not product.is_in_category or  product.matches.items %} {{product.name}} {{product.brand}} {% endif %}</h3>
+					<div>
+						<li class='product' data-product='{{product.id}}' data-osm='{{osm}}'>
+							<ul class='line'>
+								<li class='first'>
+									<div class='block'>
+										<a href="{{product.url}}" target="_blank"><img src="{{product.image_url}}"></a>
+									</div>
+									<div class='block description'>
+										<p class='brand'>{{product.brand}}</p>
+										<p class='name'>{{product.name}}</p>
+										<p class='quantity'>{{product.quantity}} {{product.unit}}</p>
+										<p class='price'>{{product.price}} €</p>
+									</div>
+									<div class='block category'>
+										<h3> Catégories</h3>
+										<input name="cat" class='cat' data-product='{{product.id}}' data-osm='{{product.osm}}' value="{% for c in product.categories %}{{c.name}} - {{c.id}}|{% endfor %}" />
+									</div>
+									<div class='block tag'>
+										<h3> Tags</h3>
+										<input name="tags" class='tags' data-product='{{product.id}}' data-osm='{{product.osm}}' value="{% for t in product.tags %}{{t.name}},{% endfor %}" />
+									</div>
+									<div class='block comments'>
+										<h3>Commentaires</h3>
+										<textarea class='comment' data-product='{{product.id}}' data-osm='{{product.osm}}'>{{product.comment}}</textarea>
+									</div>
+								</li>
+								<div class="matched_area">
+									{% for osm, match in product.matches.items %}
+										<div class="matched" data-product_from='{{match.id}}' data-osm_from='{{osm}}'>
+											<h3> {{osm}}</h3>
+											<div>
 												<li class='match'>
 													<div class='block'>
 														<a href="{{match.url}}" target="_blank"><img src="{{match.image_url}}"></a>
 														<br/>
-														<button data-osm='{{product.osm}}' data-osm_from='{{osm}}' data-product='{{product.id}}' data-product_from='{{match.id}}' class='unmerge btn-danger'> Cancel</button>
+														<button data-osm='{{product.osm}}' data-osm_from='{{osm}}' data-product='{{product.id}}' data-product_from='{{match.id}}' class='unmerge btn btn-danger'> Cancel</button>
 													</div>
-													<div class='block'>
+													<div class='block description'>
 														<p class='brand'>{{match.brand}}</p>
 														<p class='name'>{{match.name}}</p>
 														<p class='quantity'>{{match.quantity}} {{match.unit}}</p>
 														<p class='price'>{{match.price}} €</p>
 													</div>
-													<div class='block'>
+													<div class='block categories'>
 														<h3> Catégories</h3>
 														<input name="cat" class='cat' data-product='{{match.id}}' data-osm='{{match.osm}}' value="{% for c in match.categories %}{{c.name}} - {{c.id}}|{% endfor %}" />
 													</div>
-													<div class='block'>
+													<div class='block tag'>
 														<h3> Tags</h3>
 														<input name="tags" class='tags' data-product='{{match.id}}' data-osm='{{match.osm}}' value="{% for t in match.tags %}{{t.name}},{% endfor %}" />
 													</div>
-													<div class='block'>
+													<div class='block comments'>
 														<h3>Commentaires</h3>
 														<textarea class='comment' data-product='{{match.id}}' data-osm='{{match.osm}}'>{{match.comment}}</textarea>
 													</div>
 												</li>
+											</div>
 										</div>
-									</div>
-								{% endfor %}
-							</div>
-							<div class="unmatched_area">
-								{% for osm, sim in product.similarities.items %}
-									{% for p in sim %}
-									<div class="unmatched" data-product_from='{{p.id}}' data-osm_from='{{osm}}'>
-										<h3>{{osm}}</h3>
-										<div>
-											<li class='sim'>
-												<div class='block'>
-													<a href="{{p.url}}" target="_blank"><img src="{{p.image_url}}"></a>
-													<br/>
-													<button data-osm='{{product.osm}}' data-osm_from='{{osm}}' data-product='{{product.id}}' data-product_from='{{p.id}}' class='merge btn-danger'> Merge</button>
-												</div>
-												<div class='block'>
-													<p class='brand'>{{p.brand}}</p>
-													<p class='name'>{{p.name}}</p>
-													<p class='quantity'>{{p.quantity}} {{p.unit}}</p>
-													<p class='price'>{{p.price}} €</p>
-												</div>
-												<div class='block'>
-													<h3> Catégories</h3>
-													<input name="cat" class='cat' data-product='{{p.id}}' data-osm='{{p.osm}}' value="{% for c in p.categories %}{{c.name}} - {{c.id}}|{% endfor %}" />
-												</div>
-												<div class='block'>
-													<h3> Tags</h3>
-													<input name="tags" class='tags' data-product='{{p.id}}' data-osm='{{p.osm}}' value="{% for t in p.tags %}{{t.name}},{% endfor %}" />
-												</div>
-												<div class='block'>
-													<h3>Commentaires</h3>
-													<textarea class='comment' data-product='{{p.id}}' data-osm='{{p.osm}}'>{{p.comment}}</textarea>
-												</div>
-											</li>
-										</div>
-									</div>
 									{% endfor %}
-								{% endfor %}
-							</div>
-						</ul>
-					</li>
+								</div>
+								<div class="unmatched_area">
+									{% for osm, sim in product.similarities.items %}
+										{% for p in sim %}
+										<div class="unmatched" data-product_from='{{p.id}}' data-osm_from='{{osm}}'>
+											<h3>{{osm}}</h3>
+											<div>
+												<li class='sim'>
+													<div class='block'>
+														<a href="{{p.url}}" target="_blank"><img src="{{p.image_url}}"></a>
+														<br/>
+														<button data-osm='{{product.osm}}' data-osm_from='{{osm}}' data-product='{{product.id}}' data-product_from='{{p.id}}' class='merge btn btn-danger'> Merge</button>
+													</div>
+													<div class='block description'>
+														<p class='brand'>{{p.brand}}</p>
+														<p class='name'>{{p.name}}</p>
+														<p class='quantity'>{{p.quantity}} {{p.unit}}</p>
+														<p class='price'>{{p.price}} €</p>
+													</div>
+													<div class='block categories'>
+														<h3> Catégories</h3>
+														<input name="cat" class='cat' data-product='{{p.id}}' data-osm='{{p.osm}}' value="{% for c in p.categories %}{{c.name}} - {{c.id}}|{% endfor %}" />
+													</div>
+													<div class='block tag'>
+														<h3> Tags</h3>
+														<input name="tags" class='tags' data-product='{{p.id}}' data-osm='{{p.osm}}' value="{% for t in p.tags %}{{t.name}},{% endfor %}" />
+													</div>
+													<div class='block comments'>
+														<h3>Commentaires</h3>
+														<textarea class='comment' data-product='{{p.id}}' data-osm='{{p.osm}}'>{{p.comment}}</textarea>
+													</div>
+												</li>
+											</div>
+										</div>
+										{% endfor %}
+									{% endfor %}
+								</div>
+							</ul>
+						</li>
+					</div>
+				</div>
 				{% endfor%}
 			</ul>
 		{% endfor %}

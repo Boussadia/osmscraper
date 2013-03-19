@@ -19,24 +19,61 @@ div.block{
 	/*display: inline-block;*/
 	float: left;
 	width: 18%;
-	height: 300px;
-	border: solid black 1px;
+/*	height: 300px; */
 	padding-left: 10px;
-	overflow-y: scroll;
+	/*overflow-y: scroll;*/
 }
 
 div.tagsinput{
-	height: 70% !important;
-	width: 200px !important;
+	overflow: auto !important;
+	height: initial !important;
+	width: 97% !important;
 }
 div.tagsinput span.tag{
 	cursor: pointer;
 }
 
 textarea.comment{
-	height: 75%;
+	/*height: 75%;*/
+	width: 100%;
 }
 
 .brand{
 	font-weight: bold;
+}
+
+div.description, div.comments{
+	width: 15%;
+}
+
+div.tag, div.category{
+	width: 21%
+}
+
+button.merge, button.unmerge,{
+	margin-top: 80px;
+}
+
+li.first{
+	background-color: rgba(0,255,255,0.2);
+}
+
+li.sim, li.match{
+	background-color: rgba(255,255,0,0.2);
+}
+
+.ui-accordion .ui-accordion-content{
+	height: initial !important;
+}
+
+.match_is_set.similarities_is_set > .ui-state-default{
+	background: orange !important;
+}
+
+.category_is_not_set > .ui-state-default{
+	background: grey !important;
+}
+
+.matched .ui-state-default, .match_is_set > .ui-state-default{
+	background: green !important;
 }

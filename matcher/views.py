@@ -67,8 +67,8 @@ def build_dalliz_tree(id = None):
 	response = { cat.id : {'name': cat.name, 'display': (lambda x : x.parent_category.name+' / '+x.name if x.parent_category is not None else x.name)(cat),'subs':build_dalliz_tree(cat.id)} for cat in categories}
 	return response
 
-def serialize_product(product, osm):
-	return {
+def serialize_product(product, osm, category = None):
+	p = {
 				'id': product.id,
 				'osm': osm,
 				'url':product.url,
@@ -82,11 +82,15 @@ def serialize_product(product, osm):
 				'price': (lambda x: x[0].price if len(x)>0 else 0 )(product.history_set.all().order_by('-created')),
 				'quantity': (lambda x: int(x[0].price/x[0].unit_price*1000)/1000.0 if len(x)>0 else 0 )(product.history_set.all().order_by('-created')),
 				'unit':(lambda x: x.name if x is not None else 'Unknown')(product.unit),
-				'possible_categories': (lambda p:[[{'id':x.id, 'name':x.name} for x in c.dalliz_category.all()] for c in p.categories.all()][0] if len(p.categories.all())>0 else [])(product),
+				# 'possible_categories': (lambda p:[[{'id':x.id, 'name':x.name} for x in c.dalliz_category.all()] for c in p.categories.all()][0] if len(p.categories.all())>0 else [])(product),
 				'categories': [{'id':x.id, 'name':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(x)} for x in product.dalliz_category.all()],
 				'tags': [{'name':tag.name, 'id':tag.id} for tag in product.tag.all()],
-				'possible_tags':(lambda p:list(itertools.chain(*[[[{'id':t.id, 'name':t.name} for t in x.tags.all()] for x in c.dalliz_category.all()] for c in p.categories.all()][0] if len(p.categories.all())>0 else [])(product) ))
+				# 'possible_tags':(lambda p:list(itertools.chain(*[[[{'id':t.id, 'name':t.name} for t in x.tags.all()] for x in c.dalliz_category.all()] for c in p.categories.all()][0] if len(p.categories.all())>0 else [])(product) ))
+				'is_in_category': False
 			}
+	if category:
+		p['is_in_category'] = (category.id in (x['id'] for x in p['categories']))
+	return p
 
 def category(request, osm, category_id):
 	# Getting dalliz category
@@ -105,15 +109,15 @@ def category(request, osm, category_id):
 			response['msg'] = 'Osm not available'
 		else:
 			Category = available_osms[osm]['category']
-			osm_categories = Category.objects.filter(dalliz_category = dalliz_category)
+			osm_categories = Category.objects.filter(dalliz_category = dalliz_category, exists = True)
 
 			# Get products for each category
 			response['categories'] = []
 			for cat in osm_categories:
-				try:
-					products = [ serialize_product(p, osm) for p in cat.newproduct_set.all()  ]
-				except Exception, e:
-					products = [ serialize_product(p, osm) for p in cat.product_set.all()  ]
+				if hasattr(cat, 'newproduct_set'):
+					products = [ serialize_product(p, osm, dalliz_category) for p in cat.newproduct_set.all()  ]
+				else:
+					products = [ serialize_product(p, osm, dalliz_category) for p in cat.product_set.all()  ]
 
 				# gettings similarities
 				for p in products:
@@ -140,12 +144,12 @@ def category(request, osm, category_id):
 										p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
 								if osm_index == 'auchan':
 									if match.auchan_product is not None:
-										p['matches'][osm_index] = available_osms[osm]['query'][osm_index](serialize_product(match.auchan_product, osm_index))
+										p['matches'][osm_index] = serialize_product(match.auchan_product, osm_index)
 									else:
 										p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
 								if osm_index == 'monoprix':
 									if match.monoprix_product is not None:
-										p['matches'][osm_index] = available_osms[osm]['query'][osm_index](serialize_product(match.monoprix_product, osm_index))
+										p['matches'][osm_index] = serialize_product(match.monoprix_product, osm_index)
 									else:
 										p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
 							else:
@@ -378,23 +382,44 @@ def set_match(request, osm, osm_from, product_id_to, product_id_from):
 		# Setting same categories and tags
 		dalliz_categories = product_to.dalliz_category.all()
 		tags = product_to.tag.all()
+		response['tags'] = [{'name':tag.name, 'id':tag.id} for tag in tags]
+		response['categories'] = [{'id':x.id, 'name':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(x)} for x in dalliz_categories]
 		set_categories_to_product(product_from, dalliz_categories,osm_from, set_match = False)
 		set_tags_to_product(product_from, tags, osm_from, set_match = False)
 
 	if request.method == 'DELETE':
 		# Clearing match
 		match_to = get_match(product_to, osm) # update this
+		product = None
 		if match_to is not None:
 			if osm_from == 'auchan':
+				product = match_to.auchan_product
 				match_to.auchan_product = None
 				match_to.save()
 			if osm_from == 'ooshop':
+				product = match_to.ooshop_product
 				match_to.ooshop_product = None
 				match_to.save()
 			if osm_from == 'monoprix':
+				product = match_to.monoprix_product
 				match_to.monoprix_product = None
 				match_to.save()
+		if product:
+			tags, categories = reset_product(product)
+			response['tags'] = tags
+			response['categories'] = categories
+
 
 	return HttpResponse(json.dumps(response))
+
+
+def reset_product(product):
+	product.dalliz_category.clear()
+	product.tag.clear()
+	[ [ [product.dalliz_category.add(d), [ product.tag.add(t) for t in d.tags.all()]] for d in c.dalliz_category.all()] for c in product.categories.all()]
+	categories = [{'id':x.id, 'name':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(x)} for x in product.dalliz_category.all()]
+	tags = [{'name':tag.name, 'id':tag.id} for tag in product.tag.all()]
+	return tags, categories
+
 
 

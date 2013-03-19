@@ -309,7 +309,7 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 		# 	brand.save()
 		# return brand
 		if parent_brand is not None or parent_brand != '':
-			parent_brand, created = Brand.objects.get_or_create(name = unicode(parent_brand))
+			parent_brand, created = Brand.objects.get_or_create(name = unicode(parent_brand.strip()))
 			return parent_brand
 
 
