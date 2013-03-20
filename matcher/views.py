@@ -33,16 +33,16 @@ available_osms = {
 		'category': AuchanCategory,
 		'product': AuchanProduct,
 		'query':{
-			'ooshop':lambda p: [serialize_product(sim.ooshop_product, 'ooshop') for sim in ProductSimilarity.objects.filter(index_name = 'ooshop', query_name = 'auchan', auchan_product__id = p['id'], auchan_product__brand__brandmatch__dalliz_brand = p['dalliz_brand']).order_by('-score')[:1]],
-			'monoprix':lambda p: [serialize_product(sim.monoprix_product, 'monoprix') for sim in ProductSimilarity.objects.filter(index_name = 'monoprix', query_name = 'auchan', auchan_product__id = p['id'], auchan_product__brand__brandmatch__dalliz_brand = p['dalliz_brand']).order_by('-score')[:1]],
+			'ooshop':lambda p: [serialize_product(sim.ooshop_product, 'ooshop') for sim in ProductSimilarity.objects.filter(index_name = 'ooshop', query_name = 'auchan', auchan_product__id = p['id'], auchan_product__has_match = True, auchan_product__brand__brandmatch__dalliz_brand = p['dalliz_brand']).order_by('-score')[:1]],
+			'monoprix':lambda p: [serialize_product(sim.monoprix_product, 'monoprix') for sim in ProductSimilarity.objects.filter(index_name = 'monoprix', query_name = 'auchan', auchan_product__id = p['id'], auchan_product__has_match = True, auchan_product__brand__brandmatch__dalliz_brand = p['dalliz_brand']).order_by('-score')[:1]],
 		}
 	},
 	'monoprix':{
 		'category': MonoprixCategory,
 		'product': MonoprixProduct,
 		'query':{
-			'auchan':lambda p: [serialize_product(sim.auchan_product, 'auchan') for sim in ProductSimilarity.objects.filter(index_name = 'auchan', query_name = 'monoprix', monoprix_product__id = p['id'], monoprix_product__brand__brandmatch__dalliz_brand = p['dalliz_brand']).order_by('-score')[:1]],
-			'ooshop':lambda p: [serialize_product(sim.ooshop_product, 'ooshop') for sim in ProductSimilarity.objects.filter(index_name = 'ooshop', query_name = 'monoprix', monoprix_product__id = p['id'], monoprix_product__brand__brandmatch__dalliz_brand = p['dalliz_brand']).order_by('-score')[:1]],
+			'auchan':lambda p: [serialize_product(sim.auchan_product, 'auchan') for sim in ProductSimilarity.objects.filter(index_name = 'auchan', query_name = 'monoprix', monoprix_product__id = p['id'], monoprix_product__has_match = True, monoprix_product__brand__brandmatch__dalliz_brand = p['dalliz_brand']).order_by('-score')[:1]],
+			'ooshop':lambda p: [serialize_product(sim.ooshop_product, 'ooshop') for sim in ProductSimilarity.objects.filter(index_name = 'ooshop', query_name = 'monoprix', monoprix_product__id = p['id'], monoprix_product__has_match = True, monoprix_product__brand__brandmatch__dalliz_brand = p['dalliz_brand']).order_by('-score')[:1]],
 
 		} 
 	},
@@ -50,8 +50,8 @@ available_osms = {
 		'category': OoshopCategory,
 		'product': OoshopProduct,
 		'query':{
-			'auchan':lambda p: [serialize_product(sim.auchan_product, 'auchan') for sim in ProductSimilarity.objects.filter(index_name = 'auchan', query_name = 'ooshop', ooshop_product__id = p['id'], ooshop_product__brand__brandmatch__dalliz_brand = p['dalliz_brand']).order_by('-score')[:1]],
-			'monoprix':lambda p: [serialize_product(sim.monoprix_product, 'monoprix') for sim in ProductSimilarity.objects.filter(index_name = 'monoprix', query_name = 'ooshop', ooshop_product__id = p['id'], ooshop_product__brand__brandmatch__dalliz_brand = p['dalliz_brand']).order_by('-score')[:1]],
+			'auchan':lambda p: [serialize_product(sim.auchan_product, 'auchan') for sim in ProductSimilarity.objects.filter(index_name = 'auchan', query_name = 'ooshop', ooshop_product__id = p['id'], ooshop_product__has_match = True, ooshop_product__brand__brandmatch__dalliz_brand = p['dalliz_brand']).order_by('-score')[:1]],
+			'monoprix':lambda p: [serialize_product(sim.monoprix_product, 'monoprix') for sim in ProductSimilarity.objects.filter(index_name = 'monoprix', query_name = 'ooshop', ooshop_product__id = p['id'], ooshop_product__has_match = True, ooshop_product__brand__brandmatch__dalliz_brand = p['dalliz_brand']).order_by('-score')[:1]],
 		}
 	}
 }
@@ -86,7 +86,8 @@ def serialize_product(product, osm, category = None):
 				'categories': [{'id':x.id, 'name':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(x)} for x in product.dalliz_category.all()],
 				'tags': [{'name':tag.name, 'id':tag.id} for tag in product.tag.all()],
 				# 'possible_tags':(lambda p:list(itertools.chain(*[[[{'id':t.id, 'name':t.name} for t in x.tags.all()] for x in c.dalliz_category.all()] for c in p.categories.all()][0] if len(p.categories.all())>0 else [])(product) ))
-				'is_in_category': False
+				'is_in_category': False,
+				'has_no_match': not product.has_match,
 			}
 	if category:
 		p['is_in_category'] = (category.id in (x['id'] for x in p['categories']))
@@ -337,6 +338,60 @@ def autocomplete_category(request):
 	response = [{'id':t.id,'label':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(t)+' - '+str(t.id),'value':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(t)+' - '+str(t.id)} for t in categories]	
 	return HttpResponse(json.dumps(response))
 
+def set_no_match(request, osm, product_id):
+	response = {}
+	if request.method == 'POST':
+		if osm in available_osms:
+			Product = available_osms[osm]['product']
+			product = Product.objects.filter(id = product_id)
+			if len(product)>0:
+				product = product[0]
+				product.has_match = False
+				product.save()
+				# Clearing Match set
+				match = product.productmatch_set.all()
+				if len(match)>0:
+					match = match[0]
+					if osm == 'auchan':
+						monoprix_product = match.monoprix_product
+						ooshop_product = match.ooshop_product
+						if monoprix_product is not None:
+							reset_product(monoprix_product)
+						if ooshop_product is not None:
+							reset_product(ooshop_product)
+					elif osm == 'ooshop':
+						monoprix_product = match.monoprix_product
+						auchan_product = match.auchan_product
+						if monoprix_product is not None:
+							reset_product(monoprix_product)
+						if auchan_product is not None:
+							reset_product(auchan_product)
+					elif osm == 'monoprix':
+						ooshop_product = match.ooshop_product
+						auchan_product = match.auchan_product
+						if auchan_product is not None:
+							reset_product(auchan_product)
+						if ooshop_product is not None:
+							reset_product(ooshop_product)
+
+				product.productmatch_set.clear()
+				response['status'] = 200
+				response['msg'] = 'Done'
+
+			else:
+				response['status'] = 404
+				response['msg'] = 'Product not found'
+
+		else:
+			response['status'] = 404
+			response['msg'] = 'Osm not found'
+	else:
+		response['status'] = 403
+		response['msg'] = 'Method not handled'
+
+	return HttpResponse(json.dumps(response))
+
+
 def set_match(request, osm, osm_from, product_id_to, product_id_from):
 	response = {}
 	# Getting product
@@ -345,6 +400,10 @@ def set_match(request, osm, osm_from, product_id_to, product_id_from):
 	product_from = ProductFrom.objects.get(id = product_id_from)
 	product_to = ProductTo.objects.get(id = product_id_to)
 	if request.method == 'POST':
+		product_to.has_match = True
+		product_from.has_match = True
+		product_to.save()
+		product_from.save()
 		# Clearing match
 		match_from = get_match(product_from, osm_from) # update this if exists
 		if match_from is not None:

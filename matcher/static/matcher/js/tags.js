@@ -1,6 +1,14 @@
 $(document).ready(function(){
 	var category_areas = $('.category_area').each(function(){
-		var not_category = $(this).find('.category_is_not_set').remove();
+		var has_no_match = $(this).find('.has_no_match').remove();
+		$(this).prepend(has_no_match);
+		has_no_match.accordion({
+			collapsible: true,
+			active: false,
+			heightStyleType: 'content'
+		});
+
+		var not_category = $(this).find('.category_is_not_set:not(.has_no_match)').remove();
 		$(this).append(not_category);
 
 		not_category.accordion({
@@ -8,7 +16,7 @@ $(document).ready(function(){
 			active: false,
 			heightStyleType: 'content'
 		});
-		var matched = $(this).find('.match_is_set:not(.category_area)').remove();
+		var matched = $(this).find('.match_is_set:not(.category_area):not(.has_no_match)').remove();
 		$(this).prepend(matched);
 
 		matched.accordion({
@@ -305,5 +313,26 @@ $(document).ready(function(){
 			}
 		});
 	}
+
+	// Set product has no match
+	$('button.no_match').click(function(e){
+		$that = $(e.target);
+		var osm = $that.attr('data-osm');
+		var product = $that.attr('data-product');
+		$.ajax({
+			url:'/backend/matcher/'+osm+'/tags/nomatch/'+product,
+			type:"POST",
+			dataType:"json",
+			data:{},
+			success: function(data, textStatus, jqXHR){
+				console.log(data)
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				console.log(jqXHR);
+				console.log(textStatus);
+				console.log(errorThrown);
+			}
+		});
+	})
 
 });
