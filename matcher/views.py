@@ -121,11 +121,10 @@ def category(request, osm, category_id):
 
 				# gettings similarities
 				for p in products:
+					p['matches'] = {}
 					p['similarities'] = {}
 					for osm_index in available_osms:
 						if osm != osm_index:
-							p['matches'] = {}
-							p['similarities'] = {}
 							# Getting match
 							match = ProductMatch.objects.all()
 							if osm == 'auchan':
@@ -148,6 +147,7 @@ def category(request, osm, category_id):
 									else:
 										p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
 								if osm_index == 'monoprix':
+									print 'in monoprix similarity'
 									if match.monoprix_product is not None:
 										p['matches'][osm_index] = serialize_product(match.monoprix_product, osm_index)
 									else:
@@ -155,7 +155,6 @@ def category(request, osm, category_id):
 							else:
 								p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
 
-							# Filter similarities by  dalliz brand
 
 
 				response['categories'].append( {
