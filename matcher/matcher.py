@@ -72,15 +72,14 @@ class Matcher(object):
 
 			# Update all indexes
 			for name, documents in self.documents.iteritems():
-				if len(documents) >0:
-					# New documents detected, building new index for corresponding indexer
-					indexer = self.get_indexer_by_name(name)
-					indexer.add_documents(documents)
+				# New documents detected, building new index for corresponding indexer
+				indexer = self.get_indexer_by_name(name)
+				indexer.add_documents(documents)
 		else:
 			# Set all documents
 			self.set_all_documents()
 			# Cleaning all indexes amd rebuilding
-			[(indexer.service.drop_index(), indexer.build_all_index()) for indexer in self.indexers]
+			[[indexer.service.drop_index(), indexer.build_all_index()] for indexer in self.indexers]
 
 		
 		# Performing queries
@@ -89,11 +88,12 @@ class Matcher(object):
 				if name_query == indexer.name:
 					# Do not perform query
 					continue
+				print 'Performing %s to %s'%(name_query, indexer.name)
 				# Performing query
 				similarities = [ {'id':document['id'], 'indexer_name':indexer.name, 'query_name':name_query, 'sims': indexer.query(document)} for document in documents]
 				self.save_log(name_query, indexer.type)
-				similarities_db = self.save_similarities(similarities)
-				self.clean_database(similarities_db)
+				self.clean_database(before = datetime.datetime.now(), index_name = indexer.name, query_name =name_query)
+				self.save_similarities(similarities)
 
 	def save_similarities(self, similarities):
 		"""
@@ -101,13 +101,11 @@ class Matcher(object):
 		"""
 		pass
 
-	def clean_database(self, exculde_similarities_db):
+	def clean_database(self, before, index_name, query_name):
 		"""
 			Removes database entities that are not in the exclude list.
 		"""
-		if len(exculde_similarities_db)>0:
-			similarities = self.SimilarityEntity.objects.exclude(id__in = [sim.id for sim in exculde_similarities_db])
-			similarities.delete()
+		self.SimilarityEntity.objects.filter(index_name = index_name, query_name = query_name, created__lte = before).delete()
 
 
 	def save_log(self, name, type):
@@ -135,6 +133,7 @@ class ProductMatcher(Matcher):
 				- similarities = [{'id':, 'indexer_name':, 'query_name':, 'sims': [(id, score, ??)]}]
 		"""
 		similarities_db_list = []
+		LIMIT_BATCH = 1000
 		for s in similarities:
 			ooshop_product_id = None
 			monoprix_product_id = None
@@ -155,20 +154,21 @@ class ProductMatcher(Matcher):
 				if s['indexer_name'] == 'auchan':
 					auchan_product_id = id_doc
 
-				sim_db = self.SimilarityEntity(
-					query_name = s['query_name'],
-					index_name = s['indexer_name'],
-					monoprix_product_id = monoprix_product_id,
-					ooshop_product_id = ooshop_product_id,
-					auchan_product_id = auchan_product_id,
-					score = score
-				)
-				similarities_db_list.append(sim_db)
 
-		# Creating data in bulk
-		self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = 100)
-
-		return similarities_db_list
+				if score >.1:
+					sim_db = self.SimilarityEntity(
+						query_name = s['query_name'],
+						index_name = s['indexer_name'],
+						monoprix_product_id = monoprix_product_id,
+						ooshop_product_id = ooshop_product_id,
+						auchan_product_id = auchan_product_id,
+						score = score
+					)
+					similarities_db_list.append(sim_db)
+				if len(similarities_db_list)>=LIMIT_BATCH:
+					# Creating data in bulk
+					self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = LIMIT_BATCH)
+					similarities_db_list = []
 
 class BrandMatcher(Matcher):
 	"""
@@ -188,41 +188,6 @@ class BrandMatcher(Matcher):
 			type = indexer.type
 			self.documents[name] = indexer.get_documents()
 
-	def run(self, override = False):
-		"""
-			This method will go through every brand indexer, get new brands and perform query.
-			It will then save the similarities into the database.
-		"""
-
-		if not override:
-			# Update with new documents
-			self.set_new_documents()
-
-			# Update all indexes
-			for name, documents in self.documents.iteritems():
-				if len(documents) >0:
-					# New documents detected, building new index for corresponding indexer
-					indexer = self.get_indexer_by_name(name)
-					indexer.add_documents(documents)
-		else:
-			# Set all documents
-			self.set_all_documents()
-			# Cleaning all indexes amd rebuilding
-			[(indexer.service.drop_index(), indexer.build_all_index()) for indexer in self.indexers]
-
-		
-		# Performing queries
-		for name_query, documents in self.documents.iteritems():
-			for indexer in self.indexers:
-				if indexer.name != 'dalliz' or name_query == indexer.name:
-					# Do not perform query
-					continue
-				# Performing query
-				similarities = [ {'id':document['id'], 'indexer_name':indexer.name, 'query_name':name_query, 'sims': indexer.query(document)} for document in documents]
-				self.save_log(name_query, indexer.type)
-				similarities_db = self.save_similarities(similarities)
-				self.clean_database(similarities_db)
-
 	def save_similarities(self, similarities):
 		"""
 			Saving similarities to database
@@ -231,6 +196,7 @@ class BrandMatcher(Matcher):
 				- similarities = [{'id':, 'indexer_name':, 'query_name':, 'sims': [(id, score, ??)]}]
 		"""
 		similarities_db_list = []
+		LIMIT_BATCH = 100
 		for s in similarities:
 			ooshop_brand_id = None
 			monoprix_brand_id = None
@@ -266,10 +232,10 @@ class BrandMatcher(Matcher):
 					score = score
 				)
 				similarities_db_list.append(sim_db)
-
-		# Creating data in bulk
-		self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = 100)
-		return similarities_db_list
+				if len(similarities_db_list)>=LIMIT_BATCH:
+					# Creating data in bulk
+					self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = LIMIT_BATCH)
+					similarities_db_list = []
 
 
 
