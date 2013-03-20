@@ -77,3 +77,7 @@ li.sim, li.match{
 .matched .ui-state-default, .match_is_set > .ui-state-default{
 	background: green !important;
 }
+
+.ui-state-default{
+	border: none;
+}

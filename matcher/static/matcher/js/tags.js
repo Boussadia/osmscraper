@@ -55,7 +55,7 @@ $(document).ready(function(){
 	$('#go').click(function(){
 		var id_category = $(".add select#third").find(":selected").val();
 
-		if (id_category !== undefined) window.location.replace('/backend/matcher/'+osm+'/tags/'+id_category);
+		if (id_category !== undefined) window.location = '/backend/matcher/'+osm+'/tags/'+id_category;
 	})
 
 	// Product comments

@@ -147,7 +147,6 @@ def category(request, osm, category_id):
 									else:
 										p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
 								if osm_index == 'monoprix':
-									print 'in monoprix similarity'
 									if match.monoprix_product is not None:
 										p['matches'][osm_index] = serialize_product(match.monoprix_product, osm_index)
 									else:
@@ -163,7 +162,7 @@ def category(request, osm, category_id):
 					'products' : products
 				})
 		response['category'] = {
-			'name': dalliz_category.name,
+			'name': (lambda c: c.parent_category.name+'/'+c.name if c.parent_category is not None else c.name)(dalliz_category),
 			'osm': osm
 		}
 		# dalliz categories
