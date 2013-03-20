@@ -113,7 +113,7 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 				else:
 					parent_brand = None
 
-				if 'brand' in product and product['brand'] != '':
+				if 'brand' in product and product['brand'] != '' and parent_brand is not None:
 					brand = self.save_brand(product['brand'], parent_brand = parent_brand)
 				else:
 					brand = None
@@ -190,7 +190,6 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 						'name': name,
 						'url': url,
 						'image_url': image_url,
-						'brand': brand,
 						'unit': unit,
 						'description': description,
 						'ingredients': ingredients,
@@ -207,7 +206,6 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 						product_db.name = name
 						product_db.url = url
 						product_db.reference = reference
-						product_db.brand = brand
 						product_db.unit = unit
 						product_db.description = description
 						product_db.ingredients = ingredients
@@ -219,6 +217,11 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 						product_db.package_quantity = package_quantity
 						product_db.package_measure = package_measure
 						product_db.save()
+
+					if brand is not None:
+						product_db.brand = brand
+						product_db.save()
+
 
 					# Do we need to save the html in the product?
 					if 'information' in product:
@@ -299,15 +302,6 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 		"""
 			Saves and return brand entity.
 		"""
-		# if parent_brand == '':
-		# 	parent_brand = None
-
-		# brand, created = Brand.objects.get_or_create(name = unicode(brand_name))
-		# if parent_brand is not None and unicode(brand_name) != unicode(parent_brand):
-		# 	parent_brand, created = Brand.objects.get_or_create(name = unicode(parent_brand))
-		# 	brand.parent_brand = parent_brand
-		# 	brand.save()
-		# return brand
 		if parent_brand is not None or parent_brand != '':
 			parent_brand, created = Brand.objects.get_or_create(name = unicode(parent_brand.strip()))
 			return parent_brand
