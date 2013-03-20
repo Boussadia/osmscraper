@@ -57,7 +57,7 @@ class IndexController(object):
 		documents = self.Model.objects.all()
 		if datetime is not None:
 			documents = documents.filter(created__gte=datetime)
-		return ({'id': d.id, 'tokens': reg.findall(unaccent(d.name.lower()))} for d in documents)
+		return [{'id': d.id, 'tokens': reg.findall(unaccent(d.name.lower()))} for d in documents]
 
 	def add_documents(self, documents):
 		"""
@@ -126,4 +126,4 @@ class ProductIndexController(IndexController):
 		products = self.Model.objects.filter(stemmed_text__isnull=False)
 		if datetime is not None:
 			products = products.filter(created__gte=datetime)
-		return ({'id': p.id, 'tokens': reg.findall(p.stemmed_text)} for p in products)
+		return [{'id': p.id, 'tokens': reg.findall(p.stemmed_text)} for p in products]
