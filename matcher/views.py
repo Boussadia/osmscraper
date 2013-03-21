@@ -133,7 +133,7 @@ def category(request, osm, category_id):
 			response['msg'] = 'Osm not available'
 		else:
 			Category = available_osms[osm]['category']
-			osm_categories = Category.objects.filter(dalliz_category = dalliz_category, exists = True)
+			osm_categories = Category.objects.filter(dalliz_category = dalliz_category, exists = True, newproduct__id__isnull = False).distinct()
 
 			# Get products for each category
 			response['categories'] = []
