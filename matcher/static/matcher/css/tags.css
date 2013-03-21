@@ -85,3 +85,15 @@ li.sim, li.match{
 .ui-state-hover, .ui-accordion-header{
 	color: white;
 }
+
+.otherosms{
+	margin-top:10px;
+	margin-bottom: 30px;
+}
+
+.otherosms button{
+	margin-right: 10px;
+}
+a:hover{
+	text-decoration: none;
+};

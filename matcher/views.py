@@ -188,7 +188,6 @@ def category(request, osm, category_id):
 		response['category'] = {
 			'name': (lambda c: c.parent_category.name+'/'+c.name if c.parent_category is not None else c.name)(dalliz_category),
 			'osm': osm,
-			'osms': available_osms.keys(),
 		}
 		# dalliz categories
 		dalliz_categories = build_dalliz_tree()
@@ -197,6 +196,7 @@ def category(request, osm, category_id):
 		response['main_category'] = (lambda c: c.parent_category.parent_category.id if c.parent_category.parent_category is not None else (c.parent_category.id if c.parent_category is not None else c.id))(dalliz_category)
 		response['parent_category'] =  (lambda c: c.parent_category.id if c.parent_category is not None else c.id)(dalliz_category)
 		response['sub_category'] = dalliz_category.id
+		response['osms'] = available_osms.keys()
 
 	# return HttpResponse(json.dumps(response))
 
