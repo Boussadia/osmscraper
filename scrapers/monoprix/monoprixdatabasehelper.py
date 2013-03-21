@@ -231,9 +231,12 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 
 					# Adding category to Product
 					if id_parent_category:
+						categories = product_db.categories.all()
 						cat = Category.objects.filter(id = id_parent_category)
 						if len(cat) == 1:
-							product_db.categories.add(cat[0])
+							if cat not in categories:
+								product_db.categories.add(cat[0])
+								[[product_db.dalliz_category.add(c), [product_db.tag.add(t) for t in c.tags.all()]] for c in cat.dalliz_category.all()]
 
 					if not product['is_promotion']:
 						# Saving image

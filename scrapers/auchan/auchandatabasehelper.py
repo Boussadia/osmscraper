@@ -103,7 +103,10 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 					history = History(product = product_db, price = product['price'], unit_price = product['unit_price'], shipping_area = location, availability = product['is_available'])
 					history.save()
 				if parent_category:
-					product_db.categories.add(parent_category)
+					categories = product_db.categories.all()
+					if parent_category not in categories:
+						product_db.categories.add(parent_category)
+						[[product_db.dalliz_category.add(c), [product_db.tag.add(t) for t in c.tags.all()]] for c in parent_category.dalliz_category.all()]
 					# Saving associated tags
 					if 'tag' in product:
 						tag, c = Tag.objects.get_or_create(name = product['tag']['name'])
