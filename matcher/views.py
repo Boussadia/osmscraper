@@ -120,85 +120,84 @@ def serialize_product(product, osm, category = None):
 def category(request, osm, category_id):
 	# Getting dalliz category
 	response = {}
-	dalliz_category = DallizCategory.objects.filter(id = category_id)
-	if len(dalliz_category) == 0:
+	dalliz_categories = DallizCategory.objects.filter(parent_category__id = category_id)
+	if len(dalliz_categories) == 0:
 		response['status'] = 404
 		response['msg'] = 'Dalliz category not found'
 	else:
-		dalliz_category = dalliz_category[0]
+		for dalliz_category in dalliz_categories:
+			# Getting osm corresponding categories
+			if osm not in available_osms:
+				response['status'] = 404
+				response['msg'] = 'Osm not available'
+			else:
+				Category = available_osms[osm]['category']
+				try:
+					osm_categories = Category.objects.filter(dalliz_category = dalliz_category, exists = True, newproduct__id__isnull = False).distinct()
+				except Exception, e:
+					osm_categories = Category.objects.filter(dalliz_category = dalliz_category, exists = True, product__id__isnull = False).distinct()
 
-		# Getting osm corresponding categories
-		if osm not in available_osms:
-			response['status'] = 404
-			response['msg'] = 'Osm not available'
-		else:
-			Category = available_osms[osm]['category']
-			try:
-				osm_categories = Category.objects.filter(dalliz_category = dalliz_category, exists = True, newproduct__id__isnull = False).distinct()
-			except Exception, e:
-				osm_categories = Category.objects.filter(dalliz_category = dalliz_category, exists = True, product__id__isnull = False).distinct()
+				# Get products for each category
+				response['categories'] = []
+				for cat in osm_categories:
+					if hasattr(cat, 'newproduct_set'):
+						products = [ serialize_product(p, osm, dalliz_category) for p in cat.newproduct_set.all()  ]
+					else:
+						products = [ serialize_product(p, osm, dalliz_category) for p in cat.product_set.all()  ]
 
-			# Get products for each category
-			response['categories'] = []
-			for cat in osm_categories:
-				if hasattr(cat, 'newproduct_set'):
-					products = [ serialize_product(p, osm, dalliz_category) for p in cat.newproduct_set.all()  ]
-				else:
-					products = [ serialize_product(p, osm, dalliz_category) for p in cat.product_set.all()  ]
+					# gettings similarities
+					for p in products:
+						p['matches'] = {}
+						p['similarities'] = {}
+						for osm_index in available_osms:
+							if osm != osm_index:
+								# Getting match
+								match = ProductMatch.objects.all()
+								if osm == 'auchan':
+									match = match.filter(auchan_product = p['id'])
+								if osm == 'ooshop':
+									match = match.filter(ooshop_product = p['id'])
+								if osm == 'monoprix':
+									match = match.filter(monoprix_product = p['id'])
 
-				# gettings similarities
-				for p in products:
-					p['matches'] = {}
-					p['similarities'] = {}
-					for osm_index in available_osms:
-						if osm != osm_index:
-							# Getting match
-							match = ProductMatch.objects.all()
-							if osm == 'auchan':
-								match = match.filter(auchan_product = p['id'])
-							if osm == 'ooshop':
-								match = match.filter(ooshop_product = p['id'])
-							if osm == 'monoprix':
-								match = match.filter(monoprix_product = p['id'])
-
-							if len(match) != 0:
-								match = match[0]
-								if osm_index == 'ooshop':
-									if match.ooshop_product is not None:
-										p['matches'][osm_index] = serialize_product(match.ooshop_product, osm_index)
-									else:
-										p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
-								if osm_index == 'auchan':
-									if match.auchan_product is not None:
-										p['matches'][osm_index] = serialize_product(match.auchan_product, osm_index)
-									else:
-										p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
-								if osm_index == 'monoprix':
-									if match.monoprix_product is not None:
-										p['matches'][osm_index] = serialize_product(match.monoprix_product, osm_index)
-									else:
-										p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
-							else:
-								p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
-
+								if len(match) != 0:
+									match = match[0]
+									if osm_index == 'ooshop':
+										if match.ooshop_product is not None:
+											p['matches'][osm_index] = serialize_product(match.ooshop_product, osm_index)
+										else:
+											p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
+									if osm_index == 'auchan':
+										if match.auchan_product is not None:
+											p['matches'][osm_index] = serialize_product(match.auchan_product, osm_index)
+										else:
+											p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
+									if osm_index == 'monoprix':
+										if match.monoprix_product is not None:
+											p['matches'][osm_index] = serialize_product(match.monoprix_product, osm_index)
+										else:
+											p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
+								else:
+									p['similarities'][osm_index] =  available_osms[osm]['query'][osm_index](p)
 
 
-				response['categories'].append( {
-					'name' : cat.name,
-					'id' : cat.id,
-					'products' : products
-				})
-		response['category'] = {
-			'name': (lambda c: c.parent_category.name+'/'+c.name if c.parent_category is not None else c.name)(dalliz_category),
-			'osm': osm,
-		}
+
+					response['categories'].append( {
+						'name' : cat.name,
+						'id' : cat.id,
+						'products' : products
+					})
+			response['category'] = {
+				'name': (lambda c: c.parent_category.name+'/'+c.name if c.parent_category is not None else c.name)(dalliz_category),
+				'osm': osm,
+			}
 		# dalliz categories
 		dalliz_categories = build_dalliz_tree()
 		response["dalliz_categories"] = json.dumps(dalliz_categories)
 		response['osm'] = osm
 		response['main_category'] = (lambda c: c.parent_category.parent_category.id if c.parent_category.parent_category is not None else (c.parent_category.id if c.parent_category is not None else c.id))(dalliz_category)
 		response['parent_category'] =  (lambda c: c.parent_category.id if c.parent_category is not None else c.id)(dalliz_category)
-		response['sub_category'] = dalliz_category.id
+		# response['sub_category'] = dalliz_category.id
 		response['osms'] = available_osms.keys()
 
 	# return HttpResponse(json.dumps(response))

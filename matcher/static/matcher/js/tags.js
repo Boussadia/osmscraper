@@ -30,7 +30,7 @@ $(document).ready(function(){
 	fill_select('first', dalliz_categories);
 	set_sub_categories('first', main_category);
 	if (main_category !== parent_category) set_sub_categories('second', parent_category);
-	if (parent_category !== category) set_sub_categories('third', category);
+	// if (parent_category !== category) set_sub_categories('third', category);
 
 	function fill_select(id_element, categories){
 		$(".add select#"+id_element).empty();
@@ -53,17 +53,17 @@ $(document).ready(function(){
 		if (id_element === "first"){
 			fill_select('second', dalliz_categories[id_category]['subs']);
 			id_category_second = $(".add select#second").find(":selected").val();
-			if (dalliz_categories[id_category]['subs'][id_category_second]){
-				fill_select('third', dalliz_categories[id_category]['subs'][id_category_second]['subs'])
-			}
-		}else if(id_element === "second"){
-			id_category_first = $(".add select#first").find(":selected").val();
-			fill_select('third', dalliz_categories[id_category_first]['subs'][id_category]['subs'])
-		}
+			// if (dalliz_categories[id_category]['subs'][id_category_second]){
+			// 	fill_select('third', dalliz_categories[id_category]['subs'][id_category_second]['subs'])
+			// }
+		} //else if(id_element === "second"){
+		// 	id_category_first = $(".add select#first").find(":selected").val();
+		// 	fill_select('third', dalliz_categories[id_category_first]['subs'][id_category]['subs'])
+		// }
 	}
 
 	$('#go').click(function(){
-		var id_category = $(".add select#third").find(":selected").val();
+		var id_category = $(".add select#second").find(":selected").val();
 
 		if (id_category !== undefined) window.location = '/backend/matcher/'+osm+'/tags/'+id_category;
 	})

@@ -15,19 +15,19 @@
 			var osm = "{{osm}}";
 			var main_category = {{main_category}};
 			var parent_category = {{parent_category}};
-			var category = {{sub_category}};
+			// var category = {{sub_category}};
 		</script>
 	</head>
 	<body>
 
 		<div class="add">
-				<select id="first"></select><select id="second"></select><select id="third"></select>
+				<select id="first"></select><select id="second"></select><!-- <select id="third"></select> -->
 				<button id='go' class = ' go btn btn-success'>Go </button>
 				<b > Catégorie Dalliz : {{ category.name }}</b>
 		</div>
 		<div class="otherosms">
 			{% for o in osms %}
-				{% if o != osm %}<a href="/backend/matcher/{{o}}/tags/{{sub_category}}">{%endif%}
+				{% if o != osm %}<a href="/backend/matcher/{{o}}/tags/{{parent_category}}">{%endif%}
 					<button class='btn btn-success {% if o == osm %}active{%endif%}'>{{o}}</button>
 				{% if o != osm %}</a>{%endif%}
 			{% endfor %}
