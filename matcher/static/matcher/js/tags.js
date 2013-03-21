@@ -28,8 +28,9 @@ $(document).ready(function(){
 
 	// Go to category page
 	fill_select('first', dalliz_categories);
-	id_category_first = $(".add select#first").find(":selected").val();
-	set_sub_categories('first', id_category_first)
+	set_sub_categories('first', main_category);
+	if (main_category !== parent_category) set_sub_categories('second', parent_category);
+	if (parent_category !== category) set_sub_categories('third', category);
 
 	function fill_select(id_element, categories){
 		$(".add select#"+id_element).empty();
@@ -48,6 +49,7 @@ $(document).ready(function(){
 	}
 
 	function set_sub_categories(id_element, id_category){
+		$(".add select#"+id_element+" option[value="+id_category+"]").attr('selected', true);
 		if (id_element === "first"){
 			fill_select('second', dalliz_categories[id_category]['subs']);
 			id_category_second = $(".add select#second").find(":selected").val();

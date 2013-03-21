@@ -81,3 +81,7 @@ li.sim, li.match{
 .ui-state-default{
 	border: none;
 }
+
+.ui-state-hover, .ui-accordion-header{
+	color: white;
+}

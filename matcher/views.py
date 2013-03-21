@@ -101,7 +101,6 @@ def category(request, osm, category_id):
 		response['status'] = 404
 		response['msg'] = 'Dalliz category not found'
 	else:
-		
 		dalliz_category = dalliz_category[0]
 
 		# Getting osm corresponding categories
@@ -170,6 +169,9 @@ def category(request, osm, category_id):
 		dalliz_categories = build_dalliz_tree()
 		response["dalliz_categories"] = json.dumps(dalliz_categories)
 		response['osm'] = osm
+		response['main_category'] = (lambda c: c.parent_category.parent_category.id if c.parent_category.parent_category is not None else (c.parent_category.id if c.parent_category is not None else c.id))(dalliz_category)
+		response['parent_category'] =  (lambda c: c.parent_category.id if c.parent_category is not None else c.id)(dalliz_category)
+		response['sub_category'] = dalliz_category.id
 
 	# return HttpResponse(json.dumps(response))
 
