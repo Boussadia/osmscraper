@@ -11,8 +11,11 @@
 		<link rel="stylesheet" type="text/css" href="{% static matcher/css/jquery.tagsinput.css %}" />
 		<link rel="stylesheet" type="text/css" href="{% static matcher/css/tags.css %}">
 		<script type="text/javascript">
-			var dalliz_categories = {{dalliz_categories|safe}}
+			var dalliz_categories = {{dalliz_categories|safe}};
 			var osm = "{{osm}}";
+			var main_category = {{main_category}};
+			var parent_category = {{parent_category}};
+			var category = {{sub_category}};
 		</script>
 	</head>
 	<body>

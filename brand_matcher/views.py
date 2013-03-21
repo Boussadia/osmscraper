@@ -67,12 +67,9 @@ def selector(request, osm, id):
 		next_brands = Brand.objects.filter(id__gte = int(id)+1).order_by('id')
 		previous = Brand.objects.filter(id__lte= int(id)-1).order_by('-id')
 		for i in xrange(0, len(next_brands)):
-			print next_brands[i]
-			print len(next_brands[i].newproduct_set.exclude(exists = False))>0
 			if len(next_brands[i].newproduct_set.exclude(exists = False))>0:
 				osm_brand_template_value['is_set_next_id'] = True
 				osm_brand_template_value['next_id'] = next_brands[i].id
-				print osm_brand_template_value
 				break
 		for i in xrange(0, len(previous)):
 			if len(previous[i].newproduct_set.exclude(exists = False))>0:
