@@ -13,6 +13,8 @@ from osmscraper.unaccent import unaccent
 
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.db import connection, transaction
+from django.db.models import Q
 
 from tags.models import Tag
 
@@ -23,7 +25,7 @@ from dalliz.models import Category as DallizCategory
 from ooshop.models import NewProduct as OoshopProduct
 from monoprix.models import NewProduct as MonoprixProduct
 from auchan.models import Product as AuchanProduct
-from matcher.models import ProductSimilarity
+from matcher.models import ProductSimilarity, NoProductSimilarity
 from matcher.models import ProductMatch
 
 
@@ -33,16 +35,16 @@ available_osms = {
 		'category': AuchanCategory,
 		'product': AuchanProduct,
 		'query':{
-			'ooshop':lambda p: [serialize_product(sim.ooshop_product, 'ooshop') for sim in ProductSimilarity.objects.filter(index_name = 'ooshop', query_name = 'auchan', auchan_product__id = p['id'], ooshop_product__has_match = True, ooshop_product__dalliz_category__parent_category__parent_category__in = p['parent_categories'] , ooshop_product__brand__brandmatch__dalliz_brand__in = p['parent_brands'], ooshop_product__productmatch__auchan_product__isnull = True).order_by('-score')[:1]],
-			'monoprix':lambda p: [serialize_product(sim.monoprix_product, 'monoprix') for sim in ProductSimilarity.objects.filter(index_name = 'monoprix', query_name = 'auchan', auchan_product__id = p['id'], monoprix_product__has_match = True, monoprix_product__dalliz_category__parent_category__parent_category__in = p['parent_categories'] , monoprix_product__brand__brandmatch__dalliz_brand__in = p['parent_brands'], monoprix_product__productmatch__auchan_product__isnull = True).order_by('-score')[:1]],
+			'ooshop':lambda p: [serialize_product(sim.ooshop_product, 'ooshop') for sim in ProductSimilarity.objects.filter(index_name = 'ooshop', query_name = 'auchan', auchan_product__id = p['id'], ooshop_product__has_match = True, ooshop_product__dalliz_category__parent_category__parent_category__in = p['parent_categories'] , ooshop_product__brand__brandmatch__dalliz_brand__in = p['parent_brands'], ooshop_product__productmatch__auchan_product__isnull = True).exclude(ooshop_product__noproductsimilarity__auchan_product__id = p['id']).order_by('-score')[:1]],
+			'monoprix':lambda p: [serialize_product(sim.monoprix_product, 'monoprix') for sim in ProductSimilarity.objects.filter(index_name = 'monoprix', query_name = 'auchan', auchan_product__id = p['id'], monoprix_product__has_match = True, monoprix_product__dalliz_category__parent_category__parent_category__in = p['parent_categories'] , monoprix_product__brand__brandmatch__dalliz_brand__in = p['parent_brands'], monoprix_product__productmatch__auchan_product__isnull = True).exclude(monoprix_product__noproductsimilarity__auchan_product__id = p['id']).order_by('-score')[:1]],
 		}
 	},
 	'monoprix':{
 		'category': MonoprixCategory,
 		'product': MonoprixProduct,
 		'query':{
-			'auchan':lambda p: [serialize_product(sim.auchan_product, 'auchan') for sim in ProductSimilarity.objects.filter(index_name = 'auchan', query_name = 'monoprix', monoprix_product__id = p['id'], auchan_product__has_match = True, auchan_product__dalliz_category__parent_category__parent_category__in = p['parent_categories'] , auchan_product__brand__brandmatch__dalliz_brand__in = p['parent_brands'], auchan_product__productmatch__monoprix_product__isnull = True).order_by('-score')[:1]],
-			'ooshop':lambda p: [serialize_product(sim.ooshop_product, 'ooshop') for sim in ProductSimilarity.objects.filter(index_name = 'ooshop', query_name = 'monoprix', monoprix_product__id = p['id'], ooshop_product__has_match = True, ooshop_product__dalliz_category__parent_category__parent_category__in = p['parent_categories'] , ooshop_product__brand__brandmatch__dalliz_brand__in = p['parent_brands'], ooshop_product__productmatch__monoprix_product__isnull = True).order_by('-score')[:1]],
+			'auchan':lambda p: [serialize_product(sim.auchan_product, 'auchan') for sim in ProductSimilarity.objects.filter(index_name = 'auchan', query_name = 'monoprix', monoprix_product__id = p['id'],auchan_product__has_match = True, auchan_product__dalliz_category__parent_category__parent_category__in = p['parent_categories'] , auchan_product__brand__brandmatch__dalliz_brand__in = p['parent_brands'], auchan_product__productmatch__monoprix_product__isnull = True).exclude(auchan_product__noproductsimilarity__monoprix_product__id = p['id']).order_by('-score')[:1]],
+			'ooshop':lambda p: [serialize_product(sim.ooshop_product, 'ooshop') for sim in ProductSimilarity.objects.filter(index_name = 'ooshop', query_name = 'monoprix', monoprix_product__id = p['id'], ooshop_product__has_match = True, ooshop_product__dalliz_category__parent_category__parent_category__in = p['parent_categories'] , ooshop_product__brand__brandmatch__dalliz_brand__in = p['parent_brands'], ooshop_product__productmatch__monoprix_product__isnull = True).exclude(ooshop_product__noproductsimilarity__monoprix_product__id = p['id']).order_by('-score')[:1]],
 
 		} 
 	},
@@ -50,8 +52,8 @@ available_osms = {
 		'category': OoshopCategory,
 		'product': OoshopProduct,
 		'query':{
-			'auchan':lambda p: [serialize_product(sim.auchan_product, 'auchan') for sim in ProductSimilarity.objects.filter(index_name = 'auchan', query_name = 'ooshop', ooshop_product__id = p['id'], auchan_product__has_match = True, auchan_product__dalliz_category__parent_category__parent_category__in = p['parent_categories'] , auchan_product__brand__brandmatch__dalliz_brand__in = p['parent_brands'], auchan_product__productmatch__ooshop_product__isnull = True).order_by('-score')[:1]],
-			'monoprix':lambda p: [serialize_product(sim.monoprix_product, 'monoprix') for sim in ProductSimilarity.objects.filter(index_name = 'monoprix', query_name = 'ooshop', ooshop_product__id = p['id'], monoprix_product__has_match = True, monoprix_product__dalliz_category__parent_category__parent_category__in = p['parent_categories'] , monoprix_product__brand__brandmatch__dalliz_brand__in = p['parent_brands'], monoprix_product__productmatch__ooshop_product__isnull = True).order_by('-score')[:1]],
+			'auchan':lambda p: [serialize_product(sim.auchan_product, 'auchan') for sim in ProductSimilarity.objects.filter(index_name = 'auchan', query_name = 'ooshop', ooshop_product__id = p['id'], auchan_product__has_match = True, auchan_product__dalliz_category__parent_category__parent_category__in = p['parent_categories'] , auchan_product__brand__brandmatch__dalliz_brand__in = p['parent_brands'], auchan_product__productmatch__ooshop_product__isnull = True).exclude(auchan_product__noproductsimilarity__ooshop_product__id = p['id']).order_by('-score')[:1]],
+			'monoprix':lambda p: [serialize_product(sim.monoprix_product, 'monoprix') for sim in ProductSimilarity.objects.filter(index_name = 'monoprix', query_name = 'ooshop', ooshop_product__id = p['id'], monoprix_product__has_match = True, monoprix_product__dalliz_category__parent_category__parent_category__in = p['parent_categories'] , monoprix_product__brand__brandmatch__dalliz_brand__in = p['parent_brands'], monoprix_product__productmatch__ooshop_product__isnull = True).exclude(monoprix_product__noproductsimilarity__ooshop_product__id = p['id']).order_by('-score')[:1]],
 		}
 	}
 }
@@ -185,7 +187,8 @@ def category(request, osm, category_id):
 				})
 		response['category'] = {
 			'name': (lambda c: c.parent_category.name+'/'+c.name if c.parent_category is not None else c.name)(dalliz_category),
-			'osm': osm
+			'osm': osm,
+			'osms': available_osms.keys(),
 		}
 		# dalliz categories
 		dalliz_categories = build_dalliz_tree()
@@ -362,53 +365,86 @@ def autocomplete_category(request):
 	response = [{'id':t.id,'label':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(t)+' - '+str(t.id),'value':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(t)+' - '+str(t.id)} for t in categories]	
 	return HttpResponse(json.dumps(response))
 
-def set_no_match(request, osm, product_id):
+# def set_no_match(request, osm, product_id):
+# 	response = {}
+# 	if request.method == 'POST':
+# 		if osm in available_osms:
+# 			Product = available_osms[osm]['product']
+# 			product = Product.objects.filter(id = product_id)
+# 			if len(product)>0:
+# 				product = product[0]
+# 				product.has_match = False
+# 				product.save()
+# 				# Clearing Match set
+# 				match = product.productmatch_set.all()
+# 				if len(match)>0:
+# 					match = match[0]
+# 					if osm == 'auchan':
+# 						monoprix_product = match.monoprix_product
+# 						ooshop_product = match.ooshop_product
+# 						if monoprix_product is not None:
+# 							reset_product(monoprix_product)
+# 						if ooshop_product is not None:
+# 							reset_product(ooshop_product)
+# 					elif osm == 'ooshop':
+# 						monoprix_product = match.monoprix_product
+# 						auchan_product = match.auchan_product
+# 						if monoprix_product is not None:
+# 							reset_product(monoprix_product)
+# 						if auchan_product is not None:
+# 							reset_product(auchan_product)
+# 					elif osm == 'monoprix':
+# 						ooshop_product = match.ooshop_product
+# 						auchan_product = match.auchan_product
+# 						if auchan_product is not None:
+# 							reset_product(auchan_product)
+# 						if ooshop_product is not None:
+# 							reset_product(ooshop_product)
+
+# 				product.productmatch_set.clear()
+# 				response['status'] = 200
+# 				response['msg'] = 'Done'
+
+# 			else:
+# 				response['status'] = 404
+# 				response['msg'] = 'Product not found'
+
+# 		else:
+# 			response['status'] = 404
+# 			response['msg'] = 'Osm not found'
+# 	else:
+# 		response['status'] = 403
+# 		response['msg'] = 'Method not handled'
+
+# 	return HttpResponse(json.dumps(response))
+
+def set_no_similarity(request, osm, osm_from, product_id_to, product_id_from):
 	response = {}
 	if request.method == 'POST':
-		if osm in available_osms:
-			Product = available_osms[osm]['product']
-			product = Product.objects.filter(id = product_id)
-			if len(product)>0:
-				product = product[0]
-				product.has_match = False
-				product.save()
-				# Clearing Match set
-				match = product.productmatch_set.all()
-				if len(match)>0:
-					match = match[0]
-					if osm == 'auchan':
-						monoprix_product = match.monoprix_product
-						ooshop_product = match.ooshop_product
-						if monoprix_product is not None:
-							reset_product(monoprix_product)
-						if ooshop_product is not None:
-							reset_product(ooshop_product)
-					elif osm == 'ooshop':
-						monoprix_product = match.monoprix_product
-						auchan_product = match.auchan_product
-						if monoprix_product is not None:
-							reset_product(monoprix_product)
-						if auchan_product is not None:
-							reset_product(auchan_product)
-					elif osm == 'monoprix':
-						ooshop_product = match.ooshop_product
-						auchan_product = match.auchan_product
-						if auchan_product is not None:
-							reset_product(auchan_product)
-						if ooshop_product is not None:
-							reset_product(ooshop_product)
-
-				product.productmatch_set.clear()
-				response['status'] = 200
-				response['msg'] = 'Done'
-
-			else:
-				response['status'] = 404
-				response['msg'] = 'Product not found'
-
+		nosim = list(NoProductSimilarity.objects.raw("SELECT * FROM matcher_noproductsimilarity WHERE "+osm+"_product_id = %s and "+osm_from+"_product_id = %s", (product_id_to, product_id_from)))
+		if len(nosim):
+			# Relation of no similarity already exists, do not do anything
+			response['status'] = 200
+			response['msg'] = 'Done'
 		else:
-			response['status'] = 404
-			response['msg'] = 'Osm not found'
+			# The similarity does not exist, create it
+			# sql_insert =  # INSERT QUERY
+			cursor = connection.cursor()
+			cursor.execute("INSERT INTO matcher_noproductsimilarity ("+osm+"_product_id, "+osm_from+"_product_id) VALUES ( %s ,  %s )", [product_id_to, product_id_from])
+			transaction.commit_unless_managed()
+			response['status'] = 200
+			response['msg'] = 'Added to database'
+
+	elif request.method == 'DELETE':
+		nosim = list(NoProductSimilarity.objects.raw("SELECT * FROM matcher_noproductsimilarity WHERE "+osm+"_product_id = %s and "+osm_from+"_product_id = %s", (product_id_to, product_id_from)))
+		if len(nosim)>0:
+			nosim = nosim[0]
+			nosim.delete()
+			response['status'] = 200
+			response['msg'] = 'Deleted'
+		else:
+			response['status'] = 200
+			response['msg'] = 'Nothing to do'
 	else:
 		response['status'] = 403
 		response['msg'] = 'Method not handled'

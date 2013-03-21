@@ -56,7 +56,6 @@
 									<div class='block comments'>
 										<h3>Commentaires</h3>
 										<textarea class='comment' data-product='{{product.id}}' data-osm='{{product.osm}}'>{{product.comment}}</textarea>
-										<button data-osm='{{product.osm}}' data-product='{{product.id}}' class='btn btn-danger no_match'>Pas d'equivalent</button>
 									</div>
 								</li>
 								<div class="matched_area">
@@ -122,6 +121,7 @@
 													<div class='block comments'>
 														<h3>Commentaires</h3>
 														<textarea class='comment' data-product='{{p.id}}' data-osm='{{p.osm}}'>{{p.comment}}</textarea>
+														<button data-osm='{{product.osm}}' data-osm_from='{{osm}}' data-product='{{product.id}}' data-product_from='{{p.id}}' class='nogood btn btn-danger'>Pas le bon</button>
 													</div>
 												</li>
 											</div>

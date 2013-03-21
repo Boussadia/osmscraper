@@ -316,13 +316,16 @@ $(document).ready(function(){
 		});
 	}
 
-	// Set product has no match
-	$('button.no_match').click(function(e){
+	// Set product has no similarity
+	$('button.nogood').click(function(e){
 		$that = $(e.target);
 		var osm = $that.attr('data-osm');
 		var product = $that.attr('data-product');
+		var osm_from = $that.attr('data-osm_from');
+		var product_from = $that.attr('data-product_from');
+
 		$.ajax({
-			url:'/backend/matcher/'+osm+'/tags/nomatch/'+product,
+			url:'/backend/matcher/'+osm+'/tags/nosimilarity/'+osm_from+'/'+product+'/'+product_from,
 			type:"POST",
 			dataType:"json",
 			data:{},

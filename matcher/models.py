@@ -58,6 +58,31 @@ class ProductSimilarity(models.Model):
 
 		return '%s : From %s to %s, %s -> %s with score %f'%(self.created, self.query_name, self.index_name, query_from, index_to, self.score)
 
+class NoProductSimilarity(models.Model):
+	monoprix_product = models.ForeignKey(MonoprixProduct, null = True)
+	ooshop_product = models.ForeignKey(OoshopProduct, null = True)
+	auchan_product = models.ForeignKey(AuchanProduct, null = True)
+
+	class Meta:
+		unique_together = (("monoprix_product", "ooshop_product"),("monoprix_product", "auchan_product"),("ooshop_product", "auchan_product"),)
+
+	def __unicode__(self):
+		if self.monoprix_product is not None:
+			product_1 = self.monoprix_product
+		elif self.auchan_product is not None:
+			product_1 = self.auchan_product
+		elif self.ooshop_product is not None:
+			product_1 = self.ooshop_product
+
+		if self.ooshop_product is not None:
+			product_2 = self.ooshop_product
+		elif self.auchan_product is not None:
+			product_2 = self.auchan_product
+		elif self.monoprix_product is not None:
+			product_2 = self.monoprix_product
+
+		return 'No match : %s <-/-> %s'%(product_1, product_2)
+
 class BrandSimilarity(models.Model):
 	query_name = models.TextField()
 	index_name = models.TextField()
