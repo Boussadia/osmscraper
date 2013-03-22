@@ -88,6 +88,8 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 						product_db.save()
 
 					return []
+				else:
+					exists = True
 
 				availability = product['is_available']
 
@@ -199,7 +201,8 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 						'composition': composition,
 						'package_unit': package_unit,
 						'package_quantity': package_quantity,
-						'package_measure': package_measure
+						'package_measure': package_measure,
+						'exists': exists
 						})
 
 					if not created:
@@ -216,6 +219,7 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 						product_db.package_unit = package_unit
 						product_db.package_quantity = package_quantity
 						product_db.package_measure = package_measure
+						product_db.exists = exists
 						product_db.save()
 
 					if brand is not None:

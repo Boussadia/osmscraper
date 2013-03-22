@@ -98,6 +98,7 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 				if not created:
 					product_db.url = url
 					product_db.unit =  unit_db
+					product_db.exists = True
 					product_db.save()
 				if not product['is_promotion']:
 					history = History(product = product_db, price = product['price'], unit_price = product['unit_price'], shipping_area = location, availability = product['is_available'])
