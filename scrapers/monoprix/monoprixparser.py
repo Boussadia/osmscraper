@@ -348,7 +348,8 @@ class MonoprixParser(BaseParser):
 		product = {
 			'is_product': False,
 			'is_promotion': False,
-			'is_available': True
+			'is_available': True,
+			'exists': True
 		}
 		parsed_page = self.parsed_page
 		product_section = parsed_page.find(id="ficheProduit")

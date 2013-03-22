@@ -94,3 +94,22 @@ def what_to_do_next():
 		delay = rule['delay']
 		what_to_do_next.apply_async(countdown=delay)
 
+@celery.task
+def simple_update():
+	from monoprix.models import NewProduct as Product
+	from datetime import datetime, timedelta
+	scraper = MonoprixScraper()
+	# First get uncomplete products
+	products = Product.objects.filter(exists = True, stemmed_text__isnull = True)
+
+	if len(products) >0:
+		scraper.get_product_info(products[0].url, save=True)
+		simple_update.apply_async(countdown = 2)
+	else:
+		products = Product.objects.filter(exists = True, updated__lte=datetime.now()-timedelta(hours = 24))
+		if len(products)>0:
+			scraper.get_product_info(products[0].url, save=True)
+			simple_update.apply_async(countdown = 2)
+		else:
+			simple_update.apply_async(countdown = 3600)
+

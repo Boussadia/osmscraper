@@ -8,8 +8,11 @@ from django.core.mail import send_mail
 
 from celery import Celery
 from celery.task import periodic_task, task
+from celery.task.schedules import crontab
+
 
 from scrapers.ooshop.ooshopscraper import OoshopScraper
+
 
 celery = Celery('tasks', broker=settings.BROKER_URL)
 
@@ -92,5 +95,27 @@ def what_to_do_next():
 		get_products.delay(products = products)
 	elif rule['type'] == 'global':
 		delay = rule['delay']
-		what_to_do_next.delay(countdown=delay)
+		what_to_do_next.apply_async(countdown=delay)
+
+# @celery.periodic_task(run_every=crontab(minute="*/60"))
+@celery.task
+def simple_update():
+	from ooshop.models import NewProduct as Product
+	from datetime import datetime, timedelta
+	scraper = OoshopScraper()
+	# First get uncomplete products
+	products = Product.objects.filter(exists = True, url__isnull = False, stemmed_text__isnull = True)
+
+	if len(products) >0:
+		scraper.get_product_info(products[0].url, save=True)
+		simple_update.apply_async(countdown = 2)
+	else:
+		products = Product.objects.filter(exists = True, url__isnull = False, updated__lte=datetime.now()-timedelta(hours = 24))
+		if len(products)>0:
+			scraper.get_product_info(products[0].url, save=True)
+			simple_update.apply_async(countdown = 2)
+		else:
+			simple_update.apply_async(countdown = 3600)
+
+
 

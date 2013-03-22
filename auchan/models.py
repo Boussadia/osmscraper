@@ -129,3 +129,21 @@ class Promotion(models.Model):
 
 	class Meta:
 		unique_together = ("reference", "shipping_area")
+
+class Cart(models.Model):
+	osm = models.CharField(max_length=9999, default = 'auchan')
+	products = models.ManyToManyField(Product, through='Cart_content')
+
+class Cart_content(models.Model):
+	cart = models.ForeignKey(Cart)
+	product = models.ForeignKey(Product)
+	quantity = models.IntegerField(default=0)
+
+	class Meta:
+		unique_together = ("cart", "product")
+
+class Cart_history(models.Model):
+	cart = models.ForeignKey(Cart)
+	created = models.DateTimeField(auto_now_add=True)
+	price = models.FloatField(default = 0)
+	computed = models.BooleanField(default = False)
