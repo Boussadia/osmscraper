@@ -235,7 +235,8 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 						cat = Category.objects.filter(id = id_parent_category)
 						if len(cat) == 1:
 							if cat not in categories:
-								product_db.categories.add(cat[0])
+								cat = cat[0]
+								product_db.categories.add(cat)
 								[[product_db.dalliz_category.add(c), [product_db.tag.add(t) for t in c.tags.all()]] for c in cat.dalliz_category.all()]
 
 					if not product['is_promotion']:
