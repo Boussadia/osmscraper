@@ -220,7 +220,7 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 						'exists': exists
 						})
 
-				if brand is not None and created:
+				if brand is not None:
 					product_db.brand = brand
 					product_db.save()
 					
