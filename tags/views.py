@@ -126,7 +126,7 @@ def tags(request, id_category, tags =''):
 				tag_db, created = Tag.objects.get_or_create(name = tag)
 				category.tags.add(tag_db)
 		new_tags = list(category.tags.all())
-		set_tags_to_products(old_tags, new_tags, category)
+		# set_tags_to_products(old_tags, new_tags, category)
 	if request.method == 'GET':
 		tags = ','.join([ t.name for t in category.tags.all()])
 		response['tags'] = tags
