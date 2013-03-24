@@ -150,7 +150,7 @@ $(document).ready(function(){
 									active: false,
 									heightStyleType: 'content'
 								})
-									.find('button')
+									.find('button.merge')
 										.unbind('click')
 										.text('Cancel')
 										.removeClass('merge')
@@ -207,7 +207,7 @@ $(document).ready(function(){
 				var unmerged_product = $('.product[data-product='+product+'][data-osm='+osm+'] .matched[data-product_from='+product_from+'][data-osm_from='+osm_from+']').accordion( "destroy" );
 				unmerged_product.removeClass('matched')
 								.addClass('unmatched')
-								.find('button')
+								.find('button.unmerge')
 										.text('Merge')
 										.unbind('click')
 										.removeClass('unmerge')
