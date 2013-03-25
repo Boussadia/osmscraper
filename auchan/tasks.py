@@ -96,7 +96,7 @@ def what_to_do_next():
 
 @celery.task
 def simple_update():
-	from auchan.models import Product
+	from auchan.models import Product, Promotion
 	from datetime import datetime, timedelta
 	scraper = AuchanScraper()
 	# First get uncomplete products

@@ -96,7 +96,7 @@ def what_to_do_next():
 
 @celery.task
 def simple_update():
-	from monoprix.models import NewProduct as Product
+	from monoprix.models import NewProduct as Product, Promotion
 	from datetime import datetime, timedelta
 	scraper = MonoprixScraper()
 	# First get uncomplete products
