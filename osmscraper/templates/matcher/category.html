@@ -47,7 +47,7 @@
 										<a href="{{product.url}}" target="_blank"><img src="{{product.image_url}}"></a>
 									</div>
 									<div class='block description'>
-										<p class='brand'>{{product.brand}}</p>
+										<p class='brand'><a href="/backend/matcher/{{osm}}/brand/{{product.brand_id}}" target="_blank">{% if product.dalliz_brand %}{{product.dalliz_brand.name}} {% else %} [{{product.brand}}] {% endif %}</a></p>
 										<p class='name'>{{product.name}}</p>
 										<p class='quantity'>{{product.quantity}} {{product.unit}}</p>
 										<p class='price'>{{product.price}} €</p>
