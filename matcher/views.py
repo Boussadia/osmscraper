@@ -272,6 +272,7 @@ def set_tags_to_product(product, tags, osm, set_match = True):
 					product.tag.add(t)
 				except Exception, e:
 					pass
+					
 		if set_match:
 			#Getting matched osms products
 			match = get_match(product, osm)
