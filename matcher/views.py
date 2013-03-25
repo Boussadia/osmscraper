@@ -243,7 +243,7 @@ def set_categories_to_product(product, dalliz_categories, osm, set_match = True)
 				try:
 					product.dalliz_category.add(c)
 				except Exception, e:
-					pass
+					connection._rollback()
 
 		if set_match:
 			#Getting matched osms products
@@ -271,7 +271,8 @@ def set_tags_to_product(product, tags, osm, set_match = True):
 				try:
 					product.tag.add(t)
 				except Exception, e:
-					pass
+					connection._rollback()
+
 		if set_match:
 			#Getting matched osms products
 			match = get_match(product, osm)
