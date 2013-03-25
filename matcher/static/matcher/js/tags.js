@@ -258,6 +258,7 @@ $(document).ready(function(){
 
 	// Function that saves tags
 	var save_tags = function(input){
+		input.find('+div').hide();
 		var id_product = input.attr('data-product');
 		var osm = input.attr('data-osm');
 		var tags_string = input.val();
@@ -269,6 +270,7 @@ $(document).ready(function(){
 			data:{},
 			success: function(data, textStatus, jqXHR){
 				console.log(data);
+				input.find('+div').show();
 				// console.log(textStatus);
 				// console.log(jqXHR);
 
@@ -283,6 +285,7 @@ $(document).ready(function(){
 
 	// Function that saves categories
 	var save_categories = function(input){
+		input.find('+div').hide();
 		var categories_str = input.val();
 		id_categories = [];
 		if (categories_str !== ""){
@@ -304,6 +307,7 @@ $(document).ready(function(){
 			},
 			success: function(data, textStatus, jqXHR){
 				console.log(data);
+				input.find('+div').show();
 				// console.log(textStatus);
 				// console.log(jqXHR);
 
