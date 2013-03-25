@@ -91,6 +91,12 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 					product_db = product_db[0]
 					product_db.exists = False
 					product_db.save()
+				else:
+					promotion_db = Promotion.objects.filter(reference = product['reference'])
+					if len(promotion_db)>0:
+						promotion_db = promotion_db[0]
+						promotion_db.availability = False
+						promotion_db.save()
 
 				return []
 			elif 'exists' not in product or ('exists' in product and  product['exists']):

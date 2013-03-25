@@ -100,7 +100,7 @@ def what_to_do_next():
 # @celery.periodic_task(run_every=crontab(minute="*/60"))
 @celery.task
 def simple_update():
-	from ooshop.models import NewProduct as Product
+	from ooshop.models import NewProduct as Product, Promotion
 	from datetime import datetime, timedelta
 	scraper = OoshopScraper()
 	# First get uncomplete products
@@ -112,10 +112,17 @@ def simple_update():
 	else:
 		products = Product.objects.filter(exists = True, url__isnull = False, updated__lte=datetime.now()-timedelta(hours = 24))
 		if len(products)>0:
-			scraper.get_product_info(products[0].url, save=True)
+			for c in products[0].categories.all():
+				scraper.get_list_products_for_category(c.url, save=True)
 			simple_update.apply_async(countdown = 2)
 		else:
-			simple_update.apply_async(countdown = 3600)
+			# Now getting multi promotions pages
+			promotions = Promotion.objects.fitler(availability = True, type = Promotion.MULTI, content__id__isnull = True)
+			if len(promotions)>0:
+				scraper.get_product_info(promotions[0].url, save=True)
+				simple_update.apply_async(countdown = 2)
+			else:
+				simple_update.apply_async(countdown = 3600)
 
 
 
