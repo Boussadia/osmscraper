@@ -231,19 +231,42 @@ def get_match(product, osm):
 
 	return match
 
+def diff(l1,l2):
+	"""
+		Compute difference between 2 lists. Returns new, common and removed items.
+		Example : 
+			l1 = [1,2,3]
+			l2 = [1,3,4]
+			ouput : new = [4], common = [1,3], removed = [2]
+
+		Input :
+			- l1 : a list
+			- l2 : a list
+		Ouput : 
+			- new, common, removed : a tupple of 3 lists
+	"""
+	removed = [t for t in l1 if t not in l2]
+	new = [t for t in l2 if t not in l1]
+	common = [t for t in l1 if t in l2]
+	return new, common,removed
 
 def set_categories_to_product(product, dalliz_categories, osm, set_match = True):
 	"""
 		Setting dalliz categories to a product
 	"""
 	if product is not None:
-		product.dalliz_category.clear()
-		for c in dalliz_categories:
-			if c not in product.dalliz_category.all():
-				try:
-					product.dalliz_category.add(c)
-				except Exception, e:
-					connection._rollback()
+		old_categories = product.dalliz_category.all()
+		new, common, removed = diff(old_categories, dalliz_categories)
+		for c in new:
+			try:
+				product.dalliz_category.add(c)
+			except Exception, e:
+				connection._rollback()
+		for c in removed:
+			try:
+				product.dalliz_category.remove(c)
+			except Exception, e:
+				connection._rollback()
 
 		if set_match:
 			#Getting matched osms products
@@ -265,13 +288,18 @@ def set_tags_to_product(product, tags, osm, set_match = True):
 	"""
 	# Clearing tags of products
 	if product is not None:
-		product.tag.clear()
-		for t in tags:
-			if t not in product.tag.all():
-				try:
-					product.tag.add(t)
-				except Exception, e:
-					connection._rollback()
+		old_tags = product.tag.all()
+		new, common, removed = diff(old_tags, tags)
+		for t in new:
+			try:
+				product.tag.add(t)
+			except Exception, e:
+				connection._rollback()
+		for t in removed:
+			try:
+				product.tag.remove(t)
+			except Exception, e:
+				connection._rollback()
 
 		if set_match:
 			#Getting matched osms products
