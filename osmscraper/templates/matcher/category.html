@@ -47,7 +47,7 @@
 										<a href="{{product.url}}" target="_blank"><img src="{{product.image_url}}"></a>
 									</div>
 									<div class='block description'>
-										<p class='brand'>{{product.brand}}</p>
+										<p class='brand'><a href="/backend/matcher/{{osm}}/brand/{{product.brand_id}}" target="_blank">{% if product.dalliz_brand %}{{product.dalliz_brand.name}} {% else %} [{{product.brand}}] {% endif %}</a></p>
 										<p class='name'>{{product.name}}</p>
 										<p class='quantity'>{{product.quantity}} {{product.unit}}</p>
 										<p class='price'>{{product.price}} €</p>
@@ -77,7 +77,7 @@
 														<button data-osm='{{product.osm}}' data-osm_from='{{osm}}' data-product='{{product.id}}' data-product_from='{{match.id}}' class='unmerge btn btn-danger'> Cancel</button>
 													</div>
 													<div class='block description'>
-														<p class='brand'>{{match.brand}}</p>
+														<p class='brand'><a href="/backend/matcher/{{osm}}/brand/{{match.brand_id}}" target="_blank">{% if match.dalliz_brand %}{{match.dalliz_brand.name}} {% else %} [{{match.brand}}] {% endif %}</a></p>
 														<p class='name'>{{match.name}}</p>
 														<p class='quantity'>{{match.quantity}} {{match.unit}}</p>
 														<p class='price'>{{match.price}} €</p>
@@ -112,7 +112,7 @@
 														<button data-osm='{{product.osm}}' data-osm_from='{{osm}}' data-product='{{product.id}}' data-product_from='{{p.id}}' class='merge btn btn-danger'> Merge</button>
 													</div>
 													<div class='block description'>
-														<p class='brand'>{{p.brand}}</p>
+														<p class='brand'><a href="/backend/matcher/{{osm}}/brand/{{p.brand_id}}" target="_blank">{% if p.dalliz_brand %}{{p.dalliz_brand.name}} {% else %} [{{p.brand}}] {% endif %}</a></p>
 														<p class='name'>{{p.name}}</p>
 														<p class='quantity'>{{p.quantity}} {{p.unit}}</p>
 														<p class='price'>{{p.price}} €</p>

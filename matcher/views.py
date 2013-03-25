@@ -98,6 +98,7 @@ def serialize_product(product, osm, categories = None):
 				'name':product.name,
 				'comment': product.comment,
 				'brand':(lambda x: x.brand.name if x.brand is not None else '')(product),
+				'brand_id':(lambda x: x.brand.id if x.brand is not None else '')(product),
 				'brand_db':product.brand,
 				'dalliz_brand':(lambda x: x.brand.brandmatch_set.all()[0].dalliz_brand if x.brand is not None and len(x.brand.brandmatch_set.all())>0 else None)(product),
 				'parent_brands': (lambda p : get_main_brands([b.dalliz_brand for b in p.brand.brandmatch_set.all()]) if p.brand is not None else [])(product),
