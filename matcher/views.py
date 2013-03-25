@@ -238,7 +238,13 @@ def set_categories_to_product(product, dalliz_categories, osm, set_match = True)
 	"""
 	if product is not None:
 		product.dalliz_category.clear()
-		[product.dalliz_category.add(c) for c in dalliz_categories]
+		for c in dalliz_categories:
+			if c not in product.dalliz_category.all():
+				try:
+					product.dalliz_category.add(c)
+				except Exception, e:
+					pass
+
 		if set_match:
 			#Getting matched osms products
 			match = get_match(product, osm)
@@ -260,7 +266,12 @@ def set_tags_to_product(product, tags, osm, set_match = True):
 	# Clearing tags of products
 	if product is not None:
 		product.tag.clear()
-		[product.tag.add(t) for t in tags]
+		for t in tags:
+			if t not in product.tag.all():
+				try:
+					product.tag.add(t)
+				except Exception, e:
+					pass
 		if set_match:
 			#Getting matched osms products
 			match = get_match(product, osm)
