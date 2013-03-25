@@ -113,7 +113,7 @@ def simple_update():
 			simple_update.apply_async(countdown = 2)
 		else:
 			# Now getting multi promotions pages
-			promotions = Promotion.objects.fitler(availability = True, type = Promotion.MULTI, content__id__isnull = True)
+			promotions = Promotion.objects.filter(availability = True, type = Promotion.MULTI, content__id__isnull = True)
 			if len(promotions)>0:
 				scraper.get_product_info(promotions[0].url, save=True)
 				simple_update.apply_async(countdown = 2)
