@@ -151,9 +151,9 @@ def category(request, osm, category_id):
 				response['categories'] = []
 				for cat in osm_categories:
 					if hasattr(cat, 'newproduct_set'):
-						products = [ serialize_product(p, osm, dalliz_categories) for p in cat.newproduct_set.all()  ]
+						products = [ serialize_product(p, osm, dalliz_categories) for p in cat.newproduct_set.filter(exists = True)  ]
 					else:
-						products = [ serialize_product(p, osm, dalliz_categories) for p in cat.product_set.all()  ]
+						products = [ serialize_product(p, osm, dalliz_categories) for p in cat.product_set.filter(exists = True)  ]
 
 					# gettings similarities
 					for p in products:
