@@ -1,4 +1,24 @@
 $(document).ready(function(){
+	$('body').keypress(function(e){
+		console.log(e.keyCode);
+		if(e.keyCode === 18 ){
+			// Press ctrl + r -> Save all inputs
+			var cats = $('input.cat');
+			$.each(cats, function(i,value){
+				setTimeout(function(){
+					save_categories($(value));
+				}, 500);
+			});
+
+			var tags = $('input.tags');
+			$.each(tags, function(i,value){
+				setTimeout(function(){
+					save_tags($(value));
+				}, 500);
+			});
+		}
+	});
+	
 	var category_areas = $('.category_area').each(function(){
 		var has_no_match = $(this).find('.has_no_match').remove();
 		$(this).prepend(has_no_match);
@@ -97,10 +117,10 @@ $(document).ready(function(){
 	var options_tags = {
 		'removeWithBackspace' : false,
 		onAddTag: function(tag){
-			save_tags($(this));
+			// save_tags($(this));
 		},
 		onRemoveTag: function(tag){
-			save_tags($(this));
+			// save_tags($(this));
 		},
 		onChange : function(x, y){
 		},
@@ -112,10 +132,10 @@ $(document).ready(function(){
 	var options_categories = {
 		'removeWithBackspace' : false,
 		'onAddTag': function(t){
-			save_categories($(this));
+			// save_categories($(this));
 		},
 		'onRemoveTag': function(t){
-			save_categories($(this));
+			// save_categories($(this));
 		},
 		'autocomplete_url': '/backend/matcher/tags/categorie/autocomplete/',
 		'delimiter': '|',
