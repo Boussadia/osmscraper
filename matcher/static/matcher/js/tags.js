@@ -3,14 +3,14 @@ $(document).ready(function(){
 		console.log(e.keyCode);
 		if(e.keyCode === 9 ){
 			// Press ctrl + r -> Save all inputs
-			var cats = $('input.cat');
+			var cats = $('li.first input.cat');
 			$.each(cats, function(i,value){
 				setTimeout(function(){
 					save_categories($(value));
 				}, 500);
 			});
 
-			var tags = $('input.tags');
+			var tags = $('li.first input.tags');
 			$.each(tags, function(i,value){
 				setTimeout(function(){
 					save_tags($(value));
