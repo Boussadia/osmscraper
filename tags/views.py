@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import Context, loader
+from django.db import connection, transaction
 
 import simplejson as json
 
@@ -125,6 +126,10 @@ def tags(request, id_category, tags =''):
 			if tag not in [' ', '', '\t', '\r', '\n']:
 				tag_db, created = Tag.objects.get_or_create(name = tag)
 				category.tags.add(tag_db)
+				try:
+					category.tags.add(tag_db)
+				except Exception, e:
+					connection._rollback()
 		new_tags = list(category.tags.all())
 		# set_tags_to_products(old_tags, new_tags, category)
 	if request.method == 'GET':
