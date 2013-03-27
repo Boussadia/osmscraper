@@ -120,7 +120,6 @@ class BrandSimilarity(models.Model):
 		return '%s : From %s to %s, %s -> %s with score %f'%(self.created, self.query_name, self.index_name, query_from, index_to, self.score)
 
 class PossibleMatch(models.Model):
-	# TO DO : add user id
 	monoprix_product = models.ForeignKey(MonoprixProduct, null = True)
 	ooshop_product = models.ForeignKey(OoshopProduct, null = True)
 	auchan_product = models.ForeignKey(AuchanProduct, null = True)
