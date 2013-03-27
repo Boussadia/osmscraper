@@ -125,7 +125,6 @@ def tags(request, id_category, tags =''):
 		for tag in tags_string:
 			if tag not in [' ', '', '\t', '\r', '\n']:
 				tag_db, created = Tag.objects.get_or_create(name = tag)
-				category.tags.add(tag_db)
 				try:
 					category.tags.add(tag_db)
 				except Exception, e:
