@@ -1,16 +1,15 @@
 $(document).ready(function(){
 	$('body').keypress(function(e){
-		console.log(e.keyCode);
 		if(e.keyCode === 9 ){
 			// Press ctrl + r -> Save all inputs
-			var cats = $('li.first input.cat');
+			var cats = $('li.first input.cat[data-update=1]');
 			$.each(cats, function(i,value){
 				setTimeout(function(){
 					save_categories($(value));
 				}, 500);
 			});
 
-			var tags = $('li.first input.tags');
+			var tags = $('li.first input.tags[data-update=1]');
 			$.each(tags, function(i,value){
 				setTimeout(function(){
 					save_tags($(value));
@@ -117,10 +116,10 @@ $(document).ready(function(){
 	var options_tags = {
 		'removeWithBackspace' : false,
 		onAddTag: function(tag){
-			// save_tags($(this));
+			set_update($(this));
 		},
 		onRemoveTag: function(tag){
-			// save_tags($(this));
+			set_update($(this));
 		},
 		onChange : function(x, y){
 		},
@@ -132,15 +131,20 @@ $(document).ready(function(){
 	var options_categories = {
 		'removeWithBackspace' : false,
 		'onAddTag': function(t){
-			// save_categories($(this));
+			set_update($(this));
 		},
 		'onRemoveTag': function(t){
-			// save_categories($(this));
+			set_update($(this));
 		},
 		'autocomplete_url': '/backend/matcher/tags/categorie/autocomplete/',
 		'delimiter': '|',
 	};
 	$('.cat').tagsInput(options_categories);
+
+	// Set update to true
+	function set_update(input){
+		input.attr('data-update', 1);
+	}
 
 	// Merge button
 	$('button.merge').bind('click', merge);
