@@ -328,10 +328,13 @@ class BaseCartController(object):
 			if len(match)>0:
 				match = match[0]
 				mathed_product = getattr(match, self.cart.osm+'_product') # Evil hack!! Or is it? I love Python :D
-				print mathed_product
+				if mathed_product is not None:
+					self.add_product(mathed_product, quantity)
 			else:
 				# Look for similarities
-				pass
+				similarities = self.get_similarites(base_product, base_osm)
+				self.add_product(similarities[0][0], quantity)
+
 
 
 
