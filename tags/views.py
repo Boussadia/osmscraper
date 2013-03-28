@@ -47,13 +47,13 @@ def set_tags_to_products(old_tags, new_tags, category):
 	# Get all products of Category from every osm
 	# Monoprix
 	for cat in category.monoprix_category_dalliz_category.all():
-		products = products + list(cat.newproduct_set.all())
+		products = products + list(cat.product_set.all())
 	# Auchan
 	for cat in category.auchan_category_dalliz_category.all():
 		products = products + list(cat.product_set.all())
 	# Ooshop
 	for cat in category.ooshop_category_dalliz_category.all():
-		products = products + list(cat.newproduct_set.all())
+		products = products + list(cat.product_set.all())
 
 
 	# Setting tags :
@@ -74,13 +74,13 @@ def migrate():
 		# Getting all products
 		products = []
 		for cat in category.monoprix_category_dalliz_category.all():
-			products = products + list(cat.newproduct_set.all())
+			products = products + list(cat.product_set.all())
 		# Auchan
 		for cat in category.auchan_category_dalliz_category.all():
 			products = products + list(cat.product_set.all())
 		# Ooshop
 		for cat in category.ooshop_category_dalliz_category.all():
-			products = products + list(cat.newproduct_set.all())
+			products = products + list(cat.product_set.all())
 
 		# Setting tags :
 		for product in products:

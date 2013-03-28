@@ -100,7 +100,7 @@ def what_to_do_next():
 # @celery.periodic_task(run_every=crontab(minute="*/60"))
 @celery.task
 def simple_update():
-	from ooshop.models import NewProduct as Product, Promotion
+	from ooshop.models import Product, Promotion
 	from datetime import datetime, timedelta
 	scraper = OoshopScraper()
 	# First get uncomplete products

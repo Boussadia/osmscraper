@@ -4,12 +4,6 @@ from dalliz.models import Category as Dalliz_category
 from dalliz.models import Unit as Unit_dalliz
 from tags.models import Tag
 
-#----------------------------------------------------------------------------------------------------
-#
-#										NEW MODELS FOR REFACTORING
-#
-#----------------------------------------------------------------------------------------------------
-
 class Unit(models.Model):
 	name = models.CharField(max_length=30, unique=True)
 	dalliz_unit = models.ManyToManyField(Unit_dalliz, null=True, related_name="ooshop_unit_dalliz_unit")
@@ -45,7 +39,7 @@ class Category(models.Model):
 	def __unicode__(self):
 		return self.name
 
-class NewBrand(models.Model):
+class Brand(models.Model):
 	name = models.CharField(max_length=100, unique=True)
 	image_url = models.CharField(max_length=9999, null = True)
 	parent_brand = models.ForeignKey('self', null = True)
@@ -54,13 +48,13 @@ class NewBrand(models.Model):
 		return self.name
 
 
-class NewProduct(models.Model):
+class Product(models.Model):
 	reference = models.CharField(max_length=9999, null=True, unique = True) # Is not pk because of multi promotion
 	name = models.CharField(max_length=1000, null = True)
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True, auto_now_add=True)
 	url = models.CharField(max_length=9999, null = True)
-	brand = models.ForeignKey(NewBrand, null = True)
+	brand = models.ForeignKey(Brand, null = True)
 	unit = models.ForeignKey(Unit, null = True)
 	image_url = models.CharField(max_length=9999, null = True)
 	categories = models.ManyToManyField(Category, null = True)
@@ -98,7 +92,7 @@ class NewProduct(models.Model):
 			return self.reference
 
 class History(models.Model):
-	product = models.ForeignKey(NewProduct)
+	product = models.ForeignKey(Product)
 	created = models.DateTimeField(auto_now_add=True)
 	price = models.FloatField()
 	unit_price = models.FloatField()
@@ -117,7 +111,7 @@ class Promotion(models.Model):
 	url = models.CharField(max_length=9999, null = True)
 	type = models.CharField(max_length=1, choices=TYPES, default=SIMPLE)
 	image_url = models.CharField(max_length=9999, null = True)
-	content = models.ManyToManyField(NewProduct)
+	content = models.ManyToManyField(Product)
 	before = models.FloatField() # Price before any promotion
 	after = models.FloatField() # Price during promotion
 	unit_price = models.FloatField(null=True)
@@ -132,11 +126,11 @@ class Promotion(models.Model):
 
 class Cart(models.Model):
 	osm = models.CharField(max_length=9999, default = 'ooshop')
-	products = models.ManyToManyField(NewProduct, through='Cart_content')
+	products = models.ManyToManyField(Product, through='Cart_content')
 
 class Cart_content(models.Model):
 	cart = models.ForeignKey(Cart)
-	product = models.ForeignKey(NewProduct)
+	product = models.ForeignKey(Product)
 	quantity = models.IntegerField(default=0)
 
 	class Meta:

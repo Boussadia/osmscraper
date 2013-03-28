@@ -5,8 +5,8 @@ from __future__ import absolute_import # Import because of modules names
 from matcher.base.indexcontroller import ProductIndexController
 from matcher.base.indexcontroller import BrandIndexController
 
-from monoprix.models import NewProduct as Product
-from monoprix.models import NewBrand as Brand
+from monoprix.models import Product
+from monoprix.models import Brand
 
 class MonoprixProductIndexController(ProductIndexController):
 	"""

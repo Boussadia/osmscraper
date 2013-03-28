@@ -4,13 +4,13 @@
 from __future__ import absolute_import # Import because of modules names
 
 from django.db import models
-from ooshop.models import NewProduct as OoshopProduct
-from monoprix.models import NewProduct as MonoprixProduct
+from ooshop.models import Product as OoshopProduct
+from monoprix.models import Product as MonoprixProduct
 from auchan.models import Product as AuchanProduct
-from ooshop.models import NewBrand as OoshopBrand
-from monoprix.models import NewBrand as MonoprixBrand
+from ooshop.models import Brand as OoshopBrand
+from monoprix.models import Brand as MonoprixBrand
 from auchan.models import Brand as AuchanBrand
-from dalliz.models import NewBrand as DallizBrand
+from dalliz.models import Brand as DallizBrand
 
 # Stems
 class Stem(models.Model):

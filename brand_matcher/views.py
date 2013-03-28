@@ -15,10 +15,10 @@ from osmscraper.unaccent import unaccent
 
 from brand_matcher.templates import templates
 
-from ooshop.models import NewBrand as OoshopBrand
-from monoprix.models import NewBrand as MonoprixBrand
+from ooshop.models import Brand as OoshopBrand
+from monoprix.models import Brand as MonoprixBrand
 from auchan.models import Brand as AuchanBrand
-from dalliz.models import NewBrand as DallizBrand
+from dalliz.models import Brand as DallizBrand
 from matcher.models import BrandMatch
 
 available_osm = {
@@ -67,12 +67,12 @@ def selector(request, osm, id):
 		next_brands = Brand.objects.filter(id__gte = int(id)+1).order_by('id')
 		previous = Brand.objects.filter(id__lte= int(id)-1).order_by('-id')
 		for i in xrange(0, len(next_brands)):
-			if len(next_brands[i].newproduct_set.exclude(exists = False))>0:
+			if len(next_brands[i].product_set.exclude(exists = False))>0:
 				osm_brand_template_value['is_set_next_id'] = True
 				osm_brand_template_value['next_id'] = next_brands[i].id
 				break
 		for i in xrange(0, len(previous)):
-			if len(previous[i].newproduct_set.exclude(exists = False))>0:
+			if len(previous[i].product_set.exclude(exists = False))>0:
 				osm_brand_template_value['is_set_previous_id'] = True
 				osm_brand_template_value['previous_id'] = previous[i].id
 				break
@@ -171,7 +171,7 @@ def autocomplete(request):
 	term = ''
 	if request.method == 'GET':
 		term = unaccent(request.GET['term']).lower()
-	possible_brands = DallizBrand.objects.raw( "SELECT * FROM dalliz_newbrand WHERE LOWER(UNACCENT(name)) LIKE %s", ('%'+term+'%',))
+	possible_brands = DallizBrand.objects.raw( "SELECT * FROM dalliz_brand WHERE LOWER(UNACCENT(name)) LIKE %s", ('%'+term+'%',))
 	response = [{'id':b.id,'label':b.name,'value':b.name, 'name':b.name} for b in possible_brands]
 	return HttpResponse(json.dumps(response))
 

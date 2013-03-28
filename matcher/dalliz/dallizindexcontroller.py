@@ -4,7 +4,7 @@ from __future__ import absolute_import # Import because of modules names
 
 from matcher.base.indexcontroller import BrandIndexController
 
-from dalliz.models import NewBrand as Brand
+from dalliz.models import Brand
 
 class DallizBrandIndexController(BrandIndexController):
 	"""

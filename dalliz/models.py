@@ -14,8 +14,6 @@ class Prospect(models.Model):
 	def __unicode__(self):
 		return self.mail
 
-
-# New models
 class Category(models.Model):
 	name = models.CharField(max_length=100)
 	parent_category = models.ForeignKey('self', null = True)
@@ -29,7 +27,7 @@ class Category(models.Model):
 	def __unicode__(self):
 		return self.name
 
-class NewBrand(models.Model):
+class Brand(models.Model):
 	name = models.CharField(max_length=100, unique=True)
 	parent_brand = models.ForeignKey('self', null=True)
 	is_mdd = models.BooleanField(default = False)

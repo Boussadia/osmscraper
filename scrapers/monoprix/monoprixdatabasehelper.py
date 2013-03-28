@@ -11,9 +11,9 @@ from scrapers.base.basedatabasehelper import BaseDatabaseHelper
 from matcher.monoprix.monoprixstemmer import MonoprixStemmer
 
 from monoprix.models import Category
-from monoprix.models import NewBrand as Brand
+from monoprix.models import Brand
 from monoprix.models import Unit
-from monoprix.models import NewProduct as Product
+from monoprix.models import Product
 from monoprix.models import Promotion
 from monoprix.models import History
 from monoprix.models import Store

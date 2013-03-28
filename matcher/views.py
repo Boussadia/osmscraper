@@ -22,8 +22,8 @@ from ooshop.models import Category as OoshopCategory
 from monoprix.models import Category as MonoprixCategory
 from auchan.models import Category as AuchanCategory
 from dalliz.models import Category as DallizCategory
-from ooshop.models import NewProduct as OoshopProduct
-from monoprix.models import NewProduct as MonoprixProduct
+from ooshop.models import Product as OoshopProduct
+from monoprix.models import Product as MonoprixProduct
 from auchan.models import Product as AuchanProduct
 from matcher.models import ProductSimilarity, NoProductSimilarity
 from matcher.models import ProductMatch
@@ -143,17 +143,14 @@ def category(request, osm, category_id):
 			else:
 				Category = available_osms[osm]['category']
 				try:
-					osm_categories = Category.objects.filter(dalliz_category__in = dalliz_categories, exists = True, newproduct__id__isnull = False).distinct()
+					osm_categories = Category.objects.filter(dalliz_category__in = dalliz_categories, exists = True, product__id__isnull = False).distinct()
 				except Exception, e:
 					osm_categories = Category.objects.filter(dalliz_category__in = dalliz_categories, exists = True, product__id__isnull = False).distinct()
 
 				# Get products for each category
 				response['categories'] = []
 				for cat in osm_categories:
-					if hasattr(cat, 'newproduct_set'):
-						products = [ serialize_product(p, osm, dalliz_categories) for p in cat.newproduct_set.filter(exists = True)  ]
-					else:
-						products = [ serialize_product(p, osm, dalliz_categories) for p in cat.product_set.filter(exists = True)  ]
+					products = [ serialize_product(p, osm, dalliz_categories) for p in cat.product_set.filter(exists = True)  ]
 
 					# gettings similarities
 					for p in products:

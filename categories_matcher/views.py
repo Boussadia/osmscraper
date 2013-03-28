@@ -71,7 +71,7 @@ def set_dalliz_categories_to_products(old_dalliz_categories, new_dalliz_categori
 
 	# Get all products of Category from osm
 	try:
-		products = list(category.newproduct_set.all())
+		products = list(category.product_set.all())
 	except Exception, e:
 		products = list(category.product_set.all())
 
@@ -92,13 +92,13 @@ def migrate():
 		# Getting all products
 		products = []
 		for cat in category.monoprix_category_dalliz_category.all():
-			products = products + list(cat.newproduct_set.all())
+			products = products + list(cat.product_set.all())
 		# Auchan
 		for cat in category.auchan_category_dalliz_category.all():
 			products = products + list(cat.product_set.all())
 		# Ooshop
 		for cat in category.ooshop_category_dalliz_category.all():
-			products = products + list(cat.newproduct_set.all())
+			products = products + list(cat.product_set.all())
 
 		# Setting dalliz categories :
 		[product.dalliz_category.add(category) for product in products] # adding category

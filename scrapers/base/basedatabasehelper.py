@@ -131,7 +131,4 @@ class BaseDatabaseHelper(object):
 			category.exists = False
 			category.save()
 			# Getting all products associated with category and remove from m2m table
-			if hasattr(category, 'newproduct_set'):
-				category.newproduct_set.clear()
-			elif hasattr(category, 'product_set'):
-				category.newproduct_set.clear()
+			category.product_set.clear()

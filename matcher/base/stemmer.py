@@ -6,7 +6,7 @@ import time
 
 from bs4 import BeautifulSoup, Comment
 
-from ooshop.models import NewProduct as Product
+from ooshop.models import Product
 from matcher.models import BaseWord, Stem
 from osmscraper.unaccent import unaccent
 

@@ -17,9 +17,9 @@ from scrapers.base.basedatabasehelper import BaseDatabaseHelper
 from matcher.ooshop.ooshopstemmer import OoshopStemmer
 
 from ooshop.models import Category
-from ooshop.models import NewBrand as Brand
+from ooshop.models import Brand
 from ooshop.models import Unit
-from ooshop.models import NewProduct as Product
+from ooshop.models import Product
 from ooshop.models import Promotion
 from ooshop.models import History
 from ooshop.models import ShippingArea

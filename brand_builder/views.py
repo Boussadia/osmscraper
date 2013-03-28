@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.template import Context, loader
 from django.core import serializers
 
-from dalliz.models import NewBrand as Brand
+from dalliz.models import Brand
 
 import simplejson as json
 
