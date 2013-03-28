@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from copy import deepcopy
 from datetime import datetime, timedelta
 from operator import mul
-from copy import deepcopy
+
+from matcher.models import ProductSimilarity, ProductMatch
 
 class BaseCartController(object):
 	"""
@@ -11,14 +13,10 @@ class BaseCartController(object):
 		
 		Initialisation:
 			- CartEntity : cart model entity
-			- CartContentEntity : cart content model entity
-			- CartHistoryEntity : cart history model entity
 			- cart (model of CartEntity) : an already created cart
 	"""
-	def __init__(self, CartEntity, CartContentEntity, CartHistoryEntity, cart = None):
+	def __init__(self, CartEntity, cart = None):
 		self.CartEntity = CartEntity
-		self.CartContentEntity = CartContentEntity
-		self.CartHistoryEntity = CartHistoryEntity
 
 		if cart is None:
 			self.price = 0
@@ -128,7 +126,7 @@ class BaseCartController(object):
 		# Cycling through every promotion and computing state price
 		for promotion_id, promotion in state['promotions'].iteritems():
 			# Checking if products left:
-			products = [ state['products'][i]['qte']>=requirements[promotion_id][i] for i in requirements[promotion_id]]
+			products = [ (i in state['products']) and (state['products'][i]['qte']>=requirements[promotion_id][i]) for i in requirements[promotion_id]]
 			if reduce(mul, products):
 				# Minimum requirments satisfied
 				new_state = deepcopy(state)
@@ -190,12 +188,12 @@ class BaseCartController(object):
 		requirements = {}
 
 		for element in content:
-			p = element.product
+			product = element.product
 			quantity = element.quantity
 
 			# First look for promotion
-			simple_promotions = p.promotion_set.filter(end__gte = date, type = 's').distinct('reference', 'end').order_by('-end', 'reference')
-			multi_promotions = p.promotion_set.filter(end__gte = date, type = 'm').distinct('reference', 'end').order_by('-end', 'reference')
+			simple_promotions = product.promotion_set.filter(end__gte = date, type = 's').distinct('reference', 'end').order_by('-end', 'reference')
+			multi_promotions = product.promotion_set.filter(end__gte = date, type = 'm').distinct('reference', 'end').order_by('-end', 'reference')
 			if len(simple_promotions)>0:
 				promotion = simple_promotions[0]
 				self.price = self.price + quantity*promotion.after
@@ -207,61 +205,38 @@ class BaseCartController(object):
 					content = [ (p, 1) for p in promotion.content.all()]
 					found, requirement = self.get_promotion_requirement(content, price_before)
 					requirements[promotion.id] = { p.id:q for p, q in requirement} # updating promotion multi requirements
-					# print promotion.url
 					# Updating promotion multi state
-					prod, price = self.get_simple_price([{'product':p, 'quantity':1}], date)[0]
-					# print price
-					state['products'][p.id] = {'price': price, 'qte':quantity}
+					prod, price = self.get_simple_price([{'product':product, 'quantity':1}], date)[0]
+					# print quantity
+					state['products'][product.id] = {'price': price, 'qte':quantity}
+					# print state['products'][product.id]
 					state['promotions'][promotion.id] = {'price': price_after, 'qte':0}
-				# print state
-
 			else:
-				history = p.history_set.filter(created__gte = date-timedelta(hours = 24)).order_by('-created')
+				history = product.history_set.filter(created__gte = date-timedelta(hours = 24)).order_by('-created')
 				if len(history)>0:
 					self.price = self.price + quantity*history[0].price
 				else:
-					history = p.history_set.all().order_by('-created')
+					history = product.history_set.all().order_by('-created')
 					if len(history)>0:
 						self.price = self.price + quantity*history[0].price
 
 		# Dealing with multi promotion:
+		# print state
+		# print requirements
 		min_state, min_price = self.get_min_state(state, requirements)
-		# print min_state
 		self.price = self.price + min_price
+		# print min_state
+		# print min_price
 
-		
-		# # Taking care of multi promotion
-		# for id_promotion, promotion_content in promotions_multi.iteritems():
-		# 	promotion =  promotion_content['db_entity']
-		# 	# Are all the products found in cart available for promotion?
-		# 	required_products = list(promotion.content.all()) # No more than 3 in general
-		# 	products_requirement_met = reduce(mul, [(p in required_products) for (p, q) in promotion_content['products_found']])
-			
-		# 	if products_requirement_met:
-		# 		# Computing required product quantities
-		# 		price_before = promotion.before
-		# 		price_after = promotion.after
-		# 		content = [ (p, 1) for p, q in promotion_content['products_found']]
-		# 		found, requirement = self.get_promotion_requirement(content, price_before)
-		# 		if found:
-		# 			# How many promotion do we have ?
-		# 			i = 1
-		# 			temp_content = promotion_content['products_found'] # Will contain remaining elements
-		# 			while 1:
-		# 				temp = [ (temp_content[j][0], temp_content[j][1] - requirement[j][1])  for j in xrange(0, len(temp_content))]
-		# 				is_positive = reduce(mul, [ (q>=0) for p,q in temp ], 1)
-		# 				if not is_positive:
-		# 					break
-		# 				else:
-		# 					temp_content = temp
-		# 					i = i+1
-		# 			i = i-1 # Number of time promotion is acounted for
-		# 			temp_content # Remaining products without promotion
-
-		# 			# Adding promotion price to final price
-		# 			self.price = self.price + price_after*i + sum( [ q*p.history_set.all().order_by('-created')[0].price for p,q in temp_content] )
+		self.save()
 
 		return self.price
+
+	def save(self, computed = True):
+		"""
+			Saves price of cart in database.
+		"""
+		self.cart.cart_history_set.create(price = self.price, computed = computed)
 
 	@price
 	def add_product(self, product, quantity = 1):
@@ -297,9 +272,66 @@ class BaseCartController(object):
 				else:
 					content.delete()
 
+	@price
+	def empty(self):
+		"""
+			Empty cart
+		"""
+		self.cart.products.clear()
 
+	def get_similarites(self, base_product, base_osm):
+		"""
+			With a product from another osm, get list of similarities.
+		"""
+		# First get all similarities form tfidf products
+		# building args dictionnary to apply to filter, you gotta love Python :D
+		args ={
+			'query_name': base_osm,
+			'index_name': self.osm,
+			base_osm+'_product': base_product,
+			# self.osm+'_product__brand__brandmatch__dalliz_brand__in': base_product.brand.brandmatch_set.all(),
+			self.osm+'_product__dalliz_category__in': base_product.dalliz_category.all(),
+		}
+		base_tags = base_product.tag.all() # Base products tags
+		base_brand = [ bm.dalliz_brand for bm in base_product.brand.brandmatch_set.all()]
+		sims = base_product.productsimilarity_set.filter(**args) # Getting similarities
+		# Computing scores
+		scores = [ 
+				( 
+					getattr(sim, self.osm+'_product'),
+					10*sum([ 1 for tag in getattr(sim,self.osm+'_product').tag.all() if tag in base_tags ]) # Tags score
+					+2*sum([ sum([2*(bm.dalliz_brand == dalliz_brand) + 1*( (bm.dalliz_brand != dalliz_brand) and bm.dalliz_brand.is_mdd == dalliz_brand.is_mdd) for dalliz_brand in base_brand]) for bm in getattr(sim,self.osm+'_product').brand.brandmatch_set.all() ]) # brand score
+					+ sim.score
+				) 
 
+		for sim in sims]
 
+		return sorted((scores), key=lambda item: -item[1])
+
+	def get_equivalent_cart(self, base_cart):
+		"""
+			This method computes equivalent cart from an existing cart of another osm.
+		"""
+		# Emptying cart
+		self.empty()
+
+		# Getting base cart content
+		content = base_cart.cart_content_set.all()
+		base_osm = base_cart.osm
+
+		for c in content:
+			base_product = c.product
+			quantity = c.quantity
+
+			# First, looking for a match
+			match = base_product.productmatch_set.all()
+			if len(match)>0:
+				match = match[0]
+				mathed_product = getattr(match, self.cart.osm+'_product') # Evil hack!! Or is it? I love Python :D
+				print mathed_product
+			else:
+				# Look for similarities
+				pass
 
 
 
