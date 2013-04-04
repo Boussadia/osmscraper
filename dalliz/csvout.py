@@ -216,9 +216,9 @@ def do_tags_categories():
     categories_tags_csv_file = open('categories_tags.csv','wb')
     rows = []
     for c in Category.objects.all():
-        if len(c.product_set.filter(html__isnull = False))>0:
-            row = [c.name]+[t.name for t in c.tags.all()]
-            rows.append(row)
+        #if len(c.product_set.filter(html__isnull = False))>0:
+        row = [c.name]+[t.name for t in c.tags.all()]
+        rows.append(row)
 
     with categories_tags_csv_file as f:
         writer = UnicodeWriter(f, delimiter='\t')#, quotechar='|', quoting=csv.QUOTE_MINIMAL)
