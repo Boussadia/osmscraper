@@ -59,6 +59,7 @@ class BaseHTMLStemmer(Stemmer):
 		text = ''.join(soup.findAll(text=True))
 		text = ' '.join(text.split())
 		self.text = text
+		return self
 
 	def stem_text(self):
 		"""
