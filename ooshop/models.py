@@ -98,7 +98,10 @@ class History(models.Model):
 	unit_price = models.FloatField()
 	shipping_area = models.ForeignKey(ShippingArea, null = True)
 	availability = models.BooleanField(default = True)
-	html = models.TextField(max_length=9999999999999999999999, null = True) # html of product 
+	html = models.TextField(max_length=9999999999999999999999, null = True) # html of product
+
+	class Meta:
+		ordering = ['product', '-created']
 
 class Promotion(models.Model):
 	SIMPLE = 's'

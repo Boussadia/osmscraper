@@ -221,12 +221,8 @@ class BaseCartController(object):
 						self.price = self.price + quantity*history[0].price
 
 		# Dealing with multi promotion:
-		# print state
-		# print requirements
 		min_state, min_price = self.get_min_state(state, requirements)
 		self.price = self.price + min_price
-		# print min_state
-		# print min_price
 
 		self.save()
 
@@ -285,7 +281,7 @@ class BaseCartController(object):
 		"""
 		# First get all similarities form tfidf products
 		# building args dictionnary to apply to filter, you gotta love Python :D
-		args ={
+		kwargs ={
 			'query_name': base_osm,
 			'index_name': self.osm,
 			base_osm+'_product': base_product,
@@ -294,7 +290,7 @@ class BaseCartController(object):
 		}
 		base_tags = base_product.tag.all() # Base products tags
 		base_brand = [ bm.dalliz_brand for bm in base_product.brand.brandmatch_set.all()]
-		sims = base_product.productsimilarity_set.filter(**args) # Getting similarities
+		sims = base_product.productsimilarity_set.filter(**kwargs) # Getting similarities
 		# Computing scores
 		scores = [ 
 				( 

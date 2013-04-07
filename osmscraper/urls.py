@@ -21,6 +21,11 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
+    # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
+    # Include api urls
+    url(r'^api/', include('api.urls')),
+
     # Tags creator app
     url(r'^backend/tags/(?P<id_category>(\d+))(/(?P<tags>(.+)))?/?$', 'tags.views.tags'),
     url(r'^backend/tags/autocomplete/?$', 'tags.views.autocomplete'),
@@ -73,28 +78,14 @@ urlpatterns = patterns('',
     
     url(r'^.*$', RedirectView.as_view(url='/')),#redirect_to, {'url': '/'}),
     
-    url(r'^produit/(?P<name>((\w)+-?)+)/?$','dalliz.views.product'),
-    url(r'^categorie/(?P<sub_category>((\w)+-?)+)/?$','dalliz.views.category'),
-    url(r'^panier/?$','dalliz.views.cart'),
-    url(r'^add/cart/?$','dalliz.views.add_to_cart'),
-    url(r'^remove/cart/?$','dalliz.views.remove_from_cart'),
-    url(r'^login/?$','dalliz.views.login'),
-    url(r'^logout/?$','dalliz.views.logout'),
-    url(r'^compte/?$','dalliz.views.account'),
-
-    # # Telemarket/Monoprix products validation
-    # url(r'^telemarket_monoprix/products/?$', 'telemarket_monoprix.views.index'),
-    # url(r'^telemarket_monoprix/products/suggestions/(?P<id>\d+)/?$', 'telemarket_monoprix.views.suggestions'),
-    # url(r'^telemarket_monoprix/products/next/(?P<id>\d+)/?$', 'telemarket_monoprix.views.next'),
-    # url(r'^telemarket_monoprix/products/previous/(?P<id>\d+)/?$', 'telemarket_monoprix.views.previous'),
-    # url(r'^telemarket_monoprix/products/cancel/(?P<id>\d+)/?$', 'telemarket_monoprix.views.cancel'),
-
-    # # Ooshop/Monoprix products validation
-    # url(r'^ooshop_monoprix/products/?$', 'ooshop_monoprix.views.index'),
-    # url(r'^ooshop_monoprix/products/suggestions/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.suggestions'),
-    # url(r'^ooshop_monoprix/products/next/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.next'),
-    # url(r'^ooshop_monoprix/products/previous/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.previous'),
-    # url(r'^ooshop_monoprix/products/cancel/(?P<id>[a-zA-Z0-9-]+)/?$', 'ooshop_monoprix.views.cancel'),
+    # url(r'^produit/(?P<name>((\w)+-?)+)/?$','dalliz.views.product'),
+    # url(r'^categorie/(?P<sub_category>((\w)+-?)+)/?$','dalliz.views.category'),
+    # url(r'^panier/?$','dalliz.views.cart'),
+    # url(r'^add/cart/?$','dalliz.views.add_to_cart'),
+    # url(r'^remove/cart/?$','dalliz.views.remove_from_cart'),
+    # url(r'^login/?$','dalliz.views.login'),
+    # url(r'^logout/?$','dalliz.views.logout'),
+    # url(r'^compte/?$','dalliz.views.account'),
 )
 
 

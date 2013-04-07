@@ -108,7 +108,10 @@ class History(models.Model):
 	unit_price = models.FloatField(null = True)
 	store = models.ForeignKey(Store, null = True)
 	availability = models.BooleanField(default = True)
-	html = models.TextField(max_length=9999999999999999999999, null = True) # html of product 
+	html = models.TextField(max_length=9999999999999999999999, null = True) # html of product
+
+	class Meta:
+		ordering = ['product', '-created']
 
 class Promotion(models.Model):
 	SIMPLE = 's'
@@ -133,6 +136,7 @@ class Promotion(models.Model):
 
 	class Meta:
 		unique_together = ("reference", "store")
+		ordering = ['-end']
 
 class Cart(models.Model):
 	osm = models.CharField(max_length=9999, default = 'monoprix')

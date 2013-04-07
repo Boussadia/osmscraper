@@ -14,6 +14,7 @@ django-cachebuster==0.2.1
 django-celery==3.0.10
 django-pylibmc-sasl==0.2.4
 django-storages==1.1.4
+djangorestframework==2.2.5
 gensim==0.8.6
 gunicorn==0.14.6
 httplib2==0.7.7

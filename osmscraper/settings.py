@@ -147,6 +147,9 @@ INSTALLED_APPS = (
     'matcher',
     'tags',
     'cart',
+    'serializer',
+    'rest_framework',
+    'api',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -240,3 +243,7 @@ def get_cache():
     }
 
 CACHES = get_cache()
+
+# Rest API framework
+
+# DEFAULT_RENDERER_CLASSES = ( 'serializer.category.UnicodeJSONRenderer',)

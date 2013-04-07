@@ -102,6 +102,9 @@ class History(models.Model):
 	availability = models.BooleanField(default = True)
 	html = models.TextField(max_length=9999999999999999999999, null = True) # html of product 
 
+	class Meta:
+		ordering = ['product', '-created']
+
 class Promotion(models.Model):
 	SIMPLE = 's'
 	MULTI = 'm'
