@@ -208,7 +208,7 @@ class CategoryMatching(CategorySimple):
 	"""
 		Get recomandation for product
 	"""
-	# renderer_classes = BaseAPIView.renderer_classes + [ProductRecomandationCSVRenderer]
+	renderer_classes = BaseAPIView.renderer_classes + [ProductRecomandationCSVRenderer]
 
 	@osm
 	def get(self, request, id_category, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
@@ -246,7 +246,6 @@ class CategoryMatching(CategorySimple):
 				Serializer_class = globals()[serializer_class_name]
 				serialized_product = Serializer_class(product, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}}).data
 				matching = product.productmatch_set.all()
-				print matching
 				if len(matching)>0:
 					matching = matching[0]
 					for osm in AVAILABLE_OSMS:
