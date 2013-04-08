@@ -49,7 +49,7 @@ class ProductSerializer(serializers.ModelSerializer):
 		depth = 1
 
 class HistorySerializer(serializers.ModelSerializer):
-	description = DescriptionSerializer(source = 'product')
+	# description = DescriptionSerializer(source = 'product')
 	package = PackageSerializer(source = 'product')
 	brand = DallizBrandField(source = 'product.brand')
 	reference = serializers.CharField(source = 'product.reference')
