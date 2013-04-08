@@ -147,7 +147,6 @@ INSTALLED_APPS = (
     'matcher',
     'tags',
     'cart',
-    'serializer',
     'rest_framework',
     'api',
     # Uncomment the next line to enable the admin:

@@ -5,16 +5,24 @@ from __future__ import absolute_import # Import because of modules names
 
 from rest_framework.settings import api_settings
 from rest_framework.renderers import XMLRenderer
-from api.renderer import ProductsCSVRenderer
+from api.renderer import ProductsCSVRenderer, ProductRecomandationCSVRenderer
 
 from ooshop.models import History as OoshopHistory, Product as OoshopProduct
 from monoprix.models import History as MonoprixHistory, Product as MonoprixProduct
 from auchan.models import History as AuchanHistory, Product as AuchanProduct
 
-from serializer.dalliz.serializer import CategorySerializer
-from serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer, HistorySerializer as AuchanHistorySerializer
-from serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer, HistorySerializer as MonoprixHistorySerializer
-from serializer.ooshop.serializer import ProductSerializer as OoshopProductSerializer, HistorySerializer as OoshopHistorySerializer
+from api.serializer.dalliz.serializer import CategorySerializer
+from api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer
+from api.serializer.auchan.serializer import HistorySerializer as AuchanHistorySerializer
+from api.serializer.auchan.serializer import RecomandationSerializer as AuchanRecomandationSerializer
+from api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer
+from api.serializer.monoprix.serializer import HistorySerializer as MonoprixHistorySerializer
+from api.serializer.monoprix.serializer import RecomandationSerializer as MonoprixRecomandationSerializer
+from api.serializer.ooshop.serializer import ProductSerializer as OoshopProductSerializer
+from api.serializer.ooshop.serializer import HistorySerializer as OoshopHistorySerializer
+from api.serializer.ooshop.serializer import RecomandationSerializer as OoshopRecomandationSerializer
+
+from cart.base.basecartcontroller import BaseCartController
 
 from dalliz.models import Category
 
@@ -233,9 +241,44 @@ class Product(BaseAPIView):
 		else:
 			return {'product':serialized.data}
 
-	def get_queryset(self):
-		print 'haha'
-		return []
+class ProductRecomandation(Product):
+	"""
+		Get recomandation for product
+	"""
+	renderer_classes = BaseAPIView.renderer_classes + [ProductRecomandationCSVRenderer]
+
+	@osm
+	def get(self, request, reference, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+		product = self.get_object(reference, osm_name)
+		global_keys = globals().keys()
+		serialized = None
+		recomandations = {}
+		osm_recomandation = [ osm['name'] for osm in AVAILABLE_OSMS if osm['name'] != osm_name]
+		# print osm_recomandation
+		# Processing matching
+		matching = product.productmatch_set.all()
+		if len(matching)>0:
+			matching = matching[0]
+			for osm in AVAILABLE_OSMS:
+				match = getattr(matching, '%s_product'%osm['name'])
+				if match is not None and osm['name'] != osm_name and osm['name'] in osm_recomandation:
+					serializer_class_name = '%sRecomandationSerializer'%osm['name'].capitalize()
+					Serializer = globals()[serializer_class_name]
+					recomandations[osm['name']] = [ Serializer(match, context = { 'matching': True}).data]
+					osm_recomandation.remove(osm['name'])
+
+		for osm in osm_recomandation:
+			if osm != osm_name:
+				serializer_class_name = '%sRecomandationSerializer'%osm.capitalize()
+				Serializer = globals()[serializer_class_name]
+				recomandations[osm] = [ Serializer(p, context = {'score': score, 'matching': False}).data for p, score in BaseCartController.similarities('auchan', product, osm_name)]
+
+		# Serializing product
+		serializer_class_name = '%sRecomandationSerializer'%osm_name.capitalize()
+		Serializer = globals()[serializer_class_name]
+		serialized = Serializer(product)
+
+		return {'recomandations':recomandations, 'product': serialized.data}
 
 
 

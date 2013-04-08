@@ -276,6 +276,10 @@ class BaseCartController(object):
 		self.cart.products.clear()
 
 	def get_similarites(self, base_product, base_osm):
+		return similarities(self.osm, base_product, base_osm)
+
+	@staticmethod
+	def similarities(index_name, base_product, base_osm):
 		"""
 			With a product from another osm, get list of similarities.
 		"""
@@ -283,10 +287,10 @@ class BaseCartController(object):
 		# building args dictionnary to apply to filter, you gotta love Python :D
 		kwargs ={
 			'query_name': base_osm,
-			'index_name': self.osm,
+			'index_name': index_name,
 			base_osm+'_product': base_product,
-			# self.osm+'_product__brand__brandmatch__dalliz_brand__in': base_product.brand.brandmatch_set.all(),
-			self.osm+'_product__dalliz_category__in': base_product.dalliz_category.all(),
+			# index_name+'_product__brand__brandmatch__dalliz_brand__in': base_product.brand.brandmatch_set.all(),
+			index_name+'_product__dalliz_category__in': base_product.dalliz_category.all(),
 		}
 		base_tags = base_product.tag.all() # Base products tags
 		base_brand = [ bm.dalliz_brand for bm in base_product.brand.brandmatch_set.all()]
@@ -294,9 +298,9 @@ class BaseCartController(object):
 		# Computing scores
 		scores = [ 
 				( 
-					getattr(sim, self.osm+'_product'),
-					10*sum([ 1 for tag in getattr(sim,self.osm+'_product').tag.all() if tag in base_tags ]) # Tags score
-					+2*sum([ sum([2*(bm.dalliz_brand == dalliz_brand) + 1*( (bm.dalliz_brand != dalliz_brand) and bm.dalliz_brand.is_mdd == dalliz_brand.is_mdd) for dalliz_brand in base_brand]) for bm in getattr(sim,self.osm+'_product').brand.brandmatch_set.all() ]) # brand score
+					getattr(sim, index_name+'_product'),
+					10*sum([ 1 for tag in getattr(sim,index_name+'_product').tag.all() if tag in base_tags ]) # Tags score
+					+2*sum([ sum([2*(bm.dalliz_brand == dalliz_brand) + 1*( (bm.dalliz_brand != dalliz_brand) and bm.dalliz_brand.is_mdd == dalliz_brand.is_mdd) for dalliz_brand in base_brand]) for bm in getattr(sim,index_name+'_product').brand.brandmatch_set.all() ]) # brand score
 					+ sim.score
 				) 
 
