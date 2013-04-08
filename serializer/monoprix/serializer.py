@@ -8,10 +8,32 @@ from rest_framework import serializers
 from monoprix.models import Product, History
 from serializer.dalliz.serializer import DallizBrandField
 
-class HistoryField(serializers.ModelSerializer):
+class DescriptionSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = History
-		exclude = ('html','product')
+		model = Product
+		fields = ('description', 'ingredients', 'valeur_nutritionnelle', 'conservation', 'conseil', 'composition')
+
+class PackageSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Product
+		fields = ('package_quantity', 'package_measure', 'package_unit')
+
+class HistoryField(serializers.RelatedField):
+	def to_native(self, history_set):
+		osm_location = self.context['osm']['location']
+		if osm_location is not None:
+			histories = history_set.filter(store__id = int(osm_location))
+		else:
+			histories = history_set.filter(store__isnull = True)
+		return [
+			{
+				'created': h.created,
+				'price': h.price,
+				'unit_price': h.price,
+				'availability': h.availability,
+				'store': osm_location
+			}
+			for h in histories]
 
 class PriceField(serializers.RelatedField):
 	def to_native(self, history_set):
@@ -37,26 +59,29 @@ class PackageField(serializers.RelatedField):
 		}
 		return package
 
-class ProductSimpleSerializer(serializers.ModelSerializer):
+# class ProductSerializer(serializers.ModelSerializer):
+# 	brand = DallizBrandField()
+# 	price = PriceField(source='history_set')
+# 	promotions = serializers.PrimaryKeyRelatedField(many=True, source='promotion_set')
+# 	package = PackageField(source='__dict__')
+
+# 	class Meta:
+# 		model = Product
+# 		exclude = ('stemmed_text', 'html', 'has_match', 'exists', 'id', 'comment', 'categories', 'dalliz_category', 'tag', 'created', 'updated', 'package_quantity', 'package_measure', 'package_unit', 'description', 'ingredients', 'valeur_nutritionnelle', 'conservation', 'conseil', 'composition')
+# 		depth = 1
+
+class ProductSerializer(serializers.ModelSerializer):
 	brand = DallizBrandField()
-	price = PriceField(source='history_set')
+	history = HistoryField(source='history_set')
+	package = PackageSerializer(source = '*')
 	promotions = serializers.PrimaryKeyRelatedField(many=True, source='promotion_set')
-	package = PackageField(source='__dict__')
+	description = DescriptionSerializer(source = '*')
+	osm_url = serializers.URLField(source = 'url')
 
 	class Meta:
 		model = Product
-		exclude = ('stemmed_text', 'html', 'has_match', 'exists', 'id', 'comment', 'categories', 'dalliz_category', 'tag', 'created', 'updated', 'package_quantity', 'package_measure', 'package_unit', 'description', 'ingredients', 'valeur_nutritionnelle', 'conservation', 'conseil', 'composition')
+		exclude = ('url', 'package_quantity', 'package_measure', 'package_unit', 'description', 'ingredients', 'valeur_nutritionnelle', 'conservation', 'conseil', 'composition', 'stemmed_text', 'html', 'has_match', 'exists', 'id', 'comment', 'categories', 'dalliz_category', 'tag', 'created', 'updated')
 		depth = 1
-
-class DescriptionSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Product
-		fields = ('description', 'ingredients', 'valeur_nutritionnelle', 'conservation', 'conseil', 'composition')
-
-class PackageSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Product
-		fields = ('package_quantity', 'package_measure', 'package_unit')
 
 class HistorySerializer(serializers.ModelSerializer):
 	description = DescriptionSerializer(source = 'product')

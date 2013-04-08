@@ -8,21 +8,6 @@ from rest_framework import serializers
 from auchan.models import Product, History
 from serializer.dalliz.serializer import DallizBrandField
 
-class HistoryField(serializers.ModelSerializer):
-	class Meta:
-		model = History
-		exclude = ('html','product')
-
-class ProductSimpleSerializer(serializers.ModelSerializer):
-	brand = DallizBrandField()
-	history = HistoryField(many=True, source='history_set')
-	promotions = serializers.PrimaryKeyRelatedField(many=True, source='promotion_set')
-
-	class Meta:
-		model = Product
-		exclude = ('stemmed_text', 'html', 'has_match', 'exists', 'id', 'comment', 'categories', 'dalliz_category', 'tag', 'created', 'updated')
-		depth = 1
-
 class DescriptionSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Product
@@ -32,6 +17,36 @@ class PackageSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Product
 		fields = ('package_quantity', 'package_measure', 'package_unit')
+
+class HistoryField(serializers.RelatedField):
+	def to_native(self, history_set):
+		osm_location = self.context['osm']['location']
+		if osm_location is not None:
+			histories = history_set.filter(shipping_area__id = int(osm_location))
+		else:
+			histories = history_set.filter(shipping_area__isnull = True)
+		return [
+			{
+				'created': h.created,
+				'price': h.price,
+				'unit_price': h.price,
+				'availability': h.availability,
+				'shipping_area': osm_location
+			}
+			for h in histories]
+
+class ProductSerializer(serializers.ModelSerializer):
+	brand = DallizBrandField()
+	history = HistoryField(source='history_set')
+	package = PackageSerializer(source = '*')
+	promotions = serializers.PrimaryKeyRelatedField(many=True, source='promotion_set')
+	description = DescriptionSerializer(source = '*')
+	osm_url = serializers.URLField(source = 'url')
+
+	class Meta:
+		model = Product
+		exclude = ('url', 'avantages', 'conservation', 'valeur_nutritionnelle', 'pratique', 'ingredients', 'complement','package_quantity', 'package_measure', 'package_unit', 'stemmed_text', 'html', 'has_match', 'exists', 'id', 'comment', 'categories', 'dalliz_category', 'tag', 'created', 'updated')
+		depth = 1
 
 class HistorySerializer(serializers.ModelSerializer):
 	description = DescriptionSerializer(source = 'product')
