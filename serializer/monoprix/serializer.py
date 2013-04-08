@@ -22,9 +22,9 @@ class HistoryField(serializers.RelatedField):
 	def to_native(self, history_set):
 		osm_location = self.context['osm']['location']
 		if osm_location is not None:
-			histories = history_set.filter(store__id = int(osm_location))
+			histories = history_set.filter(store__id = int(osm_location))[:5]
 		else:
-			histories = history_set.filter(store__isnull = True)
+			histories = history_set.filter(store__isnull = True)[:5]
 		return [
 			{
 				'created': h.created,
@@ -58,17 +58,6 @@ class PackageField(serializers.RelatedField):
 			'package_unit': value['package_unit'],
 		}
 		return package
-
-# class ProductSerializer(serializers.ModelSerializer):
-# 	brand = DallizBrandField()
-# 	price = PriceField(source='history_set')
-# 	promotions = serializers.PrimaryKeyRelatedField(many=True, source='promotion_set')
-# 	package = PackageField(source='__dict__')
-
-# 	class Meta:
-# 		model = Product
-# 		exclude = ('stemmed_text', 'html', 'has_match', 'exists', 'id', 'comment', 'categories', 'dalliz_category', 'tag', 'created', 'updated', 'package_quantity', 'package_measure', 'package_unit', 'description', 'ingredients', 'valeur_nutritionnelle', 'conservation', 'conseil', 'composition')
-# 		depth = 1
 
 class ProductSerializer(serializers.ModelSerializer):
 	brand = DallizBrandField()

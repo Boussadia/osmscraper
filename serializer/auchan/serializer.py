@@ -22,9 +22,9 @@ class HistoryField(serializers.RelatedField):
 	def to_native(self, history_set):
 		osm_location = self.context['osm']['location']
 		if osm_location is not None:
-			histories = history_set.filter(shipping_area__id = int(osm_location))
+			histories = history_set.filter(shipping_area__id = int(osm_location))[:5]
 		else:
-			histories = history_set.filter(shipping_area__isnull = True)
+			histories = history_set.filter(shipping_area__isnull = True)[:5]
 		return [
 			{
 				'created': h.created,

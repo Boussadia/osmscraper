@@ -3,6 +3,10 @@
 
 from __future__ import absolute_import # Import because of modules names
 
+from rest_framework.settings import api_settings
+from rest_framework.renderers import XMLRenderer
+from api.renderer import ProductsCSVRenderer
+
 from ooshop.models import History as OoshopHistory, Product as OoshopProduct
 from monoprix.models import History as MonoprixHistory, Product as MonoprixProduct
 from auchan.models import History as AuchanHistory, Product as AuchanProduct
@@ -76,7 +80,7 @@ class BaseAPIView(APIView):
     """
 	    Base Api view for dalliz api.
     """
-    pass
+    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES + [XMLRenderer]
 
 class CategoryAll(BaseAPIView):
 	"""
@@ -118,39 +122,75 @@ class CategoryProducts(CategorySimple):
 		Get products for a category
 	"""
 	TOP_PRODUCTS_COUNT = 10
+	renderer_classes = BaseAPIView.renderer_classes + [ProductsCSVRenderer]
 	@osm
 	def get(self, request, id_category, key, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+		# category = self.get_object(id_category)
+		# serialized = None
+		# global_keys = globals().keys()
+		# history_class_name = '%sHistory'%osm_name.capitalize()
+		# if history_class_name in global_keys:
+		# 	History = globals()[history_class_name]
+		# 	kwargs = {
+		# 		'product__exists':True,
+		# 		'product__dalliz_category': category
+		# 	}
+
+		# 	if osm_name == 'monoprix':
+		# 		if osm_location is None:
+		# 			kwargs['store__isnull'] = True
+		# 		else:
+		# 			kwargs['store__id'] = osm_location
+		# 	else:
+		# 		if osm_location is None:
+		# 			kwargs['shipping_area__isnull'] = True
+		# 		else:
+		# 			kwargs['shipping_area__id'] = osm_location
+
+		# 	histories = History.objects.filter(**kwargs).distinct('product')
+		# 	if key == 'top':
+		# 		histories = histories[:CategoryProducts.TOP_PRODUCTS_COUNT]
+
+		# serializer_class_name = '%sHistorySerializer'%osm_name.capitalize()
+		
+		# if serializer_class_name in global_keys:
+		# 	Serializer_class = globals()[serializer_class_name]
+		# 	serialized = Serializer_class(histories, many = True)
+		# if serialized is None:
+		# 	return Response(404, status=status.HTTP_400_BAD_REQUEST)
+		# else:
+		# 	return {'products':serialized.data}
 		category = self.get_object(id_category)
 		serialized = None
 		global_keys = globals().keys()
-		history_class_name = '%sHistory'%osm_name.capitalize()
-		if history_class_name in global_keys:
-			History = globals()[history_class_name]
+		product_class_name = '%sProduct'%osm_name.capitalize()
+		if product_class_name in global_keys:
+			Product = globals()[product_class_name]
 			kwargs = {
-				'product__exists':True,
-				'product__dalliz_category': category
+				'exists':True,
+				'dalliz_category': category
 			}
 
 			if osm_name == 'monoprix':
 				if osm_location is None:
-					kwargs['store__isnull'] = True
+					kwargs['history__store__isnull'] = True
 				else:
-					kwargs['store__id'] = osm_location
+					kwargs['history__store__id'] = osm_location
 			else:
 				if osm_location is None:
-					kwargs['shipping_area__isnull'] = True
+					kwargs['history__shipping_area__isnull'] = True
 				else:
-					kwargs['shipping_area__id'] = osm_location
+					kwargs['history__shipping_area__id'] = osm_location
 
-			histories = History.objects.filter(**kwargs).distinct('product')
+			products = Product.objects.filter(**kwargs).distinct('reference')
 			if key == 'top':
-				histories = histories[:CategoryProducts.TOP_PRODUCTS_COUNT]
+				products = products[:CategoryProducts.TOP_PRODUCTS_COUNT]
 
-		serializer_class_name = '%sHistorySerializer'%osm_name.capitalize()
+		serializer_class_name = '%sProductSerializer'%osm_name.capitalize()
 		
 		if serializer_class_name in global_keys:
 			Serializer_class = globals()[serializer_class_name]
-			serialized = Serializer_class(histories, many = True)
+			serialized = Serializer_class(products, many = True, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}})
 		if serialized is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
 		else:
