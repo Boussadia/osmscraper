@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'categories/all/?$', views.CategoryAll.as_view()),
     url(r'categories/id/(?P<id_category>(\d+))/subs/?$', views.CategorySimple.as_view()),
     url(r'categories/id/(?P<id_category>(\d+))/products/(?P<key>all|top)/?$', views.CategoryProducts.as_view()),
+    url(r'categories/id/(?P<id_category>(\d+))/products/matching/?$', views.CategoryMatching.as_view()),
 
     # Products
     url(r'product/reference/(?P<reference>(\d+))/?$', views.Product.as_view()),

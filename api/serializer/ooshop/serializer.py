@@ -98,7 +98,7 @@ class MatchField(serializers.BooleanField):
 		if 'matching' in self.context:
 			return self.context['matching']
 		else:
-			return False
+			return None
 
 class RecomandationSerializer(serializers.ModelSerializer):
 	"""
