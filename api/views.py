@@ -299,7 +299,7 @@ class ProductRecommendation(Product):
 		serialized = None
 		recommendations = {}
 		osm_recommendation = [ osm['name'] for osm in AVAILABLE_OSMS if osm['name'] != osm_name]
-		# print osm_recommendation
+
 		# Processing matching
 		matching = product.productmatch_set.all()
 		if len(matching)>0:
@@ -312,11 +312,13 @@ class ProductRecommendation(Product):
 					recommendations[osm['name']] = [ Serializer(match, context = { 'matching': True}).data]
 					osm_recommendation.remove(osm['name'])
 
+		# Processing recommendation
 		for osm in osm_recommendation:
 			if osm != osm_name:
 				serializer_class_name = '%sRecommendationSerializer'%osm.capitalize()
 				Serializer = globals()[serializer_class_name]
-				recommendations[osm] = [ Serializer(p, context = {'score': score, 'matching': False}).data for p, score in BaseCartController.similarities(osm, product, osm_name)]
+				similarities = BaseCartController.similarities(osm, product, osm_name)
+				recommendations[osm] = [ Serializer(p, context = {'score': score, 'matching': False}).data for p, score in similarities]
 
 		# Serializing product
 		serializer_class_name = '%sRecommendationSerializer'%osm_name.capitalize()

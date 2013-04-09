@@ -294,7 +294,8 @@ class BaseCartController(object):
 		}
 		base_tags = base_product.tag.all() # Base products tags
 		base_brand = [ bm.dalliz_brand for bm in base_product.brand.brandmatch_set.all()]
-		sims = base_product.productsimilarity_set.filter(**kwargs) # Getting similarities
+		sims = base_product.productsimilarity_set.filter(**kwargs).distinct(index_name+'_product') # Getting similarities
+		
 		# Computing scores
 		scores = [ 
 				( 
