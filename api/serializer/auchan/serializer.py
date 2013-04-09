@@ -76,7 +76,7 @@ class MatchField(serializers.BooleanField):
 		else:
 			return None
 
-class RecomandationSerializer(serializers.ModelSerializer):
+class RecommendationSerializer(serializers.ModelSerializer):
 	"""
 
 	"""

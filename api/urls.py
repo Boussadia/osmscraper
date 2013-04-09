@@ -14,5 +14,5 @@ urlpatterns = patterns('',
 
     # Products
     url(r'product/reference/(?P<reference>(\d+))/?$', views.Product.as_view()),
-    url(r'product/reference/(?P<reference>(\d+))/recommendations/?$', views.ProductRecomandation.as_view()),
+    url(r'product/reference/(?P<reference>(\d+))/recommendations/?$', views.ProductRecommendation.as_view()),
 )

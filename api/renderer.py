@@ -44,7 +44,7 @@ class ProductsCSVRenderer(BaseRenderer):
 
         return csv_buffer.getvalue()
 
-class ProductRecomandationCSVRenderer(BaseRenderer):
+class ProductRecommendationCSVRenderer(BaseRenderer):
     """
     Renderer which serializes to CSV
     """
@@ -67,6 +67,7 @@ class ProductRecomandationCSVRenderer(BaseRenderer):
             elem.encode('utf-8') if isinstance(elem, basestring) else elem
             for elem in row
             ])
+        print csv_buffer
 
         return csv_buffer.getvalue()
 
@@ -92,7 +93,7 @@ class ProductRecomandationCSVRenderer(BaseRenderer):
                                         },
                                     'products' : [product[osm]]
                                 }
-                            renderer = ProductRecomandationCSVRenderer()
+                            renderer = ProductRecommendationCSVRenderer()
                             rendered = renderer.render_table(data_nested, media_type, renderer_context = {'nested': False})
                             table.append(rendered[0])
 
