@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import # Import because of modules names
 
 import re
 from urlparse import urlparse, parse_qs, urlunparse
@@ -454,3 +455,15 @@ class MonoprixScraper(BaseScraper):
 			'type': 'global',
 			'delay': 3600 # seconds
 		}
+
+	def fix_promotions(self):
+		from monoprix.models import Promotion
+		promotions = Promotion.objects.all().order_by('-end')
+		for p in promotions:
+			data = self.get_product_info(p.url)
+			if ('is_promotion' in data) or ('is_promotion' in data and data['is_promotion'] == False):
+				p.end = (p.end-timedelta(days = 2000*365.25)).replace(year = 2013)
+				p.start = (p.start-timedelta(days = 2000*365.25)).replace(year = 2013)
+				p.save()
+				print 'Busted error : '+p.url
+
