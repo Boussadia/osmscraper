@@ -246,7 +246,9 @@ class MonoprixParser(BaseParser):
 		regexp = '(\d{1,2})-(\d{1,2})-(\d{1,2})'
 		[date_start, date_end] = re.findall(regexp, textContent)
 		promotion['date_start'] = dict(zip(['day', 'month', 'year'], date_start))
+		promotion['date_start']['year'] = '20'+promotion['date_start']['year']
 		promotion['date_end'] = dict(zip(['day', 'month', 'year'], date_end))
+		promotion['date_end']['year'] = '20'+promotion['date_end']['year']
 
 		# Is it a simple or multi promotion?
 		name = product_html.find('div', {'class': 'SubBox06'}).find_all('p')[1].find('span').text
@@ -304,6 +306,8 @@ class MonoprixParser(BaseParser):
 		date_block = promotion_html.find('p', {'class':'offrePromo'})
 		results = re.findall(r'(\d{1,2})-(\d{1,2})-(\d{1,2})', date_block.text)
 		promotion.update(dict(zip(['date_start', 'date_end'], [ dict(zip(['day','month', 'year'], r)) for r in results])))
+		promotion['date_start']['year'] = '20'+promotion['date_start']['year']
+		promotion['date_end']['year'] = '20'+promotion['date_end']['year']
 
 		# Is this a multi promotion?
 		promotion_infos = promotion_html.find('div', {'class': 'promo'})
