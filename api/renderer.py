@@ -30,7 +30,13 @@ class ProductsCSVRenderer(BaseRenderer):
         if 'products' in data:
             for product in data['products']:
                 row = [product['brand']['name'], product['name'], product['osm_url'] ]
-                [ row.extend([h['created'] ,h['price']]) for h in product['history'] ]
+                for h in product['history']:
+                    print h
+                    if h['is_promotion']:
+                        row.extend(['PROMOTION', h['end'] ,h['price']])
+                    else:
+                        row.extend(['PRODUIT', h['created'] ,h['price']])
+                        
                 table.append(row)
 
         csv_buffer = StringIO()

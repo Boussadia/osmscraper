@@ -124,8 +124,8 @@ class Promotion(models.Model):
 	before = models.FloatField() # Price before any promotion
 	after = models.FloatField() # Price during promotion
 	unit_price = models.FloatField(null=True)
-	start = models.DateField(null = True)
-	end = models.DateField(null = True)
+	start = models.DateTimeField(null = True)
+	end = models.DateTimeField(null = True)
 	shipping_area = models.ForeignKey(ShippingArea, null = True)
 	availability = models.BooleanField(default = True)
 	html = models.TextField(max_length=9999999999999999999999, null = True) # html of product 

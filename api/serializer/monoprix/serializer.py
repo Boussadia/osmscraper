@@ -5,8 +5,14 @@ from __future__ import absolute_import # Import because of modules names
 
 from rest_framework import serializers
 
-from monoprix.models import Product, History
+from monoprix.models import Product, History, Promotion
 from api.serializer.dalliz.serializer import DallizBrandField
+
+def merge_history_promotion(history, promotion, limit = 5):
+	"""
+		This function merges 2 dict one representing a promotion, one representing a history, both have to be ordered.
+	"""
+	return sorted(history+promotion, key=(lambda item: item['end'] if 'end' in item else item['created']))[:limit][::-1]
 
 class DescriptionSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -19,14 +25,19 @@ class PackageSerializer(serializers.ModelSerializer):
 		fields = ('package_quantity', 'package_measure', 'package_unit')
 
 class HistoryField(serializers.RelatedField):
-	def to_native(self, history_set):
+	def to_native(self, product):
+		history_set = product.history_set
 		osm_location = self.context['osm']['location']
+		time_filter = self.context['time']
 		if osm_location is not None:
 			histories = history_set.filter(store__id = int(osm_location))[:5]
+			promotions = product.promotion_set.filter(type = Promotion.SIMPLE, store__id = int(osm_location))[:5]
 		else:
 			histories = history_set.filter(store__isnull = True)[:5]
-		return [
+			promotions = product.promotion_set.filter(type = Promotion.SIMPLE, store__isnull = True)[:5]
+		history_data = [
 			{
+				'is_promotion': False,
 				'created': h.created,
 				'price': h.price,
 				'unit_price': h.price,
@@ -34,6 +45,21 @@ class HistoryField(serializers.RelatedField):
 				'store': osm_location
 			}
 			for h in histories]
+
+		promotion_data = [{
+			'is_promotion': True,
+			'start': p.start,
+			'end': p.end,
+			'before': p.before,
+			'price': p.after,
+			'unit_price': p.unit_price,
+			'availability': p.availability,
+			'store': osm_location
+		} for p in promotions]
+
+
+
+		return merge_history_promotion(history_data, promotion_data)
 
 class PriceField(serializers.RelatedField):
 	def to_native(self, history_set):
@@ -61,7 +87,7 @@ class PackageField(serializers.RelatedField):
 
 class ProductSerializer(serializers.ModelSerializer):
 	brand = DallizBrandField()
-	history = HistoryField(source='history_set')
+	history = HistoryField(source='*')
 	package = PackageSerializer(source = '*')
 	promotions = serializers.PrimaryKeyRelatedField(many=True, source='promotion_set')
 	description = DescriptionSerializer(source = '*')

@@ -22,13 +22,10 @@ from ooshop.models import History as OoshopHistory, Product as OoshopProduct, Pr
 from api.renderer import ProductsCSVRenderer, ProductRecommendationCSVRenderer
 from api.serializer.dalliz.serializer import CategorySerializer
 from api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer
-from api.serializer.auchan.serializer import HistorySerializer as AuchanHistorySerializer
 from api.serializer.auchan.serializer import RecommendationSerializer as AuchanRecommendationSerializer
 from api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer
-from api.serializer.monoprix.serializer import HistorySerializer as MonoprixHistorySerializer
 from api.serializer.monoprix.serializer import RecommendationSerializer as MonoprixRecommendationSerializer
 from api.serializer.ooshop.serializer import ProductSerializer as OoshopProductSerializer
-from api.serializer.ooshop.serializer import HistorySerializer as OoshopHistorySerializer
 from api.serializer.ooshop.serializer import RecommendationSerializer as OoshopRecommendationSerializer
 
 from cart.base.basecartcontroller import BaseCartController
@@ -137,16 +134,36 @@ class CategoryProducts(CategorySimple):
 		category = self.get_object(id_category)
 		serialized = None
 		global_keys = globals().keys()
-		# Getting promotions
-		promotion_class_name = '%sPromotion'%osm_name.capitalize()
-		if promotion_class_name in global_keys:
-			Promotion = globals()[promotion_class_name]
-			kwargs = {
-				'end__gte': datetime.now(),
-				'content__dalliz_category': category,
-			}
-			promotions = Promotion.objects.filter(**kwargs)
-			print promotions
+
+		# Settings location kwargs :
+		kwargs_location_history = {}
+		kwargs_location_promotion = {}
+		if osm_name == 'monoprix':
+			if osm_location is None:
+				kwargs_location_history['history__store__isnull'] = True
+				kwargs_location_promotion['store__isnull'] = True
+			else:
+				kwargs_location_history['history__store__id'] = osm_location
+				kwargs_location_promotion['store__id'] = osm_location
+		else:
+			if osm_location is None:
+				kwargs_location_history['history__shipping_area__isnull'] = True
+				kwargs_location_promotion['shipping_area__isnull'] = True
+			else:
+				kwargs_location_history['history__shipping_area__id'] = osm_location
+				kwargs_location_promotion['shipping_area__id'] = osm_location
+
+		# # Getting promotions
+		# promotion_class_name = '%sPromotion'%osm_name.capitalize()
+		# if promotion_class_name in global_keys:
+		# 	Promotion = globals()[promotion_class_name]
+		# 	kwargs = {
+		# 		'end__gte': datetime.now(),
+		# 		'content__dalliz_category': category,
+		# 	}
+		# 	kwargs.update(kwargs_location_promotion) # adding location filter
+		# 	promotions = Promotion.objects.filter(**kwargs)
+		# 	print promotions[0].type == Promotion.SIMPLE
 
 		# Getting products without simple promotion
 		product_class_name = '%sProduct'%osm_name.capitalize()
@@ -156,17 +173,8 @@ class CategoryProducts(CategorySimple):
 				'exists':True,
 				'dalliz_category': category
 			}
+			kwargs.update(kwargs_location_history) # adding location filter
 
-			if osm_name == 'monoprix':
-				if osm_location is None:
-					kwargs['history__store__isnull'] = True
-				else:
-					kwargs['history__store__id'] = osm_location
-			else:
-				if osm_location is None:
-					kwargs['history__shipping_area__isnull'] = True
-				else:
-					kwargs['history__shipping_area__id'] = osm_location
 
 			products = Product.objects.filter(**kwargs).distinct('reference')
 			if key == 'top':
@@ -176,7 +184,7 @@ class CategoryProducts(CategorySimple):
 		
 		if serializer_class_name in global_keys:
 			Serializer_class = globals()[serializer_class_name]
-			serialized = Serializer_class(products, many = True, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}})
+			serialized = Serializer_class(products, many = True, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}, 'time':datetime.now()})
 		if serialized is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
 		else:

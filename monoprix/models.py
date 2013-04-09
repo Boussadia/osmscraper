@@ -114,6 +114,7 @@ class History(models.Model):
 		ordering = ['product', '-created']
 
 class Promotion(models.Model):
+	
 	SIMPLE = 's'
 	MULTI = 'm'
 	TYPES = (
@@ -128,8 +129,8 @@ class Promotion(models.Model):
 	before = models.FloatField() # Price before any promotion
 	after = models.FloatField() # Price during promotion
 	unit_price = models.FloatField(null=True)
-	start = models.DateField(null = True)
-	end = models.DateField(null = True)
+	start = models.DateTimeField(null = True)
+	end = models.DateTimeField(null = True)
 	store = models.ForeignKey(Store, null = True)
 	availability = models.BooleanField(default = True)
 	html = models.TextField(max_length=9999999999999999999999, null = True) # html of product 
