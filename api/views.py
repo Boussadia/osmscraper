@@ -86,6 +86,7 @@ def osm(function):
 				print 'Test cookie set correctly, removing it!'
 
 		# Getting metacart
+		metacart = None
 		if session_key is not None:
 			metacart = MetaCart.objects.filter(session__session_key = session_key)
 			if len(metacart)>0:
