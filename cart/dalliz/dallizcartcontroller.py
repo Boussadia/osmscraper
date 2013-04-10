@@ -68,10 +68,14 @@ class DallizCartController(object):
 			self.metacart = MetaCart(current_osm = self.osm)
 			self.metacart.save()
 
-
-		self.carts = { osm:getattr(self.metacart, osm+'_cart') for osm in DallizCartController.AVAILABLE_OSMS.keys()}
-		# if cart is not None:
-		# 	self.set_cart(cart, osm)
+		self.carts = {}
+		for osm, value in DallizCartController.AVAILABLE_OSMS.iteritems():
+			current_cart = getattr(self.metacart, osm+'_cart')
+			cart_controller = value['class'](cart = current_cart)
+			self.carts[osm] =  cart_controller
+			if current_cart is None:
+				setattr(self.metacart, osm+'_cart', cart_controller.cart)
+				self.metacart.save()
 
 	def osm(function):
 		"""

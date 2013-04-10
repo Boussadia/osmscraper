@@ -5,7 +5,7 @@ from __future__ import absolute_import # Import because of modules names
 
 from rest_framework import serializers
 
-from ooshop.models import Product, History, Promotion
+from ooshop.models import Product, History, Promotion, Cart_content
 from api.serializer.dalliz.serializer import DallizBrandField
 
 def merge_history_promotion(history, promotion, limit = 5):
@@ -158,4 +158,20 @@ class RecommendationSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Product
 		fields = ('brand', 'name', 'reference', 'score', 'osm_url', 'is_match')
+
+class ProductCartSerializer(serializers.ModelSerializer):
+	brand = DallizBrandField()
+	osm_url = serializers.URLField(source = 'url')
+	class Meta:
+		model = Product
+		fields = ('reference', 'name', 'brand', 'osm_url')
+
+class CartContentSerializer(serializers.ModelSerializer):
+	"""
+
+	"""
+	product = ProductCartSerializer(source = 'product')
+	class Meta:
+		model = Cart_content
+		exclude = ('id', 'cart')
 

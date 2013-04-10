@@ -5,6 +5,8 @@ from __future__ import absolute_import # Import because of modules names
 
 from datetime import datetime, timedelta
 
+from django.contrib.sessions.models import Session
+
 from django.http import Http404
 
 from rest_framework.views import APIView
@@ -13,20 +15,24 @@ from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.settings import api_settings
 from rest_framework.renderers import XMLRenderer
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+
+from cart.dalliz.dallizcartcontroller import DallizCartController
 
 from auchan.models import History as AuchanHistory, Product as AuchanProduct, Promotion as AuchanPromotion
+from cart.models import MetaCart
 from dalliz.models import Category
 from monoprix.models import History as MonoprixHistory, Product as MonoprixProduct, Promotion as MonoprixPromotion
 from ooshop.models import History as OoshopHistory, Product as OoshopProduct, Promotion as OoshopPromotion
 
 from api.renderer import ProductsCSVRenderer, ProductRecommendationCSVRenderer, NewProductsCSVRenderer
 from api.serializer.dalliz.serializer import CategorySerializer
-from api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer
+from api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer, CartContentSerializer as AuchanCartContentSerializer
 from api.serializer.auchan.serializer import RecommendationSerializer as AuchanRecommendationSerializer
-from api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer
+from api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer, CartContentSerializer as MonoprixCartContentSerializer
 from api.serializer.monoprix.serializer import RecommendationSerializer as MonoprixRecommendationSerializer
 from api.serializer.ooshop.serializer import ProductSerializer as OoshopProductSerializer
-from api.serializer.ooshop.serializer import RecommendationSerializer as OoshopRecommendationSerializer
+from api.serializer.ooshop.serializer import RecommendationSerializer as OoshopRecommendationSerializer, CartContentSerializer as OoshopCartContentSerializer
 
 from cart.base.basecartcontroller import BaseCartController
 
@@ -55,7 +61,6 @@ def osm(function):
 				request = element
 				break
 
-
 		# Default osm
 		osm = {
 			'name':'monoprix',
@@ -71,12 +76,44 @@ def osm(function):
 			if 'osm_location' in parameters:
 				osm['location'] = parameters['osm_location']
 
+		# Getting session information
+		session_key = request.session.session_key
+		if session_key is None:
+			request.session.set_test_cookie()
+		else:
+			if request.session.test_cookie_worked():
+				request.session.delete_test_cookie()
+				print 'Test cookie set correctly, removing it!'
+
+		# Getting metacart
+		if session_key is not None:
+			metacart = MetaCart.objects.filter(session__session_key = session_key)
+			if len(metacart)>0:
+				metacart = metacart[0]
+			else:
+				metacart = MetaCart(session = Session.objects.get(session_key = session_key))
+				metacart.save()
+
+		# Setting cart
+		cart_controller = DallizCartController(osm = osm['name'], metacart = metacart)
+		request.cart_controller = cart_controller
+
+		carts = { o: {
+			'id': cart_controller.carts[o].cart.id,
+			'price': cart_controller.carts[o].cart.cart_history_set.all()[0].price,
+			'created':cart_controller.carts[o].cart.cart_history_set.all()[0].created,
+		}
+			for o in cart_controller.carts
+		}
+
 		kwargs.update(dict([ ( 'osm_%s'%k , v) for k,v in osm.iteritems()]))
 
 		data = function( self , *args, **kwargs)
 
 		if isinstance(data, dict):
 			data.update({'osm': osm})
+			if 'carts' not in data:
+				data.update({'carts': carts})
 			return Response(data)
 		else:
 			return data
@@ -399,6 +436,74 @@ class ProductRecommendation(Product):
 		serialized = Serializer(product)
 
 		return {'recommendations':recommendations, 'product': serialized.data}
+
+class CartAPIView(BaseAPIView):
+	@osm
+	def get(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+		cart_controller = request.cart_controller
+		serializer_class_name = '%sCartContentSerializer'%osm_name.capitalize()
+		Serializer = globals()[serializer_class_name]
+		cart_content = getattr(cart_controller.metacart, osm_name+'_cart').cart_content_set.all()
+		serialized = Serializer(cart_content, many = True)
+
+		return {'cart':serialized.data}
+
+class CartManagementAPIView(BaseAPIView):
+	"""
+		Cart api view
+	"""
+	def get_product(self, reference, osm_name):
+		
+			global_keys = globals().keys()
+			product_class_name = '%sProduct'%osm_name.capitalize()
+
+			if product_class_name in global_keys:
+				Product = globals()[product_class_name]
+				try:
+					return Product.objects.get(reference = reference)
+				except Product.DoesNotExist:
+					raise Http404
+			else:
+				raise Http404
+
+	@osm
+	def post(self, request, reference, quantity = 1, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+		product = self.get_product(reference, osm_name)
+		cart_controller = request.cart_controller
+		if quantity is not None:
+			cart_controller.add_product(product, int(quantity))
+		else:
+			cart_controller.add_product(product)
+
+		carts = { o: {
+			'id': cart_controller.carts[o].cart.id,
+			'price': cart_controller.carts[o].cart.cart_history_set.all()[0].price,
+			'created':cart_controller.carts[o].cart.cart_history_set.all()[0].created,
+		}
+			for o in cart_controller.carts
+		}
+
+		return {'carts':carts}
+
+	@osm
+	def delete(self, request, reference, quantity = None, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+		product = self.get_product(reference, osm_name)
+		cart_controller = request.cart_controller
+		if quantity is not None:
+			cart_controller.remove_product(product, int(quantity))
+		else:
+			cart_controller.remove_product(product)
+
+		carts = { o: {
+			'id': cart_controller.carts[o].cart.id,
+			'price': cart_controller.carts[o].cart.cart_history_set.all()[0].price,
+			'created':cart_controller.carts[o].cart.cart_history_set.all()[0].created,
+		}
+			for o in cart_controller.carts
+		}
+
+		return {'carts':carts}
+
 
 
 

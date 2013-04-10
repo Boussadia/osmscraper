@@ -16,4 +16,8 @@ urlpatterns = patterns('',
     url(r'product/new/?', views.NewProducts.as_view()),
     url(r'product/reference/(?P<reference>(\d+))/?$', views.Product.as_view()),
     url(r'product/reference/(?P<reference>(\d+))/recommendations/?$', views.ProductRecommendation.as_view()),
+
+    # Cart
+    url(r'cart/?', views.CartAPIView.as_view()),
+    url(r'cart/product/(?P<reference>(\d+))(/quantity/(?P<quantity>(\d+)))?/?', views.CartManagementAPIView.as_view()),
 )

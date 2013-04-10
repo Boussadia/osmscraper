@@ -145,3 +145,6 @@ class Cart_history(models.Model):
 	price = models.FloatField(default = 0)
 	computed = models.BooleanField(default = False)
 
+	class Meta:
+		ordering = ['cart', '-created']
+
