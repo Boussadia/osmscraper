@@ -19,7 +19,7 @@ from dalliz.models import Category
 from monoprix.models import History as MonoprixHistory, Product as MonoprixProduct, Promotion as MonoprixPromotion
 from ooshop.models import History as OoshopHistory, Product as OoshopProduct, Promotion as OoshopPromotion
 
-from api.renderer import ProductsCSVRenderer, ProductRecommendationCSVRenderer
+from api.renderer import ProductsCSVRenderer, ProductRecommendationCSVRenderer, NewProductsCSVRenderer
 from api.serializer.dalliz.serializer import CategorySerializer
 from api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer
 from api.serializer.auchan.serializer import RecommendationSerializer as AuchanRecommendationSerializer
@@ -261,7 +261,7 @@ class NewProducts(BaseAPIView):
 	"""
 		API view for extracting new products (created in the last 7 days)
 	"""
-	renderer_classes = BaseAPIView.renderer_classes + [ProductRecommendationCSVRenderer]
+	renderer_classes = BaseAPIView.renderer_classes + [NewProductsCSVRenderer]
 
 	@osm
 	def get(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
