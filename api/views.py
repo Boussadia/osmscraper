@@ -257,7 +257,71 @@ class CategoryMatching(CategorySimple):
 		else:
 			return {'products':serialized}
 
+class NewProducts(BaseAPIView):
+	"""
+		API view for extracting new products (created in the last 7 days)
+	"""
+	@osm
+	def get(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+		serialized = None
+		global_keys = globals().keys()
+		product_class_name = '%sProduct'%osm_name.capitalize()
+		if product_class_name in global_keys:
+			Product = globals()[product_class_name]
+			kwargs = {
+				'exists':True,
+				'created__gte': datetime.now()-timedelta(days = 5)
+				# 'html__isnull': True
+			}
 
+			if osm_name == 'monoprix':
+				if osm_location is None:
+					kwargs['history__store__isnull'] = True
+				else:
+					kwargs['history__store__id'] = osm_location
+			else:
+				if osm_location is None:
+					kwargs['history__shipping_area__isnull'] = True
+				else:
+					kwargs['history__shipping_area__id'] = osm_location
+
+			products = Product.objects.filter(**kwargs)
+			print products
+
+		serializer_class_name = '%sProductSerializer'%osm_name.capitalize()
+		
+		if serializer_class_name in global_keys:
+			global_keys = globals().keys()
+			serialized = []
+			# Processing matching
+			for product in products:
+				Serializer_class = globals()[serializer_class_name]
+				serialized_product = Serializer_class(product, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}}).data
+				matching = product.productmatch_set.all()
+				if len(matching)>0:
+					matching = matching[0]
+					for osm in AVAILABLE_OSMS:
+						match = getattr(matching, '%s_product'%osm['name'])
+						if match is not None and osm['name'] != osm_name:
+							serializer_class_name_match = '%sProductSerializer'%osm['name'].capitalize()
+							# print osm['name']
+							Serializer = globals()[serializer_class_name_match]
+							serialized_product[osm['name']] = Serializer(match, context = {'osm': {'name':osm['name'],'type': osm_type, 'location':osm_location}}).data
+						elif osm['name'] != osm_name:
+							serialized_product[osm['name']] = {}
+				else:
+					for osm in AVAILABLE_OSMS:
+						if osm['name'] != osm_name:
+							serialized_product[osm['name']] = {}
+
+
+				serialized.append(serialized_product)
+
+
+		if serialized is None:
+			return Response(404, status=status.HTTP_400_BAD_REQUEST)
+		else:
+			return {'products':serialized}
 
 class Product(BaseAPIView):
 	"""

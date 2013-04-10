@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r'categories/id/(?P<id_category>(\d+))/products/matching/?$', views.CategoryMatching.as_view()),
 
     # Products
+    url(r'product/new/?', views.NewProducts.as_view()),
     url(r'product/reference/(?P<reference>(\d+))/?$', views.Product.as_view()),
     url(r'product/reference/(?P<reference>(\d+))/recommendations/?$', views.ProductRecommendation.as_view()),
 )
