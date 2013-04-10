@@ -261,6 +261,8 @@ class NewProducts(BaseAPIView):
 	"""
 		API view for extracting new products (created in the last 7 days)
 	"""
+	renderer_classes = BaseAPIView.renderer_classes + [ProductRecommendationCSVRenderer]
+
 	@osm
 	def get(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
 		serialized = None
@@ -286,7 +288,6 @@ class NewProducts(BaseAPIView):
 					kwargs['history__shipping_area__id'] = osm_location
 
 			products = Product.objects.filter(**kwargs)
-			print products
 
 		serializer_class_name = '%sProductSerializer'%osm_name.capitalize()
 		
