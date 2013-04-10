@@ -31,7 +31,6 @@ class ProductsCSVRenderer(BaseRenderer):
             for product in data['products']:
                 row = [product['brand']['name'], product['name'], product['osm_url'] ]
                 for h in product['history']:
-                    print h
                     if h['is_promotion']:
                         row.extend(['PROMOTION', h['end'] ,h['price']])
                     else:
@@ -82,11 +81,17 @@ class ProductRecommendationCSVRenderer(BaseRenderer):
             return ''
 
         table = []
+        print data['osm']
 
         if 'products' in data:
             for product in data['products']:
-                row = [data['osm']['name'], product['brand']['name'], product['name'], product['osm_url'] ]
-                [ row.extend([h['created'] ,h['price']]) for h in product['history'] ]
+                row = [data['osm']['name'], (lambda b : b['name'] if 'name' in b else '' )(product['brand']), product['name'], product['osm_url'] ]
+                for h in product['history']:
+                    if h['is_promotion']:
+                        row.extend(['PROMOTION', h['end'] ,h['price']])
+                    else:
+                        row.extend(['PRODUIT', h['created'] ,h['price']])
+                # [ row.extend([(lambda x : x['created'] if 'created' in x else h['end'] )(h) ,h['price']]) for h in product['history'] ]
                 table.append(row)
                 if renderer_context is None or (renderer_context is not None and 'nested' not in renderer_context) or (renderer_context is not None and 'nested' in renderer_context and renderer_context['nested'] == True):
                     for osm in OSMS:
