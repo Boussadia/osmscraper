@@ -147,11 +147,12 @@ class NewProductsCSVRenderer(BaseRenderer):
         if 'products' in data:
             for product in data['products']:
                 row = [data['osm']['name'], (lambda b : b['name'] if b is not None and'name' in b else '' )(product['brand']), product['name'], product['osm_url'] ]
-                h = product['history'][-1]
-                if h['is_promotion']:
-                    row.extend([h['end'] ,h['price']])
-                else:
-                    row.extend([h['created'] ,h['price']])
+                if len(product['history'])>0:
+                    h = product['history'][-1]
+                    if h['is_promotion']:
+                        row.extend([h['end'] ,h['price']])
+                    else:
+                        row.extend([h['created'] ,h['price']])
                 # [ row.extend([(lambda x : x['created'] if 'created' in x else h['end'] )(h) ,h['price']]) for h in product['history'] ]
                 table.append(row)
                 if renderer_context is None or (renderer_context is not None and 'nested' not in renderer_context) or (renderer_context is not None and 'nested' in renderer_context and renderer_context['nested'] == True):
