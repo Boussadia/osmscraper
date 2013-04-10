@@ -28,7 +28,6 @@ class HistoryField(serializers.RelatedField):
 	def to_native(self, product):
 		history_set = product.history_set
 		osm_location = self.context['osm']['location']
-		time_filter = self.context['time']
 		if osm_location is not None:
 			histories = history_set.filter(store__id = int(osm_location))[:5]
 			promotions = product.promotion_set.filter(type = Promotion.SIMPLE, store__id = int(osm_location))[:5]
