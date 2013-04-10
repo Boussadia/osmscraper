@@ -5,6 +5,8 @@ from cart.auchan.auchancartcontroller import AuchanCartController
 from cart.monoprix.monoprixcartcontroller import MonoprixCartController
 from cart.ooshop.ooshopcartcontroller import OoshopCartController
 
+from cart.models import MetaCart
+
 #--------------------------------------------------------------------------------------------------------------------------------------------
 #
 #													CUSTOM EXCEPTION
@@ -52,7 +54,7 @@ class DallizCartController(object):
 		}
 	}
 
-	def __init__(self, osm = 'monoprix', cart = None):
+	def __init__(self, osm = 'monoprix', metacart = None):
 		if osm is None:
 			raise ErrorNoOSMSet(osm)
 		elif osm in DallizCartController.AVAILABLE_OSMS.keys():
@@ -60,10 +62,16 @@ class DallizCartController(object):
 		else:
 			raise ErrorNoOSMSet(osm)
 
-		#self.carts = { osm:DallizCartController.AVAILABLE_OSMS[osm]['class']() for osm in DallizCartController.AVAILABLE_OSMS.keys()}
-		self.carts = { osm:None for osm in DallizCartController.AVAILABLE_OSMS.keys()}
-		if cart is not None:
-			self.set_cart(cart, osm)
+		if metacart is not None:
+			self.metacart = metacart
+		else:
+			self.metacart = MetaCart(current_osm = self.osm)
+			self.metacart.save()
+
+
+		self.carts = { osm:getattr(self.metacart, osm+'_cart') for osm in DallizCartController.AVAILABLE_OSMS.keys()}
+		# if cart is not None:
+		# 	self.set_cart(cart, osm)
 
 	def osm(function):
 		"""
@@ -88,6 +96,7 @@ class DallizCartController(object):
 	def set_osm(self, new_osm):
 		if self.osm_verification(new_osm):
 			self.osm = new_osm
+			self.metacart.osm = new_osm
 		else:
 			raise ErrorNotProperOSM(new_osm)
 
@@ -98,14 +107,18 @@ class DallizCartController(object):
 		# First step : setting osm
 		self.set_osm(osm)
 		self.carts[osm] = cart
+		setattr(self.metacart, osm+'_cart', cart.cart)
 
 		# We now have to build other carts
 		for other_osm in DallizCartController.AVAILABLE_OSMS.keys():
 			if other_osm != osm:
 				if self.carts[other_osm] is None:
 					self.carts[other_osm] = DallizCartController.AVAILABLE_OSMS[other_osm]['class']()
+					setattr(self.metacart, other_osm+'_cart', self.carts[other_osm].cart)
 				
 				self.carts[other_osm].set_equivalent_cart(self.carts[osm].cart)
+
+		self.metacart.save()
 
 	@osm
 	def add_product(self, product, quantity = 1):

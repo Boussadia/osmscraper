@@ -276,7 +276,7 @@ class BaseCartController(object):
 		self.cart.products.clear()
 
 	def get_similarites(self, base_product, base_osm):
-		return similarities(self.osm, base_product, base_osm)
+		return self.similarities(self.osm, base_product, base_osm)
 
 	@staticmethod
 	def similarities(index_name, base_product, base_osm):
