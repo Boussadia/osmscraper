@@ -331,21 +331,21 @@ class BaseCartController(object):
 				mathed_product = getattr(match, self.cart.osm+'_product') # Evil hack!! Or is it? I love Python :D
 				if mathed_product is not None:
 					self.add_product(mathed_product, quantity)
-					print '\tMatch : '+mathed_product.url
+					# print '\tMatch : '+mathed_product.url
 				else:
 					# Look for similarities
 					similarities = self.get_similarites(base_product, base_osm)
 					self.add_product(similarities[0][0], quantity)
-					print '\tSim : '+similarities[0][0].url
-					if len(similarities)>2:
-						print '\tSim : '+similarities[1][0].url
+					# print '\tSim : '+similarities[0][0].url
+					# if len(similarities)>2:
+					# 	print '\tSim : '+similarities[1][0].url
 			else:
 				# Look for similarities
 				similarities = self.get_similarites(base_product, base_osm)
 				self.add_product(similarities[0][0], quantity)
-				print '\tSim : '+similarities[0][0].url
-				if len(similarities)>2:
-					print '\tSim : '+similarities[1][0].url
+				# print '\tSim : '+similarities[0][0].url
+				# if len(similarities)>2:
+				# 	print '\tSim : '+similarities[1][0].url
 
 
 
