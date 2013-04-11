@@ -451,7 +451,7 @@ class CartAPIView(BaseAPIView):
 
 class CartManagementAPIView(BaseAPIView):
 	"""
-		Cart api view
+		Cart Management api view
 	"""
 	def get_product(self, reference, osm_name):
 		
