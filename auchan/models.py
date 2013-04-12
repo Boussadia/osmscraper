@@ -85,7 +85,7 @@ class Product(models.Model):
 
 	# for admins
 	comment = models.TextField(default = "")
-	has_match = models.BooleanField(default = True)
+	processed = models.BooleanField(default = False)
 
 	def __unicode__(self):
 		if self.name is not None:

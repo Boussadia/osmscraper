@@ -37,8 +37,8 @@
 			<h2> Catégorie {{ category.osm }} : {{ cat.name }}</h2>
 			<ul class='main category_area' >
 				{% for product in cat.products %}
-				<div class="{% if product.has_no_match %} has_no_match {% endif %} {% if not product.is_in_category %} category_is_not_set {% endif %} {% if product.matches.items %} match_is_set {% endif %}{% if product.similarities.items %} similarities_is_set {% endif %}">
-					<h3> {% if not product.is_in_category or  product.matches.items or product.has_no_match %} {{product.name}} {{product.brand}} {% endif %}</h3>
+				<div class=" {% if not product.is_in_category %} category_is_not_set {% endif %} {% if product.matches.items %} match_is_set {% endif %}{% if product.similarities.items %} similarities_is_set {% endif %}">
+					<h3> {% if not product.is_in_category or  product.matches.items %} {{product.name}} {{product.brand}} {% endif %}</h3>
 					<div>
 						<li class='product' data-product='{{product.id}}' data-osm='{{osm}}'>
 							<ul class='line'>

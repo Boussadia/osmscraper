@@ -24,10 +24,11 @@ class Stemmer(object):
 		"""
 		text = self.text.lower()
 		stems = []
-		words = re.split(r'[^a-zA-Z0-9]+', unaccent(text))
-		words = tuple([str(w) for w in words])
+		reg = re.compile('[^\w|0-9]+', re.U)
+		words = reg.split(text)
+		words = tuple([unicode(w) for w in words])
 		new_words = []
-		base_words = { unaccent(bw.text.lower()): unaccent(bw.stem.word.lower()) for bw in BaseWord.objects.raw("select * from matcher_baseword where unaccent(lower(matcher_baseword.text)) in %s", [words])}
+		base_words = { bw.text.lower(): bw.stem.word.lower() for bw in BaseWord.objects.raw("select * from matcher_baseword where lower(matcher_baseword.text) in %s", [words])}
 		# Now we need to go through the base words and replace found words by stems in text
 		for word in words:
 			if word in base_words:
@@ -69,10 +70,11 @@ class BaseHTMLStemmer(Stemmer):
 			self.extract_text()
 		text = self.text.lower()
 		stems = []
-		words = re.split(r'[^a-zA-Z0-9]+', unaccent(text))
-		words = tuple([str(w) for w in words])
+		reg = re.compile('[^\w|0-9]+', re.U)
+		words = reg.split(text)
+		words = tuple([unicode(w) for w in words])
 		new_words = []
-		base_words = { unaccent(bw.text.lower()): unaccent(bw.stem.word.lower()) for bw in BaseWord.objects.raw("select * from matcher_baseword where unaccent(lower(matcher_baseword.text)) in %s", [words])}
+		base_words = { bw.text.lower(): bw.stem.word.lower() for bw in BaseWord.objects.raw("select * from matcher_baseword where lower(matcher_baseword.text) in %s", [words])}
 		# Now we need to go through the base words and replace found words by stems in text
 		for word in words:
 			if word in base_words:

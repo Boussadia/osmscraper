@@ -1,9 +1,11 @@
+import simplejson as json
+
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import Context, loader
 from django.db import connection, transaction
 
-import simplejson as json
+from matcher.base.stemmer import Stemmer
 
 from osmscraper.unaccent import unaccent
 
@@ -124,7 +126,8 @@ def tags(request, id_category, tags =''):
 			tags_string = []
 		for tag in tags_string:
 			if tag not in [' ', '', '\t', '\r', '\n']:
-				tag_db, created = Tag.objects.get_or_create(name = tag)
+				stemmed_name = Stemmer(tag).stem_text()
+				tag_db, created = Tag.objects.get_or_create(name = tag, stemmed_name = stemmed_name)
 				try:
 					category.tags.add(tag_db)
 				except Exception, e:
