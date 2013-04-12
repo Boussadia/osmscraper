@@ -63,8 +63,6 @@ class TagsProcessor(object):
 			Input :
 				- product : osm product database entity
 		"""
-		print product.name
-		print product.url
 		chunks = [self.chunk(product.stemmed_text, n) for n in [1,2,3]]
 		common = []
 
@@ -76,14 +74,16 @@ class TagsProcessor(object):
 
 		# Now setting category :
 		selected_category, final_tags = self.best_category_match(product.dalliz_category.all(), retained_tags)
-		print u'Category : '
-		print selected_category
-		print u'Retained tags : '
-		print retained_tags
-		print u'Final tags : '
-		print final_tags
+		if selected_category is not None and final_tags is not None:
+			product.processed = True
+			product.save()
 
-		print '\n'
+			# Cleaning and saving new relations
+			product.dalliz_category.clear()
+			product.tag.clear()
+			product.dalliz_category.add(selected_category)
+			[product.tag.add(t) for t in final_tags]
+		
 
 	def process_category(self, id_category, overwrite = False):
 		"""
@@ -93,7 +93,7 @@ class TagsProcessor(object):
 		osm_categories = getattr(category, self.osm+'_category_dalliz_category').all()
 		for osm_category in osm_categories:
 			products = osm_category.product_set.filter(stemmed_text__isnull = False)
-			if !overwrite:
+			if not overwrite:
 				products.filter(processed = False)
 			for product in products:
 				self.process_product(product)
