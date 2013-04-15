@@ -86,7 +86,7 @@ class MturkHelper(object):
 		result = ResultTask(
 			task = self.task,
 			workerId = workerId,
-			assignment = assignment,
+			assignementId = assignment,
 			hitId = hitId,
 			reference = reference_result
 			)
