@@ -7,7 +7,7 @@
 	<div class="highlight-box">
 	<p>Match THE photo corresponding to the framed product</p>
 	</div>
-	<form action='https://www.mturk.com/mturk/externalSubmit' method='post'>
+	<form action='http://www.dalliz.com/mturk/test' method='post'>
 		{% if assignmentId %}
 			<input type='hidden' name='assignmentId' value='{{assignmentId}}'>
 		{% endif %}
@@ -31,7 +31,9 @@
 		            <td><img width="200" height="200" alt="image4" style="margin-right: 30px;" src="http://www.auchandirect.fr/static/images/products/detail/16940.jpg" /></td>
 		        </tr>
 		        <tr>
-		        	<td><button type='submit'> Submit</button></td>
+		        	{% if assignmentId %}
+		        		<td><button type='submit'> Submit</button></td>
+		        	{% endif %}
 		        </tr>
 		    </tbody>
 		</table>
