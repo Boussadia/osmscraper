@@ -26,6 +26,9 @@ urlpatterns = patterns('',
     # Include api urls
     url(r'^api/', include('api.urls')),
 
+    # Include mturk urls
+    url(r'^mturk/', include('mturk.urls')),
+
     # Tags creator app
     url(r'^backend/tags/(?P<id_category>(\d+))(/(?P<tags>(.+)))?/?$', 'tags.views.tags'),
     url(r'^backend/tags/autocomplete/?$', 'tags.views.autocomplete'),
