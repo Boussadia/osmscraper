@@ -23,8 +23,8 @@ def test(request):
 		response['assignmentId'] = assignmentId
 		response['hitId'] = hitId
 
-		# crawler = Crawler()
-		# # Posting data to amazon mturk
-		# crawler.post(url = 'https://www.mturk.com/mturk/externalSubmit', data = response)
+		crawler = Crawler()
+		# Posting data to amazon mturk
+		crawler.post(url = 'https://workersandbox.mturk.com/mturk/externalSubmit', data = response)
 
 	return render(request, 'mturk/test.html', response)

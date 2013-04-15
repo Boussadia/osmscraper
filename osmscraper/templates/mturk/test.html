@@ -7,8 +7,8 @@
 	<div class="highlight-box">
 	<p>Match THE photo corresponding to the framed product</p>
 	</div>
-	<form action='"http://workersandbox.mturk.com/mturk/externalSubmit' method='post'>
-		{% if assignmentId %}
+	<form action='"https://workersandbox.mturk.com/mturk/externalSubmit' method='post'>
+		{% if hitId %}
 			<input type='hidden' name='assignmentId' value='{{assignmentId}}'>
 			<input type='hidden' name='hitId' value='{{hitId}}'>
 		{% endif %}
@@ -32,7 +32,7 @@
 		            <td><img width="200" height="200" alt="image4" style="margin-right: 30px;" src="http://www.auchandirect.fr/static/images/products/detail/16940.jpg" /></td>
 		        </tr>
 		        <tr>
-		        	{% if assignmentId %}
+		        	{% if hitId %}
 		        		<td><button type='submit'> Submit</button></td>
 		        	{% endif %}
 		        </tr>
