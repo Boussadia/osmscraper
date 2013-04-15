@@ -1,30 +1,43 @@
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
+from mturk.helper import MturkHelper 
 from scrapers.base.basecrawler import BaseCrawler as Crawler
 
 
 
-def test(request):
+def index(request, key):
 	response = {}
-	if request.method == 'GET':
-		if 'assignmentId' in request.GET:
-			assignmentId = request.GET['assignmentId']
-			hitId = request.GET['hitId']
-		else:
-			assignmentId = None
-			hitId = None
-		response['assignmentId'] = assignmentId
-		response['hitId'] = hitId
+	assignmentId = None
+	workerId = None
+	hitId = None
+	turkSubmitTo = None
+
+	method = request.method
+	parameters = getattr(request, method)
+
+
+	if method == 'GET' or method == 'POST':
+		if 'assignmentId' in parameters:
+			assignmentId = parameters['assignmentId']
+		
+		if 'hitId' in parameters:
+			hitId = parameters['hitId']
+
+		if 'workerId' in parameters:
+			workerId = parameters['workerId']
+
+		if 'turkSubmitTo' in parameters:
+			turkSubmitTo = parameters['turkSubmitTo']
+
+	helper = MturkHelper(key = key)
+	response = helper.dump()
 
 	if request.method == 'POST':
-		assignmentId = request.POST['assignmentId']
-		hitId = request.POST['hitId']
-		response['assignmentId'] = assignmentId
-		response['hitId'] = hitId
-
+		reference_result = request.POST['flagged']
+		helper.save_result(reference_result, hitId, assignementId, workerId)
 		crawler = Crawler()
 		# Posting data to amazon mturk
-		crawler.post(url = 'https://workersandbox.mturk.com/mturk/externalSubmit', data = response)
+		crawler.post(url = turkSubmitTo, data = response)
 
-	return render(request, 'mturk/test.html', response)
+	return render(request, 'mturk/index.html', response)

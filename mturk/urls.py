@@ -6,6 +6,5 @@ from django.http import HttpResponse
 from api import views
 
 urlpatterns = patterns('',
-	# Category
-    url(r'.*/?$', 'mturk.views.test'),
+    url(r'key/(?P<key>(.+))/?$', 'mturk.views.index'),
 )

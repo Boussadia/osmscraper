@@ -1,0 +1,57 @@
+<html>
+	<head>
+		<title> Test</title>
+	</head>
+	<body>
+		<h3>Select ONE image to match the products</h3>
+		<div class="highlight-box">
+		<p>Match THE photo corresponding to the framed product</p>
+		</div>
+		<form action='http://www.dalliz.com/mturk/externalSubmit' method='post'>
+			{% if assignementId %}
+				<input type='hidden' name='assignmentId' value='{{assignmentId}}'>
+				<input type='hidden' name='hitId' value='{{hitId}}'>
+			{% endif %}
+			<p>&nbsp;</p>
+			<div style="margin-left: 250px;"><img width="200" height="200" style="border: 5px solid black;" src="{{product_img}}" alt="" /></div>
+			<p>&nbsp;</p>
+			<table cellspacing="4" cellpadding="0">
+				<tbody>
+					{% for sim in similarities%}
+						<tr class='row'>
+							<td valign="center">
+								<input type="checkbox" name="flagged" value="{{sim.reference}}" />
+							</td>
+							<td>
+								<img width="200" height="200" alt="{{sim.reference}}" style="margin-right: 30px;" src="{{sim.img}}" />
+							</td>
+						</tr>
+					{% endfor %}
+					<tr class='row'>
+							<td valign="center">
+								<input type="checkbox" name="flagged" value="0" />
+							</td>
+							<td>
+								There is no similar product
+							</td>
+						</tr>
+					<tr>
+						{% if assignementId %}
+							<td><button type='submit'> Submit</button></td>
+						{% endif %}
+					</tr>
+				</tbody>
+			</table>
+		</form>
+		<p>
+			<style type="text/css">
+		<!--
+		.highlight-box { border:solid 0px #98BE10; background:#FCF9CE; color:#222222; padding:4px; text-align:left; font-size: smaller;}
+		.row{
+			float: left;
+		}
+		-->
+		</style>
+		</p>
+	</body>
+</html>
