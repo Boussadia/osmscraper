@@ -8,7 +8,7 @@
 		<p>Match THE photo corresponding to the framed product</p>
 		</div>
 		<form action='http://www.dalliz.com/mturk/externalSubmit' method='post'>
-			{% if assignementId %}
+			{% if assignmentId %}
 				<input type='hidden' name='assignmentId' value='{{assignmentId}}'>
 				<input type='hidden' name='hitId' value='{{hitId}}'>
 			{% endif %}
@@ -36,7 +36,7 @@
 							</td>
 						</tr>
 					<tr>
-						{% if assignementId %}
+						{% if assignmentId %}
 							<td><button type='submit'> Submit</button></td>
 						{% endif %}
 					</tr>
