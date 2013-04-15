@@ -11,12 +11,11 @@ title = 'Test External Hit'
 description = ('Select the most appropriate answer')
 keywords = 'website, rating, opinions'
 
-question = ExternalQuestion('www.dalliz.com/mturk/test', 100)
-print question.get_as_xml()
+question = ExternalQuestion('http://www.dalliz.com/mturk/test', 500)
  
 #--------------- CREATE THE HIT -------------------
  
-mtc.create_hit(questions=question,
+mtc.create_hit(question=question,
                max_assignments=1,
                title=title,
                description=description,

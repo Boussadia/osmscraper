@@ -4,5 +4,11 @@ from django.db import connection, transaction
 from django.db.models import Q
 
 def test(request):
-	response = {'test': 1}
+	response = {}
+	if request.method == 'GET':
+		if 'assignmentId' in request.GET:
+			assignmentId = request.GET['assignmentId']
+		else:
+			assignmentId = None
+		response['assignmentId'] = assignmentId
 	return render(request, 'mturk/test.html', response)

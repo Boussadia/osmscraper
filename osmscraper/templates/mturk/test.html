@@ -7,27 +7,35 @@
 	<div class="highlight-box">
 	<p>Match THE photo corresponding to the framed product</p>
 	</div>
-	<p>&nbsp;</p>
-	<div style="margin-left: 250px;"><img width="200" height="200" style="border: 5px solid black;" src="http://pics.monoprix.fr/assets/ctx/2096589626/static/photos/12/52/37/3/g-1252373.jpg" alt="" /></div>
-	<p>&nbsp;</p>
-	<table cellspacing="4" cellpadding="0">
-	    <tbody>
-	        <tr>
-	            <td valign="center"><input type="checkbox" name="flagged" value="image1" /></td>
-	            <td><img width="200" height="200" alt="image1" style="margin-right: 30px;" src="http://www.auchandirect.fr/static/images/products/detail/59458.jpg" /></td>
-	            <td valign="center"><input type="checkbox" name="flagged" value="image2" /></td>
-	            <td><img width="200" height="200" alt="image2" style="margin-right: 30px;" src="http://www.auchandirect.fr/static/images/products/detail/61000.jpg" /></td>
-	            <td valign="center"><input type="checkbox" name="flagged" value="image5" /></td>
-	            <td><img width="200" height="200" alt="image5" style="margin-right: 30px;" src="http://www.auchandirect.fr/static/images/products/detail/48113.jpg" /></td>
-	        </tr>
-	        <tr>
-	            <td valign="center"><input type="checkbox" name="flagged" value="image3" /></td>
-	            <td><img width="200" height="200" alt="image3" style="margin-right: 30px;" src="http://www.auchandirect.fr/static/images/products/detail/37663.jpg" /></td>
-	            <td valign="center"><input type="checkbox" name="flagged" value="image4" /></td>
-	            <td><img width="200" height="200" alt="image4" style="margin-right: 30px;" src="http://www.auchandirect.fr/static/images/products/detail/16940.jpg" /></td>
-	        </tr>
-	    </tbody>
-	</table>
+	<form action='https://www.mturk.com/mturk/externalSubmit' method='post'>
+		{% if assignmentId %}
+			<input type='hidden' name='assignmentId' value='{{assignmentId}}'>
+		{% endif %}
+		<p>&nbsp;</p>
+		<div style="margin-left: 250px;"><img width="200" height="200" style="border: 5px solid black;" src="http://pics.monoprix.fr/assets/ctx/2096589626/static/photos/12/52/37/3/g-1252373.jpg" alt="" /></div>
+		<p>&nbsp;</p>
+		<table cellspacing="4" cellpadding="0">
+		    <tbody>
+		        <tr>
+		            <td valign="center"><input type="checkbox" name="flagged" value="image1" /></td>
+		            <td><img width="200" height="200" alt="image1" style="margin-right: 30px;" src="http://www.auchandirect.fr/static/images/products/detail/59458.jpg" /></td>
+		            <td valign="center"><input type="checkbox" name="flagged" value="image2" /></td>
+		            <td><img width="200" height="200" alt="image2" style="margin-right: 30px;" src="http://www.auchandirect.fr/static/images/products/detail/61000.jpg" /></td>
+		            <td valign="center"><input type="checkbox" name="flagged" value="image5" /></td>
+		            <td><img width="200" height="200" alt="image5" style="margin-right: 30px;" src="http://www.auchandirect.fr/static/images/products/detail/48113.jpg" /></td>
+		        </tr>
+		        <tr>
+		            <td valign="center"><input type="checkbox" name="flagged" value="image3" /></td>
+		            <td><img width="200" height="200" alt="image3" style="margin-right: 30px;" src="http://www.auchandirect.fr/static/images/products/detail/37663.jpg" /></td>
+		            <td valign="center"><input type="checkbox" name="flagged" value="image4" /></td>
+		            <td><img width="200" height="200" alt="image4" style="margin-right: 30px;" src="http://www.auchandirect.fr/static/images/products/detail/16940.jpg" /></td>
+		        </tr>
+		        <tr>
+		        	<td><button type='submit'> Submit</button></td>
+		        </tr>
+		    </tbody>
+		</table>
+	</form>
 	<p><style type="text/css">
 	<!--
 	.highlight-box { border:solid 0px #98BE10; background:#FCF9CE; color:#222222; padding:4px; text-align:left; font-size: smaller;}
