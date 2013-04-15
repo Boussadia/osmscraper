@@ -77,16 +77,16 @@ class MturkHelper(object):
 
 		return {
 			'product_img': getattr(sim, self.osm_from+'_product').image_url,
-			'similarities': data
+			'similarities': data,
 		}
 
 
-	def save_result(self, reference_result, hitId, assignementId, workerId = None):
+	def save_result(self, reference_result, hitId, assignment, workerId = None):
 		self.get_task()
 		result = ResultTask(
 			task = self.task,
 			workerId = workerId,
-			assignementId = assignementId,
+			assignment = assignment,
 			hitId = hitId,
 			reference = reference_result
 			)

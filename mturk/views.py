@@ -8,10 +8,10 @@ from scrapers.base.basecrawler import BaseCrawler as Crawler
 
 def index(request, key):
 	response = {}
-	assignmentId = None
-	workerId = None
-	hitId = None
-	turkSubmitTo = None
+	response['assignmentId'] = None
+	response['workerId'] = None
+	response['hitId'] = None
+	response['turkSubmitTo'] = None
 
 	method = request.method
 	parameters = getattr(request, method)
@@ -19,25 +19,25 @@ def index(request, key):
 
 	if method == 'GET' or method == 'POST':
 		if 'assignmentId' in parameters:
-			assignmentId = parameters['assignmentId']
+			response['assignmentId'] = parameters['assignmentId']
 		
 		if 'hitId' in parameters:
-			hitId = parameters['hitId']
+			response['hitId'] = parameters['hitId']
 
 		if 'workerId' in parameters:
-			workerId = parameters['workerId']
+			response['workerId'] = parameters['workerId']
 
 		if 'turkSubmitTo' in parameters:
-			turkSubmitTo = parameters['turkSubmitTo']
+			response['turkSubmitTo'] = parameters['turkSubmitTo']
 
 	helper = MturkHelper(key = key)
-	response = helper.dump()
+	response.update(helper.dump())
 
 	if request.method == 'POST':
 		reference_result = request.POST['flagged']
-		helper.save_result(reference_result, hitId, assignementId, workerId)
+		helper.save_result(reference_result, response['hitId'], response['assignmentId'], response['workerId'])
 		crawler = Crawler()
 		# Posting data to amazon mturk
-		crawler.post(url = turkSubmitTo, data = response)
+		crawler.post(url = response['turkSubmitTo'], data = response)
 
 	return render(request, 'mturk/index.html', response)
