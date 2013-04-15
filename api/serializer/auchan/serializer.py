@@ -87,7 +87,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Product
-		exclude = ('url', 'avantages', 'conservation', 'valeur_nutritionnelle', 'pratique', 'ingredients', 'complement','package_quantity', 'package_measure', 'package_unit', 'stemmed_text', 'html', 'has_match', 'exists', 'id', 'comment', 'categories', 'dalliz_category', 'tag', 'created', 'updated')
+		exclude = ('url', 'avantages', 'conservation', 'valeur_nutritionnelle', 'pratique', 'ingredients', 'complement','package_quantity', 'package_measure', 'package_unit', 'stemmed_text', 'html', 'exists', 'id', 'comment', 'categories', 'dalliz_category', 'tag', 'created', 'updated')
 		depth = 1
 
 class HistorySerializer(serializers.ModelSerializer):
