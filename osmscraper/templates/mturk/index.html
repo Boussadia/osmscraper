@@ -7,7 +7,7 @@
 		<div class="highlight-box">
 		<p>Match THE photo corresponding to the framed product</p>
 		</div>
-		<form action='http://www.dalliz.com/mturk/externalSubmit' method='post'>
+		<form action='http://www.dalliz.com/mturk/key/{{key}}' method='post'>
 			{% if assignmentId %}
 				<input type='hidden' name='assignmentId' value='{{assignmentId}}'>
 				<input type='hidden' name='hitId' value='{{hitId}}'>

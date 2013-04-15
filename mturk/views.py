@@ -12,6 +12,7 @@ def index(request, key):
 	response['workerId'] = None
 	response['hitId'] = None
 	response['turkSubmitTo'] = None
+	response['key'] = key
 
 	method = request.method
 	parameters = getattr(request, method)
