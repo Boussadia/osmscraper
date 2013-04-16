@@ -17,6 +17,14 @@
 			<p>&nbsp;</p>
 			<table cellspacing="4" cellpadding="0">
 				<tbody>
+					<tr class='row' style = 'padding-top: 90px;height: 118px;width: 260px;'>
+							<td valign="center">
+								<input type="checkbox" name="flagged" value="0" />
+							</td>
+							<td style='text-align: center;'>
+								There is no similar product
+							</td>
+						</tr>
 					{% for sim in similarities%}
 						<tr class='row'>
 							<td valign="center">
@@ -27,14 +35,6 @@
 							</td>
 						</tr>
 					{% endfor %}
-					<tr class='row' style = 'padding-top: 90px;height: 118px;width: 260px;'>
-							<td valign="center">
-								<input type="checkbox" name="flagged" value="0" />
-							</td>
-							<td style='text-align: center;'>
-								There is no similar product
-							</td>
-						</tr>
 					<tr>
 						{% if assignmentId %}
 							<td><button type='submit'> Submit</button></td>
