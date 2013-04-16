@@ -36,9 +36,10 @@ def index(request, key):
 
 	if request.method == 'POST':
 		reference_result = request.POST['flagged']
+		response['flagged'] = reference_result
 		helper.save_result(reference_result, response['hitId'], response['assignmentId'], response['workerId'])
-		crawler = Crawler()
-		# Posting data to amazon mturk
-		crawler.post(url = response['turkSubmitTo'], data = response)
+		# crawler = Crawler()
+		# # Posting data to amazon mturk
+		# crawler.post(url = response['turkSubmitTo'], data = response)
 
 	return render(request, 'mturk/index.html', response)
