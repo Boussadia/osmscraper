@@ -14,4 +14,4 @@ class ResultTask(models.Model):
 	assignementId = models.CharField(max_length = 100)
 	workerId = models.CharField(max_length = 100, null = True)
 	task = models.ForeignKey(Task)
-	reference = models.CharField(max_length = 100)
+	reference = models.CharField(max_length = 100, null = True)

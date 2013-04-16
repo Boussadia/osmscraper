@@ -38,6 +38,45 @@ class MturkHelper(object):
 		else:
 			self.task = self.get_task()
 
+		self.mtc = MTurkConnection(aws_access_key_id=MturkHelper.AWS_ACCESS_KEY_ID,
+									aws_secret_access_key=MturkHelper.AWS_SECRET_ACCESS_KEY,
+									host=settings.HOST)
+
+	def get_all_reviewable_hits(self):
+		page_size = 50
+		hits = self.mtc.get_reviewable_hits(page_size=page_size)
+		print "Total results to fetch %s " % hits.TotalNumResults
+		print "Request hits page %i" % 1
+		total_pages = float(hits.TotalNumResults)/page_size
+		int_total= int(total_pages)
+		if(total_pages-int_total>0):
+			total_pages = int_total+1
+		else:
+			total_pages = int_total
+		pn = 1
+		while pn < total_pages:
+			pn = pn + 1
+			print "Request hits page %i" % pn
+			temp_hits = self.mtc.get_reviewable_hits(page_size=page_size,page_number=pn)
+			hits.extend(temp_hits)
+
+		return hits
+
+	def validate_hits(self):
+		hits = self.get_all_reviewable_hits()
+		
+		for hit in hits:
+			assignments = self.mtc.get_assignments(hit.HITId)
+
+		for assignment in assignments:
+			return assignment
+			print "Answers of the worker %s" % assignment.WorkerId
+			for question_form_answer in assignment.answers[0]:
+				return question_form_answer
+				for key, value in question_form_answer.fields:
+					print "%s: %s" % (key,value)
+			print "--------------------"
+
 	def generate_key(self):
 		if self.key is None and self.osm_from is not None and self.osm_to is not None and self.reference is not None:
 			key = '%s-%s-%s'%(self.osm_from, self.osm_to, self.reference)
@@ -126,7 +165,7 @@ class MturkHelper(object):
 			}
 
 
-	def save_result(self, reference_result, hitId, assignment, workerId = None):
+	def save_result(self, hitId, assignment, reference_result = None, workerId = None):
 		self.get_task()
 		result = ResultTask(
 			task = self.task,
@@ -139,20 +178,16 @@ class MturkHelper(object):
 
 	def send_task(self):
 		if self.osm_from is not None and self.osm_to is not None and self.reference is not None:
-			mtc = MTurkConnection(aws_access_key_id=MturkHelper.AWS_ACCESS_KEY_ID,
-									aws_secret_access_key=MturkHelper.AWS_SECRET_ACCESS_KEY,
-									host=settings.HOST)
-
 			title = 'Find the corresponding product'
 			description = ('Select the most appropriate answer')
 			keywords = 'images, selecting, products, matching'
 			self.save_task()
 
-			question = ExternalQuestion('http://www.dalliz.com/mturk/key/%s'%(self.key), 600)
+			question = ExternalQuestion('http://www.dalliz.com/mturk/key/%s'%(self.key), 1106)
 			 
 			#--------------- CREATE THE HIT -------------------
 			 
-			a = mtc.create_hit(question=question,
+			a = self.mtc.create_hit(question=question,
 			               max_assignments=10,
 			               title=title,
 			               description=description,

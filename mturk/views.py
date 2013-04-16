@@ -32,6 +32,8 @@ def index(request, key):
 
 	helper = MturkHelper(key = key)
 	response.update(helper.dump())
+	if response['assignmentId'] is not None and response['assignmentId'] != 'ASSIGNMENT_ID_NOT_AVAILABLE':
+		helper.save_result(hitId = response['hitId'], assignment = response['assignmentId'], workerId = response['workerId'])
 
 	if request.method == 'POST':
 		reference_result = request.POST['flagged']
