@@ -63,7 +63,7 @@ class MturkHelper(object):
 
 		return hits
 
-	def validate_hits(self):
+	def get_hits(self):
 		hits = self.get_all_reviewable_hits()
 		
 		for hit in hits:
@@ -71,6 +71,12 @@ class MturkHelper(object):
 			print "--------------------"
 			print "HitId = %s"%(hit.HITId)
 			assignments = self.mtc.get_assignments(hit.HITId)
+			# Getting task associated to hit
+			task = Task.objects.filter(hitId = hit.HITId)
+			if len(task)>0:
+				task = task[0]
+			else:
+				task = None
 
 			for assignment in assignments:
 				print "AssignmentId = %s"%(assignment.AssignmentId)
@@ -78,6 +84,13 @@ class MturkHelper(object):
 				for question_form_answer in assignment.answers[0]:
 					for value in question_form_answer.fields:
 						print "%s" % (value)
+						# Saving resultTask
+						if task is not None:
+							resulttask, created = ResultTask.objects.get_or_create(task = task, assignementId = assignment.AssignmentId)
+							if created:
+								resulttask.workerId = assignment.WorkerId
+								resulttask.reference = value
+								resulttask.save()
 				print "--------------------"
 
 	def generate_key(self):

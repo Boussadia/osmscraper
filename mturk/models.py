@@ -15,3 +15,6 @@ class ResultTask(models.Model):
 	workerId = models.CharField(max_length = 100, null = True)
 	task = models.ForeignKey(Task)
 	reference = models.CharField(max_length = 100, null = True)
+
+	class Meta:
+		unique_together = ('task', 'assignementId')
