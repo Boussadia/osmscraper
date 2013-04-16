@@ -222,11 +222,12 @@ add_to_builtins('cachebuster.templatetags.cachebuster')
 CACHEBUSTER_PREPEND_STATIC = False
 
 # Sendgrid configuration
-EMAIL_HOST_USER = 'app8267344@heroku.com'
-EMAIL_HOST= 'smtp.sendgrid.net'
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'ahmed@dalli.com'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = 'ihj4wr91'
+EMAIL_HOST_PASSWORD = '2asefthukom,dalliz3'
 
 # Memcachier configuration
 def get_cache():
