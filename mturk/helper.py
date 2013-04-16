@@ -102,16 +102,16 @@ class MturkHelper(object):
 		hits = Task.objects.filter(processed = False)
 
 		for hit in hits:
-			results = list(ResultTask.objects.filter(task = hit))
-			lenght = len(results)
+			results = list(ResultTask.objects.filter(task = hit, reference__isnull = False))
+			length = len(results)
 			values = {}
 
 			for r in results:
 				value = r.reference
 				if value in values:
-					values[value] = values[value] + 1/lenght
+					values[value] = values[value] + 1.0/length
 				else:
-					values[value] = 1.0/lenght
+					values[value] = 1.0/length
 
 			sorted_values = sorted(values, key = lambda x : -values[x])
 
@@ -120,7 +120,13 @@ class MturkHelper(object):
 				if max_value>=thereshold:
 					print 'thereshold !'
 					print hit
-					print sorted_values[0]
+					print sorted_values
+				else:
+					# For the moment, if threshold not ok, approve everything
+					[self.mtc.approve_assignment(r.assignementId) for r in results]
+					hit.processed = True
+					hit.save()
+
 
 	def generate_key(self):
 		if self.key is None and self.osm_from is not None and self.osm_to is not None and self.reference is not None:
