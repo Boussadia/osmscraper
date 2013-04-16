@@ -6,6 +6,7 @@ class Task(models.Model):
 	osm_from = models.CharField(max_length = 100)
 	osm_to = models.CharField(max_length = 100)
 	reference = models.CharField(max_length = 100)
+	processed = models.BooleanField(default = False)
 
 	class Meta:
 		unique_together = ("key", "osm_from", "osm_to", "reference")

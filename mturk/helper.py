@@ -28,6 +28,7 @@ class MturkHelper(object):
 		AWS_SECRET_ACCESS_KEY = 'e6/8e5lcCcESPKT/fe6kYkJtf0+7F2w7459WTJ0v'
 		AWS_ACCESS_KEY_ID = 'AKIAIP5JQO7FQX6Q7JAQ'
 
+
 	def __init__(self, reference = None, osm_from = None, osm_to = None, key = None, hitid = None):
 		self.reference = reference
 		self.osm_from = osm_from
@@ -92,6 +93,27 @@ class MturkHelper(object):
 								resulttask.reference = value
 								resulttask.save()
 				print "--------------------"
+
+	def validate(self):
+		"""
+			Validating results from hits
+		"""
+		thereshold = .7
+		hits = Task.objects.filter(processed = False)
+
+		for hit in hits:
+			results = list(ResultTask.objects.filter(task = hit))
+			lenght = len(results)
+			values = {}
+
+			for r in results:
+				value = r.reference
+				if value in values:
+					r[values] = r[values] + 1
+				else:
+					r[values] = 1
+
+			print values
 
 	def generate_key(self):
 		if self.key is None and self.osm_from is not None and self.osm_to is not None and self.reference is not None:
