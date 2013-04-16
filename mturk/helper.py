@@ -109,11 +109,18 @@ class MturkHelper(object):
 			for r in results:
 				value = r.reference
 				if value in values:
-					values[value] = values[value] + 1
+					values[value] = values[value] + 1/lenght
 				else:
-					values[value] = 1
+					values[value] = 1.0/lenght
 
-			print values
+			sorted_values = sorted(values, key = lambda x : -values[x])
+
+			if len(sorted_values)>0:
+				max_value = values[sorted_values[0]]
+				if max_value>0=thereshold:
+					print 'thereshold !'
+					print hit
+					print sorted_values[0]
 
 	def generate_key(self):
 		if self.key is None and self.osm_from is not None and self.osm_to is not None and self.reference is not None:
