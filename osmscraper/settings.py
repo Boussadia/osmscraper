@@ -223,11 +223,11 @@ CACHEBUSTER_PREPEND_STATIC = False
 
 # Sendgrid configuration
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'ahmed@dalliz.com'
+EMAIL_HOST_USER = 'hello@dalliz.com'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = '2asefthukom,dalliz3'
+EMAIL_HOST_PASSWORD = 'MaBaAb12!hello'
 
 # Memcachier configuration
 def get_cache():
