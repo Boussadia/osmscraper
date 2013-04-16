@@ -112,5 +112,5 @@ class MturkHelper(object):
 			               title=title,
 			               description=description,
 			               keywords=keywords,
-			               duration = 60*5,
+			               duration = 3600*5,
 			               reward=0.01)
