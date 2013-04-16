@@ -28,11 +28,12 @@ class MturkHelper(object):
 		AWS_SECRET_ACCESS_KEY = 'e6/8e5lcCcESPKT/fe6kYkJtf0+7F2w7459WTJ0v'
 		AWS_ACCESS_KEY_ID = 'AKIAIP5JQO7FQX6Q7JAQ'
 
-	def __init__(self, reference = None, osm_from = None, osm_to = None, key = None):
+	def __init__(self, reference = None, osm_from = None, osm_to = None, key = None, hitid = None):
 		self.reference = reference
 		self.osm_from = osm_from
 		self.osm_to = osm_to
 		self.key = key
+		self.hitid = hitid
 		if key is None:
 			self.task = None
 		else:
@@ -66,16 +67,18 @@ class MturkHelper(object):
 		hits = self.get_all_reviewable_hits()
 		
 		for hit in hits:
+			print "####################"
+			print "--------------------"
+			print "HitId = %s"%(hit.HITId)
 			assignments = self.mtc.get_assignments(hit.HITId)
 
-		for assignment in assignments:
-			return assignment
-			print "Answers of the worker %s" % assignment.WorkerId
-			for question_form_answer in assignment.answers[0]:
-				return question_form_answer
-				for key, value in question_form_answer.fields:
-					print "%s: %s" % (key,value)
-			print "--------------------"
+			for assignment in assignments:
+				print "AssignmentId = %s"%(assignment.AssignmentId)
+				print "Answers of the worker %s" % assignment.WorkerId
+				for question_form_answer in assignment.answers[0]:
+					for value in question_form_answer.fields:
+						print "%s" % (value)
+				print "--------------------"
 
 	def generate_key(self):
 		if self.key is None and self.osm_from is not None and self.osm_to is not None and self.reference is not None:
@@ -86,11 +89,16 @@ class MturkHelper(object):
 			return None
 
 	def save_task(self):
-		if self.generate_key() is not None:
+		self.generate_key()
+		if self.key is not None:
 			self.task, created = Task.objects.get_or_create(key = self.key, osm_from = self.osm_from, osm_to = self.osm_to, reference = self.reference)
+			if self.hitid is not None and self.task.hitId is None:
+				self.task.hitId = self.hitid
+				self.task.save()
 			self.osm_from = self.task.osm_from
 			self.osm_to = self.task.osm_to
 			self.reference = self.task.reference
+			self.hitid = self.task.hitId
 
 
 	def get_task(self):
@@ -165,13 +173,12 @@ class MturkHelper(object):
 			}
 
 
-	def save_result(self, hitId, assignment, reference_result = None, workerId = None):
+	def save_result(self, assignment, reference_result = None, workerId = None):
 		self.get_task()
 		result = ResultTask(
 			task = self.task,
 			workerId = workerId,
 			assignementId = assignment,
-			hitId = hitId,
 			reference = reference_result
 			)
 		result.save()
