@@ -109,9 +109,9 @@ class MturkHelper(object):
 			for r in results:
 				value = r.reference
 				if value in values:
-					r[values] = r[values] + 1
+					values[value] = values[value] + 1
 				else:
-					r[values] = 1
+					values[value] = 1
 
 			print values
 
