@@ -117,7 +117,7 @@ class MturkHelper(object):
 
 			if len(sorted_values)>0:
 				max_value = values[sorted_values[0]]
-				if max_value>0=thereshold:
+				if max_value>=thereshold:
 					print 'thereshold !'
 					print hit
 					print sorted_values[0]
