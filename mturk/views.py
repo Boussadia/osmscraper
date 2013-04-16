@@ -17,7 +17,7 @@ def index(request, key):
 	response['assignmentId'] = None
 	response['workerId'] = None
 	response['hitId'] = None
-	response['turkSubmitTo'] = None
+	response['turkSubmitTo'] = 'https://workersandbox.mturk.com/mturk/externalSubmit'
 	response['key'] = key
 
 	method = request.method
