@@ -1,3 +1,9 @@
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
+
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
@@ -31,6 +37,8 @@ def index(request, key):
 		if 'turkSubmitTo' in parameters:
 			response['turkSubmitTo'] = unicode(parameters['turkSubmitTo']) + '/mturk/externalSubmit'
 
+	logger.info('URl Submit To : %s'%(str(response['turkSubmitTo'])))
+
 	helper = MturkHelper(key = key)
 	response.update(helper.dump())
 
@@ -40,6 +48,8 @@ def index(request, key):
 		if response['turkSubmitTo'] is not None:
 			crawler = Crawler()
 			# Posting data to amazon mturk
-			crawler.post(url = response['turkSubmitTo'], data = response)
+			r, c = crawler.post(url = response['turkSubmitTo'], data = response)
+			logging.info('Response to post (%d) :'%c)
+			logging.info(r)
 
 	return render(request, 'mturk/index.html', response)
