@@ -199,7 +199,13 @@ djcelery.setup_loader()
 # S3 Storage for static files (production environnement)
 AWS_ACCESS_KEY_ID = 'AKIAIGSH7FB6CXL277VQ'
 AWS_SECRET_ACCESS_KEY = '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'
-HOST = 'mechanicalturk.sandbox.amazonaws.com'
+SANDBOX = False
+
+if SANDBOX:
+    HOST = 'mechanicalturk.sandbox.amazonaws.com'
+else:
+    HOST = 'mechanicalturk.amazonaws.com'
+
 if not DEBUG:
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     STATICFILES_STORAGE = DEFAULT_FILE_STORAGE

@@ -22,6 +22,9 @@ class MturkHelper(object):
 			- osm_to : the osm to look into
 	"""
 
+	AWS_SECRET_ACCESS_KEY = 'e6/8e5lcCcESPKT/fe6kYkJtf0+7F2w7459WTJ0v'
+	AWS_ACCESS_KEY_ID = 'AKIAIP5JQO7FQX6Q7JAQ'
+
 	def __init__(self, reference = None, osm_from = None, osm_to = None, key = None):
 		self.reference = reference
 		self.osm_from = osm_from
@@ -63,7 +66,7 @@ class MturkHelper(object):
 			'index_name': self.osm_to,
 			self.osm_from+'_product__reference':self.reference
 		}
-		similarities = ProductSimilarity.objects.filter(**kwargs).order_by('-score')[:10]
+		similarities = ProductSimilarity.objects.filter(**kwargs).order_by('-score')[:11]
 		return similarities
 
 	def dump(self):
@@ -94,8 +97,8 @@ class MturkHelper(object):
 
 	def send_task(self):
 		if self.osm_from is not None and self.osm_to is not None and self.reference is not None:
-			mtc = MTurkConnection(aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-									aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+			mtc = MTurkConnection(aws_access_key_id=MturkHelper.AWS_ACCESS_KEY_ID,
+									aws_secret_access_key=MturkHelper.AWS_SECRET_ACCESS_KEY,
 									host=settings.HOST)
 
 			title = 'Find the corresponding product'
@@ -108,9 +111,9 @@ class MturkHelper(object):
 			#--------------- CREATE THE HIT -------------------
 			 
 			a = mtc.create_hit(question=question,
-			               max_assignments=1,
+			               max_assignments=10,
 			               title=title,
 			               description=description,
 			               keywords=keywords,
-			               duration = 3600*5,
+			               duration = 3600*24*7,
 			               reward=0.01)
