@@ -29,7 +29,7 @@ def index(request, key):
 			response['workerId'] = parameters['workerId']
 
 		if 'turkSubmitTo' in parameters:
-			response['turkSubmitTo'] = parameters['turkSubmitTo']
+			response['turkSubmitTo'] = unicode(parameters['turkSubmitTo']) + '/mturk/externalSubmit'
 
 	helper = MturkHelper(key = key)
 	response.update(helper.dump())
@@ -37,8 +37,9 @@ def index(request, key):
 	if request.method == 'POST':
 		reference_result = request.POST['flagged']
 		helper.save_result(reference_result, response['hitId'], response['assignmentId'], response['workerId'])
-		crawler = Crawler()
-		# Posting data to amazon mturk
-		crawler.post(url = response['turkSubmitTo'], data = response)
+		if response['turkSubmitTo'] is not None:
+			crawler = Crawler()
+			# Posting data to amazon mturk
+			crawler.post(url = response['turkSubmitTo'], data = response)
 
 	return render(request, 'mturk/index.html', response)
