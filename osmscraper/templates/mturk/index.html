@@ -5,8 +5,8 @@
 	<body>
 		<h3>Select ONE image to match the products</h3>
 		<div class="highlight-box">
-		<p>Match THE photo corresponding to the framed product</p>
-		<p style='color: red; font-weight:bold;'> The 2 photos must represent the same product (brand, packaging, size). For instance a 1.5 l Pepsi Max bottle is not the same as a 6 pack of 1.5 l Pepsi Max. </p>
+		<p>Match THE UNIQUE photo corresponding to the framed product</p>
+		<p style='color: red; font-weight:bold;'> The 2 photos must represent the same product : same brand, same packaging, same quantity. For instance a 1.5 l Pepsi Max bottle is not the same as a 6 pack of 1.5 l Pepsi Max. </p>
 		</div>
 		<form action='{{turkSubmitTo}}' method='post'>
 			{% if assignmentId %}
@@ -23,9 +23,9 @@
 			<p>&nbsp;</p>
 			<table cellspacing="4" cellpadding="0">
 				<tbody>
-					<tr class='row' style = 'padding-top: 83px;height: 109px;width: 210px;'>
+					<tr class='row' style = 'padding-top: 83px;height: 111px;width: 212px;'>
 							<td valign="center">
-								<input type="checkbox" name="flagged" value="0" />
+								<input type="radio" name="flagged" value="0" />
 							</td>
 							<td style='text-align: center;'>
 								There is no similar product
@@ -34,7 +34,7 @@
 					{% for sim in similarities%}
 						<tr class='row'>
 							<td valign="center">
-								<input type="checkbox" name="flagged" value="{{sim.reference}}" />
+								<input type="radio" name="flagged" value="{{sim.reference}}" />
 							</td>
 							<td>
 								<img width="150" height="150" alt="{{sim.reference}}" style="margin-right: 30px;" src="{{sim.img}}" />

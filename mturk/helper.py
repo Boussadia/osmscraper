@@ -120,7 +120,7 @@ class MturkHelper(object):
 			product = getattr(sim, self.osm_to+'_product')
 			history = product.history_set.all()[0]
 			try:
-				quantity = float(int(history.price/history.unit_price*10))/10
+				quantity = round(history.price/history.unit_price/.5)*.5
 
 				if product.unit is not None:
 					unit = product.unit.name
@@ -141,7 +141,7 @@ class MturkHelper(object):
 			product = getattr(sim, self.osm_from+'_product')
 			history = product.history_set.all()[0]
 			try:
-				quantity = float(int(history.price/history.unit_price*10))/10
+				quantity = round(history.price/history.unit_price/.5)*.5
 
 				if product.unit is not None:
 					unit = product.unit.name
