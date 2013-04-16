@@ -17,7 +17,6 @@ def index(request, key):
 	method = request.method
 	parameters = getattr(request, method)
 
-
 	if method == 'GET' or method == 'POST':
 		if 'assignmentId' in parameters:
 			response['assignmentId'] = parameters['assignmentId']

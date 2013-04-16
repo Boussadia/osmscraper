@@ -21,9 +21,12 @@ class MturkHelper(object):
 			- osm_from : the origin osm of a product
 			- osm_to : the osm to look into
 	"""
-
-	AWS_SECRET_ACCESS_KEY = 'e6/8e5lcCcESPKT/fe6kYkJtf0+7F2w7459WTJ0v'
-	AWS_ACCESS_KEY_ID = 'AKIAIP5JQO7FQX6Q7JAQ'
+	if settings.SANDBOX:
+		AWS_SECRET_ACCESS_KEY = settings.AWS_SECRET_ACCESS_KEY
+		AWS_ACCESS_KEY_ID = settings.AWS_ACCESS_KEY_ID
+	else:
+		AWS_SECRET_ACCESS_KEY = 'e6/8e5lcCcESPKT/fe6kYkJtf0+7F2w7459WTJ0v'
+		AWS_ACCESS_KEY_ID = 'AKIAIP5JQO7FQX6Q7JAQ'
 
 	def __init__(self, reference = None, osm_from = None, osm_to = None, key = None):
 		self.reference = reference
@@ -64,7 +67,9 @@ class MturkHelper(object):
 		kwargs = {
 			'query_name': self.osm_from,
 			'index_name': self.osm_to,
-			self.osm_from+'_product__reference':self.reference
+			self.osm_from+'_product__reference':self.reference,
+			self.osm_from+'_product__brand__brandmatch__dalliz_brand__is_mdd':False,
+			self.osm_to+'_product__productmatch__isnull': True,
 		}
 		similarities = ProductSimilarity.objects.filter(**kwargs).order_by('-score')[:11]
 		return similarities
@@ -117,3 +122,43 @@ class MturkHelper(object):
 			               keywords=keywords,
 			               duration = 3600*24*7,
 			               reward=0.01)
+
+
+class ProductMtruckHelper(MturkHelper):
+	"""
+		Initializing MTruk by product.
+	"""
+
+	def __init__(self, product, osm_from, osm_to):
+		super(ProductMtruckHelper, self).__init__(product.reference, osm_from, osm_to)
+		self.product = product
+
+class CategoryMturkHelper(object):
+	"""
+		Sending tasks to mturk for all products in Category (Dalliz Category)
+	"""
+
+	def __init__(self, category, osm_from, osm_to):
+		self.category = category
+		self.osm_from = osm_from
+		self.osm_to = osm_to
+		self.set_products()
+
+	def set_products(self):
+		self.products = []
+
+		[[self.products.append(p) for p in c.product_set.filter(
+									productmatch__isnull = True,
+									brand__brandmatch__dalliz_brand__is_mdd = False)]
+
+		for c in getattr(self.category, self.osm_from+'_category_dalliz_category').all()]
+	def send_tasks(self):
+		"""
+			Sending tasks to amazon mturk.
+		"""
+
+		for p in self.products:
+			print p
+			helper = ProductMtruckHelper(p, self.osm_from, self.osm_to)
+			helper.send_task()
+		
