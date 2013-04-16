@@ -6,6 +6,7 @@
 		<h3>Select ONE image to match the products</h3>
 		<div class="highlight-box">
 		<p>Match THE photo corresponding to the framed product</p>
+		<p style='color: red; font-weight:bold;'> The 2 photos must represent the same product (brand, packaging, size). For instance a 1.5 l Pepsi Max bottle is not the same as a 6 pack of 1.5 l Pepsi Max. </p>
 		</div>
 		<form action='{{turkSubmitTo}}' method='post'>
 			{% if assignmentId %}
@@ -13,11 +14,15 @@
 				<input type='hidden' name='hitId' value='{{hitId}}'>
 			{% endif %}
 			<p>&nbsp;</p>
-			<div style="margin-left: 250px;"><img width="200" height="200" style="border: 5px solid black;" src="{{product_img}}" alt="" /></div>
+			<div style="margin-left: 250px;">
+				<img width="150" height="150" style="border: 5px solid black;" src="{{product_img}}" alt="" />
+				<p> Quantity : {{product_quantity}} {{product_unit}}</p>
+			</div>
+			
 			<p>&nbsp;</p>
 			<table cellspacing="4" cellpadding="0">
 				<tbody>
-					<tr class='row' style = 'padding-top: 90px;height: 118px;width: 260px;'>
+					<tr class='row' style = 'padding-top: 83px;height: 109px;width: 210px;'>
 							<td valign="center">
 								<input type="checkbox" name="flagged" value="0" />
 							</td>
@@ -31,7 +36,8 @@
 								<input type="checkbox" name="flagged" value="{{sim.reference}}" />
 							</td>
 							<td>
-								<img width="200" height="200" alt="{{sim.reference}}" style="margin-right: 30px;" src="{{sim.img}}" />
+								<img width="150" height="150" alt="{{sim.reference}}" style="margin-right: 30px;" src="{{sim.img}}" />
+								<p> Quantity : {{sim.quantity}} {{sim.unit}}</p>
 							</td>
 						</tr>
 					{% endfor %}

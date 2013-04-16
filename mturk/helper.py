@@ -69,7 +69,7 @@ class MturkHelper(object):
 			'index_name': self.osm_to,
 			self.osm_from+'_product__reference':self.reference,
 			self.osm_from+'_product__brand__brandmatch__dalliz_brand__is_mdd':False,
-			self.osm_to+'_product__productmatch__isnull': True,
+			self.osm_to+'_product__productmatch__isnull': True
 		}
 		similarities = ProductSimilarity.objects.filter(**kwargs).order_by('-score')[:11]
 		return similarities
@@ -78,15 +78,52 @@ class MturkHelper(object):
 		similarities = self.get_product_similarities()
 		data = []
 		for sim in similarities:
+			product = getattr(sim, self.osm_to+'_product')
+			history = product.history_set.all()[0]
+			try:
+				quantity = float(int(history.price/history.unit_price*10))/10
+
+				if product.unit is not None:
+					unit = product.unit.name
+				else:
+					unit = None
+			except Exception, e:
+				quantity = None
+				unit = None
+				
 			data.append({
-				'reference': getattr(sim, self.osm_to+'_product').reference,
-				'img': getattr(sim, self.osm_to+'_product').image_url,
+				'reference': product.reference,
+				'img': product.image_url,
+				'quantity':quantity,
+				'unit':unit,
 				})
 
-		return {
-			'product_img': getattr(sim, self.osm_from+'_product').image_url,
-			'similarities': data,
-		}
+		if sim:
+			product = getattr(sim, self.osm_from+'_product')
+			history = product.history_set.all()[0]
+			try:
+				quantity = float(int(history.price/history.unit_price*10))/10
+
+				if product.unit is not None:
+					unit = product.unit.name
+				else:
+					unit = None
+			except Exception, e:
+				quantity = None
+				unit = None
+			return {
+				'product_img': product.image_url,
+				'similarities': data,
+				'product_quantity': quantity,
+				'product_unit': unit
+			}
+		else:
+			return {
+				'product_img': None,
+				'product_quantity': None,
+				'product_unit': None,
+				'similarities': [],
+			}
 
 
 	def save_result(self, reference_result, hitId, assignment, workerId = None):
@@ -146,12 +183,18 @@ class CategoryMturkHelper(object):
 
 	def set_products(self):
 		self.products = []
+		kwargs = {
+			'productmatch__isnull': True,
+			'brand__brandmatch__dalliz_brand__is_mdd': False,
+			'productsimilarity__isnull': False,
+			'exsits': True,
+			'stemmed_text__isnull': False
+		}
 
-		[[self.products.append(p) for p in c.product_set.filter(
-									productmatch__isnull = True,
-									brand__brandmatch__dalliz_brand__is_mdd = False)]
+		[[self.products.append(p) for p in c.product_set.filter(**kwargs)] for c in getattr(self.category, self.osm_from+'_category_dalliz_category').all()]
 
-		for c in getattr(self.category, self.osm_from+'_category_dalliz_category').all()]
+		self.products = list(set(self.products))
+
 	def send_tasks(self):
 		"""
 			Sending tasks to amazon mturk.
