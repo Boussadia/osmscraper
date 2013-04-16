@@ -223,7 +223,7 @@ CACHEBUSTER_PREPEND_STATIC = False
 
 # Sendgrid configuration
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'ahmed@dalli.com'
+EMAIL_HOST_USER = 'ahmed@dalliz.com'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
