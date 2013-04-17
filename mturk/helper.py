@@ -5,9 +5,11 @@ from django.conf import settings
 from boto.mturk.connection import MTurkConnection
 from boto.mturk.question import ExternalQuestion
 
+from monoprix.models import Product as MonoprixProduct
+from auchan.models import Product as AuchanProduct
+from ooshop.models import Product as OoshopProduct
 from mturk.models import Task, ResultTask
-
-from matcher.models import ProductSimilarity
+from matcher.models import ProductSimilarity, ProductMatch
 
 
 class MturkHelper(object):
@@ -83,15 +85,17 @@ class MturkHelper(object):
 				print "AssignmentId = %s"%(assignment.AssignmentId)
 				print "Answers of the worker %s" % assignment.WorkerId
 				for question_form_answer in assignment.answers[0]:
-					for value in question_form_answer.fields:
-						print "%s" % (value)
-						# Saving resultTask
-						if task is not None:
-							resulttask, created = ResultTask.objects.get_or_create(task = task, assignementId = assignment.AssignmentId)
-							if created:
-								resulttask.workerId = assignment.WorkerId
-								resulttask.reference = value
-								resulttask.save()
+					qid = question_form_answer.qid
+					if qid == 'flagged':
+						for value in question_form_answer.fields:
+							print "%s" % (value)
+							# Saving resultTask
+							if task is not None:
+								resulttask, created = ResultTask.objects.get_or_create(task = task, assignementId = assignment.AssignmentId)
+								if created:
+									resulttask.workerId = assignment.WorkerId
+									resulttask.reference = value
+									resulttask.save()
 				print "--------------------"
 
 	def validate(self):
@@ -103,6 +107,14 @@ class MturkHelper(object):
 
 		for hit in hits:
 			results = list(ResultTask.objects.filter(task = hit, reference__isnull = False))
+			# Getting associate product
+			osm_from = hit.osm_from
+			osm_to = hit.osm_to
+			reference = hit.reference
+			OsmFromProduct = globals()['%sProduct'%(osm_from.capitalize())]
+			productFrom = OsmFromProduct.objects.get(reference = reference)
+
+			OsmToProduct = globals()['%sProduct'%(osm_to.capitalize())]
 			length = len(results)
 			values = {}
 
@@ -121,6 +133,7 @@ class MturkHelper(object):
 					print 'thereshold !'
 					print hit
 					print sorted_values
+					# Getting Product 
 				else:
 					# For the moment, if threshold not ok, approve everything
 					[self.mtc.approve_assignment(r.assignementId) for r in results]

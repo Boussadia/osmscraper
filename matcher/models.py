@@ -119,15 +119,6 @@ class BrandSimilarity(models.Model):
 
 		return '%s : From %s to %s, %s -> %s with score %f'%(self.created, self.query_name, self.index_name, query_from, index_to, self.score)
 
-class PossibleMatch(models.Model):
-	monoprix_product = models.ForeignKey(MonoprixProduct, null = True)
-	ooshop_product = models.ForeignKey(OoshopProduct, null = True)
-	auchan_product = models.ForeignKey(AuchanProduct, null = True)
-	created = models.DateTimeField(auto_now_add=True)
-
-	def __unicode__(self):
-		return '%s | %s | %s'%(str(self.monoprix_product), str(self.ooshop_product), str(self.auchan_product))
-
 class ProductMatch(models.Model):
 	monoprix_product = models.ForeignKey(MonoprixProduct, null = True, unique = True)
 	ooshop_product = models.ForeignKey(OoshopProduct, null = True, unique = True)
