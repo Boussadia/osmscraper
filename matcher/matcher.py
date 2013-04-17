@@ -25,6 +25,8 @@ class Matcher(object):
 		It detects when new documents are added to the database, creates similarities between documents
 		and save matches in database.
 
+		TODO : Merge tag list.
+
 	"""
 	DEFAULT_INDEXER_CLASSES = []
 	def __init__(self, indexer_classes = DEFAULT_INDEXER_CLASSES, LogEntity = MatcherLog, SimilarityEntity = ProductSimilarity):

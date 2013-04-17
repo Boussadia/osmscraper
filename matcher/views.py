@@ -211,16 +211,14 @@ def category(request, osm, category_id):
 
 		# return HttpResponse(json.dumps(response))
 
-	return render(request, 'matcher/category.html', response);
+	return render(request, 'matcher/category.html', response)
 
 def get_match(product, osm):
 	#Getting matched osms products
-	if osm == 'auchan':
-		match = ProductMatch.objects.filter(auchan_product = product)
-	if osm == 'ooshop':
-		match = ProductMatch.objects.filter(ooshop_product = product)
-	if osm == 'monoprix':
-		match = ProductMatch.objects.filter(monoprix_product = product)
+	kwargs = {
+		osm+'_product': product
+	}
+	match = ProductMatch.objects.filter(**kwargs)
 
 	if len(match) ==0:
 		return None
@@ -270,14 +268,7 @@ def set_categories_to_product(product, dalliz_categories, osm, set_match = True)
 			#Getting matched osms products
 			match = get_match(product, osm)
 			if match:
-				for other_osm in available_osms.keys():
-					if other_osm != osm:
-						if other_osm == 'auchan':
-							set_categories_to_product(match.auchan_product, dalliz_categories, other_osm, set_match = False) 
-						if other_osm == 'ooshop':
-							set_categories_to_product(match.ooshop_product, dalliz_categories, other_osm, set_match = False)
-						if other_osm == 'monoprix':
-							set_categories_to_product(match.monoprix_product, dalliz_categories, other_osm, set_match = False)
+				[ set_categories_to_product(getattr(match,other_osm+'_product'), dalliz_categories, other_osm, set_match = False)  for other_osm in available_osms.keys() if other_osm != osm]
 
 
 def set_tags_to_product(product, tags, osm, set_match = True):
@@ -287,6 +278,7 @@ def set_tags_to_product(product, tags, osm, set_match = True):
 	# Clearing tags of products
 	if product is not None:
 		old_tags = product.tag.all()
+
 		new, common, removed = diff(old_tags, tags)
 		for t in new:
 			try:
@@ -299,18 +291,8 @@ def set_tags_to_product(product, tags, osm, set_match = True):
 			except Exception, e:
 				connection._rollback()
 
-		if set_match:
-			#Getting matched osms products
-			match = get_match(product, osm)
-			if match:
-				for other_osm in available_osms.keys():
-					if other_osm != osm:
-						if other_osm == 'auchan':
-							set_tags_to_product(match.auchan_product, tags, other_osm, set_match = False) 
-						if other_osm == 'ooshop':
-							set_tags_to_product(match.ooshop_product, tags, other_osm, set_match = False)
-						if other_osm == 'monoprix':
-							set_tags_to_product(match.monoprix_product, tags, other_osm, set_match = False)
+		if set_match and match is not None:
+			[ set_tags_to_product(getattr(match,other_osm+'_product'), tags, other_osm, set_match = False)  for other_osm in available_osms.keys() if other_osm != osm]
 
 def comment(request, osm, product_id):
 	"""
