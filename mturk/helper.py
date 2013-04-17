@@ -197,6 +197,7 @@ class MturkHelper(object):
 
 						hit.processed = True
 						hit.save()
+						self.mtc.disable_hit(hit.hitId)
 
 
 					# Getting Product 
