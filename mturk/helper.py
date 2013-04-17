@@ -11,6 +11,7 @@ from ooshop.models import Product as OoshopProduct
 from mturk.models import Task, ResultTask
 from matcher.models import ProductSimilarity, ProductMatch
 
+osms = ['auchan', 'monoprix', 'ooshop']
 
 class MturkHelper(object):
 	"""
@@ -116,7 +117,11 @@ class MturkHelper(object):
 			kwargs = {
 				osm_from+'_product': productFrom
 			}
-			product_match, created = ProductMatch.objects.get_or_create(**kwargs)
+			product_match = ProductMatch.objects.filter(**kwargs)
+			if len(product_match) >0:
+				product_match = product_match[0]
+			else:
+				product_match = None
 
 			OsmToProduct = globals()['%sProduct'%(osm_to.capitalize())]
 			length = len(results)
@@ -139,6 +144,8 @@ class MturkHelper(object):
 					reference_match = sorted_values[0]
 					if reference_match == '0' or reference_match == 0:
 						# No match
+						if product_match is None:
+							product_match = ProductMatch(**kwargs)
 						setattr(product_match, osm_to+'_product', None)
 						product_match.save()
 						process_validation = True
@@ -146,6 +153,33 @@ class MturkHelper(object):
 						productTo = OsmToProduct.objects.filter(reference = reference_match)
 						if len(productTo) > 0:
 							productTo = productTo[0]
+							if product_match is None:
+								kwargs_bis = {
+									osm_to+'_product': productTo
+								}
+								product_match = ProductMatch.objects.filter(**kwargs_bis)
+								if len(product_match)>0:
+									product_match = product_match[0]
+								else:
+									product_match = ProductMatch(**kwargs)
+							else:
+								kwargs_bis = {
+									osm_to+'_product': productTo
+								}
+								product_match_bis = ProductMatch.objects.filter(**kwargs_bis)
+
+								if len(product_match_bis) == 0:
+									pass
+								else:
+									# Migrate product_match_bis to product_match and delete
+									for o in osms:
+										if o != osm_from and o != osm_to:
+											o_product = getattr(product_match_bis, o+'_product')
+											setattr(product_match_bis, o+'_product', None)
+											product_match_bis.save()
+											setattr(product_match, o+'_product', o_product)
+									product_match_bis.delete()
+
 							setattr(product_match, osm_to+'_product', productTo)
 							product_match.save()
 							process_validation = True
