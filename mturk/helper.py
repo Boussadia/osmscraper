@@ -113,6 +113,10 @@ class MturkHelper(object):
 			reference = hit.reference
 			OsmFromProduct = globals()['%sProduct'%(osm_from.capitalize())]
 			productFrom = OsmFromProduct.objects.get(reference = reference)
+			kwargs = {
+				osm_from+'_product': productFrom
+			}
+			product_match, created = ProductMatch.objects.get_or_create(**kwargs)
 
 			OsmToProduct = globals()['%sProduct'%(osm_to.capitalize())]
 			length = len(results)
@@ -130,9 +134,36 @@ class MturkHelper(object):
 			if len(sorted_values)>0:
 				max_value = values[sorted_values[0]]
 				if max_value>=thereshold:
-					print 'thereshold !'
-					print hit
-					print sorted_values
+					print 'Thereshold !'
+					process_validation = False
+					reference_match = sorted_values[0]
+					if reference_match == '0' or reference_match == 0:
+						# No match
+						setattr(product_match, osm_to+'_product', None)
+						product_match.save()
+						process_validation = True
+					else:
+						productTo = OsmToProduct.objects.filter(reference = reference_match)
+						if len(productTo) > 0:
+							productTo = productTo[0]
+							setattr(product_match, osm_to+'_product', productTo)
+							product_match.save()
+							process_validation = True
+						else:
+							print 'Product from Osm_to not found ... reference = % %s'%reference_match
+
+
+					if process_validation:
+						for r in results:
+							if r.reference == max_value:
+								self.mtc.approve_assignment(r.assignementId)
+							else:
+								self.mtc.reject_assignment(r.assignementId)
+
+						hit.processed = True
+						hit.save()
+
+
 					# Getting Product 
 				else:
 					# For the moment, if threshold not ok, approve everything
