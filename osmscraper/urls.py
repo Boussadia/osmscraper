@@ -29,6 +29,9 @@ urlpatterns = patterns('',
     # Include mturk urls
     url(r'^mturk/', include('mturk.urls')),
 
+     # Include dev frontend urls
+    url(r'^dev/', include('frontend.urls')),
+
     # Tags creator app
     url(r'^backend/tags/(?P<id_category>(\d+))(/(?P<tags>(.+)))?/?$', 'tags.views.tags'),
     url(r'^backend/tags/autocomplete/?$', 'tags.views.autocomplete'),
@@ -75,11 +78,11 @@ urlpatterns = patterns('',
     url(r'^mentions-legales/?$','dalliz.views.mentions'),
     url(r'^partenariat/?$', 'dalliz.views.partenariat'),
     url(r'^conditions-generale-d-utilisation/?$','dalliz.views.cgu'),
-    url(r'^robots\.txt$', TemplateView.as_view(template_name='dalliz/robots.txt') ),#, {'template': 'dalliz/robots.txt', 'mimetype': 'text/plain'}),
-    url(r'^google0b72a6d52b859293\.html$', TemplateView.as_view(template_name='dalliz/google0b72a6d52b859293.html') ),#, {'template': 'dalliz/google0b72a6d52b859293.html', 'mimetype': 'html'}),
-    url(r'^sitemap\.xml$', TemplateView.as_view(template_name='dalliz/sitemap.xml') ),#direct_to_template, {'template': 'dalliz/sitemap.xml', 'mimetype': 'xml'}),
+    url(r'^robots\.txt$', TemplateView.as_view(template_name='dalliz/robots.txt') ),
+    url(r'^google0b72a6d52b859293\.html$', TemplateView.as_view(template_name='dalliz/google0b72a6d52b859293.html') ),
+    url(r'^sitemap\.xml$', TemplateView.as_view(template_name='dalliz/sitemap.xml') ),
     
-    url(r'^.*$', RedirectView.as_view(url='/')),#redirect_to, {'url': '/'}),
+    url(r'^.*$', RedirectView.as_view(url='/')),
     
     # url(r'^produit/(?P<name>((\w)+-?)+)/?$','dalliz.views.product'),
     # url(r'^categorie/(?P<sub_category>((\w)+-?)+)/?$','dalliz.views.category'),
