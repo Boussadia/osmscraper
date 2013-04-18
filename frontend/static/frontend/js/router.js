@@ -7,6 +7,9 @@ define([
 		routes: {
 			'*any':'any'
 		},
+		initialize: function(option){
+			this.vent = option.vent || null;
+		},
 		any: function(any){
 		}
 	});

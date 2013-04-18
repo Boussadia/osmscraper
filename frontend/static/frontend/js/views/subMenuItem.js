@@ -1,0 +1,36 @@
+define([
+	'jquery',
+	'underscore',
+	'backbone',
+	'views/base',
+	'text!../../templates/submenuitem.html'
+	],function( $, _, Backbone, BaseView, subMenuItemTemplate){
+		var MenuItemView = BaseView.extend({
+			// tagName: 'li',
+			// className: 'has-dropdown',
+			template: subMenuItemTemplate,
+			initialize: function(option){
+				this.model = option.model || {};
+			},
+			render: function(){
+				// this.$el.empty();
+				// var template = _.template(this.template);
+				// var data = this.model.toJSON();
+				// data['name'] = data['name'].toUpperCase();
+				// this.$el.append(template(data));
+				return this;
+			},
+
+			events:{
+				'click': 'showClick'
+			},
+
+			showClick: function(e){
+				e.preventDefault();
+				console.log(e.target);
+			}
+		});
+
+		return MenuItemView;
+
+})
