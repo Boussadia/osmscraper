@@ -1,20 +1,14 @@
 define([
 	'backbone',
+	'models/base',
 	'collections/subMenu'
-	], function(Backbone, SubMenuCollection){
-		var MenuItem = Backbone.Model.extend({
+	], function(Backbone, BaseModel, SubMenuCollection){
+		var MenuItem = BaseModel.extend({
 			default:{
 				'name': 'Test',
 				'url': ''
 			},
-			initialize: function(attributes, option){
-				this.vent = option.vent || {};
-				var subs = this.attributes.subs;
-				if (subs !== undefined){
-					this.subMenu =new SubMenuCollection(subs, {'vent': this.vent});
-				}else{
-					this.subMenu = {};
-				}
+			initialize: function(){
 			}
 		});
 		return MenuItem;

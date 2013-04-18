@@ -8,20 +8,17 @@ define([
 	], function($, _, Backbone, BaseView, SubMenuItemView, SubMenuCollection){
 
 		var SubMenuView = BaseView.extend({
-			initialize: function(option){
-				this.vent = option.vent || null;
-				var models = option.models || {};
-				this.subMenuCollection = new SubMenuCollection({}, {'vent': this.vent, 'models': models});
+			initialize: function(options){
+				options || (options = {});
+				this.models = options.model || {};
+				this.subMenuCollection = new SubMenuCollection(this.models, {'vent': this.vent});
 				this.bindTo(this.subMenuCollection, 'reset', function(a, b){
 					this.render();
 				}, this);
-
-				// Get menu elements from server
-				// this.menuCollection.fetch();
 			},
 			render: function(){
 				this.$el.empty();
-				this.menuCollection.each(function(menuitem){
+				this.subMenuCollection.each(function(menuitem){
 					this.addOne(menuitem);
 				}, this)
 				return this;

@@ -9,8 +9,9 @@ define([
 			// tagName: 'li',
 			// className: 'has-dropdown',
 			template: subMenuItemTemplate,
-			initialize: function(option){
-				this.model = option.model || {};
+			initialize: function(options){
+				options || (options = {});
+				this.model = options.model || {};
 			},
 			render: function(){
 				// this.$el.empty();

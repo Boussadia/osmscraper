@@ -2,16 +2,13 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
+	'collections/base',
 	'models/subMenuItem'
-	],function($, _, Backbone, SubMenuItem){
+	],function($, _, Backbone, BaseCollection, SubMenuItem){
 
-		var SubMenu = Backbone.Collection.extend({
+		var SubMenu = BaseCollection.extend({
 			model: SubMenuItem,
-			initialize: function(attributes, option){
-				if (option) {
-					this.vent = option.vent || null;
-				}
-				
+			initialize: function(){
 			}
 		});
 

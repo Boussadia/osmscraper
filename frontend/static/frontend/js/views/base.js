@@ -6,6 +6,9 @@ define([
 		var BaseView = function (options) {
 			this.bindings = [];
 			this.subViews = [];
+			options || (options = {});
+			this.vent = options.vent || {};
+			
 			Backbone.View.apply(this, [options]);
 		};
 

@@ -9,9 +9,10 @@ define([
 
 		var MenuView = BaseView.extend({
 			el: 'nav#menu ul.left',
-			initialize: function(option){
-				this.vent = option.vent || null;
-				this.menuCollection = new MenuCollection({}, {'vent': this.vent});
+			initialize: function(options){
+				options || (options = {});
+				this.models = options.model || {};
+				this.menuCollection = new MenuCollection(this.models, {'vent': this.vent});
 				this.bindTo(this.menuCollection, 'add remove', function(a, b){
 					this.render();
 				}, this);

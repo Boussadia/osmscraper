@@ -2,14 +2,14 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
+	'collections/base',
 	'models/menuItem'
-	],function($, _, Backbone, MenuItem){
+	],function($, _, Backbone, BaseCollection, MenuItem){
 
-		var Menu = Backbone.Collection.extend({
+		var Menu = BaseCollection.extend({
 			model: MenuItem,
 			url: '/api/categories/all',
-			initialize: function(attributes, option){
-				this.vent = option.vent || null;
+			initialize: function(){
 			},
 			parse: function(resp, xhr){
 				return resp.categories
