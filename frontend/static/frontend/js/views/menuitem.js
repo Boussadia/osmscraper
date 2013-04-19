@@ -17,7 +17,6 @@ define([
 				this.$el.empty();
 				var template = _.template(this.template);
 				var data = this.model.toJSON();
-				data['name'] = data['name'].toUpperCase();
 				this.$el.append(template(data));
 				return this;
 			},
@@ -27,7 +26,7 @@ define([
 			},
 
 			showSubMenu: function(e){
-				e.preventDefault();
+				// e.preventDefault();
 				this.vent.trigger('menu:closeSubViews');
 				this.$el.addClass('show');
 			},

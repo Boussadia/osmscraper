@@ -16,18 +16,8 @@ define([
 				this.$el.empty();
 				var template = _.template(this.template);
 				var data = this.model.toJSON();
-				// data['name'] = data['name'].toUpperCase();
 				this.$el.append(template(data));
 				return this;
-			},
-
-			events:{
-				'click': 'showClick'
-			},
-
-			showClick: function(e){
-				e.preventDefault();
-				console.log(e.target);
 			}
 		});
 

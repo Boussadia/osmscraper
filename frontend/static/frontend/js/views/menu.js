@@ -37,13 +37,9 @@ define([
 				return this;
 			},
 			addOne: function(menuItem){
-				var divider = $('<li>').attr('class', 'divider');
 				var view = new MenuItemView({'model':menuItem, 'vent': this.vent});
 				this.addSubView(view);
 				this.$el.append(view.render().el);
-				this.$el.append(divider);
-
-				// console.log(menuItem.attributes.subs);
 
 				var subMenuView = new SubMenuView({'models': menuItem.attributes.subs, 'vent': this.vent});
 				view.addSubView(subMenuView);

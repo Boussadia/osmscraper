@@ -3,7 +3,7 @@ header {
 	margin-bottom: 200px;
 }
 
-ul#menu {
+#menu {
 	background: white;
 	min-width: 1024px;
 	height: 57px;
@@ -15,22 +15,22 @@ ul#menu {
   	margin-bottom: 1.875em;
 }
 
-#menu ul.left li.divider {
+#menu ul.left .divider {
+	display: inline-block;
+	position: relative;
+	top: -95px;
 	margin-top: 0px;
 	height: 57px;
 	width: 0%;
 	border-left: 1px solid #424242;
 }
 
-#menu ul.left li:last-child {
-	display: none;
+#menu ul.left li:first-child div.divider{
+	visibility: hidden;
 }
 
-#menu:hover ul.left li.divider, #menu .has-dropdown.show ul.left li.divider{
-	margin-top: 0px;
+#menu:hover ul.left .divider, #menu ul.left .has-dropdown.show .divider, #menu ul.left .has-dropdown.show + .has-dropdown .divider{
 	height: 95px;
-	width: 0%;
-	border-left: 1px solid #424242;
 }
 
 #menu ul.left {
@@ -49,7 +49,7 @@ ul#menu {
 	font-size: 71%;
 }
 
-#menu a.mere {
+#menu div.mere {
 	display: block;
 	height: 95px;
 	width: 100%;
@@ -64,7 +64,7 @@ ul#menu {
 	height: 55px;
 }
 
-#menu ul.left a p {
+#menu ul.left p.name {
 	color: #424242;
 	line-height: 100%;
 	text-align: center;
@@ -72,17 +72,20 @@ ul#menu {
 	margin-top: 3px;
 	margin-right: auto;
 	margin-left: auto;
-	visibility: hidden;;
+	visibility: hidden;
 }
 
-#menu:hover p.name, #menu .has-dropdown.show p.name {
+#menu:hover .has-dropdown p.name, #menu .has-dropdown.show p.name {
 	visibility: visible;
+	text-transform: uppercase;
 }
 
 #menu .submenu {
 	width: 400px;
 	height: 250px;
 	left: 0px;
+	position: relative;
+	top: -95px;
 	background-color: #8C8C8C;
 	z-index: 99;
 	display: none;
@@ -103,6 +106,7 @@ ul#menu {
 	color: black;
 	margin-top: 0;
 	height: 30px;
+	text-transform: capitalize;
 }
 
 #menu .dropdown li a {
@@ -111,7 +115,7 @@ ul#menu {
 	color: white;
 }
 
-#menu .has-dropdown:hover a.mere{
+#menu .has-dropdown:hover .mere{
 	background-color: #efefef;
 }
 
@@ -121,4 +125,13 @@ ul#menu {
 
 #menu .has-dropdown.show div.submenu ul.dropdown {
 	visibility: visible;
+}
+
+#logo{
+	background-image:url(../img/header/logo.png);
+	width: 342px;
+	height: 45px;
+	background-size: 342px 45px;
+	background-repeat: no-repeat;
+	display: inline-block;
 }

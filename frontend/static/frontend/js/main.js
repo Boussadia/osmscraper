@@ -1,5 +1,6 @@
 (function(){
 	require.config({
+		urlArgs: "bust=" + (new Date()).getTime(),
 		paths: {
 			'jquery': 'libs/jquery/jquery',
 			'jqueryUi': 'libs/jquery/jqueryui',
@@ -28,8 +29,9 @@
 	require([
 		// Load our app module and pass it to our definition function
 		'app',
-		], function(App){
+		], function(MasterCoursesApp){
 		// The "app" dependency is passed in as "App"
+		var App = new MasterCoursesApp();
 		App.initialize();
 		window.App = App;
 	});
