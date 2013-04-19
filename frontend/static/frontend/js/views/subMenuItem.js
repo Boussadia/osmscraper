@@ -6,19 +6,18 @@ define([
 	'text!../../templates/submenuitem.html'
 	],function( $, _, Backbone, BaseView, subMenuItemTemplate){
 		var MenuItemView = BaseView.extend({
-			// tagName: 'li',
-			// className: 'has-dropdown',
+			tagName: 'li',
 			template: subMenuItemTemplate,
 			initialize: function(options){
 				options || (options = {});
 				this.model = options.model || {};
 			},
 			render: function(){
-				// this.$el.empty();
-				// var template = _.template(this.template);
-				// var data = this.model.toJSON();
+				this.$el.empty();
+				var template = _.template(this.template);
+				var data = this.model.toJSON();
 				// data['name'] = data['name'].toUpperCase();
-				// this.$el.append(template(data));
+				this.$el.append(template(data));
 				return this;
 			},
 

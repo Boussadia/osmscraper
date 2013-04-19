@@ -8,15 +8,18 @@ define([
 	], function($, _, Backbone, BaseView, SubMenuItemView, SubMenuCollection){
 
 		var SubMenuView = BaseView.extend({
+			tagName: 'ul',
+			className: 'dropdown',
 			initialize: function(options){
 				options || (options = {});
-				this.models = options.model || {};
+				this.models = options.models || {};
 				this.subMenuCollection = new SubMenuCollection(this.models, {'vent': this.vent});
-				this.bindTo(this.subMenuCollection, 'reset', function(a, b){
-					this.render();
-				}, this);
+				// this.bindTo(this.subMenuCollection, 'reset', function(a, b){
+				// 	this.render();
+				// }, this);
 			},
 			render: function(){
+				this.closeSubViews();
 				this.$el.empty();
 				this.subMenuCollection.each(function(menuitem){
 					this.addOne(menuitem);
@@ -24,10 +27,9 @@ define([
 				return this;
 			},
 			addOne: function(menuItem){
-				// var divider = $('<li>').attr('class', 'divider');
-				// var view = new MenuItemView({'model':menuItem});
-				// this.$el.append(view.render().el);
-				// this.$el.append(divider);
+				var view = new SubMenuItemView({'model':menuItem});
+				this.addSubView(view);
+				this.$el.append(view.render().el);
 			}
 		});
 

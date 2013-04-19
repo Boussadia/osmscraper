@@ -23,12 +23,16 @@ define([
 			},
 
 			events:{
-				'click': 'showClick'
+				'click': 'showSubMenu'
 			},
 
-			showClick: function(e){
+			showSubMenu: function(e){
 				e.preventDefault();
-				console.log(e.target);
+				this.vent.trigger('menu:closeSubViews');
+				this.$el.addClass('show');
+			},
+			hideSubMenu: function(e){
+				this.$el.removeClass('show');
 			}
 		});
 
