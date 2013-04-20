@@ -4,7 +4,8 @@ define([
 	'backbone',
 	'router',
 	'views/menu',
-], function($, _ , Backbone, Router, MenuView){
+	'views/main'
+], function($, _ , Backbone, Router, MenuView, MainView){
 
 	function MasterCoursesApp(){
 		// Mustache style templatating
@@ -27,45 +28,57 @@ define([
 
 	/*******************************************************************************************************************************************
 	*
-	*											METHOD TRIGGERD BY ROUTE EVENTS
+	*											METHOD TRIGGERED BY ROUTE EVENTS
 	*	
 	*******************************************************************************************************************************************/
 
-	MasterCoursesApp.prototype.category = function(category){
-		console.log(category);
+	MasterCoursesApp.prototype.category = function(options){
+		options || (options = {});
+		var category_id = options.id || null;
+		if(category_id){
+			console.log(category_id);
+		}
 	}
 
 	// Method to call in order to start application
 	MasterCoursesApp.prototype.initialize = function(){
 		// Menu
 		this.Views.menu = new MenuView({'vent': this.Vent});
+		var that = this;
+		// Callback function needed in order to wait for the menu to be built
+		this.Views.menu.build(function(){
+			// Router module
+			var router = new Router({'vent': that.Vent});
+			Backbone.history.start({ pushState: true, root:"/dev"});
 
-		// Router module
-		var router = new Router({'vent': this.Vent});
-		Backbone.history.start({ pushState: true, root:"/dev"});
+			// Use absolute URLs  to navigate to anything not in your Router.
 
-		// Use absolute URLs  to navigate to anything not in your Router.
+			// Only need this for pushState enabled browsers
+			if (Backbone.history && Backbone.history._hasPushState) {
 
-		// Only need this for pushState enabled browsers
-		if (Backbone.history && Backbone.history._hasPushState) {
+				// Use delegation to avoid initial DOM selection and allow all matching elements to bubble
+				$(document).delegate("a:not(.no-hijax)", "click", function(evt) {
+					// Get the anchor href and protcol
+					var href = $(this).attr("href");
+					var protocol = this.protocol + "//";
+					// Ensure the protocol is not part of URL, meaning its relative.
+					// Stop the event bubbling to ensure the link will not cause a page refresh.
+					if (href.slice(protocol.length) !== protocol) {
+						evt.preventDefault();
 
-			// Use delegation to avoid initial DOM selection and allow all matching elements to bubble
-			$(document).delegate("a:not(.no-hijax)", "click", function(evt) {
-				// Get the anchor href and protcol
-				var href = $(this).attr("href");
-				var protocol = this.protocol + "//";
-				// Ensure the protocol is not part of URL, meaning its relative.
-				// Stop the event bubbling to ensure the link will not cause a page refresh.
-				if (href.slice(protocol.length) !== protocol) {
-					evt.preventDefault();
+						// Note by using Backbone.history.navigate, router events will not be
+						// triggered.  If this is a problem, change this to navigate on your
+						// router.
+						router.navigate(href, true);
+					}
+				});
+			}
 
-					// Note by using Backbone.history.navigate, router events will not be
-					// triggered.  If this is a problem, change this to navigate on your
-					// router.
-					router.navigate(href, true);
-				}
-			});
-		}
+		});
+
+		// Main View
+		this.Views.main = new MainView({'vent': this.Vent});
+
 	}
 
 	return MasterCoursesApp;

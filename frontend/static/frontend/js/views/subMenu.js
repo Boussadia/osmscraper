@@ -14,9 +14,10 @@ define([
 				options || (options = {});
 				this.models = options.models || {};
 				this.subMenuCollection = new SubMenuCollection(this.models, {'vent': this.vent});
-				// this.bindTo(this.subMenuCollection, 'reset', function(a, b){
-				// 	this.render();
-				// }, this);
+				this.bindTo(this.subMenuCollection, 'reset', function(a, b){
+					this.render();
+				}, this);
+				this.vent.on('route:category', this.send_category_id, this);
 			},
 			render: function(){
 				this.closeSubViews();
@@ -30,6 +31,10 @@ define([
 				var view = new SubMenuItemView({'model':menuItem});
 				this.addSubView(view);
 				this.$el.append(view.render().el);
+			},
+			get_category_id: function(categoryName){
+				var result = this.subMenuCollection.findWhere({'url': categoryName}) || null;
+				return result;
 			}
 		});
 

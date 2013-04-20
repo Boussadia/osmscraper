@@ -15,25 +15,16 @@ define([
 				this.models = options.model || {};
 				this.menuCollection = new MenuCollection(this.models, {'vent': this.vent});
 
-				// Get menu elements from server
-				var that = this;
-				this.menuCollection.fetch({
-					'success':function(){
-						that.render();
-						that.bindTo(that.menuCollection, 'add remove', function(a, b){
-							this.render();
-						}, that);
-					}
-				});
-
-				this.vent.on('menu:closeSubViews', this.hideSubViews, this)
+				this.vent.on('menu:closeSubViews', this.hideSubViews, this);
+				this.vent.on('route:category', this.send_category_id, this);
 			},
-			render: function(){
+			render: function(callback){
 				this.closeSubViews();
 				this.$el.empty();
 				this.menuCollection.each(function(menuitem){
 					this.addOne(menuitem);
-				}, this)
+				}, this);
+				if (callback) callback();
 				return this;
 			},
 			addOne: function(menuItem){
@@ -45,10 +36,33 @@ define([
 				view.addSubView(subMenuView);
 				view.$el.find('.submenu').append(subMenuView.render().el);
 			},
-
+			build: function(callback){
+				// Get menu elements from server
+				var that = this;
+				this.menuCollection.fetch({
+					'success':function(){
+						that.render(callback);
+						that.bindTo(that.menuCollection, 'add remove', function(a, b){
+							this.render();
+						}, that);
+					}
+				});
+			},
 			hideSubViews: function(e){
 				_.each(this.subViews, function(view){
 					view.hideSubMenu();
+				}, this)
+			},
+			send_category_id: function(options){
+				options || (options = {});
+				var categoryName = options.name || '';
+				var result = null;
+				this.menuCollection.each(function(menuItem){
+					var lookup = menuItem.subMenu.findWhere({'url': categoryName});
+					if (lookup){
+						var category_id = lookup.get('id');
+						this.vent.trigger('route:category', {'id': category_id});
+					};
 				}, this)
 			}
 		});

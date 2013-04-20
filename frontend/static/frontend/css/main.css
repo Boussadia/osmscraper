@@ -58,6 +58,10 @@ header {
 	text-decoration: none;
 }
 
+#menu .show div.mere{
+	background-color: red;
+}
+
 #menu .icone {
 	margin: 0 auto;
 	width: 70px;

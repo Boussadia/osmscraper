@@ -5,7 +5,7 @@ define([
 ], function($, _, Backbone){
 	Router = Backbone.Router.extend({
 		routes: {
-			'categorie/:catgoryName': 'category',
+			'categorie/:categoryName': 'category',
 			'*any':'any'
 		},
 		initialize: function(options){
@@ -13,7 +13,7 @@ define([
 			this.vent = options.vent || null;
 		},
 		category: function(categoryName){
-			this.vent.trigger('route:category', categoryName);
+			this.vent.trigger('route:category', {'name': categoryName});
 		},
 		any: function(any){
 		}
