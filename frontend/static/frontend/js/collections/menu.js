@@ -1,10 +1,7 @@
 define([
-	'jquery',
-	'underscore',
-	'backbone',
 	'collections/base',
 	'models/menuItem'
-	],function($, _, Backbone, BaseCollection, MenuItem){
+	],function(BaseCollection, MenuItem){
 
 		var Menu = BaseCollection.extend({
 			model: MenuItem,

@@ -191,18 +191,6 @@ class CategoryProducts(CategorySimple):
 				kwargs_location_history['history__shipping_area__id'] = osm_location
 				kwargs_location_promotion['shipping_area__id'] = osm_location
 
-		# # Getting promotions
-		# promotion_class_name = '%sPromotion'%osm_name.capitalize()
-		# if promotion_class_name in global_keys:
-		# 	Promotion = globals()[promotion_class_name]
-		# 	kwargs = {
-		# 		'end__gte': datetime.now(),
-		# 		'content__dalliz_category': category,
-		# 	}
-		# 	kwargs.update(kwargs_location_promotion) # adding location filter
-		# 	promotions = Promotion.objects.filter(**kwargs)
-		# 	print promotions[0].type == Promotion.SIMPLE
-
 		# Getting products without simple promotion
 		product_class_name = '%sProduct'%osm_name.capitalize()
 		if product_class_name in global_keys:
@@ -226,7 +214,7 @@ class CategoryProducts(CategorySimple):
 		if serialized is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
 		else:
-			return {'products':serialized.data}
+			return {'products':serialized.data, 'category':{'name': category.name}}
 
 class CategoryMatching(CategorySimple):
 	"""

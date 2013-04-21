@@ -1,10 +1,7 @@
 define([
-	'jquery',
-	'underscore',
-	'backbone',
 	'views/base',
 	'text!../../templates/menuitem.html'
-	],function( $, _, Backbone, BaseView, menuItemTemplate){
+	],function(BaseView, menuItemTemplate){
 		var MenuItemView = BaseView.extend({
 			tagName: 'li',
 			className: 'has-dropdown',

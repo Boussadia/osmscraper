@@ -8,10 +8,10 @@ define([
 ], function($, _ , Backbone, Router, MenuView, MainView){
 
 	function MasterCoursesApp(){
-		// Mustache style templatating
-		_.templateSettings = {
-			interpolate : /\{\{(.+?)\}\}/g,
-		};
+		// // Mustache style templatating
+		// _.templateSettings = {
+		// 	interpolate : /\{\{(.+?)\}\}/g,
+		// };
 
 		// Global Scope
 		this.Views = {};
@@ -36,7 +36,7 @@ define([
 		options || (options = {});
 		var category_id = options.id || null;
 		if(category_id){
-			console.log(category_id);
+			this.Views.main.addCategory(category_id);
 		}
 	}
 

@@ -1,7 +1,6 @@
 define([
-	'backbone',
 	'models/base'
-	], function(Backbone, BaseModel){
+	], function(BaseModel){
 		var SubMenuItem = BaseModel.extend({
 			default:{
 				'name': 'Test',

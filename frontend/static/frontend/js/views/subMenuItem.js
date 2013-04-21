@@ -1,10 +1,8 @@
 define([
-	'jquery',
 	'underscore',
-	'backbone',
 	'views/base',
 	'text!../../templates/submenuitem.html'
-	],function( $, _, Backbone, BaseView, subMenuItemTemplate){
+	],function(_, BaseView, subMenuItemTemplate){
 		var MenuItemView = BaseView.extend({
 			tagName: 'li',
 			template: subMenuItemTemplate,

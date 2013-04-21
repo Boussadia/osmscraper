@@ -1,11 +1,8 @@
 define([
-	'jquery',
-	'underscore',
-	'backbone',
 	'views/base',
 	'views/subMenuItem',
 	'collections/subMenu'
-	], function($, _, Backbone, BaseView, SubMenuItemView, SubMenuCollection){
+	], function(BaseView, SubMenuItemView, SubMenuCollection){
 
 		var SubMenuView = BaseView.extend({
 			tagName: 'ul',

@@ -5,13 +5,16 @@ define([
 		
 		var CategoryCollection = BaseCollection.extend({
 			model: CategoryModel,
-			url: '/api/categories/id/'+this.id+'/subs',
+			url: function(){
+				return '/api/categories/id/'+this.id+'/subs';
+			},
 			initialize: function(options){
 				options || (options = {});
 				this.id = options.id || null;
 			},
 			parse: function(resp, xhr){
-				return resp.categories
+				// this.attributes = resp.category;
+				return resp.category.subs;
 			}
 
 		});

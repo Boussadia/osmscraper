@@ -1,12 +1,10 @@
 define([
-	'jquery',
 	'underscore',
-	'backbone',
 	'views/base',
 	'views/menuitem',
 	'views/subMenu',
 	'collections/menu'
-	], function($, _, Backbone, BaseView, MenuItemView, SubMenuView, MenuCollection){
+	], function(_, BaseView, MenuItemView, SubMenuView, MenuCollection){
 
 		var MenuView = BaseView.extend({
 			el: 'nav#menu ul.left',
