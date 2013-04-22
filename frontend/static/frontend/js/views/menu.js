@@ -13,8 +13,10 @@ define([
 				this.models = options.model || {};
 				this.menuCollection = new MenuCollection(this.models, {'vent': this.vent});
 
+				// Global events binding
 				this.vent.on('menu:closeSubViews', this.hideSubViews, this);
 				this.vent.on('route:category', this.send_category_id, this);
+				this.vent.on('window:scroll', this.set_menu_position, this);
 			},
 			render: function(callback){
 				this.closeSubViews();
@@ -62,6 +64,11 @@ define([
 						this.vent.trigger('route:category', {'id': category_id});
 					};
 				}, this)
+			},
+			set_menu_position: function(){
+				var offset = this.$el.offset(),
+					scrollTop = $(window).scrollTop();
+				// TO DO : handle menu fix on scroll
 			}
 		});
 

@@ -45,6 +45,7 @@ define([
 		// Menu
 		this.Views.menu = new MenuView({'vent': this.Vent});
 		var that = this;
+
 		// Callback function needed in order to wait for the menu to be built
 		this.Views.menu.build(function(){
 			// Router module
@@ -52,7 +53,6 @@ define([
 			Backbone.history.start({ pushState: true, root:"/dev"});
 
 			// Use absolute URLs  to navigate to anything not in your Router.
-
 			// Only need this for pushState enabled browsers
 			if (Backbone.history && Backbone.history._hasPushState) {
 
@@ -73,6 +73,11 @@ define([
 					}
 				});
 			}
+
+			// Setting listner of scroll events on window
+			$(window).scroll(function(event){
+				that.Vent.trigger('window:scroll');
+			})
 
 		});
 

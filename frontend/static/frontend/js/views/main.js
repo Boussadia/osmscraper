@@ -7,8 +7,12 @@ define([
 
 	var MainView = BaseView.extend({
 		el: 'section#main',
+		SCROLL_TRIGGER: 90,
 		initialize: function(){
 			this.categories = [];
+
+			// Global event listening
+			this.vent.on('window:scroll', this.scrollController, this);
 		},
 		addCategory: function(category_id){
 			var categoryCollection = new CategoryCollection({'id': category_id, 'vent': this.vent});
@@ -35,6 +39,24 @@ define([
 			});
 			return this;
 
+		},
+		scrollController: function(){
+			var offset = this.$el.offset(),
+				scrollTop = $(window).scrollTop(),
+				bottom_main = offset.top + this.$el.height(),
+				visibleHeight = 0;
+			if (window.innerHeight){
+				visibleHeight = window.innerHeight;
+			}else{
+				visibleHeight = window.clientHeight;
+			}
+
+			var difference = bottom_main - (scrollTop + visibleHeight);
+
+			if (difference < this.SCROLL_TRIGGER){
+				// TODO : here put code to call for next categorie to fetch
+
+			}
 		}
 	});
 
