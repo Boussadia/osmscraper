@@ -207,12 +207,12 @@ if SANDBOX:
 else:
     HOST = 'mechanicalturk.amazonaws.com'
 
-if not DEBUG:
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-    STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
-    AWS_STORAGE_BUCKET_NAME = 'dalliz_static'
-    STATIC_URL = '//s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
-    ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
+#if not DEBUG:
+#    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+#    STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
+#    AWS_STORAGE_BUCKET_NAME = 'dalliz_static'
+#    STATIC_URL = '//s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
+#    ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 
 # Cache busting
 from django.template.loader import add_to_builtins
