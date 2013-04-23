@@ -1,3 +1,9 @@
+/************************************************************************************************************************************
+*
+*															BASE
+*
+*************************************************************************************************************************************/
+
 @font-face{
 	font-family: FuturaStd;
 	src: url('../fonts/FuturaStd-Bold.otf');
@@ -7,8 +13,15 @@
 @font-face{
 	font-family: FuturaStd;
 	src: url('../fonts/FuturaStd-Medium.otf');
-	font-weight: regular;
+	font-weight: normal;
 }
+
+
+/************************************************************************************************************************************
+*
+*															HEADER
+*
+*************************************************************************************************************************************/
 
 
 
@@ -25,6 +38,11 @@ header {
 	top: 7px;
 	z-index: 1988;
 	margin-bottom: 1.875em;
+}
+
+#menu.top{
+	position: fixed;
+	top: 0px;
 }
 
 #user-bar {
@@ -188,6 +206,137 @@ header {
 
 #menu .has-dropdown.show div.submenu ul.dropdown {
 	visibility: visible;
+}
+
+
+/************************************************************************************************************************************
+*
+*															CONTENT PAGE (FILTERS/PRODUCTS)
+*
+*************************************************************************************************************************************/
+
+#main{
+	position: relative;
+	width: 100%;
+	min-width: 1024px;
+	padding-left: 30px;
+	padding-right: 30px;
+}
+
+.products {
+	width: 85.6%;
+	height: 290px;
+	position: relative;
+	top: -4px;
+	margin-bottom: -4px;
+	float: left;
+	padding-left: 10px;
+	padding-right: 5px;
+	background-image: url(../img/header/filter.png);
+	overflow: hidden;
+}
+
+.thin-bar-promo {
+	position: relative;
+	top: 43px;
+	width: 85.6%;
+	float: left;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.thin-bar {
+	position: relative;
+	top: 43px;
+	width: 85.6%;
+	float: left;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.thin-bar-promo > div {
+	position: relative;
+	width: 100%;
+	height: 4px;
+	background-color: #da552a;
+	top: 25px;
+	z-index: 1988;
+}
+
+.thin-bar > div {
+	position: relative;
+	width: 100%;
+	height: 4px;
+	background-color: #078bc9;
+	top: 25px;
+	z-index: 1988;
+}
+
+.products > p {
+	text-transform: capitalize;
+	position: relative;
+	margin-left: 60px;
+	margin-bottom: 5px;
+	top: 20px;
+	color: #078bc9;
+	font-size: 120%;
+	font-weight: bold;
+}
+
+.product {
+	position: relative;
+	top: 25px;
+	width: 20%;
+	height: 222px;
+	float: left;
+	padding-right: 5px;
+}
+
+.product:last-child {
+	position: relative;
+	top: 25px;
+	width: 16.585%;
+	height: 222px;
+	float: left;
+	display: none;
+}
+
+.box {
+	display: inline-block;
+	position: relative;
+	width: 100%;
+	height: 222px;
+	background-color: orange;
+	float: left;
+}
+
+@media only screen and (min-width: 1172px) {
+	.product:last-child {
+  		display: block;
+	}
+
+	.product {
+		width: 16.585%;
+	}
+
+}
+
+/************************************************************************************************************************************
+*
+*															COMPARATEUR
+*
+*************************************************************************************************************************************/
+
+#comparator {
+	width: 14.4%;
+	height: 580px;
+	position: relative;
+	top: -4px;
+	margin-bottom: -4px;
+	float: right;
+	padding-left: 5px;
+	padding-right: 5px;
+	background-color: blue;
 }
 
 

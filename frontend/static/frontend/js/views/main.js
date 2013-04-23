@@ -33,8 +33,7 @@ define([
 				// If the category was not fetched, proceed
 				var categoryCollection = new CategoryCollection([], {'id': category_id, 'vent': this.vent});
 				this.categories.splice(index_insert, 0, categoryCollection);
-				var view = new CategoryCollectionView({'collection': categoryCollection, 'vent': this.vent});
-				this.addSubView(view, index_insert);
+				
 				var that = this;
 				this.bindTo(categoryCollection, 'add', function(){
 					that.render();
@@ -56,32 +55,36 @@ define([
 		},
 		render: function(){
 			var that = this;
-			that.$el.empty();
-			_.each(this.subViews, function(view){
+			this.closeSubViews();
+			_.each(this.categories, function(categoryCollection){
+				var view = new CategoryCollectionView({'collection': categoryCollection, 'vent': this.vent});
+				that.addSubView(view);
 				that.$el.append(view.render().el);
 			});
 			return this;
 
 		},
 		scrollController: function(){
-			var offset = this.$el.offset(),
-				scrollTop = $(window).scrollTop(),
-				bottom_main = offset.top + this.$el.height(),
-				visibleHeight = 0;
-			if (window.innerHeight){
-				visibleHeight = window.innerHeight;
-			}else{
-				visibleHeight = window.clientHeight;
-			}
+			// var offset = this.$el.offset(),
+			// 	scrollTop = $(window).scrollTop(),
+			// 	bottom_main = offset.top + this.$el.height(),
+			// 	visibleHeight = 0;
+			// if (window.innerHeight){
+			// 	visibleHeight = window.innerHeight;
+			// }else{
+			// 	visibleHeight = window.clientHeight;
+			// }
 
-			var difference = bottom_main - (scrollTop + visibleHeight);
+			// var difference = bottom_main - (scrollTop + visibleHeight);
 
-			if (difference < this.SCROLL_TRIGGER){
-				// TODO : here put code to call for next categorie to fetch
-				var l = this.categories.length;
-				var last_category = this.categories[l-1];
-				this.vent.trigger('category:next:sub', {'id': last_category.id});
-			}
+			// if (difference < this.SCROLL_TRIGGER){
+			// 	// TODO : here put code to call for next categorie to fetch
+			// 	var l = this.categories.length;
+			// 	if (l>0){
+			// 		var last_category = this.categories[l-1];
+			// 		this.vent.trigger('category:next:sub', {'id': last_category.id});
+			// 	}
+			// }
 		}
 	});
 

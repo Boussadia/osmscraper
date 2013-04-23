@@ -8,6 +8,7 @@ define([
 
 		var MenuView = BaseView.extend({
 			el: 'nav#menu ul.left',
+			TRIGGER: 138,
 			initialize: function(options){
 				options || (options = {});
 				this.models = options.model || {};
@@ -66,9 +67,14 @@ define([
 				}, this)
 			},
 			set_menu_position: function(){
-				var offset = this.$el.offset(),
-					scrollTop = $(window).scrollTop();
+				var scrollTop = $(window).scrollTop();
 				// TO DO : handle menu fix on scroll
+				var parent = this.$el.parent();
+				if(!parent.hasClass('top') && scrollTop>this.TRIGGER){
+					parent.addClass('top');
+				}else if(parent.hasClass('top') && scrollTop<=this.TRIGGER){
+					parent.removeClass('top');
+				}
 			}
 		});
 

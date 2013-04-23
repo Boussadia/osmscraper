@@ -8,6 +8,8 @@ define([
 	function(_, ProductsCollection, BaseView, ProductView, productsTemplate){
 
 		var ProductsView = BaseView.extend({
+			tagName:'div',
+			className: 'products',
 			template: productsTemplate,
 			initialize: function(options){
 				options || (options = {});
@@ -20,17 +22,16 @@ define([
 			render: function(){
 				this.closeSubViews();
 				this.$el.empty();
+
 				var template = _.template(this.template);
-				var data = {'name': this.products.name, 'products': this.products.toJSON()};
+				var data = {'name': this.products.name};
 				this.$el.append(template(data));
-				// var that = this;
-				// this.products.each(function(product){
-				// 	var view = new ProductView({'product': product, 'vent': this.vent});
-				// 	that.addSubView(view);
-				// })
-				// _.each(this.subViews, function(subView){
-				// 	that.$el.append(subView.render().$el);
-				// })
+				var that = this;
+				this.products.each(function(product){
+					var view = new ProductView({'product': product, 'vent': this.vent})
+					that.$el.append(view.render().el);
+				})
+
 				return this;
 			}
 		})
