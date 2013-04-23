@@ -27,23 +27,33 @@
 
 header {
 	position: relative;
-	margin-bottom: 200px;
+	margin-bottom: 7px;
+	width: 100%;
+	min-width: 1024px;
+	padding-left: 30px;
+	padding-right: 30px;
 }
 
-#menu {
+#menu{
 	background: white;
 	position: relative;
-	min-width: 964px;
-	left: 18px;
+	width: 100%;
 	top: 7px;
 	z-index: 1988;
-	margin-bottom: 1.875em;
 }
 
-#menu.top{
+#menu > div{
+	background: white;
+	width: 100%;
+	height: 120px;
+	top: 0px;
+	position: relative;
+}
+
+/*#menu.top{
 	position: fixed;
 	top: 0px;
-}
+}*/
 
 #user-bar {
 	width: 100%;
@@ -92,12 +102,30 @@ header {
 	background-image: url(../img/header/menu-bg.png);
 }	
 
-#menu ul.left .divider {
-	display: inline-block;
+#menu ul.left {
+    float: left !important;
+	list-style: none;
 	position: relative;
-	top: -95px;
+	display: inline-block;
+	width: 100%;
+	height: 120px;
+	margin-bottom: 0px;
+	padding-left: 0%;
 	margin-top: 0px;
-	height: 57px;
+}
+
+#menu ul.left > li {
+	float: left;
+	width: 7.143%;
+	font-size: 64%;
+}
+
+#menu ul.left .divider {
+	position: relative;
+	float: left;
+	margin-left: -1px;
+	margin-top: -1px;
+	height: 85px;
 	width: 0%;
 	border-left: 1px solid #424242;
 }
@@ -106,38 +134,18 @@ header {
 	visibility: hidden;
 }
 
-#menu:hover ul.left .divider, #menu ul.left .has-dropdown.show .divider, #menu ul.left .has-dropdown.show + .has-dropdown .divider{
-	height: 95px;
-}
-
-#menu ul.left {
-    float: left !important;
-	list-style: none;
-	position: relative;
-	display: inline-block;
-	width: 100%;
-	padding-left: 0%;
-	margin-top: 0px;
-}
-
-#menu ul.left > li {
-	float: left;
-	width: 7.047%;
-	font-size: 71%;
-}
-
 #menu div.mere {
 	display: block;
-	height: 95px;
+	height: 85px;
 	width: 100%;
 	margin-top: 0px;
 	padding: 1px 1% 0 1%;
 	text-decoration: none;
 }
 
-#menu .show div.mere{
+/*#menu .show div.mere{
 	background-color: red;
-}
+}*/
 
 #menu .icone {
 	margin: 0 auto;
@@ -153,36 +161,38 @@ header {
 	margin-top: 3px;
 	margin-right: auto;
 	margin-left: auto;
-	visibility: hidden;
-}
-
-#menu:hover .has-dropdown p.name, #menu .has-dropdown.show p.name {
-	visibility: visible;
 	text-transform: uppercase;
 }
 
+#menu li.has-dropdown.show {
+	background-color: #078bc9;
+}
+
+#menu ul.left li.has-dropdown.show p.name{
+	color: white;
+}
+
 #menu .submenu {
-	width: 400px;
-	height: 250px;
+	width: 85.7%;
+	height: 35px;
+	position: absolute;
 	left: 0px;
-	position: relative;
-	top: -95px;
-	background-color: #8C8C8C;
-	z-index: 99;
-	display: none;
+	top: 85px;
+	background-color: #078bc9;
+	/*display: none;*/
 }
 
 #menu .dropdown {
 	list-style: none;
-	visibility: hidden;
 	float: left;
 	margin-top: 20px;
-	width: 200px;
+	width: 100%;
+	padding-left: 10px;
 }
 
 #menu .dropdown li {
 	display: block;
-	width: 150%;
+	width: 100%;
 	font-size: 120%;
 	color: black;
 	margin-top: 0;
@@ -196,12 +206,29 @@ header {
 	color: white;
 }
 
-#menu .has-dropdown:hover .mere{
+#menu li.has-dropdown p {
+	color: white;
+}
+
+li.has-dropdown-actif {
+	background-color: #078bc9;
+}
+
+#menu .has-dropdown:not(.show):hover .mere{
 	background-color: #efefef;
 }
 
 #menu .has-dropdown.show div.submenu{
 	display: block;
+}
+
+#menu .has-dropdown.show div.divider {
+	width: 0%;
+	height: 26px;
+	border-left: 1px solid #0676ab;
+	position: relative;
+	float: left;
+	top: 5px;
 }
 
 #menu .has-dropdown.show div.submenu ul.dropdown {
