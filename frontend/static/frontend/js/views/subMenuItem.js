@@ -16,6 +16,9 @@ define([
 				var data = this.model.toJSON();
 				this.$el.append(template(data));
 				return this;
+			},
+			click: function(){
+				this.$el.find('a').click();
 			}
 		});
 

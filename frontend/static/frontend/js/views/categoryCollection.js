@@ -10,7 +10,7 @@ define([
 			className: 'category',
 			initialize: function(options){
 				options || (options = {});
-				this.collection = options.collection || new CategoryCollection({'vent': this.vent});
+				this.collection = options.collection || new CategoryCollection([], {'vent': this.vent});
 			},
 			render: function(){
 				this.closeSubViews();

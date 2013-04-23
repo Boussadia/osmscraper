@@ -11,7 +11,7 @@ define([
 			template: productsTemplate,
 			initialize: function(options){
 				options || (options = {});
-				this.products = options.products || new ProductsCollection({'vent': this.vent});
+				this.products = options.products || new ProductsCollection([], {'vent': this.vent});
 				var that = this;
 				this.bindTo(this.products, 'add', function(){
 					that.render();

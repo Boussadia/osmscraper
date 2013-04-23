@@ -1,8 +1,6 @@
 define([
-	'jquery',
-	'underscore',
 	'backbone',
-], function($, _, Backbone){
+], function(Backbone){
 	Router = Backbone.Router.extend({
 		routes: {
 			'categorie/:categoryName': 'category',

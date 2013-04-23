@@ -9,7 +9,7 @@ define([
 			url:function(){
 				return '/api/categories/id/'+this.id+'/products/top';
 			},
-			initialize: function(options){
+			initialize: function(models, options){
 				options || (options = {})
 				var category_id = options.category_id || null;
 				this.id = category_id;

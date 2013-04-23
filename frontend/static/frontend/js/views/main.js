@@ -15,7 +15,7 @@ define([
 			this.vent.on('window:scroll', this.scrollController, this);
 		},
 		addCategory: function(category_id){
-			var categoryCollection = new CategoryCollection({'id': category_id, 'vent': this.vent});
+			var categoryCollection = new CategoryCollection([], {'id': category_id, 'vent': this.vent});
 			this.categories.push(categoryCollection);
 			var view = new CategoryCollectionView({'collection': categoryCollection, 'vent': this.vent});
 			this.addSubView(view);
@@ -55,7 +55,9 @@ define([
 
 			if (difference < this.SCROLL_TRIGGER){
 				// TODO : here put code to call for next categorie to fetch
-
+				var l = this.categories.length;
+				var last_category = this.categories[l-1];
+				this.vent.trigger('category:next:sub', {'id': last_category.id});
 			}
 		}
 	});

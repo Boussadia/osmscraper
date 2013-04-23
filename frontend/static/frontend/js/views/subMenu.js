@@ -14,6 +14,9 @@ define([
 				this.bindTo(this.subMenuCollection, 'reset', function(a, b){
 					this.render();
 				}, this);
+
+				// Global Events binding
+				this.vent.on('category:next:sub', this.next_sub_category, this);
 				this.vent.on('route:category', this.send_category_id, this);
 			},
 			render: function(){
@@ -32,6 +35,29 @@ define([
 			get_category_id: function(categoryName){
 				var result = this.subMenuCollection.findWhere({'url': categoryName}) || null;
 				return result;
+			},
+			next_sub_category: function(obj){
+				obj || (obj = {});
+				var category_id = obj.id || null;
+				var index_lookup = null;
+
+				if (category_id){
+					// Looking for sub category with id = category_id
+					var that = this;
+					this.subMenuCollection.each(function(model, i){
+						if (model.id == category_id ) index_lookup = i;
+					})
+				}
+
+				if(index_lookup != null){
+					var next_index = index_lookup + 1;
+					var count = this.subMenuCollection.length;
+					if (next_index < count){
+						this.subViews[next_index].click();
+					}
+				}else{
+					
+				}
 			}
 		});
 

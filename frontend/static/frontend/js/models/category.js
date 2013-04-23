@@ -5,10 +5,10 @@ define([
 
 		var CategoryModel = BaseModel.extend({
 			initialize: function(){
-				this.products = new ProductsCollection({'category_id':this.get('id'), 'vent': this.vent});
+				this.products = new ProductsCollection([], {'category_id':this.get('id'), 'vent': this.vent});
 			},
-			fetch_products: function(){
-				this.products.fetch();
+			fetch_products: function(options){
+				this.products.fetch(options);
 			}
 
 		});
