@@ -17,8 +17,9 @@ define([
 				model.bind(ev, callback, this);
 				this.bindings.push({ model: model, ev: ev, callback: callback });
 			},
-			addSubView: function(subView){
-				this.subViews.push(subView);
+			addSubView: function(subView, position){
+				position || (position = this.subViews.length);
+				this.subViews.splice(position, 0, subView);
 			},
 			unbindFromAll: function () {
 				_.each(this.bindings, function (binding) {

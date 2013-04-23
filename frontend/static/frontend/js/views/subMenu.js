@@ -17,7 +17,6 @@ define([
 
 				// Global Events binding
 				this.vent.on('category:next:sub', this.next_sub_category, this);
-				this.vent.on('route:category', this.send_category_id, this);
 			},
 			render: function(){
 				this.closeSubViews();
@@ -56,7 +55,7 @@ define([
 						this.subViews[next_index].click();
 					}
 				}else{
-					
+
 				}
 			}
 		});

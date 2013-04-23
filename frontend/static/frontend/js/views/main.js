@@ -15,25 +15,48 @@ define([
 			this.vent.on('window:scroll', this.scrollController, this);
 		},
 		addCategory: function(category_id){
-			var categoryCollection = new CategoryCollection([], {'id': category_id, 'vent': this.vent});
-			this.categories.push(categoryCollection);
-			var view = new CategoryCollectionView({'collection': categoryCollection, 'vent': this.vent});
-			this.addSubView(view);
-			var that = this;
-			this.bindTo(categoryCollection, 'add', function(){
-				that.render();
-			});
-			var that = this;
-			categoryCollection.fetch({
-				'success':function(collection, response, options){
-					collection.each(function(model){
-						model.fetch_products();
-					});
+			// First we have to determine if the category was already fetched from server or not.
+			var category_already_fetched = false;
+			var index = null
+			var index_insert = 0;
+			_.any(this.categories, function(category, i){
+				if(category.id == category_id){
+					category_already_fetched = true;
+					index = i;
+					return true
+				}else if(category.id < category_id){
+					index_insert = i + 1;
 				}
-			});
+			})
+
+			if (!category_already_fetched){
+				// If the category was not fetched, proceed
+				var categoryCollection = new CategoryCollection([], {'id': category_id, 'vent': this.vent});
+				this.categories.splice(index_insert, 0, categoryCollection);
+				var view = new CategoryCollectionView({'collection': categoryCollection, 'vent': this.vent});
+				this.addSubView(view, index_insert);
+				var that = this;
+				this.bindTo(categoryCollection, 'add', function(){
+					that.render();
+				});
+				var that = this;
+				categoryCollection.fetch({
+					'success':function(collection, response, options){
+						collection.each(function(model){
+							model.fetch_products();
+						});
+					}
+				});
+			}else{
+				// The category is already here, show it at the top of the screen
+				var top = this.subViews[index].$el.offset().top;
+				$(window).scrollTop(top, 0);
+
+			}
 		},
 		render: function(){
 			var that = this;
+			that.$el.empty();
 			_.each(this.subViews, function(view){
 				that.$el.append(view.render().el);
 			});
