@@ -16,6 +16,28 @@
 	font-weight: normal;
 }
 
+*,
+*:before,
+*:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+
+html,
+body {
+  font-size: 100%; }
+
+body {
+  background: white;
+  color: #212121;
+  padding: 0;
+  margin: 0;
+  font-family: "FuturaStd", Tahoma, sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  position: relative; }
+
 
 /************************************************************************************************************************************
 *
@@ -179,38 +201,65 @@ header {
 	left: 0px;
 	top: 85px;
 	background-color: #078bc9;
-	/*display: none;*/
+	display: none;
 }
 
-#menu .dropdown {
-	list-style: none;
-	float: left;
-	margin-top: 20px;
-	width: 100%;
-	padding-left: 10px;
-}
-
-#menu .dropdown li {
+#menu li.has-dropdown.show .submenu{
 	display: block;
+}
+
+#menu ul.dropdown {
+	list-style: none;
+	display: table;
+	padding-left: 0px;
+	padding-right: 0px;
 	width: 100%;
-	font-size: 120%;
-	color: black;
-	margin-top: 0;
-	height: 30px;
+}
+
+#menu ul.dropdown div.divider {
+	width: 0%;
+	height: 26px;
+	border-left: 1px solid #0676ab;
+	position: relative;
+	float: left;
+	top: 5px;
+}
+
+#menu ul.dropdown > li {
+	display: table-cell;
+	font-size: 135%;
+}
+
+#menu ul.dropdown > li a {
+	display: block;
+	height: 35px;
+	position: relative;
+	top: -12px;
+	text-decoration: none;
+}
+
+#menu ul.dropdown a p {
+	position: relative;
+	top: 11px;
+	line-height: 95%;
+	text-align: center;
+	max-width: 99%;
+	margin-top: 12px;
+	margin-right: auto;
+	margin-left: auto;
+	color: white;
 	text-transform: capitalize;
 }
 
-#menu .dropdown li a {
-	margin-top: 0px;
-	text-decoration: none;
-	color: white;
+#menu ul.dropdown a p.active{
+	font-weight: bold;
 }
 
 #menu li.has-dropdown p {
 	color: white;
 }
 
-li.has-dropdown-actif {
+li.has-dropdown.show {
 	background-color: #078bc9;
 }
 
@@ -222,7 +271,7 @@ li.has-dropdown-actif {
 	display: block;
 }
 
-#menu .has-dropdown.show div.divider {
+#menu .has-dropdown.show div.submenu div.divider {
 	width: 0%;
 	height: 26px;
 	border-left: 1px solid #0676ab;
