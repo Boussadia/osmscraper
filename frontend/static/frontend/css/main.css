@@ -71,7 +71,7 @@ a {
 }
 
 
-header { /* main */
+header {
 	margin-bottom: 7px;
 }
 
@@ -93,8 +93,7 @@ header + div.gap{
 }
 
 header.top + div.gap{
-	.display: block{
-	};
+	display: block;
 }
 
 #menu{
