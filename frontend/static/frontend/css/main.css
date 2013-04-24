@@ -56,6 +56,16 @@ header {
 	padding-right: 30px;
 }
 
+header.top{
+	position: fixed;
+	top: 0px;
+	z-index: 1988;
+}
+
+header.top #menu{
+	top: 0px;
+}
+
 #menu{
 	background: white;
 	position: relative;
@@ -71,11 +81,6 @@ header {
 	top: 0px;
 	position: relative;
 }
-
-/*#menu.top{
-	position: fixed;
-	top: 0px;
-}*/
 
 #user-bar {
 	width: 100%;
@@ -165,10 +170,6 @@ header {
 	text-decoration: none;
 }
 
-/*#menu .show div.mere{
-	background-color: red;
-}*/
-
 #menu .icone {
 	margin: 0 auto;
 	width: 64px;
@@ -184,6 +185,10 @@ header {
 	margin-right: auto;
 	margin-left: auto;
 	text-transform: uppercase;
+}
+
+#menu li.has-dropdown{
+	cursor: pointer;
 }
 
 #menu li.has-dropdown.show {

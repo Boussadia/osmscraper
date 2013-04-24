@@ -69,8 +69,7 @@ define([
 			},
 			set_menu_position: function(){
 				var scrollTop = $(window).scrollTop();
-				// TO DO : handle menu fix on scroll
-				var parent = this.$el.parent();
+				var parent = $('header');
 				if(!parent.hasClass('top') && scrollTop>this.TRIGGER){
 					parent.addClass('top');
 				}else if(parent.hasClass('top') && scrollTop<=this.TRIGGER){
