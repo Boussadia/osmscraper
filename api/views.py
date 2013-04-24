@@ -160,7 +160,7 @@ class CategoryProducts(CategorySimple):
 	"""
 		Get products for a category
 	"""
-	TOP_PRODUCTS_COUNT = 10
+	TOP_PRODUCTS_COUNT = 5
 	renderer_classes = BaseAPIView.renderer_classes + [ProductsCSVRenderer]
 	@osm
 	def get(self, request, id_category, key, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
