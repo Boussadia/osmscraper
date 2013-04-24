@@ -66,6 +66,15 @@ header.top #menu{
 	top: 0px;
 }
 
+/* Hack : When header is in fixed position, sets a div with same width to fill gap */
+header + div.gap{
+	display: none;
+}
+
+header.top + div.gap{
+	height: 127px;
+}
+
 #menu{
 	background: white;
 	position: relative;
