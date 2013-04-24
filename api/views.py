@@ -135,11 +135,6 @@ class CategoryAll(BaseAPIView):
 		data = CategorySerializer.all()
 		return {'categories':data}
 
-	@osm
-	def get(self, request, format=None,**kwargs):
-		data = CategorySerializer.all()
-		return {'categories':data}
-
 
 class CategorySimple(BaseAPIView):
 	"""
@@ -204,6 +199,7 @@ class CategoryProducts(CategorySimple):
 
 			products = Product.objects.filter(**kwargs).distinct('reference')
 			if key == 'top':
+				products_count = products.count() # Adding total count of products in category
 				products = products[:CategoryProducts.TOP_PRODUCTS_COUNT]
 
 		serializer_class_name = '%sProductSerializer'%osm_name.capitalize()
@@ -214,7 +210,7 @@ class CategoryProducts(CategorySimple):
 		if serialized is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
 		else:
-			return {'products':serialized.data, 'category':{'name': category.name}}
+			return {'products':serialized.data, 'category':{'name': category.name, 'count': products_count}}
 
 class CategoryMatching(CategorySimple):
 	"""

@@ -24,7 +24,7 @@ define([
 				this.$el.empty();
 
 				var template = _.template(this.template);
-				var data = {'name': this.products.name};
+				var data = {'name': this.products.name, 'count': this.products.count};
 				this.$el.append(template(data));
 				var that = this;
 				this.products.each(function(product){

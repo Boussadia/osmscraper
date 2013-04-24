@@ -17,6 +17,7 @@ define([
 			},
 			parse: function(resp, xhr){
 				this.name = resp.category.name;
+				this.count = resp.category.count;
 				return resp.products;
 			}
 		})

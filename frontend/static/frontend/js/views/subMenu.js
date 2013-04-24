@@ -42,7 +42,6 @@ define([
 						var model = view.model;
 						if(model.get('id') === subMenuItem_id){
 							view.activate();
-							console.log(view);
 						}else{
 							view.unactivate();
 						}
