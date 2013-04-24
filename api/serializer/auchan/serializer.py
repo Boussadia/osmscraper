@@ -24,23 +24,6 @@ class PackageSerializer(serializers.ModelSerializer):
 		model = Product
 		fields = ('package_quantity', 'package_measure', 'package_unit')
 
-# class HistoryField(serializers.RelatedField):
-# 	def to_native(self, history_set):
-# 		osm_location = self.context['osm']['location']
-# 		if osm_location is not None:
-# 			histories = history_set.filter(shipping_area__id = int(osm_location))[:5]
-# 		else:
-# 			histories = history_set.filter(shipping_area__isnull = True)[:5]
-# 		return [
-# 			{
-# 				'created': h.created,
-# 				'price': h.price,
-# 				'unit_price': h.price,
-# 				'availability': h.availability,
-# 				'shipping_area': osm_location
-# 			}
-# 			for h in histories]
-
 class HistoryField(serializers.RelatedField):
 	def to_native(self, product):
 		history_set = product.history_set
