@@ -239,7 +239,7 @@ header.top + div.gap{
 	display: block;
 }
 
-#menu ul.dropdown {
+ul.dropdown {
 	list-style: none;
 	display: table;
 	position: relative;
@@ -248,7 +248,7 @@ header.top + div.gap{
 	width: 100%;
 }
 
-#menu ul.dropdown div.divider {
+ul.dropdown div.divider {
 	width: 0%;
 	height: 26px;
 	border-left: 1px solid #0676ab;
@@ -257,21 +257,21 @@ header.top + div.gap{
 	top: 5px;
 }
 
-#menu ul.dropdown > li {
+ul.dropdown > li {
 	position: relative;
 	vertical-align: middle;
 	display: table-cell;
 	font-size: 130%;
 }
 
-#menu ul.dropdown > li a {
+ul.dropdown > li a {
 	display: block;
 	height: 35px;
 	position: relative;
 	top: 0px;
 }
 
-#menu ul.dropdown a p {
+ul.dropdown a p {
 	display: table-cell;
 	vertical-align: middle;
 	line-height: 100%;
@@ -280,7 +280,7 @@ header.top + div.gap{
 	text-transform: capitalize;
 }
 
-#menu ul.dropdown a div.vert-align-cont {
+ul.dropdown a div.vert-align-cont {
 	height: 35px;
 	width: 100%;
 	position: relative;
@@ -289,7 +289,7 @@ header.top + div.gap{
 	padding-right: 2px;
 }
 
-#menu ul.dropdown a p.active{
+ul.dropdown a p.active{
 	font-weight: bold;
 }
 
@@ -360,7 +360,7 @@ li.has-dropdown.show {
 /* Products Area */
 .products {
 	width: 85.7%;
-	/*height: 290px;*/
+	min-height: 290px; /* TEST */
 	position: relative;
 	top: -4px;
 	margin-bottom: -4px;
@@ -390,6 +390,7 @@ li.has-dropdown.show {
 	height: 222px;
 	float: left;
 	padding-right: 5px;
+	margin-bottom: 5px; /* TEST */
 }
 
 .product.null {
@@ -469,185 +470,158 @@ li.has-dropdown.show {
 
 /************************************************************************************************************************************
 *
-*															SOCIAL LINKS
-*
-*************************************************************************************************************************************/
-.social-widget{
-	display: inline-block;
-
-}
-.social-widget ul{
-	margin: 6px 0 0 !important;
-	padding: 0px;
-	display: inline;
-}
-
-.social-widget ul li{
-	padding: 0 2px 0 0;
-	margin: 0;
-	display: inline-block;
-	zoom: 1;
-	border: none !important;
-	clear: none;
-	line-height: 100%;
-}
-
-.social-widget a{
-}
-
-.links-list{
-	list-style-type: none;
-}
-
-.links-list li a{
-	display: block;
-	width: 32px;
-	height: 32px;
-	background-image: url('../img/footer/social_sprits_5px.png');
-	background-position: 0px -42px;
-}
-
-.facebook_icon a{
-	background-position: -5px -42px !important;
-}
-
-.facebook_icon a:hover{
-	background-position: -5px -5px !important;
-}
-
-.twitter_icon a{
-	background-position: -42px -42px !important;
-}
-
-.twitter_icon a:hover{
-	background-position: -42px -5px !important;
-}
-
-.google_icon a{
-	background-position: -79px -42px !important;
-}
-
-.google_icon a:hover{
-	background-position: -79px -5px !important;
-}
-
-.pinterest_icon a{
-	background-position: -116px -42px !important;
-}
-
-.pinterest_icon a:hover{
-	background-position: -116px -5px !important;
-}
-
-.linked_in_icon a{
-	background-position: 74px -42px !important;
-}
-
-.linked_in_icon a:hover{
-	background-position: 74px -5px !important;
-}
-
-
-/************************************************************************************************************************************
-*
 *															FOOTER
 *
 *************************************************************************************************************************************/
 
-footer{
-	font-family: Arial;
-	overflow: hidden;
+/* Footer */
+
+footer {
 	width: 100%;
-	box-shadow: 1px -1px 3px #ACACAC;
-	color: white;
+	min-width: 1024px;
+	clear: both;
+	height: 81px;
 }
 
-footer a, footer a:hover{
-	color: inherit;
-}
-
-footer div.top{
+.footer-top {
 	height: 48px;
 	background-color: #212121;
+	position: relative;
+	width: 100%;
+	min-width: 1024px;
+	padding-left: 60px;
+	padding-right: 60px;
 }
 
-footer div.top h2{
-	font-size: 1.47em;
-}
-
-footer div.bottom{
-	height: 33px;
-	background-color: #000000;
-	text-align: center;
-	font-size: 0.67em;
-}
-
-footer div.bottom a, footer div.bottom span{
-	color: white;
-}
-
-footer .top .container > div{
+.footer-container {
 	height: 100%;
+	position: relative;
+	width: 33.333%;
 	display: inline-block;
 	float: left;
-	width: 49%;
 }
 
-footer .container{
+.mini-container {
+	width: 50%;
 	height: 100%;
 	position: relative;
-	top: -6px;
-}
-
-footer .bottom span:last-child{
-	float: right;
-}
-
-footer .bottom .container{
-	padding-top: 10px;
-}
-
-footer .top h2{
-	text-align: center;
-	font-weight: bold;
-}
-
-footer .social_bloc >h2{
 	display: inline-block;
+	float: left;
 }
 
-footer .blog p{
-	width: 175px;
-	margin: auto;
-	font-weight: bold;
-}
+	div.footer-top h2 {
+		position: relative;
+		top: 3px;
+		font-size: 100%;
+		text-align: center;
+		font-weight: bold;
+		color: white;
+	}
 
-footer .social-widget{
-	float: none;
+	div.footer-top p {
+		float: right;
+		position: relative;
+		font-size: 100%;
+		top: -43px;
+		margin-right: 10%;
+		color: white;
+	}
+
+	#last-bullet {
+		float: left;
+		position: relative;
+		font-size: 100%;
+		top: 0px;
+		margin-right: 10%;
+		color: white;
+	}
+
+		div.footer-top h2 a {
+			color: white;
+		}
+
+.social-widget {
+	display: inline-block;
+	list-style: none;
+	float: left;
 	position: relative;
-	top: 9px;
+	padding-left: 0px;
+	top: -8px;
 }
 
-footer .blog{
-	width: 24% !important;
+	.social-widget li {
+		display: block;
+		float: left;
+		border: none !important;
+		clear: none;
+		line-height: 100%;
+	}
+
+		.social-widget li a {
+			display: block;
+			width: 32px;
+			height: 32px;
+			background-image: url(../img/footer/social_sprits_5px.png);
+			background-position: 0px -42px;
+		}
+
+.footer-bottom {
+	height: 33px;
+	background-color: #000000;
+	position: relative;
+	width: 100%;
+	min-width: 1024px;
+	padding-left: 60px;
+	padding-right: 60px;
+	top: -16px;
 }
 
-footer .blog p{
-	display: none;
+	.footer-bottom .dropdown li {
+		color: white;
+		font-size: 11px;
+		text-align: center;
+	}
+
+		.footer-bottom .dropdown li a {
+			color: white;
+			font-size: 11px;
+			text-align: center;
+			top: -1px;
+			padding-top: 13px;
+		}
+
+#footer-int {
+	width: 20%;
 }
 
-footer .social_bloc{
-	width: 50% !important;
-	text-align: center;
-}
+		.facebook_icon a {
+			background-position: -5px -42px !important;
+		}
 
-footer .contact{
-	width: 24% !important;
-}
+		.facebook_icon a:hover {
+			background-position: -5px -5px !important;
+		}
 
-footer .separator{
-	width: 1% !important;
-}
+		.twitter_icon a {
+			background-position: -42px -42px !important;
+		}
 
+		.twitter_icon a:hover {
+			background-position: -42px -5px !important;
+		}
 
+		.google_icon a {
+			background-position: -79px -42px !important;
+		}
 
+		.google_icon a:hover {
+			background-position: -79px -5px !important;
+		}
+
+		.linked_in_icon a {
+			background-position: 74px -42px !important;
+		}
+
+		.linked_in_icon a:hover {
+			background-position: 74px -5px !important;
+		}
