@@ -365,10 +365,9 @@ li.has-dropdown.show {
 	height: 222px;
 	float: left;
 	padding-right: 5px;
-	/*display: none;*/
-}*/
-
-.box {
+}
+*/
+.product div.box {
 	display: inline-block;
 	position: relative;
 	width: 100%;
@@ -391,11 +390,11 @@ li.has-dropdown.show {
 }
 
 @media only screen and (min-width: 1172px) {
-	.prod-bloc-last {
+	.product:last-child {
   		display: block;
 	}
-	
-	.prod-bloc-perm {
+
+	.product{
 		width: 16.667%;
 	}
 }
