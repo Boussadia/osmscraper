@@ -22,10 +22,15 @@ define([
 				'click': 'showSubMenu'
 			},
 
-			showSubMenu: function(e){
+			showSubMenu: function(e, index){
 				// e.preventDefault();
+				index || (index = null);
 				this.vent.trigger('menu:closeSubViews');
 				this.$el.addClass('show');
+
+				if (index !== null){
+					this.subViews[0].subViews[index].activate();
+				}
 			},
 			hideSubMenu: function(e){
 				this.$el.removeClass('show');

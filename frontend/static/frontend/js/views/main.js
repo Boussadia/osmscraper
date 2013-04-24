@@ -48,8 +48,10 @@ define([
 				});
 			}else{
 				// The category is already here, show it at the top of the screen
-				var top = this.subViews[index].$el.offset().top;
-				$(window).scrollTop(top, 0);
+				if(this.subViews[index]){
+					var top = this.subViews[index].$el.offset().top;
+					$(window).scrollTop(top, 0);
+				}
 
 			}
 		},

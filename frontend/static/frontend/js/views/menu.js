@@ -58,10 +58,11 @@ define([
 				options || (options = {});
 				var categoryName = options.name || '';
 				var result = null;
-				this.menuCollection.each(function(menuItem){
+				this.menuCollection.each(function(menuItem, i){
 					var lookup = menuItem.subMenu.findWhere({'url': categoryName});
 					if (lookup){
 						var category_id = lookup.get('id');
+						this.subViews[i].showSubMenu(); // Highlighting main menu
 						this.vent.trigger('route:category', {'id': category_id});
 					};
 				}, this)
