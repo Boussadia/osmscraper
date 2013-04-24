@@ -161,6 +161,7 @@ class CategoryProducts(CategorySimple):
 		Get products for a category
 	"""
 	TOP_PRODUCTS_COUNT = 5
+	MID_PRODUCTS_COUNT = 11
 	renderer_classes = BaseAPIView.renderer_classes + [ProductsCSVRenderer]
 	@osm
 	def get(self, request, id_category, key, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
@@ -198,9 +199,13 @@ class CategoryProducts(CategorySimple):
 
 
 			products = Product.objects.filter(**kwargs).distinct('reference')
+			products_count = products.count() # Adding total count of products in category
 			if key == 'top':
-				products_count = products.count() # Adding total count of products in category
 				products = products[:CategoryProducts.TOP_PRODUCTS_COUNT]
+			elif key == 'mid':
+				products = products[CategoryProducts.TOP_PRODUCTS_COUNT:CategoryProducts.MID_PRODUCTS_COUNT]
+			elif key == 'end':
+				products = products[CategoryProducts.MID_PRODUCTS_COUNT:]
 
 		serializer_class_name = '%sProductSerializer'%osm_name.capitalize()
 		

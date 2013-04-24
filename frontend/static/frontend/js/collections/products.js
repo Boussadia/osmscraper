@@ -4,11 +4,18 @@ define([
 	],
 	function(BaseCollection, ProductModel){
 
+		var KEYS = ['top', 'mid', 'end']
+
 		var ProductsCollections = BaseCollection.extend({
 			model: ProductModel,
+			
+			// key = 'top' or 'mid' or 'end'
+			// this arguments is implemented in order to fetch products acordingly to user needs to look for more products
+			index_key: 0,
 			url:function(){
-				return '/api/categories/id/'+this.id+'/products/top';
+				return '/api/categories/id/'+this.id+'/products/'+KEYS[this.index_key];
 			},
+			
 			initialize: function(models, options){
 				options || (options = {})
 				var category_id = options.category_id || null;
@@ -19,6 +26,18 @@ define([
 				this.name = resp.category.name;
 				this.count = resp.category.count;
 				return resp.products;
+			},
+			fetch: function(options){
+				options = options ? _.clone(options) : {};
+				var more = options.more || false;
+				var next_index = this.index_key + 1;
+				if (more && next_index<KEYS.length){
+					options.remove = false;
+					this.index_key = next_index;
+				}else{
+					this.index_key = 0;
+				}
+				return BaseCollection.prototype.fetch.apply(this, [options]);
 			}
 		})
 

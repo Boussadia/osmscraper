@@ -29,12 +29,24 @@ define([
 				this.products.each(function(product){
 					var view = new ProductView({'product': product, 'vent': this.vent})
 					that.$el.append(view.render().el);
-				})
+				});
 
-				var plus = _.template(plusTemplate)();
-				this.$el.append(plus);
+
+				// Adding plus button if more products are available to fetch
+				if(this.products.length < this.products.count){
+					var plus = _.template(plusTemplate)();
+					this.$el.append(plus);
+				};
 
 				return this;
+			},
+			events: {
+				'click': 'getMoreProducts'
+			},
+			getMoreProducts: function(e){
+				this.products.fetch({
+					more: true
+				});
 			}
 		})
 

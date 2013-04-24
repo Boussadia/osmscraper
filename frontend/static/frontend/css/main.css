@@ -348,8 +348,8 @@ li.has-dropdown.show {
 	width: 100%;
 	height: 4px;
 	background-color: #078bc9;
-	top: 25px;
-	z-index: 1987;
+	top: 21px;
+	z-index: 1984;
 }
 
 .thin-bar.promo > div {
@@ -360,7 +360,7 @@ li.has-dropdown.show {
 /* Products Area */
 .products {
 	width: 85.7%;
-	height: 290px;
+	/*height: 290px;*/
 	position: relative;
 	top: -4px;
 	margin-bottom: -4px;
@@ -392,6 +392,18 @@ li.has-dropdown.show {
 	padding-right: 5px;
 }
 
+.product.null {
+	position: relative;
+	top: 21px;
+	width: 20%;
+	height: 222px;
+	float: left;
+	padding-right: 5px;
+	z-index: 1987;
+	right: 5px;
+	background-image: url(../img/header/filter.png);
+}
+
 /*.product:last-child {
 	position: relative;
 	top: 25px;
@@ -421,6 +433,7 @@ li.has-dropdown.show {
 	font-size: 105px;
 	text-align: center;
 	padding-top: 50px;
+	cursor: pointer;
 }
 
 @media only screen and (min-width: 1172px) {
@@ -429,6 +442,10 @@ li.has-dropdown.show {
 	}
 
 	.product{
+		width: 16.667%;
+	}
+
+	.product.null {
 		width: 16.667%;
 	}
 }
