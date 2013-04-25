@@ -76,14 +76,14 @@ header {
 }
 
 header.top{
-	position: fixed;
-	top: 0px;
+	position: absolute;
+	/*top: 0px;*/
 	z-index: 1988;
 }
 
-header.top #menu{
+/*header.top #menu{
 	top: 0px;
-}
+}*/
 
 /* Hack : When header is in fixed position, sets a div with same width to fill gap */
 header + div.gap{
@@ -364,6 +364,7 @@ li.has-dropdown.show {
 	position: relative;
 	top: -4px;
 	margin-bottom: -4px;
+	padding-bottom: 20px; /* TEST */
 	float: left;
 	padding-left: 10px;
 	padding-right: 5px;
