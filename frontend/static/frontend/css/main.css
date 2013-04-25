@@ -360,11 +360,11 @@ li.has-dropdown.show {
 /* Products Area */
 .products {
 	width: 85.7%;
-	min-height: 290px; /* TEST */
+	min-height: 291px; /* TEST */
+	padding-bottom: 20px;
 	position: relative;
 	top: -4px;
 	margin-bottom: -4px;
-	padding-bottom: 20px; /* TEST */
 	float: left;
 	padding-left: 10px;
 	padding-right: 5px;
@@ -478,6 +478,8 @@ li.has-dropdown.show {
 /* Footer */
 
 footer {
+	position: relative;
+	top: -1px;
 	width: 100%;
 	min-width: 1024px;
 	clear: both;

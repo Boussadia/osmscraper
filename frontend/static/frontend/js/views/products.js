@@ -9,15 +9,23 @@ define([
 	function(_, ProductsCollection, BaseView, ProductView, productsTemplate, plusTemplate){
 
 		var ProductsView = BaseView.extend({
+			// This variable controlls whether or not to fetch products from server when requested
+			fetching: false, 
+
 			tagName:'div',
 			className: 'products',
 			template: _.template(productsTemplate),
+
 			initialize: function(options){
 				options || (options = {});
 				this.products = options.products || new ProductsCollection([], {'vent': this.vent});
 				var that = this;
-				this.bindTo(this.products, 'add', function(){
+				this.bindTo(this.products, 'request', function(){
+					that.fetching = true;
+				});
+				this.bindTo(this.products, 'add remove reset sort change', function(){
 					that.render();
+					that.fetching = false;
 				})
 			},
 			render: function(){
@@ -44,9 +52,11 @@ define([
 				'click': 'getMoreProducts'
 			},
 			getMoreProducts: function(e){
-				this.products.fetch({
-					more: true
-				});
+				if (!this.fetching){
+					this.products.fetch({
+						more: true
+					});
+				}
 			}
 		})
 
