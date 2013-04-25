@@ -3,7 +3,7 @@ define([
 	],function(BaseModel){
 
 		var ProductModel = BaseModel.extend({
-			default: {
+			defaults: {
 				'name': 'test'
 			}
 		})

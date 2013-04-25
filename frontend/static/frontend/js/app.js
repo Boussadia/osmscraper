@@ -3,16 +3,18 @@ define([
 	'underscore',
 	'backbone',
 	'router',
+	'collections/osms',
+	'models/osm',
 	'views/menu',
-	'views/main'
-], function($, _ , Backbone, Router, MenuView, MainView){
+	'views/main',
+	'views/comparator'
+], function($, _ , Backbone, Router, OsmsCollections, OsmModel, MenuView, MainView, ComparatorView){
 
 	function MasterCoursesApp(){
 		// Global Scope
 		this.Views = {};
 		this.Collections = {};
 		this.Models = {};
-
 
 		// Global event manager
 		this.Vent = _.extend({}, Backbone.Events);
@@ -67,6 +69,14 @@ define([
 	MasterCoursesApp.prototype.initialize = function(){
 		// Menu
 		this.Views.menu = new MenuView({'vent': this.Vent});
+		// Comparator
+		this.Collections.osms = new OsmsCollections([], {'vent': this.Vent});
+		this.Collections.osms.add([{'name': 'auchan'}, {'name': 'monoprix'}, {'name': 'ooshop'}], {'vent': this.Vent});
+
+
+		this.Views.comparator = new ComparatorView({'osms':this.Collections.osms , 'vent': this.Vent});
+		// this.Views.comparator.render();
+
 		var that = this;
 
 		// Callback function needed in order to wait for the menu to be built

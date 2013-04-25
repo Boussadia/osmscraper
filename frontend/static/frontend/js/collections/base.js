@@ -9,8 +9,8 @@ define([
 			var that = this;
 
 			this.on('sync', function(model, resp, options){
-				// console.log(resp.carts);
 				if (typeof that.vent.trigger !== 'undefined') that.vent.trigger('osm', resp.osm);
+				if (typeof that.vent.trigger !== 'undefined') that.vent.trigger('carts', resp.carts);
 			});
 			
 			Backbone.Collection.apply(this, [models, options]);

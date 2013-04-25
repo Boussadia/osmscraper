@@ -3,7 +3,7 @@ define([
 	'collections/subMenu'
 	], function(BaseModel, SubMenuCollection){
 		var MenuItem = BaseModel.extend({
-			default:{
+			defaults:{
 				'name': 'Test',
 				'url': ''
 			},

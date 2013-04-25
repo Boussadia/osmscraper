@@ -2,7 +2,7 @@ define([
 	'models/base'
 	], function(BaseModel){
 		var SubMenuItem = BaseModel.extend({
-			default:{
+			defaults:{
 				'name': 'Test',
 				'parent_brand': null,
 				'url': ''
