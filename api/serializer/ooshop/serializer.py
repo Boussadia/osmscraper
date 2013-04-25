@@ -39,7 +39,7 @@ class HistoryField(serializers.RelatedField):
 				'is_promotion': False,
 				'created': h.created,
 				'price': h.price,
-				'unit_price': h.price,
+				'unit_price': h.unit_price,
 				'availability': h.availability,
 				'store': osm_location
 			}
