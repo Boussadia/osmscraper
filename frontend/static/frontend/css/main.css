@@ -447,12 +447,15 @@ li.has-dropdown.show {
 	}
 
 	.top-bloc p:nth-child(3) {
+		position: absolute;
 		margin: 0 0 0 3%;
-		width: 87%;
+		width: 83%;
 		text-align: left;
 	}
 
 	.top-bloc p:nth-child(4) {
+		position: absolute;
+		bottom: 2px;
 		margin-bottom: 0;
 	}
 
@@ -461,6 +464,7 @@ li.has-dropdown.show {
 		position: relative;
 		text-align: center;
 		font-size: 20px;
+		bottom: -44px;
 	}
 
 		.qte div {
@@ -481,8 +485,8 @@ li.has-dropdown.show {
 		}
 
 		.qte div:nth-child(3) {
-			bottom: -25px;
-			z-index: 2013;
+			top: 3px;
+			z-index: 1987;
 		}
 
 .price-bloc, .price-bloc-promo {
@@ -547,7 +551,7 @@ li.has-dropdown.show {
 	display: inline-block;
 	position: relative;
 	width: 100%;
-	height: 222px;
+	height: 227px;
 	background-color: #9f9fa1;
 	float: left;
 	color: white;
