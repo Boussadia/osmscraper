@@ -72,10 +72,10 @@ define([
 				var parent = $('header');
 				if(scrollTop>this.TRIGGER){
 					parent.addClass('top');
-					parent.css('top',(scrollTop-7)+'px');
+					// parent.css('top',(scrollTop-7)+'px');
 				}else if(scrollTop<=this.TRIGGER){
 					parent.removeClass('top');
-					parent.css('top', '0px');
+					// parent.css('top', '0px');
 				}
 			}
 		});

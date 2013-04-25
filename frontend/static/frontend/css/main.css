@@ -88,14 +88,14 @@ header {
 }
 
 header.top{
-	position: absolute;
-	/*top: 0px;*/
+	position: fixed;
+	top: 0px;
 	z-index: 1988;
 }
 
-/*header.top #menu{
+header.top #menu{
 	top: 0px;
-}*/
+}
 
 /* Hack : When header is in fixed position, sets a div with same width to fill gap */
 header + div.gap{
