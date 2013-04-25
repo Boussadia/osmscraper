@@ -1,3 +1,19 @@
 <div class="box">
-	<%= name %>
+	<div class="top-bloc">
+		<div class="img-bloc">
+			<img src="<%= image_url %>">
+		</div>
+		<p><%= brand.name %></p>
+		<p><%= name %></p>
+		<p> <%= package.package_quantity %> x <%= package.package_measure %> <%= package.package_unit %></p>
+		<div class="qte">
+			<div>+</div>
+			<div>2</div>
+			<div>-</div>
+		</div>
+	</div>
+	<div class="price-bloc">
+		<p><%= history[0].price %> €</p>
+		<p><%= history[0].unit_price %>  €/<%= unit.name%></p>
+	</div>
 </div>
