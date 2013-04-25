@@ -26,7 +26,7 @@ define([
 				this.bindTo(this.products, 'add remove reset sort change', function(){
 					that.render();
 					that.fetching = false;
-				})
+				});
 			},
 			render: function(){
 				this.closeSubViews();
@@ -49,7 +49,7 @@ define([
 				return this;
 			},
 			events: {
-				'click': 'getMoreProducts'
+				'click div.add-box': 'getMoreProducts'
 			},
 			getMoreProducts: function(e){
 				if (!this.fetching){

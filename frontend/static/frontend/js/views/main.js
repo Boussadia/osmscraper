@@ -19,19 +19,22 @@ define([
 			var category_already_fetched = false;
 			var index = null
 			var index_insert = 0;
-			_.any(this.categories, function(category, i){
+
+			_.each(this.categories, function(category, i){
 				if(category.id == category_id){
 					category_already_fetched = true;
+					category.current = true;
 					index = i;
-					return true
 				}else if(category.id < category_id){
 					index_insert = i + 1;
+					category.current = false;
 				}
-			})
+			}, this)
 
 			if (!category_already_fetched){
 				// If the category was not fetched, proceed
 				var categoryCollection = new CategoryCollection([], {'id': category_id, 'vent': this.vent});
+				categoryCollection.current = true;
 				this.categories.splice(index_insert, 0, categoryCollection);
 				
 				var that = this;
@@ -46,22 +49,16 @@ define([
 						});
 					}
 				});
-			}else{
-				// The category is already here, show it at the top of the screen
-				if(this.subViews[index]){
-					var top = this.subViews[index].$el.offset().top;
-					$(window).scrollTop(top, 0);
-				}
-
 			}
 		},
 		render: function(){
 			var that = this;
 			this.closeSubViews();
 			_.each(this.categories, function(categoryCollection){
-				var view = new CategoryCollectionView({'collection': categoryCollection, 'vent': this.vent});
+				var view = new CategoryCollectionView({'collection': categoryCollection, 'vent': that.vent});
 				that.addSubView(view);
 				that.$el.append(view.render().el);
+				categoryCollection.current ? view.$el.show() : view.$el.hide();
 			});
 			return this;
 
