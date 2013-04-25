@@ -8,22 +8,45 @@ define([
 ], function($, _ , Backbone, Router, MenuView, MainView){
 
 	function MasterCoursesApp(){
-		// // Mustache style templatating
-		// _.templateSettings = {
-		// 	interpolate : /\{\{(.+?)\}\}/g,
-		// };
-
 		// Global Scope
 		this.Views = {};
 		this.Collections = {};
 		this.Models = {};
 
+
 		// Global event manager
 		this.Vent = _.extend({}, Backbone.Events);
+
+
+		// Data sent to server to control osm
+		this.data = {
+			'osm_name': 'monoprix',
+			'osm_type': 'shipping',
+			'osm_location': null
+		}
+		var that = this;
+
+		// Overriding base Backbone sync method
+		Backbone.originalSync = Backbone.sync; // Saving reference of original sunc method
+		Backbone.sync = function(method, model, options){
+			options.data || (options.data = {});
+			_.extend(options.data, that.data);
+
+			// Removing location if null (causes 500 error from server)
+			if(!options.data.osm_location) delete options.data.osm_location;
+
+			return Backbone.originalSync(method, model, options);
+		}
 
 		// Settings listeners
 		this.Vent.on('route:category', this.category, this);
 		// this.Vent.on('route:product', this.product, this);
+		this.Vent.on('osm', function(osm){
+			// Settings values of osm
+			that.data.osm_location = osm.location;
+			that.data.osm_name = osm.name;
+			that.data.osm_type = osm.type;
+		}, this);
 	}
 
 	/*******************************************************************************************************************************************
