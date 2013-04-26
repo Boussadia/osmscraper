@@ -213,15 +213,125 @@ header.top + div.gap{
 #menu .icone {
 	margin: 0 auto;
 	width: 64px;
-	height: 54px;
+	height: 50px;
+	background: url(../img/menu/sprites_menu.png);
 }
+
+		#menu .left li.has-dropdown div.icone.fruits-legumes {
+					background-position: 0 0;
+				}
+
+		#menu .left li.has-dropdown div.icone.viandes-volaille-poissons {
+			background-position: -64px 0;
+		}
+
+		#menu .left li.has-dropdown div.icone.cremerie {
+			background-position: -128px 0;
+		}
+
+		#menu .left li.has-dropdown div.icone.surgeles {
+			background-position: -192px 0;
+		}
+
+		#menu .left li.has-dropdown div.icone.traiteur-frais {
+			background-position: -256px 0;
+		}
+
+		#menu .left li.has-dropdown div.icone.epicerie-sucree {
+			background-position: -320px 0;
+		}
+
+		#menu .left li.has-dropdown div.icone.epicerie-salee {
+			background-position: -384px 0;
+		}
+
+		#menu .left li.has-dropdown div.icone.boulangerie-patisserie {
+			background-position: -448px 0;
+		}
+
+		#menu .left li.has-dropdown div.icone.boissons {
+			background-position: -512px 0;
+		}
+
+		#menu .left li.has-dropdown div.icone.bebe {
+			background-position: -576px 0;
+		}
+
+		#menu .left li.has-dropdown div.icone.beaute-hygiene {
+			background-position: -640px 0;
+		}
+
+		#menu .left li.has-dropdown div.icone.maison-entretien {
+			background-position: -704px 0;
+		}
+
+		/*#menu .left li.has-dropdown div.icone.traiteur-frais {
+			background-position: -768px 0;
+		}*/
+
+		#menu .left li.has-dropdown.show div.icone.fruits-legumes {
+			background-position: 0 50px;
+		}
+
+		#menu .left li.has-dropdown.show div.icone.viandes-volaille-poissons {
+			background-position: -64px 50px;
+		}
+
+		#menu .left li.has-dropdown.show div.icone.cremerie {
+			background-position: -128px 50px;
+		}
+
+		#menu .left li.has-dropdown.show div.icone.surgeles {
+			background-position: -192px 50px;
+		}
+
+		#menu .left li.has-dropdown.show div.icone.traiteur-frais {
+			background-position: -256px 50px;
+		}
+
+		#menu .left li.has-dropdown.show div.icone.epicerie-sucree {
+			background-position: -320px 50px;
+		}
+
+		#menu .left li.has-dropdown.show div.icone.epicerie-salee {
+			background-position: -384px 50px;
+		}
+
+		#menu .left li.has-dropdown.show div.icone.boulangerie-patisserie {
+			background-position: -448px 50px;
+		}
+
+		#menu .left li.has-dropdown.show div.icone.boissons {
+			background-position: -512px 50px;
+		}
+
+		#menu .left li.has-dropdown.show div.icone.bebe {
+			background-position: -576px 50px;
+		}
+
+		.left li.has-dropdown.show div.icone.beaute-hygiene {
+			#menu background-position: -640px 50px;
+		}
+
+		#menu .left li.has-dropdown.show div.icone.maison-entretien {
+			background-position: -704px 50px;
+		}
+
+		/*#menu .left li.has-dropdown.show div.icone.traiteur-frais {
+			background-position: -768px 50px;
+		}*/
+
+
+
+
+
 
 #menu ul.left p.name {
 	color: #424242;
 	line-height: 100%;
 	text-align: center;
 	max-width: 99%;
-	margin-top: 3px;
+	margin-top: 6px;
 	text-transform: uppercase;
 }
 
