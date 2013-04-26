@@ -17,17 +17,16 @@
 		</script>
 
 		<script id="template_category" type='text/template'>
-			<tr class="category {% templatetag openvariable %} class_current {% templatetag closevariable %}" data-id='{% templatetag openvariable %} id {% templatetag closevariable %}'>
-				<td>
-					{% templatetag openvariable %} name {% templatetag closevariable %}  <br/>
+				<td class="{% templatetag openvariable %} class_current {% templatetag closevariable %}">
+					<p class='name'>{% templatetag openvariable %} name {% templatetag closevariable %}  </p>
 					<a href="/backend/categorie#{% templatetag openvariable %} url {% templatetag closevariable %}" class="btn btn-primary childs" data-id='{% templatetag openvariable %} id {% templatetag closevariable %}'>
 						<i class="icon-arrow-right"></i>
 					</a>
 					<button class="btn btn-danger remove" data-id='{% templatetag openvariable %} id {% templatetag closevariable %}'>
 						<i class="icon-remove"></i>
 					</button>
+					<input type="number" name="position" class="position" value ="{% templatetag openvariable %} position {% templatetag closevariable %}">
 				</td>
-			</tr>	
 
 		</script>
 
@@ -57,6 +56,7 @@
 							<input type="text" name="name_category" id="name_category" >
 							<label>Url de la categorie</label>
 							<input type="text" name="url_category" id="url_category" >
+							
 						</fieldset>
 
 				</div>

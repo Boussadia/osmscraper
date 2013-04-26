@@ -8,7 +8,7 @@ from dalliz.models import Category
 import simplejson as json
 
 def index(request):
-	categories = Category.objects.filter(parent_category__isnull=True)
+	categories = Category.objects.filter(parent_category__isnull=True).order_by('position')
 	json_categories = [j['fields'] for j in json.loads(serializers.serialize("json", categories))]
 	for i in xrange(0,len(json_categories)):
 		json_categories[i]['id'] = categories[i].id
@@ -17,7 +17,7 @@ def index(request):
 def sub_categories(request, parent_url = None, url = ''):
 	response = {}
 	# Getting element corresponding to url
-	category = Category.objects.filter(url = url)
+	category = Category.objects.filter(url = url).order_by('position')
 	if parent_url is not None:
 		category = category.filter(parent_category__url = parent_url)
 	else:
@@ -43,7 +43,7 @@ def sub_categories(request, parent_url = None, url = ''):
 		if request.method == 'GET':
 
 			# print url_parents
-			sub_categories = Category.objects.filter(parent_category = category)
+			sub_categories = Category.objects.filter(parent_category = category).order_by('position')
 			models = [j['fields'] for j in json.loads(serializers.serialize("json", sub_categories))]
 			for i in xrange(0,len(models)):
 				models[i]['url'] = url_parents+ '/'+ models[i]['url']
@@ -59,7 +59,7 @@ def sub_categories(request, parent_url = None, url = ''):
 			url = request.POST['url']
 
 			# Verifying that model is unique
-			sub_categories = Category.objects.filter(parent_category = category).filter(name = name)
+			sub_categories = Category.objects.filter(parent_category = category).filter(name = name).order_by('position')
 			if len(sub_categories) == 0:
 				new_sub_category = Category(name = name, parent_category = category, url = url)
 				new_sub_category.save()
@@ -75,20 +75,33 @@ def sub_categories(request, parent_url = None, url = ''):
 
 	return HttpResponse(json.dumps(response))
 
+def change_position(request, id, position):
+	response = {'status': 404}
+
+	if request.method == 'POST':
+		category = Category.objects.filter(id = id)
+		if len(category) == 1:
+			category = category[0]
+			category.position = position
+			category.save()
+			response = {'status': 200}
+
+	return HttpResponse(json.dumps(response))
+
 def delete_category(request, id):
 	response = {}
 	# Delete method
 	if request.method == 'DELETE':
 		# Getting category
 		category = Category.objects.filter(id = id)
-		if len(category) == 1 and category[0].parent_category is not None:
+		if len(category) == 1:
 			# Getting all sub categories and delete them
 			id_categories_to_delete = [category[0].id]
 			cursor = 0
 			while cursor<len(id_categories_to_delete):
 				# Getting direct sub categories of model at position : cursor
 				current_id = id_categories_to_delete[cursor]
-				sub_categories_to_remove = Category.objects.filter(parent_category__id__exact=current_id)
+				sub_categories_to_remove = Category.objects.filter(parent_category__id__exact=current_id).order_by('position')
 				id_categories_to_delete = id_categories_to_delete + [ s.id for s in sub_categories_to_remove]
 				cursor += 1
 

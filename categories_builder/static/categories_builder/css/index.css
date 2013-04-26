@@ -16,3 +16,12 @@
 .current{
 	background-color: red;
 }
+
+p.name{
+	cursor: pointer;
+}
+
+
+.position{
+	width: 70px;
+}

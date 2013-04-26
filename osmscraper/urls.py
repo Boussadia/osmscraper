@@ -40,6 +40,7 @@ urlpatterns = patterns('',
     # Dalliz backend categories builder
     url(r'^backend/categorie/?$', 'categories_builder.views.index'),
     url(r'^backend/categorie/delete/(?P<id>(\d+))/?$', 'categories_builder.views.delete_category'),
+    url(r'^backend/categorie/id/(?P<id>(\d+))/position/(?P<position>(\d+))/?$', 'categories_builder.views.change_position'),
     url(r'^backend/categorie/((?P<parent_url>(.+))/)?(?P<url>(.+))/?$', 'categories_builder.views.sub_categories'),
 
     # Dalliz brands builder

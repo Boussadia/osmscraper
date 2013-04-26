@@ -20,17 +20,21 @@ define([
 			level: -1,
 			template: $('#template_category_list').text(),
 			render: function(){
-				var content = ''
+				var content = '';
+				var $tbody = $('<tbody>');
 				_.each(this.categoryCollection.models, function(model){
 					var model_json = model.toJSON()
 					var url_identifier = model_json['url'].split(model_json['parent_url']+'/').pop();
 					var view = new CategoryView({'model': model, 'is_current': (this.current_selected == url_identifier)});
 					this.addSubView(view);
-					content = content +' '+view.render().el;
+
+					$tbody.append(view.render().el);
+
 				}, this);
-				var template = _.template(this.template);
-				content = template({'content': content});
-				this.$el.html(content);
+
+
+				this.$el.append($tbody);
+
 				var that = this;
 				this.$el.find('button.remove').click(function(e){
 					e.preventDefault();
@@ -44,7 +48,7 @@ define([
 						that.modal();
 					});
 				}else{
-					this.$el.find('.remove').remove();
+					// this.$el.find('.remove').remove();
 				}
 				return this;
 
@@ -93,7 +97,6 @@ define([
 				}
 			},
 			modal: function(){
-				console.log('modal');
 				var modal_html = $('#modal').text();
 				var modal_template = _.template(modal_html);
 				var modal_rendered = modal_template({'level': this.level, 'parent_url': this.parent_url});

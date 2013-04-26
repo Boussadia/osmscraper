@@ -45,6 +45,9 @@ class CategorySerializer(serializers.ModelSerializer):
 	@staticmethod
 	def get_subs_dalliz(category = None):
 		if category:
-			return Category.objects.filter(parent_category = category)
+			return Category.objects.filter(parent_category = category).order_by('position')
 		else:
-			return Category.objects.filter(parent_category__isnull = True)
+			return Category.objects.filter(parent_category__isnull = True).order_by('position')
+
+
+
