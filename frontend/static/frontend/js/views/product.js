@@ -33,11 +33,13 @@ define([
 			addToCart: function(){
 				var quantity = this.product.get('quantity_in_cart');
 				this.product.set('quantity_in_cart', quantity + 1);
+				this.product.save(null, {'cart': true, 'add': 1, 'vent': this.vent});
 			},
 			removeFromCart: function(){
 				var quantity = this.product.get('quantity_in_cart');
 				if (quantity-1>=0){
 					this.product.set('quantity_in_cart', quantity - 1);
+					this.product.save(null, {'cart': true, 'remove': 1, 'vent': this.vent});
 				}
 
 			}

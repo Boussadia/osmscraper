@@ -7,11 +7,12 @@ define([
 		var OsmsCollections = BaseCollection.extend({
 			model: OsmModel,
 			initialize: function(){
-				// _.each(['auchan', 'monoprix', 'ooshop'], function(osm_name){
-				// 	var osm = new OsmModel({ name: osm_name}, {'vent': this.vent} );
-				// 	this.push(osm);
-				// 	console.log(osm);
-				// }, this);
+				this.vent.on('carts', function(carts){
+					// var price = carts[this.get('name')].price;
+					// console.log(this);
+					// console.log(carts);
+					// this.set('price', price);
+				},this);
 			}
 		});
 

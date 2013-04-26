@@ -31,6 +31,7 @@ define([
 		// Overriding base Backbone sync method
 		Backbone.originalSync = Backbone.sync; // Saving reference of original sunc method
 		Backbone.sync = function(method, model, options){
+			options || (options = {});
 			options.data || (options.data = {});
 			_.extend(options.data, that.data);
 
@@ -49,6 +50,10 @@ define([
 			that.data.osm_name = osm.name;
 			that.data.osm_type = osm.type;
 		}, this);
+
+		// this.Vent.on('carts', function(carts){
+		// 	console.log(carts);
+		// })
 	}
 
 	/*******************************************************************************************************************************************

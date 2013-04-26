@@ -43,9 +43,16 @@ define([
 				});
 				var that = this;
 				categoryCollection.fetch({
-					'success':function(collection, response, options){
+					success:function(collection, response, options){
 						collection.each(function(model){
-							model.fetch_products();
+							model.vent = that.vent;
+							model.fetch_products({
+								'success': function(coll, resp, opt){
+									coll.each(function(mod){
+										mod.vent = that.vent;
+									})
+								}
+							});
 						});
 					}
 				});
