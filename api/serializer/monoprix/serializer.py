@@ -88,15 +88,17 @@ class QuantityInCart(serializers.IntegerField):
 	"""
 		For a product an a cart (in a context) retrieve quantity of product in cart.
 	"""
-	def to_native(self, value):
+	def to_native(self, product):
 		quantity = 0
-		cart = self.context['cart'] # Getting cart from context
+		if 'cart' in self.context:
+			cart = self.context['cart'] # Getting cart from context
+		else:
+			cart = None
 
 		if cart:
-			for contents in cart.cart_content_set.filter(product = product):
-				for content in contents:
-					if content.product == product:
-						quantity = quantity + content.quantity
+			for content in cart.cart_content_set.filter(product = product):
+				if content.product == product:
+					quantity = quantity + content.quantity
 
 		return quantity
 
