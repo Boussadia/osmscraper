@@ -208,10 +208,11 @@ class CategoryProducts(CategorySimple):
 				products = products[CategoryProducts.MID_PRODUCTS_COUNT:]
 
 		serializer_class_name = '%sProductSerializer'%osm_name.capitalize()
-		
+		cart = getattr(request.cart_controller.metacart, osm_name+'_cart')
+
 		if serializer_class_name in global_keys:
 			Serializer_class = globals()[serializer_class_name]
-			serialized = Serializer_class(products, many = True, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}, 'time':datetime.now()})
+			serialized = Serializer_class(products, many = True, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}, 'time':datetime.now(), 'cart': cart})
 		if serialized is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
 		else:

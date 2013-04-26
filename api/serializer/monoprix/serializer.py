@@ -84,6 +84,22 @@ class PackageField(serializers.RelatedField):
 		}
 		return package
 
+class QuantityInCart(serializers.IntegerField):
+	"""
+		For a product an a cart (in a context) retrieve quantity of product in cart.
+	"""
+	def to_native(self, value):
+		quantity = 0
+		cart = self.context['cart'] # Getting cart from context
+
+		if cart:
+			for contents in cart.cart_content_set.filter(product = product):
+				for content in contents:
+					if content.product == product:
+						quantity = quantity + content.quantity
+
+		return quantity
+
 class ProductSerializer(serializers.ModelSerializer):
 	brand = DallizBrandField()
 	history = HistoryField(source='*')
@@ -91,6 +107,7 @@ class ProductSerializer(serializers.ModelSerializer):
 	promotions = serializers.PrimaryKeyRelatedField(many=True, source='promotion_set')
 	description = DescriptionSerializer(source = '*')
 	osm_url = serializers.URLField(source = 'url')
+	quantity_in_cart = QuantityInCart(source = '*')
 
 	class Meta:
 		model = Product
