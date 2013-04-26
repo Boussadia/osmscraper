@@ -629,7 +629,7 @@ li.has-dropdown.show {
 
 	.price-bloc p:nth-child(2) {
 		font-size: 12px;
-		left: 13px;
+		left: 5px;
 	}
 
 	.price-bloc-promo p:first-child {
@@ -706,6 +706,15 @@ li.has-dropdown.show {
 	float: right;
 	padding-left: 10px;
 	padding-right: 10px;
+}
+
+#comparator.top{
+	width: 14.3%;
+	position: fixed;
+	right: 30px;
+	padding-left: 19px;
+	padding-right: 10px;
+	top: 120px;
 }
 
 #osms {

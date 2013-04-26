@@ -8,10 +8,12 @@ define([
 		var ComparatorView = BaseView.extend({
 			el: 'div#osms',
 			template: _.template(osmTemplate),
+			TRIGGER: 138,
 			initialize: function(options){
 				this.osms = options.osms || new OsmsCollection([], {'vent': this.vent});
 
 				this.bindTo(this.osms, 'change', this.render);
+				this.vent.on('window:scroll', this.set_fixed_position, this);
 			},
 			render: function(){
 				this.closeSubViews();
@@ -23,6 +25,17 @@ define([
 				})
 
 				return this;
+			},
+			set_fixed_position: function(){
+				var scrollTop = $(window).scrollTop();
+				var parent = this.$el.parent();
+				if(scrollTop>this.TRIGGER){
+					parent.addClass('top');
+					// parent.css('top',(scrollTop-7)+'px');
+				}else if(scrollTop<=this.TRIGGER){
+					parent.removeClass('top');
+					// parent.css('top', '0px');
+				}
 			}
 		});
 
