@@ -6,7 +6,7 @@ define([
 
 		var ProductView = BaseView.extend({
 			// maximum length of product name,
-			MAX_NAME_LENGTH: 142,
+			MAX_NAME_LENGTH: 50,
 			tagName: 'div',
 			className: 'product',
 			model: ProductModel,
@@ -14,17 +14,34 @@ define([
 			initialize: function(options){
 				options || (options = {});
 				this.product = options.product || new ProductModel({}, {'vent': this.vent});
+
+				this.bindTo(this.product, 'change', this.render);
 			},
 			render: function(){
 				var template = _.template(this.template);
 				var data = this.product.toJSON();
 				if (data.name.length > this.MAX_NAME_LENGTH){
-					console.log(data.name.length);
 					data.name = data.name.substring(0, this.MAX_NAME_LENGTH-3)+'...';
 				}
 				this.$el.append(template(data));
 				return this;
+			},
+			events: {
+				'click div.plus': 'addToCart',
+				'click div.minus': 'removeFromCart',
+			},
+			addToCart: function(){
+				var quantity = this.product.get('quantity_in_cart');
+				this.product.set('quantity_in_cart', quantity + 1);
+			},
+			removeFromCart: function(){
+				var quantity = this.product.get('quantity_in_cart');
+				if (quantity-1>=0){
+					this.product.set('quantity_in_cart', quantity - 1);
+				}
+
 			}
+
 		});
 
 		return ProductView;

@@ -7,9 +7,11 @@
 		<p><%= name %></p>
 		<p> <%= package.package_quantity %> x <%= package.package_measure %> <%= package.package_unit %></p>
 		<div class="qte">
-			<div>+</div>
-			<div><%= quantity_in_cart %></div>
-			<div>-</div>
+			<div class='plus <% if(quantity_in_cart === 0) {%> bottom <% } %>'>+</div>
+			<% if(quantity_in_cart>0) {%>
+				<div><%= quantity_in_cart %></div>
+				<div class='minus bottom'>-</div>
+			<% } %>
 		</div>
 	</div>
 	<div class="price-bloc">

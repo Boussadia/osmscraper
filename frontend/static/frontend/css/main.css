@@ -585,6 +585,10 @@ li.has-dropdown.show {
 			right: 0;
 		}
 
+		.qte div.plus, .qte div.minus{
+			cursor: pointer;
+		}
+
 		.qte div:nth-child(1) {
 			top: -43px;
 		}
@@ -595,8 +599,12 @@ li.has-dropdown.show {
 		}
 
 		.qte div:nth-child(3) {
+
+		}
+
+		.qte div.bottom{
 			top: 3px;
-			z-index: 1987;
+			z-index: 1987
 		}
 
 .price-bloc, .price-bloc-promo {
