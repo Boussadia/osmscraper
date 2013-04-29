@@ -311,10 +311,11 @@ class MturkHelper(object):
 			assignementId = assignment,
 			reference = reference_result
 			)
+		
 		try:
 			result.save()
-		except Exception e:
-			pass
+		except Exception, e:
+			print e
 
 
 	def send_task(self):
