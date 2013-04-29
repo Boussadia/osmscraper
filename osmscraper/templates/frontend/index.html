@@ -8,7 +8,11 @@
 		<link href="{% static frontend/css/main.css %}" rel="stylesheet">
 
 		<!-- JS -->
-		<script data-main="{{STATIC_URL}}frontend/js/main.js" src="{% static frontend/js/libs/require/require.js%}"></script>
+		{% if DEBUG %}
+			<script data-main="{{STATIC_URL}}frontend/js/main.dev.js" src="{% static frontend/js/libs/require/require.js%}"></script>
+		{% else %}
+			<script data-main="{{STATIC_URL}}frontend/js/main.js" src="{% static frontend/js/libs/require/require.js%}"></script>
+		{% endif %}
 
 	</head>
 	<body>
