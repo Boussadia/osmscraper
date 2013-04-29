@@ -256,8 +256,8 @@ class MturkHelper(object):
 		data = []
 		for sim in similarities:
 			product = getattr(sim, self.osm_to+'_product')
-			history = product.history_set.all()[0]
 			try:
+				history = product.history_set.all()[0]
 				quantity = round(history.price/history.unit_price/.5)*.5
 
 				if product.unit is not None:
@@ -311,7 +311,7 @@ class MturkHelper(object):
 			assignementId = assignment,
 			reference = reference_result
 			)
-		
+
 		try:
 			result.save()
 		except Exception, e:
