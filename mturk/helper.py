@@ -1,9 +1,11 @@
 import hashlib
+import datetime
 
 from django.conf import settings
 
 from boto.mturk.connection import MTurkConnection
 from boto.mturk.question import ExternalQuestion
+from boto.mturk.qualification import Qualifications, PercentAssignmentsApprovedRequirement
 
 from monoprix.models import Product as MonoprixProduct
 from auchan.models import Product as AuchanProduct
@@ -315,20 +317,27 @@ class MturkHelper(object):
 		if self.osm_from is not None and self.osm_to is not None and self.reference is not None:
 			title = 'Find the corresponding product'
 			description = ('Select the most appropriate answer')
-			keywords = 'images, selecting, products, matching'
+			keywords = 'images, selecting, products, matching, match, selection'
 			self.save_task()
 
 			question = ExternalQuestion('http://www.dalliz.com/mturk/key/%s'%(self.key), 1106)
+			qualifications = Qualifications()
+			qualifications.add(PercentAssignmentsApprovedRequirement('GreaterThanOrEqualTo', 95))
 			 
 			#--------------- CREATE THE HIT -------------------
 			 
-			a = self.mtc.create_hit(question=question,
-			               max_assignments=10,
-			               title=title,
-			               description=description,
-			               keywords=keywords,
-			               duration = 3600*24*7,
-			               reward=0.01)
+			a = self.mtc.create_hit(
+						question=question,
+
+						title=title,
+						description=description,
+						keywords=keywords,
+
+						reward=0.01,
+						max_assignments=10,
+
+						approval_delay=datetime.timedelta(seconds=3600*24*30), # auto-approve timeout
+						duration = datetime.timedelta(seconds=3600*24*30))
 
 
 class ProductMtruckHelper(MturkHelper):
