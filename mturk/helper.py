@@ -311,7 +311,11 @@ class MturkHelper(object):
 			assignementId = assignment,
 			reference = reference_result
 			)
-		result.save()
+		try:
+			result.save()
+		except Exception e:
+			pass
+
 
 	def send_task(self):
 		if self.osm_from is not None and self.osm_to is not None and self.reference is not None:

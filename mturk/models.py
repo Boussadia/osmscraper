@@ -18,4 +18,4 @@ class ResultTask(models.Model):
 	reference = models.CharField(max_length = 100, null = True)
 
 	class Meta:
-		unique_together = ('task', 'assignementId')
+		unique_together = ('task', 'assignementId', 'workerId')
