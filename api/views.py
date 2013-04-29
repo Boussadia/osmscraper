@@ -443,6 +443,8 @@ class CartAPIView(BaseAPIView):
 		serializer_class_name = '%sCartContentSerializer'%osm_name.capitalize()
 		Serializer = globals()[serializer_class_name]
 
+		quantity_products = 0
+
 		for category in main_categories:
 			# Filtering by main category
 			category_cart = {'name': category.name}
@@ -457,9 +459,11 @@ class CartAPIView(BaseAPIView):
 				category_cart['products'] = serialized.data
 				# Computing total price
 				category_cart['price'] = sum([ products['product']['price']['price']*products['quantity'] for products in category_cart['products']])
+				quantity_products = quantity_products + sum([ products['quantity'] for products in category_cart['products']])
 				data.append(category_cart)
 
-		return {'cart':data}
+
+		return {'cart':{'content': data, 'quantity': quantity_products}}
 
 class CartManagementAPIView(BaseAPIView):
 	"""
