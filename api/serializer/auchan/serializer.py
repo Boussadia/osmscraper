@@ -60,6 +60,21 @@ class HistoryField(serializers.RelatedField):
 
 		return merge_history_promotion(history_data, promotion_data)
 
+class PriceField(serializers.RelatedField):
+	def to_native(self, history_set):
+		# History set already ordered by date
+		price = {}
+		histories = history_set.all()[:1]
+		if len(histories)>0:
+			price = {
+				'created': histories[0].created,
+				'price': histories[0].price,
+				'unit_price': histories[0].unit_price,
+				'shipping_area': histories[0].shipping_area,
+				'availability': histories[0].availability
+			}
+		return price
+
 class ProductSerializer(serializers.ModelSerializer):
 	brand = DallizBrandField()
 	history = HistoryField(source='*')
@@ -116,9 +131,11 @@ class RecommendationSerializer(serializers.ModelSerializer):
 class ProductCartSerializer(serializers.ModelSerializer):
 	brand = DallizBrandField()
 	osm_url = serializers.URLField(source = 'url')
+	price = PriceField(source = 'history_set')
+
 	class Meta:
 		model = Product
-		fields = ('reference', 'name', 'brand', 'osm_url')
+		fields = ('reference', 'name', 'brand', 'osm_url', 'price')
 
 class CartContentSerializer(serializers.ModelSerializer):
 	"""

@@ -432,13 +432,34 @@ class ProductRecommendation(Product):
 class CartAPIView(BaseAPIView):
 	@osm
 	def get(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+		# Getting cart for osm
 		cart_controller = request.cart_controller
+		cart = getattr(cart_controller.metacart, osm_name+'_cart')
+
+		# Getting all main categories
+		main_categories = Category.objects.filter(parent_category = None)
+		data = []
+
 		serializer_class_name = '%sCartContentSerializer'%osm_name.capitalize()
 		Serializer = globals()[serializer_class_name]
-		cart_content = getattr(cart_controller.metacart, osm_name+'_cart').cart_content_set.all()
-		serialized = Serializer(cart_content, many = True)
 
-		return {'cart':serialized.data}
+		for category in main_categories:
+			# Filtering by main category
+			category_cart = {'name': category.name}
+			cart_content = cart.cart_content_set.filter(product__dalliz_category__parent_category__parent_category = category)
+
+			# Serializing products
+			serialized = Serializer(cart_content, many = True, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}, 'time':datetime.now(), 'cart': cart})
+			category_cart['products'] = serialized.data
+
+
+			if len(serialized.data)>0:
+				category_cart['products'] = serialized.data
+				# Computing total price
+				category_cart['price'] = sum([ products['product']['price']['price']*products['quantity'] for products in category_cart['products']])
+				data.append(category_cart)
+
+		return {'cart':data}
 
 class CartManagementAPIView(BaseAPIView):
 	"""

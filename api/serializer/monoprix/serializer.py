@@ -159,9 +159,11 @@ class RecommendationSerializer(serializers.ModelSerializer):
 class ProductCartSerializer(serializers.ModelSerializer):
 	brand = DallizBrandField()
 	osm_url = serializers.URLField(source = 'url')
+	price = PriceField(source = 'history_set')
+
 	class Meta:
 		model = Product
-		fields = ('reference', 'name', 'brand', 'osm_url')
+		fields = ('reference', 'name', 'brand', 'osm_url', 'price')
 
 class CartContentSerializer(serializers.ModelSerializer):
 	"""
