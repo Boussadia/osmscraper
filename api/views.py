@@ -6,7 +6,6 @@ from __future__ import absolute_import # Import because of modules names
 from datetime import datetime, timedelta
 
 from django.contrib.sessions.models import Session
-
 from django.http import Http404
 
 from rest_framework.views import APIView
@@ -17,12 +16,16 @@ from rest_framework.settings import api_settings
 from rest_framework.renderers import XMLRenderer
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 
+from cart.base.basecartcontroller import BaseCartController
 from cart.dalliz.dallizcartcontroller import DallizCartController
+from cart.models import MetaCart
 
 from auchan.models import History as AuchanHistory, Product as AuchanProduct, Promotion as AuchanPromotion
-from cart.models import MetaCart
+
 from dalliz.models import Category
+
 from monoprix.models import History as MonoprixHistory, Product as MonoprixProduct, Promotion as MonoprixPromotion
+
 from ooshop.models import History as OoshopHistory, Product as OoshopProduct, Promotion as OoshopPromotion
 
 from api.renderer import ProductsCSVRenderer, ProductRecommendationCSVRenderer, NewProductsCSVRenderer
@@ -33,8 +36,6 @@ from api.serializer.monoprix.serializer import ProductSerializer as MonoprixProd
 from api.serializer.monoprix.serializer import RecommendationSerializer as MonoprixRecommendationSerializer
 from api.serializer.ooshop.serializer import ProductSerializer as OoshopProductSerializer
 from api.serializer.ooshop.serializer import RecommendationSerializer as OoshopRecommendationSerializer, CartContentSerializer as OoshopCartContentSerializer
-
-from cart.base.basecartcontroller import BaseCartController
 
 AVAILABLE_OSMS = [
 	{
