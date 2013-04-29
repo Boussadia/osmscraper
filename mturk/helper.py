@@ -366,7 +366,7 @@ class CategoryMturkHelper(object):
 			'productmatch__isnull': True,
 			'brand__brandmatch__dalliz_brand__is_mdd': False,
 			'productsimilarity__isnull': False,
-			'exsits': True,
+			'exists': True,
 			'stemmed_text__isnull': False
 		}
 
