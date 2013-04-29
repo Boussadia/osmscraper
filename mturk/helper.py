@@ -254,6 +254,7 @@ class MturkHelper(object):
 	def dump(self):
 		similarities = self.get_product_similarities()
 		data = []
+		sim = None
 		for sim in similarities:
 			product = getattr(sim, self.osm_to+'_product')
 			try:
