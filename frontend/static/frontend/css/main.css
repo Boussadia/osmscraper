@@ -83,6 +83,22 @@ a {
 	padding-right: 30px;
 }
 
+.block-left{
+	position: relative;
+	padding: 0;
+	display: inline-block;
+	width: 85.7%;
+	float: left;
+}
+
+.block-right{
+	padding: 0;
+	width: 14.3%;
+	display: inline-block;
+	position: relative;
+	float: right;
+}
+
 
 header {
 	margin-bottom: 7px;
@@ -453,14 +469,14 @@ li.has-dropdown.show {
 *************************************************************************************************************************************/
 
 #main{
-	
+	overflow-x: hidden;
 }
 
 /* Thin bar on top of products section */
 .thin-bar {
 	position: relative;
 	top: 43px;
-	width: 85.7%;
+	width: 100%;
 	float: left;
 	padding-left: 10px;
 	padding-right: 10px;
@@ -482,7 +498,7 @@ li.has-dropdown.show {
 
 /* Products Area */
 .products {
-	width: 85.7%;
+	width: 100%;
 	min-height: 291px; /* TEST */
 	padding-bottom: 20px;
 	position: relative;
@@ -702,22 +718,15 @@ li.has-dropdown.show {
 
 
 #comparator {
-	width: 14.3%;
-	position: absolute;
-	float: right;
-	right: 30px;
-	padding-right: 10px;
-	padding-left: 19px;
-	min-width: 150px;
+	width: 100%;
+	position: relative;
 }
 
 #comparator.top{
 	width: 14.3%;
 	position: fixed;
-	right: 30px;
-	padding-left: 19px;
-	padding-right: 10px;
 	top: 120px;
+	right: 22px;
 }
 
 #osms {
@@ -733,11 +742,12 @@ li.has-dropdown.show {
 	clear: left;
 	top: 7px;
 	position: relative;
+	padding-right: 5px;
 }
 
 .osm.active {
-	width: 107%;
-	padding-right: 7%;
+	width: 100%;
+	padding-right: 5px;
 	height: 40px;
 	clear: left;
 	top: 7px;
@@ -822,7 +832,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 *
 *************************************************************************************************************************************/
 
-#main-bis{
+/*#main-bis{
 	position: absolute;
 	width: 100%;
 	min-width: 1024px;
@@ -830,7 +840,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 	padding-right: 30px;
 	overflow-x: hidden;
 	overflow-y: visible; 
-}
+}*/
 
 #vert-bar {
 	position: absolute;
@@ -861,32 +871,30 @@ button:hover, button:focus, .button:hover, .button:focus {
 
 #cart {
 	z-index: 2014;
-	position: relative;
-	float: right;
-	width: 21.4%;
+	position: absolute;
+	width: 400px;
 	height: 800px;
 	background-color: white;
-	left: 21%; 
+	right: -400px; 
 }
 
 #cart.top {
 	position: fixed;
-	left: 97.5%;
+	right: -375px;
 	top: 119px;
 }
 
 #cart.open:not(.top){
 /*	transition: left 0.75s;
 	-webkit-transition: left 0.75s;*/
-	left: 0.3%;
-	width: 22.5%;
+	left: -196px;
 
 }
 
 #cart.open.top{
 /*	transition: left 0.75s;
 	-webkit-transition: left 0.75s;*/
-	left: 76.45%;
+	right: 0px;
 
 }
 
@@ -1154,4 +1162,5 @@ span.ui-accordion-header-icon {
 	background: url(../img/cart/play-blue.png);
 	height: 7px;
 	width: 13px;
+	right: 10px;
 }

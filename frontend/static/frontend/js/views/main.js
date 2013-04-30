@@ -6,7 +6,7 @@ define([
 ], function(_, BaseView, CategoryCollection, CategoryCollectionView){
 
 	var MainView = BaseView.extend({
-		el: 'section#main',
+		el: 'section#main div.block-left',
 		SCROLL_TRIGGER: 90,
 		initialize: function(){
 			this.categories = [];

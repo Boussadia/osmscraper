@@ -23,7 +23,8 @@ define([
 				this.bindTo(this.products, 'request', function(){
 					that.fetching = true;
 				});
-				this.bindTo(this.products, 'add remove reset sort change', function(){
+				this.bindTo(this.products, 'sync', function(e){
+					console.log(e);
 					that.render();
 					that.fetching = false;
 				});
