@@ -703,10 +703,12 @@ li.has-dropdown.show {
 
 #comparator {
 	width: 14.3%;
-	position: relative;
+	position: absolute;
 	float: right;
-	padding-left: 10px;
+	right: 30px;
 	padding-right: 10px;
+	padding-left: 19px;
+	min-width: 150px;
 }
 
 #comparator.top{
@@ -820,8 +822,8 @@ button:hover, button:focus, .button:hover, .button:focus {
 *
 *************************************************************************************************************************************/
 
-.block.bis {
-	position: relative;
+#main-bis{
+	position: absolute;
 	width: 100%;
 	min-width: 1024px;
 	padding-left: 30px;
@@ -863,29 +865,36 @@ button:hover, button:focus, .button:hover, .button:focus {
 	width: 21.4%;
 	height: 800px;
 	background-color: white;
-	/*left: 21%; */
-	transition: left 0.75s;
-	-webkit-transition: left 0.75s;
+	left: 21%; 
+/*	transition: left 0.75s;
+	-webkit-transition: left 0.75s;*/
 }
 
-#/*cart:hover {
+#cart.top {
+	position: fixed;
+	left: 97.5%;
+	top: 119px;
+}
+
+/*#cart:hover {
 	left: 0px;
 }*/
 
-#cat-recap-accordion {
+#cart-recap-accordion {
 	width: 100%;
 	float: right;
 	position: relative;
 	padding-left: 35px;
 }	
 
-		#cat-recap-accordion .accordion-header p {
+		#cart-recap-accordion .accordion-header p {
 			color: #078bc9;
 			font-weight: bold;
 			display: inline-block;
+			text-transform: capitalize;
 		}
 
-		#cat-recap-accordion .accordion-header div {
+		#cart-recap-accordion .accordion-header div {
 			position: relative;
 			width: 100%;
 			height: 2px;
@@ -1103,3 +1112,27 @@ footer {
 		.linked_in_icon a:hover {
 			background-position: 74px -5px !important;
 		}
+
+
+/*JQUERY UI */
+
+.ui-state-disabled {
+	cursor: pointer !important;
+}
+
+.ui-accordion .ui-accordion-header {
+	cursor: pointer;
+}
+
+.ui-state-hover, .ui-state-active, .ui-state-focus {
+	outline: none;
+}
+
+span.ui-accordion-header-icon {
+	position: relative;
+	float: right;
+	top: 22px;
+	background: url(../img/cart/play-blue.png);
+	height: 7px;
+	width: 13px;
+}
