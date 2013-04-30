@@ -301,7 +301,7 @@ class BaseCartController(object):
 				( 
 					getattr(sim, index_name+'_product'),
 					10*sum([ 1 for tag in getattr(sim,index_name+'_product').tag.all() if tag in base_tags ]) # Tags score
-					+2*sum([ sum([2*(bm.dalliz_brand == dalliz_brand) + 1*( (bm.dalliz_brand != dalliz_brand) and bm.dalliz_brand.is_mdd == dalliz_brand.is_mdd) for dalliz_brand in base_brand]) for bm in getattr(sim,index_name+'_product').brand.brandmatch_set.all() ]) # brand score
+					+sum([2*sum([ sum([2*(bm.dalliz_brand == dalliz_brand) + 1*( (bm.dalliz_brand != dalliz_brand) and bm.dalliz_brand.is_mdd == dalliz_brand.is_mdd) for dalliz_brand in base_brand]) for bm in brand.brandmatch_set.all()]) for brand in [getattr(sim,index_name+'_product').brand] if brand is not None ]) # brand score
 					+ sim.score
 				) 
 
@@ -335,17 +335,13 @@ class BaseCartController(object):
 				else:
 					# Look for similarities
 					similarities = self.get_similarites(base_product, base_osm)
-					self.add_product(similarities[0][0], quantity)
-					# print '\tSim : '+similarities[0][0].url
-					# if len(similarities)>2:
-					# 	print '\tSim : '+similarities[1][0].url
+					if(len(similarities)>0):
+						self.add_product(similarities[0][0], quantity)
 			else:
 				# Look for similarities
 				similarities = self.get_similarites(base_product, base_osm)
-				self.add_product(similarities[0][0], quantity)
-				# print '\tSim : '+similarities[0][0].url
-				# if len(similarities)>2:
-				# 	print '\tSim : '+similarities[1][0].url
+				if(len(similarities)>0):
+					self.add_product(similarities[0][0], quantity)
 
 
 
