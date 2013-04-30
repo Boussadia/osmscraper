@@ -41,7 +41,7 @@ define([
 
 				$('#cart-recap-accordion').accordion();
 				return this;
-			} ,
+			},
 			set_fixed_position: function(){
 				var scrollTop = $(window).scrollTop();
 				var parent = this.$el;
@@ -52,6 +52,13 @@ define([
 					parent.removeClass('top');
 					// parent.css('top', '0px');
 				}
+			},
+			events: {
+				'click div#cart-icone': 'cartClickHandler',
+			},
+			cartClickHandler: function(e){
+
+				this.$el.hasClass('open') ? this.$el.removeClass('open') : this.$el.addClass('open');
 			}
 		});
 

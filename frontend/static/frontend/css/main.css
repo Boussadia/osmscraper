@@ -847,6 +847,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 	height: 118px;
 	background: url(../img/cart/cart-container.png);
 	top: 280px;
+	cursor: pointer;
 }
 
 #cart-icone p {
@@ -866,14 +867,27 @@ button:hover, button:focus, .button:hover, .button:focus {
 	height: 800px;
 	background-color: white;
 	left: 21%; 
-/*	transition: left 0.75s;
-	-webkit-transition: left 0.75s;*/
 }
 
 #cart.top {
 	position: fixed;
 	left: 97.5%;
 	top: 119px;
+}
+
+#cart.open:not(.top){
+/*	transition: left 0.75s;
+	-webkit-transition: left 0.75s;*/
+	left: 0.3%;
+	width: 22.5%;
+
+}
+
+#cart.open.top{
+/*	transition: left 0.75s;
+	-webkit-transition: left 0.75s;*/
+	left: 76.45%;
+
 }
 
 /*#cart:hover {
@@ -916,6 +930,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 			padding-bottom: auto;
 			position: relative;
 			height: 75px;
+			padding-top: 10px;
 		}
 
 			.products-recap .product-recap img {
