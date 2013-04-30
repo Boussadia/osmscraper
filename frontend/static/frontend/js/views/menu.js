@@ -41,7 +41,7 @@ define([
 				// Get menu elements from server
 				var that = this;
 				this.menuCollection.fetch({
-					'success':function(){
+					success:function(){
 						that.render(callback);
 						that.bindTo(that.menuCollection, 'add remove', function(a, b){
 							this.render();

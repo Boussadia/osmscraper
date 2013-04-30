@@ -52,9 +52,16 @@ define([
 				'click div.add-box': 'getMoreProducts'
 			},
 			getMoreProducts: function(e){
+				var vent = this.vent;
 				if (!this.fetching){
 					this.products.fetch({
-						more: true
+						more: true,
+						success: function(collection, response, options){
+							collection.each(function(model){
+								model.vent = vent;
+							});
+
+						}
 					});
 				}
 			}
