@@ -1,8 +1,9 @@
 define([
+	'underscore',
 	'models/product',
 	'views/base',
 	'text!../../templates/product.html'
-	], function(ProductModel, BaseView, productTemplate){
+	], function(_, ProductModel, BaseView, productTemplate){
 
 		var ProductView = BaseView.extend({
 			// maximum length of product name,
@@ -10,7 +11,7 @@ define([
 			tagName: 'div',
 			className: 'product',
 			model: ProductModel,
-			template: productTemplate,
+			template: _.template(productTemplate),
 			initialize: function(options){
 				options || (options = {});
 				this.product = options.product || new ProductModel({}, {'vent': this.vent});
@@ -18,12 +19,11 @@ define([
 				this.bindTo(this.product, 'change', this.render);
 			},
 			render: function(){
-				var template = _.template(this.template);
 				var data = this.product.toJSON();
 				if (data.name.length > this.MAX_NAME_LENGTH){
 					data.name = data.name.substring(0, this.MAX_NAME_LENGTH-3)+'...';
 				}
-				this.$el.append(template(data));
+				this.$el.append(this.template(data));
 				return this;
 			},
 			events: {

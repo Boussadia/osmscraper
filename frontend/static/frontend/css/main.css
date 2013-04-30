@@ -814,14 +814,143 @@ button:hover, button:focus, .button:hover, .button:focus {
       box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2) inset; }
 }
 
+/************************************************************************************************************************************
+*
+*															CART
+*
+*************************************************************************************************************************************/
+
+.block.bis {
+	position: relative;
+	width: 100%;
+	min-width: 1024px;
+	padding-left: 30px;
+	padding-right: 30px;
+	overflow-x: hidden;
+	overflow-y: visible; 
+}
+
+#vert-bar {
+	position: absolute;
+	height: 750px;
+	width: 4px;
+	background-color: #60a026;
+	top: 0px;
+}
+
+#cart-icone {
+	position: relative;
+	right: 58px;
+	width: 59px;
+	height: 118px;
+	background: url(../img/cart/cart-container.png);
+	top: 280px;
+}
+
+#cart-icone p {
+			font-weight: bold;
+			text-align: center;
+			bottom: 16px;
+			position: absolute;
+			left: 22px;
+			color: white;
+		}
+
+#cart {
+	z-index: 2014;
+	position: relative;
+	float: right;
+	width: 21.4%;
+	height: 800px;
+	background-color: white;
+	/*left: 21%; */
+	transition: left 0.75s;
+	-webkit-transition: left 0.75s;
+}
+
+#/*cart:hover {
+	left: 0px;
+}*/
+
+#cat-recap-accordion {
+	width: 100%;
+	float: right;
+	position: relative;
+	padding-left: 35px;
+}	
+
+		#cat-recap-accordion .accordion-header p {
+			color: #078bc9;
+			font-weight: bold;
+			display: inline-block;
+		}
+
+		#cat-recap-accordion .accordion-header div {
+			position: relative;
+			width: 100%;
+			height: 2px;
+			top: -10px;
+			background-color: #078bc9;
+		}
+
+		.products-recap {
+			width: 100%;
+			position: relative;
+			background-color: white;
+			top: -10px;
+		}
+
+		.product-recap {
+			width: 100%;
+			border-bottom: 1px solid #9f9fa1;
+			padding-top: auto;
+			padding-bottom: auto;
+			position: relative;
+			height: 75px;
+		}
+
+			.products-recap .product-recap img {
+			width: 50px;
+			position: relative;
+			bottom: 90px;
+			display: block;
+			left: 71%;
+			margin-top: 10%;
+			margin-bottom: 10%;
+			}
+
+			.products-recap .product-recap p {
+				font-weight: bold;
+				position: relative;
+				display: inline-block;
+				bottom: -5px;
+			}
+
+			.recap-price {
+				margin-right: 36px;
+			}
+
+			.products-recap .product-recap span {
+				position: relative;
+				font-size: 65%;
+			}
+
+			.products-recap .product-recap span:first-child {
+				font-weight: bold;
+			}
+
+			div.prod-desc {
+				max-width: 70%;
+				position: relative;
+				top: 0px;
+			}
+
 
 /************************************************************************************************************************************
 *
 *															FOOTER
 *
 *************************************************************************************************************************************/
-
-/* Footer */
 
 footer {
 	position: relative;

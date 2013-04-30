@@ -5,10 +5,12 @@ define([
 	'router',
 	'collections/osms',
 	'models/osm',
+	'models/cart',
 	'views/menu',
 	'views/main',
-	'views/comparator'
-], function($, _ , Backbone, Router, OsmsCollections, OsmModel, MenuView, MainView, ComparatorView){
+	'views/comparator',
+	'views/cart'
+], function($, _ , Backbone, Router, OsmsCollections, OsmModel, CartModel, MenuView, MainView, ComparatorView, CartView){
 
 	function MasterCoursesApp(){
 		// Global Scope
@@ -77,10 +79,12 @@ define([
 		// Comparator
 		this.Collections.osms = new OsmsCollections([], {'vent': this.Vent});
 		this.Collections.osms.add([{'name': 'auchan'}, {'name': 'monoprix'}, {'name': 'ooshop'}], {'vent': this.Vent});
-
-
 		this.Views.comparator = new ComparatorView({'osms':this.Collections.osms , 'vent': this.Vent});
-		// this.Views.comparator.render();
+
+		// Cart
+		this.Models.cart = new CartModel({}, {'vent': this.Vent});
+		this.Models.cart.fetch();
+		this.Views.cart = new CartView({'cart': this.Models.cart, 'vent': this.Vent});
 
 		var that = this;
 
