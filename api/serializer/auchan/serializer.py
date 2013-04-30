@@ -135,7 +135,7 @@ class ProductCartSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Product
-		fields = ('reference', 'name', 'brand', 'osm_url', 'price')
+		fields = ('reference', 'name', 'brand', 'osm_url', 'price', 'image_url')
 
 class CartContentSerializer(serializers.ModelSerializer):
 	"""
