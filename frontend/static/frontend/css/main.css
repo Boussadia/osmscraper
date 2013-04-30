@@ -933,6 +933,10 @@ button:hover, button:focus, .button:hover, .button:focus {
 			padding-top: 10px;
 		}
 
+		.products-recap p.minus, .products-recap p.plus{
+			cursor: pointer;
+		}
+
 			.products-recap .product-recap img {
 			width: 50px;
 			position: relative;

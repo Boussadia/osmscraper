@@ -2,7 +2,7 @@
 	<span><%= product.brand.name %></span><span> - </span><span><%= product.name %></span><span> </span><span>(<%= product.price.unit_measure %> )</span>
 </div>
 <p class="recap-price"><%= product.price.price %> €</p>
-<p>-</p>
+<p class='minus'>-</p>
 <p><%= quantity %></p>
-<p>+</p>
-<img src="http://static.monoprix.fr/assets/ctx/2096589626/static/photos/51/74/p-5174.jpg">
+<p class='plus'>+</p>
+<img src="<%= product.image_url %>">
