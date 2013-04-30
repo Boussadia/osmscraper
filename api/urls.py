@@ -11,7 +11,7 @@ urlpatterns = patterns('',
 	# Category
     url(r'categories/all/?$', cache_page(60 * 60 *24)(views.CategoryAll.as_view())),
     url(r'categories/id/(?P<id_category>(\d+))/subs/?$', cache_page(60 * 60 *24)(views.CategorySimple.as_view())),
-    url(r'categories/id/(?P<id_category>(\d+))/products/(?P<key>all|mid|end|top)/?$', cache_page(60 * 60 *24)(views.CategoryProducts.as_view())),
+    url(r'categories/id/(?P<id_category>(\d+))/products/(?P<key>all|mid|end|top)/?$', (views.CategoryProducts.as_view())),
     url(r'categories/id/(?P<id_category>(\d+))/products/matching/?$', cache_page(60 * 60 *24)(views.CategoryMatching.as_view())),
 
     # Products
