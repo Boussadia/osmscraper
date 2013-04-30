@@ -24,7 +24,6 @@ define([
 					that.fetching = true;
 				});
 				this.bindTo(this.products, 'sync', function(e){
-					console.log(e);
 					that.render();
 					that.fetching = false;
 				});

@@ -448,7 +448,7 @@ class CartAPIView(BaseAPIView):
 		for category in main_categories:
 			# Filtering by main category
 			category_cart = {'name': category.name}
-			cart_content = cart.cart_content_set.filter(product__dalliz_category__parent_category__parent_category = category)
+			cart_content = cart.cart_content_set.filter(product__dalliz_category__parent_category__parent_category = category).distinct('product')
 
 			# Serializing products
 			serialized = Serializer(cart_content, many = True, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}, 'time':datetime.now(), 'cart': cart})
