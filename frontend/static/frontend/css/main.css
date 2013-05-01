@@ -257,6 +257,7 @@ header.top + div.gap{
 
 #menu .icone {
 	margin: 0 auto;
+	top: 3px;
 	width: 64px;
 	height: 50px;
 	background: url(../img/menu/sprites_menu.png);
@@ -376,7 +377,6 @@ header.top + div.gap{
 	line-height: 100%;
 	text-align: center;
 	max-width: 99%;
-	margin-top: 6px;
 	text-transform: uppercase;
 }
 
@@ -527,15 +527,12 @@ li.has-dropdown.show {
 /* Products Area */
 .products {
 	width: 100%;
-	min-height: 291px; /* TEST */
-	padding-bottom: 20px;
+	min-height: 291px;
 	position: relative;
-	top: -4px;
-	margin-bottom: -4px;
 	float: left;
+	padding-top: 15px;
 	padding-left: 10px;
 	padding-right: 5px;
-	background-image: url(../img/header/filter.png);
 	overflow: hidden;
 }
 
@@ -544,7 +541,6 @@ li.has-dropdown.show {
 	position: relative;
 	margin-left: 60px;
 	margin-bottom: 5px;
-	top: 20px;
 	color: #078bc9;
 	font-size: 120%;
 	font-weight: bold;
@@ -553,12 +549,11 @@ li.has-dropdown.show {
 /* Products*/
 .product {
 	position: relative;
-	top: 25px;
 	width: 20%;
 	height: 227px;
 	float: left;
 	padding-right: 5px;
-	margin-bottom: 5px; /* TEST */
+	margin-bottom: 5px;
 }
 
 
@@ -573,10 +568,12 @@ li.has-dropdown.show {
 }
 
 		.img-bloc img {
+			position: relative;
 			max-height: 138px;
 			max-width: 150px;
 			display: block;
 			margin: 0 auto 0;
+			top: 1px;
 		}
 
 		.img-bloc p {
@@ -705,9 +702,9 @@ li.has-dropdown.show {
 	display: inline-block;
 	position: relative;
 	width: 100%;
-	height: 222px;
-	background-color: orange;
+	height: 227px;
 	float: left;
+	border: 1px solid #e2e3e5;
 }
 
 .add-box {
@@ -1020,7 +1017,6 @@ button:hover, button:focus, .button:hover, .button:focus {
 
 footer {
 	position: relative;
-	top: -1px;
 	width: 100%;
 	min-width: 1024px;
 	clear: both;
@@ -1110,23 +1106,26 @@ footer {
 		}
 
 .footer-bottom {
-	height: 33px;
+	height: 35px;
 	background-color: #000000;
 	position: relative;
 	width: 100%;
 	min-width: 1024px;
 	padding-left: 60px;
 	padding-right: 60px;
-	top: -16px;
 }
+	.footer-bottom ul.dropdown{
+		margin-top: 0px;
+		margin-bottom: 0px;
+	}
 
-	.footer-bottom .dropdown li {
+	.footer-bottom ul.dropdown li {
 		color: white;
 		font-size: 11px;
 		text-align: center;
 	}
 
-		.footer-bottom .dropdown li a {
+		.footer-bottom ul.dropdown li a {
 			color: white;
 			font-size: 11px;
 			text-align: center;

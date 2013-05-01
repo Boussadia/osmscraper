@@ -2,10 +2,9 @@ define([
 	'underscore',
 	'collections/category',
 	'views/base',
-	'views/products',
-	'text!../../templates/thin-bar-seperator.html'
+	'views/products'
 	],
-	function(_, CategoryCollection, BaseView, ProductsView, seperatorTemplate){
+	function(_, CategoryCollection, BaseView, ProductsView){
 
 		var CategoryCollectionView = BaseView.extend({
 			className: 'category',
@@ -26,8 +25,6 @@ define([
 				})
 				// Separation between title and products
 				_.each(this.subViews, function(subView){
-					var separator = _.template(seperatorTemplate);
-					that.$el.append(separator({}));
 					that.$el.append(subView.render().$el);
 				})
 				return this;
