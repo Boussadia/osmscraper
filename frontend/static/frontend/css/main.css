@@ -755,6 +755,7 @@ li.has-dropdown.show {
 	position: fixed;
 	top: 120px;
 	right: 22px;
+	padding-right: 0.65%;
 }
 
 #osms {
@@ -903,25 +904,26 @@ button:hover, button:focus, .button:hover, .button:focus {
 	width: 400px;
 	height: 800px;
 	background-color: white;
-	right: -400px; 
+	right: -396px; 
+}
+
+.transition{
+	transition: right 0.75s;
+	-webkit-transition: right 0.75s;
 }
 
 #cart.top {
 	position: fixed;
-	right: -375px;
+	right: -366px;
 	top: 119px;
 }
 
 #cart.open:not(.top){
-/*	transition: left 0.75s;
-	-webkit-transition: left 0.75s;*/
-	left: -196px;
+	right: -25px;
 
 }
 
 #cart.open.top{
-/*	transition: left 0.75s;
-	-webkit-transition: left 0.75s;*/
 	right: 0px;
 
 }

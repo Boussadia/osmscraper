@@ -83,8 +83,8 @@ define([
 
 		// Cart
 		this.Models.cart = new CartModel({}, {'vent': this.Vent});
-		this.Models.cart.fetch();
 		this.Views.cart = new CartView({'cart': this.Models.cart, 'vent': this.Vent});
+		this.Models.cart.fetch();
 
 		var that = this;
 

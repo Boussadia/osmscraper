@@ -45,13 +45,13 @@ define([
 			set_fixed_position: function(){
 				var scrollTop = $(window).scrollTop();
 				var parent = this.$el;
+				parent.removeClass('transition');
 				if(scrollTop>this.TRIGGER){
 					parent.addClass('top');
-					// parent.css('top',(scrollTop-7)+'px');
 				}else if(scrollTop<=this.TRIGGER){
 					parent.removeClass('top');
-					// parent.css('top', '0px');
 				}
+				setTimeout(function(){parent.addClass('transition');}, 100);
 			},
 			events: {
 				'click div#cart-icone': 'cartClickHandler',
