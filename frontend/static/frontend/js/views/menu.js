@@ -56,10 +56,10 @@ define([
 			},
 			send_category_id: function(options){
 				options || (options = {});
-				var categoryName = options.name || '';
+				var categoryURL = options.url || '';
 				var result = null;
 				this.menuCollection.each(function(menuItem, i){
-					var lookup = menuItem.subMenu.findWhere({'url': categoryName});
+					var lookup = menuItem.subMenu.findWhere({'url': categoryURL});
 					if (lookup){
 						var category_id = lookup.get('id');
 						this.subViews[i].showSubMenu(); // Highlighting main menu

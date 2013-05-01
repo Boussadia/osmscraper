@@ -18,7 +18,15 @@ class DallizBrandField(serializers.RelatedField):
 				}
 		return brand
 
+class CategoryURLField(serializers.CharField):
+	def to_native(self, category):
+		url = category.url
+		if category.parent_category is not None:
+			url = category.parent_category.url + '/'+ url
+		return url
+
 class CategorySerializer(serializers.ModelSerializer):
+	url = CategoryURLField(source = '*')
 	class Meta:
 		model = Category
 		exclude = ('tags',)
