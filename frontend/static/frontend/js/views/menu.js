@@ -2,9 +2,10 @@ define([
 	'underscore',
 	'views/base',
 	'views/menuitem',
+	'views/saveAndOrder',
 	'views/subMenu',
 	'collections/menu'
-	], function(_, BaseView, MenuItemView, SubMenuView, MenuCollection){
+	], function(_, BaseView, MenuItemView, SaveAndOrderView, SubMenuView, MenuCollection){
 
 		var MenuView = BaseView.extend({
 			el: 'nav#menu ul.left',
@@ -13,6 +14,8 @@ define([
 				options || (options = {});
 				this.models = options.model || {};
 				this.menuCollection = new MenuCollection(this.models, {'vent': this.vent});
+
+				this.saveAndOrderView = new SaveAndOrderView({'vent': this.vent});
 
 				// Global events binding
 				this.vent.on('menu:closeSubViews', this.hideSubViews, this);
@@ -25,6 +28,13 @@ define([
 				this.menuCollection.each(function(menuitem){
 					this.addOne(menuitem);
 				}, this);
+
+				// Adding ECONOMISER and COMMANDER
+				this.addSubView(this.saveAndOrderView);
+				this.$el.append(this.saveAndOrderView.render().el);
+				this.addSubView(this.saveAndOrderView.orderView);
+				this.$el.append(this.saveAndOrderView.orderView.render().el);
+
 				if (callback) callback();
 				return this;
 			},

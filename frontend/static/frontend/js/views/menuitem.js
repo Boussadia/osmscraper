@@ -15,7 +15,6 @@ define([
 				var data = this.model.toJSON();
 				this.$el.append(this.template(data));
 				return this;
-
 			},
 
 			events:{

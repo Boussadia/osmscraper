@@ -227,6 +227,34 @@ header.top + div.gap{
 	padding: 1px 1% 0 1%;
 }
 
+#menu .sub-menu-panel {
+	width: 14.3%;
+	height: 35px;
+	position: absolute;
+	top: 85px;
+	right: 0px;
+	background-color: #60a026;
+	/*display: none;*/
+}
+
+#menu .sub-menu-panel .dropdown > li {
+	width: 50%;
+}
+
+#menu .dropdown div.sub-menu-panel-divider {
+	position: relative;
+	float: right;
+	margin-right: -4px;
+	margin-top: 0px;
+	width: 3px;
+	height: 35px;
+	background-image: url(../img/header/sub-menu-green.png);
+}
+
+#menu p.level-2-active {
+	font-weight: bold;
+}
+
 #menu .icone {
 	margin: 0 auto;
 	width: 64px;
@@ -282,9 +310,9 @@ header.top + div.gap{
 			background-position: -704px 0;
 		}
 
-		/*#menu .left li.has-dropdown div.icone.traiteur-frais {
+		#menu .left li.has-dropdown div.icone.economiser {
 			background-position: -768px 0;
-		}*/
+		}
 
 		#menu .left li.has-dropdown.show div.icone.fruits-legumes {
 			background-position: 0 50px;
@@ -334,9 +362,9 @@ header.top + div.gap{
 			background-position: -704px 50px;
 		}
 
-		/*#menu .left li.has-dropdown.show div.icone.traiteur-frais {
+		#menu .left li.has-dropdown.show div.icone.economiser {
 			background-position: -768px 50px;
-		}*/
+		}
 
 
 

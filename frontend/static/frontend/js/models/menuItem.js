@@ -9,7 +9,6 @@ define([
 			},
 			initialize: function(){
 				this.subMenu = new SubMenuCollection(this.attributes.subs);
-
 			}
 		});
 		return MenuItem;
