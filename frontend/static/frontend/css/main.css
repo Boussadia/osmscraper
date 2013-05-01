@@ -262,7 +262,7 @@ header.top + div.gap{
 #menu .icone {
 	margin: 0 auto;
 	position: relative;
-	top: 3px;
+	top: 4px;
 	width: 64px;
 	height: 50px;
 	background: url(../img/menu/sprites_menu.png);
