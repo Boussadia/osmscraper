@@ -163,6 +163,10 @@ header.top + div.gap{
 	margin-top: 7px;
 }
 
+#top-icon-play{
+	position: relative;
+}
+
 #main-logo-bar {
 	width: 100%;
 	min-width: 1024px;
@@ -257,6 +261,7 @@ header.top + div.gap{
 
 #menu .icone {
 	margin: 0 auto;
+	position: relative;
 	top: 3px;
 	width: 64px;
 	height: 50px;
@@ -525,6 +530,10 @@ li.has-dropdown.show {
 
 
 /* Products Area */
+.category{
+	width: 100%;
+}
+
 .products {
 	width: 100%;
 	min-height: 291px;
@@ -546,6 +555,18 @@ li.has-dropdown.show {
 	font-weight: bold;
 }
 
+.products .inner.touch{
+	position: relative;
+	width: 100%;
+	overflow-x: scroll;
+	overflow-y: hidden;
+}
+
+.products .inner.touch .products-container{
+	width: 1225px;
+	height: 227px;
+}
+
 /* Products*/
 .product {
 	position: relative;
@@ -554,6 +575,10 @@ li.has-dropdown.show {
 	float: left;
 	padding-right: 5px;
 	margin-bottom: 5px;
+}
+
+.products .inner.touch .products-container .product{
+	width: 175px;
 }
 
 
@@ -686,18 +711,6 @@ li.has-dropdown.show {
 		color: #da552a;
 	}
 
-.product.null {
-	position: relative;
-	top: 21px;
-	width: 20%;
-	height: 222px;
-	float: left;
-	padding-right: 5px;
-	z-index: 1987;
-	right: 5px;
-	background-image: url(../img/header/filter.png);
-}
-
 .product div.box {
 	display: inline-block;
 	position: relative;
@@ -730,8 +743,8 @@ li.has-dropdown.show {
 		width: 16.667%;
 	}
 
-	.product.null {
-		width: 16.667%;
+	.products .inner.touch .products-container .product{
+		width: 175px;
 	}
 }
 
@@ -882,7 +895,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 	width: 59px;
 	height: 118px;
 	background: url(../img/cart/cart-container.png);
-	top: 280px;
+	top: -240px;
 	cursor: pointer;
 }
 
@@ -902,6 +915,12 @@ button:hover, button:focus, .button:hover, .button:focus {
 	height: 800px;
 	background-color: white;
 	right: -396px; 
+}
+
+#cart div.scrollarea{
+	height: 68%;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
 
 .transition{
@@ -973,20 +992,18 @@ button:hover, button:focus, .button:hover, .button:focus {
 		}
 
 			.products-recap .product-recap img {
-			width: 50px;
-			position: relative;
-			bottom: 90px;
-			display: block;
-			left: 71%;
-			margin-top: 10%;
-			margin-bottom: 10%;
+				height: 50px;
+				position: relative;
+				top: -45px;
+				display: block;
+				left: 71%;
 			}
 
 			.products-recap .product-recap p {
 				font-weight: bold;
 				position: relative;
 				display: inline-block;
-				bottom: -5px;
+				bottom: -30px;
 			}
 
 			.recap-price {
@@ -1004,8 +1021,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 
 			div.prod-desc {
 				max-width: 70%;
-				position: relative;
-				top: 0px;
+				position: absolute;
 			}
 
 

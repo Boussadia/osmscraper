@@ -4,6 +4,7 @@
 			'jquery': 'libs/jquery/jquery',
 			'jqueryUi': 'libs/jquery/jqueryui',
 			'autocomplete': 'libs/jquery/jquery.autocomplete',
+			'modernizr': 'libs/modernizr/modernizr.custom.97975',
 			'underscore': 'libs/underscore/underscore',
 			'backbone': 'libs/backbone/backbone'
 		},
@@ -20,6 +21,9 @@
 			},
 			'underscore': {
 				exports: '_'
+			},
+			'modernizr':{
+				exports: 'Modernizr'
 			}
         }
 		
