@@ -2,6 +2,9 @@
 	<div class="top-bloc">
 		<div class="img-bloc">
 			<img src="<%= image_url %>">
+			<% if( history[0].is_promotion ){%>
+				<p> <%= ((history[0].price-history[0].before)/history[0].before).toFixed(2)*100 %> %</p>
+			<%}%>
 		</div>
 		<p><%= brand.name %></p>
 		<p><%= name %></p>
@@ -14,8 +17,15 @@
 			<% } %>
 		</div>
 	</div>
-	<div class="price-bloc">
-		<p><%= history[0].price %> €</p>
-		<p><%= history[0].unit_price %>  €/<%= unit.name%></p>
-	</div>
+	<% if( !history[0].is_promotion ){%>
+		<div class="price-bloc">
+			<p><%= history[0].price %> €</p>
+			<p><%= history[0].unit_price %>  €/<%= unit.name%></p>
+		</div>
+	<%}else{%>
+		<div class="price-bloc-promo">
+			<p><%= history[0].before %> €</p>
+			<p><%= history[0].price %>  €</p>
+		</div>
+	<%}%>
 </div>
