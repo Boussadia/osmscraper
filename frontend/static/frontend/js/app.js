@@ -10,7 +10,7 @@ define([
 	'views/main',
 	'views/comparator',
 	'views/cart'
-], function($, _ , Backbone, Router, OsmsCollections, OsmModel, CartModel, MenuView, MainView, ComparatorView, CartView){
+], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel, MenuView, MainView, ComparatorView, CartView){
 
 	function MasterCoursesApp(){
 		// Global Scope
@@ -52,10 +52,6 @@ define([
 			that.data.osm_name = osm.name;
 			that.data.osm_type = osm.type;
 		}, this);
-
-		// this.Vent.on('carts', function(carts){
-		// 	console.log(carts);
-		// })
 	}
 
 	/*******************************************************************************************************************************************
@@ -92,6 +88,7 @@ define([
 		this.Views.menu.build(function(){
 			// Router module
 			var router = new Router({'vent': that.Vent});
+			that.Router = router;
 			Backbone.history.start({ pushState: true, root:"/dev"});
 
 			// Use absolute URLs  to navigate to anything not in your Router.

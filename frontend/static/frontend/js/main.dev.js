@@ -26,7 +26,7 @@
 			'modernizr':{
 				exports: 'Modernizr'
 			}
-        }
+		},
 		
 	});
 

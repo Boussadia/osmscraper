@@ -31,10 +31,13 @@ define([
 				options = options ? _.clone(options) : {};
 				var more = options.more || false;
 				var next_index = this.index_key + 1;
+
 				if (more && next_index<KEYS.length){
 					options.remove = false;
 					this.index_key = next_index;
-				}else{
+				}else if(more && next_index >= KEYS.length){
+					return ;
+				}else if(!more){
 					this.index_key = 0;
 				}
 				return BaseCollection.prototype.fetch.apply(this, [options]);

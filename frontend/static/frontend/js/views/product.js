@@ -19,6 +19,7 @@ define([
 				this.bindTo(this.product, 'change', this.render);
 			},
 			render: function(){
+				this.$el.empty();
 				var data = this.product.toJSON();
 				if (data.name.length > this.MAX_NAME_LENGTH){
 					data.name = data.name.substring(0, this.MAX_NAME_LENGTH-3)+'...';
