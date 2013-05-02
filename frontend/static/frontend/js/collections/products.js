@@ -1,13 +1,15 @@
 define([
+	'modernizr',
 	'collections/base',
 	'models/product'
 	],
-	function(BaseCollection, ProductModel){
+	function(Modernizr, BaseCollection, ProductModel){
 
 		var KEYS = ['top', 'mid', 'end']
 
 		var ProductsCollections = BaseCollection.extend({
 			model: ProductModel,
+			NUM_INITIAL_PRODUCTS_TO_FETCH: 5,
 			
 			// key = 'top' or 'mid' or 'end'
 			// this arguments is implemented in order to fetch products acordingly to user needs to look for more products
@@ -21,6 +23,9 @@ define([
 				var category_id = options.category_id || null;
 				this.id = category_id;
 
+				// If touch device, fetche
+				if (Modernizr.touch) this.NUM_INITIAL_PRODUCTS_TO_FETCH = 6;
+
 			},
 			parse: function(resp, xhr){
 				this.name = resp.category.name;
@@ -29,6 +34,9 @@ define([
 			},
 			fetch: function(options){
 				options = options ? _.clone(options) : {};
+				options.data = {
+					'TOP_PRODUCTS_COUNT': this.NUM_INITIAL_PRODUCTS_TO_FETCH
+				}
 				var more = options.more || false;
 				var next_index = this.index_key + 1;
 

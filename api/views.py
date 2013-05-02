@@ -201,6 +201,10 @@ class CategoryProducts(CategorySimple):
 
 			products = Product.objects.filter(**kwargs).distinct('reference')
 			products_count = products.count() # Adding total count of products in category
+
+			if 'TOP_PRODUCTS_COUNT' in request.GET:
+				CategoryProducts.TOP_PRODUCTS_COUNT = request.GET['TOP_PRODUCTS_COUNT']
+
 			if key == 'top':
 				products = products[:CategoryProducts.TOP_PRODUCTS_COUNT]
 			elif key == 'mid':
