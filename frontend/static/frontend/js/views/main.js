@@ -37,12 +37,11 @@ define([
 				var categoryCollection = new CategoryCollection([], {'id': category_id, 'vent': this.vent});
 				categoryCollection.current = true;
 				this.categories.splice(index_insert, 0, categoryCollection);
-				// var promotionCategory = new CategoryModel({'id':category_id}, {'type': 'promotions', 'vent': this.vent});
-				// categoryCollection.push(promotionCategory);
+
 				var that = this;
-				this.bindTo(categoryCollection, 'add', function(){
-					that.render();
-				});
+				// this.bindTo(categoryCollection, 'add', function(){
+				// 	that.render();
+				// });
 				var that = this;
 				categoryCollection.fetch({
 					success:function(collection, response, options){
@@ -56,19 +55,24 @@ define([
 								}
 							});
 						});
+						that.render(categoryCollection)
 					}
 				});
 			}
 		},
-		render: function(){
-			var that = this;
-			this.closeSubViews();
-			_.each(this.categories, function(categoryCollection){
-				var view = new CategoryCollectionView({'collection': categoryCollection, 'vent': that.vent});
-				that.addSubView(view);
-				that.$el.append(view.render().el);
-				categoryCollection.current ? view.$el.show() : view.$el.hide();
-			});
+		render: function(categoryCollection){
+			// var that = this;
+			// this.closeSubViews();
+			// _.each(this.categories, function(categoryCollection){
+			// 	var view = new CategoryCollectionView({'collection': categoryCollection, 'vent': that.vent});
+			// 	that.addSubView(view);
+			// 	that.$el.append(view.render().el);
+			// 	categoryCollection.current ? view.$el.show() : view.$el.hide();
+			// });
+			var view = new CategoryCollectionView({'collection': categoryCollection, 'vent': this.vent});
+			this.addSubView(view);
+			this.$el.append(view.render().el);
+			categoryCollection.current ? view.$el.show() : view.$el.hide();
 			return this;
 
 		},

@@ -30,13 +30,13 @@ define([
 				});
 
 				this.bindTo(this.products, 'sync', function(){
+					// that.render()
 					this.fetching = false;
-				})
+				});
 
 				this.bindTo(this.products, 'add', this.render);
 			},
 			render: function(product){
-				product = product || undefined;
 				if(!this.rendered){
 					var data = {'name': this.products.name, 'count': this.products.count};
 					if (typeof data.name !== 'undefined'){
@@ -49,15 +49,17 @@ define([
 
 				if(typeof product !== 'undefined'){
 					var view = new ProductView({'product': product, 'vent': this.vent})
+					this.addSubView(view);
 					this.$el.find('.products-container').append(view.render().el);
-
+				}else{
+					this.closeSubViews();
+					this.$el.empty();
+					var that = this;
+					this.products.each(function(product){
+						var view = new ProductView({'product': product, 'vent': this.vent})
+						that.$el.find('.products-container').append(view.render().el);
+					});
 				}
-				
-				// this.products.each(function(product){
-				// 	var view = new ProductView({'product': product, 'vent': this.vent})
-				// 	that.$el.find('.products-container').append(view.render().el);
-				// });
-
 
 				// Adding plus button if more products are available to fetch
 				if(!Modernizr.touch){
