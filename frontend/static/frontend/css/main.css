@@ -555,6 +555,10 @@ li.has-dropdown.show {
 	font-weight: bold;
 }
 
+.products > p.promotion{
+	color: #da552a;
+}
+
 .products .inner.touch{
 	position: relative;
 	width: 100%;

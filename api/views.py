@@ -5,6 +5,7 @@ from __future__ import absolute_import # Import because of modules names
 
 from datetime import datetime, timedelta
 
+from django.db.models import Q, F 
 from django.contrib.sessions.models import Session
 from django.http import Http404
 
@@ -165,7 +166,7 @@ class CategoryProducts(CategorySimple):
 	MID_PRODUCTS_COUNT = 17
 	renderer_classes = BaseAPIView.renderer_classes + [ProductsCSVRenderer]
 	@osm
-	def get(self, request, id_category, key, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+	def get(self, request, id_category, type_fetched, key, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
 		category = self.get_object(id_category)
 		serialized = None
 		global_keys = globals().keys()
@@ -176,30 +177,36 @@ class CategoryProducts(CategorySimple):
 		if osm_name == 'monoprix':
 			if osm_location is None:
 				kwargs_location_history['history__store__isnull'] = True
-				kwargs_location_promotion['store__isnull'] = True
+				kwargs_location_promotion['promotion__store__isnull'] = True
 			else:
 				kwargs_location_history['history__store__id'] = osm_location
-				kwargs_location_promotion['store__id'] = osm_location
+				kwargs_location_promotion['promotion__store__id'] = osm_location
 		else:
 			if osm_location is None:
 				kwargs_location_history['history__shipping_area__isnull'] = True
-				kwargs_location_promotion['shipping_area__isnull'] = True
+				kwargs_location_promotion['promotion__shipping_area__isnull'] = True
 			else:
 				kwargs_location_history['history__shipping_area__id'] = osm_location
-				kwargs_location_promotion['shipping_area__id'] = osm_location
+				kwargs_location_promotion['promotion__shipping_area__id'] = osm_location
 
 		# Getting products without simple promotion
 		product_class_name = '%sProduct'%osm_name.capitalize()
 		if product_class_name in global_keys:
 			Product = globals()[product_class_name]
+			# products = Product.objects.filter(, , dalliz_category__parent_category = category)
 			kwargs = {
 				'exists':True,
-				'dalliz_category': category
 			}
 			kwargs.update(kwargs_location_history) # adding location filter
+			kwargs.update(kwargs_location_promotion)
 
+			if type_fetched == 'promotions':
+				kwargs.update({'promotion__id__isnull': False, 'dalliz_category__parent_category': category})
+				products = Product.objects.filter(~Q(promotion__end__lte = F('history__created'))).filter(**kwargs).distinct('reference')
+			else:
+				kwargs.update({'dalliz_category': category})
+				products = Product.objects.filter(**kwargs).distinct('reference')
 
-			products = Product.objects.filter(**kwargs).distinct('reference')
 			products_count = products.count() # Adding total count of products in category
 
 			if 'TOP_PRODUCTS_COUNT' in request.GET:
@@ -221,7 +228,10 @@ class CategoryProducts(CategorySimple):
 		if serialized is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
 		else:
-			return {'products':serialized.data, 'category':{'name': category.name, 'count': products_count}}
+			response = {'products':serialized.data, 'category':{'name': category.name, 'count': products_count}}
+			if type_fetched == 'promotions':
+				response['category']['name'] = type_fetched
+			return response
 
 class CategoryMatching(CategorySimple):
 	"""

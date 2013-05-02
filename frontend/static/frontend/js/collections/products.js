@@ -10,18 +10,23 @@ define([
 		var ProductsCollections = BaseCollection.extend({
 			model: ProductModel,
 			NUM_INITIAL_PRODUCTS_TO_FETCH: 5,
+			TYPE_TO_FETCH: 'products',
 			
 			// key = 'top' or 'mid' or 'end'
 			// this arguments is implemented in order to fetch products acordingly to user needs to look for more products
 			index_key: 0,
 			url:function(){
-				return '/api/categories/id/'+this.id+'/products/'+KEYS[this.index_key];
+				// console.log(this.id );
+				// console.log(this.TYPE_TO_FETCH );
+				return '/api/categories/id/'+this.id+'/'+this.TYPE_TO_FETCH+'/'+KEYS[this.index_key];
 			},
 			
 			initialize: function(models, options){
-				options || (options = {})
+				options || (options = {});
+				this.TYPE_TO_FETCH = options.type;
 				var category_id = options.category_id || null;
 				this.id = category_id;
+
 
 				// If touch device, fetche
 				if (Modernizr.touch) this.NUM_INITIAL_PRODUCTS_TO_FETCH = 6;

@@ -1,9 +1,10 @@
 define([
 	'underscore',
 	'views/base',
+	'models/category',
 	'collections/category',
 	'views/categoryCollection'
-], function(_, BaseView, CategoryCollection, CategoryCollectionView){
+], function(_, BaseView, CategoryModel, CategoryCollection, CategoryCollectionView){
 
 	var MainView = BaseView.extend({
 		el: 'section#main div.block-left',
@@ -36,7 +37,8 @@ define([
 				var categoryCollection = new CategoryCollection([], {'id': category_id, 'vent': this.vent});
 				categoryCollection.current = true;
 				this.categories.splice(index_insert, 0, categoryCollection);
-				
+				// var promotionCategory = new CategoryModel({'id':category_id}, {'type': 'promotions', 'vent': this.vent});
+				// categoryCollection.push(promotionCategory);
 				var that = this;
 				this.bindTo(categoryCollection, 'add', function(){
 					that.render();
