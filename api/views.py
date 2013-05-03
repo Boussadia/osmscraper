@@ -224,7 +224,7 @@ class CategoryProducts(CategorySimple):
 
 		if serializer_class_name in global_keys:
 			Serializer_class = globals()[serializer_class_name]
-			serialized = Serializer_class(products, many = True, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}, 'time':datetime.now(), 'cart': cart})
+			serialized = Serializer_class(products, many = True, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}, 'time':datetime.now(), 'cart': cart, 'type': type_fetched})
 		if serialized is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
 		else:

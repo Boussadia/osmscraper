@@ -56,9 +56,10 @@ class HistoryField(serializers.RelatedField):
 			'store': osm_location
 		} for p in promotions]
 
-
-
-		return merge_history_promotion(history_data, promotion_data)
+		if self.context['type'] == 'promotions':
+			return merge_history_promotion([], promotion_data)
+		else:
+			return merge_history_promotion(history_data, promotion_data)
 
 class PriceField(serializers.RelatedField):
 	def to_native(self, history_set):
