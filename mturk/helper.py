@@ -7,6 +7,7 @@ from boto.mturk.connection import MTurkConnection
 from boto.mturk.question import ExternalQuestion
 from boto.mturk.qualification import Qualifications, PercentAssignmentsApprovedRequirement
 
+from dalliz.models import Category
 from monoprix.models import Product as MonoprixProduct
 from auchan.models import Product as AuchanProduct
 from ooshop.models import Product as OoshopProduct
@@ -127,6 +128,12 @@ class MturkHelper(object):
 			OsmToProduct = globals()['%sProduct'%(osm_to.capitalize())]
 			length = len(results)
 			values = {}
+
+			# Setting thereshold for category beate et hygiene
+			if 12 in [c.parent_category.parent_category.id for c in  productFrom.dalliz_category.all()]:
+				thereshold = .9
+			else:
+				thereshold = .7
 
 			for r in results:
 				value = r.reference
