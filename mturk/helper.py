@@ -200,10 +200,13 @@ class MturkHelper(object):
 
 					if process_validation:
 						for r in results:
-							if r.reference == max_value:
-								self.mtc.approve_assignment(r.assignementId)
-							else:
-								self.mtc.reject_assignment(r.assignementId)
+							try:
+								if r.reference == max_value:
+									self.mtc.approve_assignment(r.assignementId)
+								else:
+									self.mtc.reject_assignment(r.assignementId)
+							except Exception, e:
+								print e
 
 						hit.processed = True
 						hit.save()
