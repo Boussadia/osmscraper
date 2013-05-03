@@ -374,9 +374,6 @@ header.top + div.gap{
 
 
 
-
-
-
 #menu ul.left p.name {
 	color: #424242;
 	line-height: 100%;
@@ -798,7 +795,7 @@ li.has-dropdown.show {
 	background-color: #e2e3e5;
 }
 
-	.osm div, .osm.active div {
+	.osm div, .osm.active div, #menu .icone.monoprix, #menu .icone.ooshop, #menu .icone.auchan {
 		display: inline-block;
 		position: relative;
 		float: left;
@@ -808,24 +805,34 @@ li.has-dropdown.show {
 		background: url(../img/comparator/sprites_osm.png);
 	}
 
-		#auchan {
+		#auchan, #menu .icone.auchan {
 			width: 38px;
 			background-position: 0 0;
 			left: 6px;
 			top: 0;
 		}
 
-		#ooshop {
+		#ooshop, #menu .icone.ooshop {
 			width: 52px;
 			background-position: -38px 0;
 			top: 0;
 		}
 
-		#monoprix {
+		#monoprix, #menu .icone.monoprix {
 			width: 48px;
 			background-position: -90px 0;
 			left: 2px;
 			top: 0;
+		}
+
+		#menu .icone.monoprix, #menu .icone.ooshop, #menu .icone.auchan{
+			left: 14px;
+			top: 6px;
+			margin-bottom: 19px;
+		}
+
+		#menu .icone.auchan{
+			left: 23px;
 		}
 
 	.osm p, .osm.active p {
