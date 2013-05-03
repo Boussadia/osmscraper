@@ -219,10 +219,16 @@ class MturkHelper(object):
 					# Getting Product 
 				else:
 					# For the moment, if threshold not ok, approve everything
+					for r in results:
+						try:
+							self.mtc.approve_assignment(r.assignementId)
+						except Exception, e:
+							print e
+					hit.processed = True
+					hit.save()
+					
 					try:
-						[self.mtc.approve_assignment(r.assignementId) for r in results]
-						hit.processed = True
-						hit.save()
+						self.mtc.disable_hit(hit.hitId)
 					except Exception, e:
 						print e
 
