@@ -107,9 +107,11 @@ class MturkHelper(object):
 		"""
 		thereshold = .7
 		hits = Task.objects.filter(processed = False)
+		print 'Treating %d hits'%(len(hits))
 
 		for hit in hits:
 			results = list(ResultTask.objects.filter(task = hit, reference__isnull = False))
+			print 'Working on %d results'%(len(results))
 			# Getting associate product
 			osm_from = hit.osm_from
 			osm_to = hit.osm_to
