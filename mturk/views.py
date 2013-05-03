@@ -31,7 +31,7 @@ def index(request, key):
 			response['turkSubmitTo'] = unicode(parameters['turkSubmitTo']) + '/mturk/externalSubmit'
 
 	helper = MturkHelper(key = key, hitid = response['hitId'])
-	helper.save_task()
+	response['taskid'] = helper.save_task()
 	response.update(helper.dump())
 	if response['assignmentId'] is not None and response['assignmentId'] != 'ASSIGNMENT_ID_NOT_AVAILABLE':
 		helper.save_result(assignment = response['assignmentId'], workerId = response['workerId'])
@@ -40,8 +40,5 @@ def index(request, key):
 		reference_result = request.POST['flagged']
 		response['flagged'] = reference_result
 		helper.save_result(reference_result, response['hitId'], response['assignmentId'], response['workerId'])
-		# crawler = Crawler()
-		# # Posting data to amazon mturk
-		# crawler.post(url = response['turkSubmitTo'], data = response)
 
 	return render(request, 'mturk/index.html', response)

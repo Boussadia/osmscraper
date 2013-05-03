@@ -233,13 +233,17 @@ class MturkHelper(object):
 		self.generate_key()
 		if self.key is not None:
 			self.task, created = Task.objects.get_or_create(key = self.key, osm_from = self.osm_from, osm_to = self.osm_to, reference = self.reference)
-			if self.hitid is not None and self.task.hitId is None:
+			if self.hitid is not None:
 				self.task.hitId = self.hitid
 				self.task.save()
 			self.osm_from = self.task.osm_from
 			self.osm_to = self.task.osm_to
 			self.reference = self.task.reference
 			self.hitid = self.task.hitId
+			return self.task.id
+		else:
+			return -1
+
 
 
 	def get_task(self):
