@@ -94,9 +94,8 @@ class MturkHelper(object):
 							print "%s" % (value)
 							# Saving resultTask
 							if task is not None:
-								resulttask, created = ResultTask.objects.get_or_create(task = task, assignementId = assignment.AssignmentId)
+								resulttask, created = ResultTask.objects.get_or_create(task = task, assignementId = assignment.AssignmentId, workerId = assignment.WorkerId)
 								if created:
-									resulttask.workerId = assignment.WorkerId
 									resulttask.reference = value
 									resulttask.save()
 				print "--------------------"
