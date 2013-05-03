@@ -8,9 +8,6 @@ class Task(models.Model):
 	reference = models.CharField(max_length = 100)
 	processed = models.BooleanField(default = False)
 
-	class Meta:
-		unique_together = ("key", "osm_from", "osm_to", "reference")
-
 class ResultTask(models.Model):
 	assignementId = models.CharField(max_length = 100)
 	workerId = models.CharField(max_length = 100, null = True)
