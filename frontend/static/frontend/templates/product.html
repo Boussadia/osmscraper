@@ -3,7 +3,7 @@
 		<div class="img-bloc">
 			<img src="<%= image_url %>">
 			<% if( history[0].is_promotion ){%>
-				<p> <%= ((history[0].price-history[0].before)/history[0].before).toFixed(2)*100 %> %</p>
+				<p> <%= (((history[0].price-history[0].before)/history[0].before).toFixed(2)*100).toFixed(2) %> %</p>
 			<%}%>
 		</div>
 		<p><%= brand.name %></p>
