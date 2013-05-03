@@ -95,11 +95,10 @@ class MturkHelper(object):
 							print "%s" % (value)
 							# Saving resultTask
 							if task is not None:
-								print 'Saving result task'
+								print 'Saving result task, result = %s'%(value)
 								resulttask, created = ResultTask.objects.get_or_create(task = task, assignementId = assignment.AssignmentId, workerId = assignment.WorkerId)
-								if created:
-									resulttask.reference = value
-									resulttask.save()
+								resulttask.reference = value
+								resulttask.save()
 				print "--------------------"
 
 	def validate(self):
