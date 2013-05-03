@@ -16,24 +16,18 @@
 	font-weight: normal;
 }
 
-@font-face{
-	font-family: FuturaStdCond;
-	src: url('../fonts/FuturaStd-Condensed.otf');
-	font-weight: bold;
-}
-
-@font-face{
-	font-family: FuturaStdCond;
-	src: url('../fonts/FuturaStd-CondensedLight.otf');
-	font-weight: normal;
-}
-
 *,
 *:before,
 *:after {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box; }
+
+p, h1, h2, h3, h4, h5, h6, div {
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizelegibility;
+	font-smooth: always;
+}
 
 html,
 body {
@@ -545,7 +539,6 @@ li.has-dropdown.show {
 .products > p {
 	text-transform: capitalize;
 	position: relative;
-	margin-left: 60px;
 	margin-bottom: 5px;
 	color: #078bc9;
 	font-size: 120%;
@@ -614,8 +607,7 @@ li.has-dropdown.show {
 
 	.top-bloc > p {
 		color: #424242;
-		font-family: FuturaStdCond;
-		font-size: 14px;
+		font-size: 13px;
 		margin: 2px 0;
 	}
 
