@@ -80,6 +80,7 @@ class MturkHelper(object):
 			assignments = self.mtc.get_assignments(hit.HITId)
 			# Getting task associated to hit
 			task = Task.objects.filter(hitId = hit.HITId)
+			print 'Number of corresponding tasks = %d'%len(task)
 			if len(task)>0:
 				task = task[0]
 			else:
@@ -92,7 +93,6 @@ class MturkHelper(object):
 					qid = question_form_answer.qid
 					if qid == 'flagged':
 						for value in question_form_answer.fields:
-							print "%s" % (value)
 							# Saving resultTask
 							if task is not None:
 								print 'Saving result task, result = %s'%(value)
@@ -106,11 +106,11 @@ class MturkHelper(object):
 			Validating results from hits
 		"""
 		thereshold = .7
-		hits = Task.objects.filter(processed = False)
+		hits = Task.objects.filter(processed = False);
 		print 'Treating %d hits'%(len(hits))
 
 		for hit in hits:
-			results = list(ResultTask.objects.filter(task = hit, reference__isnull = False))
+			results = list(hit.resulttask_set.filter(reference__isnull = False))
 			print 'Working on %d results'%(len(results))
 			# Getting associate product
 			osm_from = hit.osm_from
@@ -148,7 +148,7 @@ class MturkHelper(object):
 
 			if len(sorted_values)>0:
 				max_value = values[sorted_values[0]]
-				if max_value>=thereshold:
+				if max_value>=thereshold and sorted_values[0] is not None:
 					print 'Thereshold !'
 					process_validation = False
 					reference_match = sorted_values[0]
@@ -201,7 +201,7 @@ class MturkHelper(object):
 					if process_validation:
 						for r in results:
 							try:
-								if r.reference == max_value:
+								if r.reference == sorted_values[0]:
 									self.mtc.approve_assignment(r.assignementId)
 								else:
 									self.mtc.reject_assignment(r.assignementId)
@@ -210,15 +210,21 @@ class MturkHelper(object):
 
 						hit.processed = True
 						hit.save()
-						self.mtc.disable_hit(hit.hitId)
+						try:
+							self.mtc.disable_hit(hit.hitId)
+						except Exception, e:
+							print e
 
 
 					# Getting Product 
 				else:
 					# For the moment, if threshold not ok, approve everything
-					[self.mtc.approve_assignment(r.assignementId) for r in results]
-					hit.processed = True
-					hit.save()
+					try:
+						[self.mtc.approve_assignment(r.assignementId) for r in results]
+						hit.processed = True
+						hit.save()
+					except Exception, e:
+						print e
 
 
 	def generate_key(self):
@@ -232,14 +238,35 @@ class MturkHelper(object):
 	def save_task(self):
 		self.generate_key()
 		if self.key is not None:
-			self.task, created = Task.objects.get_or_create(key = self.key, osm_from = self.osm_from, osm_to = self.osm_to, reference = self.reference)
+			tasks = Task.objects.filter(key = self.key)
 			if self.hitid is not None:
-				self.task.hitId = self.hitid
-				self.task.save()
-			self.osm_from = self.task.osm_from
-			self.osm_to = self.task.osm_to
-			self.reference = self.task.reference
-			self.hitid = self.task.hitId
+				tasks = tasks.filter(hitId = self.hitid)
+				if len(tasks) == 0:
+					task = Task(
+						key = self.key,
+						osm_from = self.osm_from,
+						osm_to = self.osm_to,
+						reference = self.reference,
+						hitId = self.hitid )
+					task.save()
+					self.task = task
+				else:
+					# Task already exists
+					self.task = tasks[0]
+					pass
+			else:
+				# Not hitid
+				if len(tasks) == 0:
+					task = Task(
+                                                key = self.key,
+                                                osm_from = self.osm_from,
+                                                osm_to = self.osm_to,
+                                                reference = self.reference)
+					task.save()
+					self.task = task
+				else:
+					# Task already exists
+					self.task = tasks[0]
 			return self.task.id
 		else:
 			return -1
