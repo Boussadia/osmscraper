@@ -204,7 +204,7 @@ class MturkHelper(object):
 								if r.reference == sorted_values[0]:
 									self.mtc.approve_assignment(r.assignementId)
 								else:
-									self.mtc.reject_assignment(r.assignementId)
+									self.mtc.approve_assignment(r.assignementId)
 							except Exception, e:
 								print e
 
