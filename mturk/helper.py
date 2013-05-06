@@ -101,6 +101,7 @@ class MturkHelper(object):
 								resulttask.save()
 				print "--------------------"
 
+
 	def validate(self):
 		"""
 			Validating results from hits
@@ -201,10 +202,11 @@ class MturkHelper(object):
 					if process_validation:
 						for r in results:
 							try:
-								if r.reference == sorted_values[0]:
+								if r.reference == sorted_values[0] or r.reference == max_value:
 									self.mtc.approve_assignment(r.assignementId)
 								else:
-									self.mtc.approve_assignment(r.assignementId)
+									feedback = "We are approving the hits that we rejected, we are deply sorry, we are new to the mturk world and we have to admit that we messed up, we are learning and we hope that you will forgive us for this mess!"
+									self.mtc.approve_rejected_assignment(r.assignementId, feedback)
 							except Exception, e:
 								print e
 
