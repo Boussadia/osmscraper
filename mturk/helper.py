@@ -70,9 +70,11 @@ class MturkHelper(object):
 
 		return hits
 
-	def get_hits(self):
-		hits = self.get_all_reviewable_hits()
-		
+	def get_hits(self, validate = False, all_hits = False):
+		if not all_hits:
+			hits = self.get_all_reviewable_hits()
+		else:
+			hits = self.mtc.get_all_hits()
 		for hit in hits:
 			print "####################"
 			print "--------------------"
@@ -99,6 +101,17 @@ class MturkHelper(object):
 								resulttask, created = ResultTask.objects.get_or_create(task = task, assignementId = assignment.AssignmentId, workerId = assignment.WorkerId)
 								resulttask.reference = value
 								resulttask.save()
+							elif validate:
+								try:
+									self.mtc.approve_assignment(assignment.AssignmentId)
+								except Exception, e:
+									print e
+			try:
+				if validate:
+					self.mtc.disable_hit(hit.HITId)
+			except Exception, e:
+				print e
+							
 				print "--------------------"
 
 
@@ -202,11 +215,9 @@ class MturkHelper(object):
 					if process_validation:
 						for r in results:
 							try:
-								feedback = "We are approving the hits that we rejected, we are deply sorry, we are new to the mturk world and we have to admit that we messed up, we are learning and we hope that you will forgive us for this mess!"
-								self.mtc.approve_rejected_assignment(r.assignementId, feedback)
+								self.mtc.approve_assignment(r.assignementId)
 							except Exception, e:
 								print e
-
 						hit.processed = True
 						hit.save()
 						try:
