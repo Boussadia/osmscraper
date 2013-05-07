@@ -607,7 +607,7 @@ li.has-dropdown.show {
 
 	.top-bloc > p {
 		color: #424242;
-		font-size: 13px;
+		font-size: 12px;
 		margin: 2px 0;
 	}
 
@@ -627,6 +627,7 @@ li.has-dropdown.show {
 		position: absolute;
 		bottom: 2px;
 		margin-bottom: 0;
+		font-size: 11px;
 	}
 
 	.qte {
