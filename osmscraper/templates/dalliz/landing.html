@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html class="no-js lt-ie9" lang="fr" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="fr" > <!--<![endif]-->
+
+	<head>
+		<title> MasterCourses, Comparateur de panier </title>
+
+		<!-- Classic meta description -->
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Content-Language" content="fr-fr">
+		<meta name="viewport" content="width=device-width" />
+		<meta name="author" content="www.mastercourses.com" >
+		<meta name="description" content="Faites des économies sur vos courses en ligne en trouvant le prix le moins cher pour votre panier.">
+		<meta name="keywords" content="mastercourses, drive, économiser de l'argent, comparateur de panier, supermarchés en ligne, courses moins chères, courses en ligne, courses pas chères, comparateur courses, livraison à domicile">
+
+		<!-- Bing authentication -->
+		<meta name="msvalidate.01" content="E4AF46245775AA2147B1DCDA91022A88" />
+
+		<!-- Detectify -->
+		<meta name="detectify-verification" content="be485bb0b2d44b7e6a0d7efa7e6752bf" />
+
+
+		<!-- Open graph meta tags -->
+		<meta property="og:title" content="MasterCourses" >
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="http://www.mastercourses.com">
+		<meta property="og:locale" content="fr-fr" >
+		<meta property="og:site_name" content="MasterCourses">
+		<meta property="og:description" content="Faites des économies sur vos courses en ligne en trouvant le prix le moins cher pour votre panier.">
+		<meta property="og:image" content="{% static /dalliz/images/logo_og.png %}">
+		<meta property="fb:admins" content="1478671803" />
+
+		<meta name="robots" content="all" />
+
+		<!-- Favico -->
+		<link href="{% static /dalliz/images/favicon.ico %}" rel="icon" type="image/x-icon" />
+
+		<!-- CSS -->
+		<link rel="stylesheet" href="{% static /dalliz/css/home.css %}" />
+
+		<!-- JS -->
+
+		<script src="{% static /dalliz/js/jquery-1.9.1.js %}"></script>
+		<script src="{% static /dalliz/js/slides.min.jquery.js %}"></script>
+
+		<script src="{% static /dalliz/js/vendor/custom.modernizr.js %}"></script>
+
+		<script type="text/javascript" src="{% static dalliz/js/prospects.js %}"></script>
+
+
+	</head>
+
+	<body>
+	<header class="main-container">
+		<div id="top-bar">
+			<div id="beta"><img src="{% static /dalliz/images/home/ruban.png %}"></div>
+			<a href="" data-reveal-id="myModal">
+				<!-- <div class="top-icon"><img src="img/header/play-icon.png"></div> -->
+				<div class="top-icon">Se connecter</div>
+				<!-- <div class="top-icon"><img src="img/header/user-icon.png"></div> -->
+			</a>
+		</div>
+		<div id="logo-bar" class="block">
+			<a href="#"><img src="{% static /dalliz/images/header/logo-small.png %}"></a>
+		</div>
+	</header>
+	<section id="slideshow" class="main-container block">
+			<div class="slides-container">
+				<div>
+					<div class="message">
+						<p>Économisez jusqu'à 20%</p> <p>sur vos courses en ligne !</p>
+					</div>
+					<a href="" data-reveal-id="myModal"><img src="{% static /dalliz/images/home/pub1.png %}" alt="catégories alimentaires"></a>
+				</div>
+				<div>
+					<div class="message">
+						<p>Drive ou livraison à domicile,</p><p>c'est vous qui choisissez !</p>
+					</div>
+					<a href="" data-reveal-id="myModal"><img src="{% static /dalliz/images/home/pub2.png %}" alt="catégories hygiène et beauté"></a>
+				</div>
+				<div>
+					<div class="message">
+						<p>Gagnez du temps grâce</p><p> aux courses en ligne !</p>
+					</div>
+					<a href="" data-reveal-id="myModal"><img src="{% static /dalliz/images/home/pub3.png %}" alt="catégorie maison et entretien"></a>
+				</div>
+			</div>
+			<a class="cta" href="" data-reveal-id="myModal">Faites vos courses ici !</a>
+	</section>
+	<section class="main-container block">
+		<div id="separator"></div>
+		<div class="explanation">Les supermarchés comparés</div>
+		<table id="osms">
+			<tr>
+				<td><img src="{% static /dalliz/images/home/monop.gif %}"></td>
+				<td><img src="{% static /dalliz/images/home/auchan.jpg %}"></td>
+				<td><img src="{% static /dalliz/images/home/ooshop.png %}"></td>
+			</tr>
+		</table>
+	</section>
+	<section id="pitch-container"class="main-container block">
+		<div id="separator"></div>
+		<div class="explanation">Comment çà marche</div>
+
+		<table id="pitch">
+			<tr>
+				<td><img src="{% static /dalliz/images/home/compose.png %}"></td>
+				<td><img src="{% static /dalliz/images/home/compare.png %}"></td>
+				<td><img src="{% static /dalliz/images/home/commande.png %}"></td>
+			</tr>
+			<tr>
+				<td>
+					<h3>Je compose</h3>
+					<p>mon panier de courses. J’y trouve tout ce dont j’ai besoin au quotidien.</p>
+				</td>
+				<td>
+					<h3>Je compare</h3>
+					<p>le prix de mon panier chez les différents supermarchés en ligne.</p>
+				</td>
+				<td>
+					<h3>Je commande</h3>
+					<p>mon panier, avec l’assurance du prix le moins cher.</p>
+				</td>
+			</tr>
+		</table>
+	</section>
+
+	<div id="myModal" class="reveal-modal">
+		<a class="close-reveal-modal">&#215;</a>
+		<div id="modal-header">Master Courses est en beta privée !</div>
+		<div id="sign-in">
+			<form>
+	      		<div class="form-container">
+	        		<input type="email" placeholder="Email">
+	            <img src="{% static /dalliz/images/home/mail.png %}">
+	      		</div>
+	      		<div class="form-container">
+	        		<input type="password" placeholder="Mot de passe">
+	            <img src="{% static /dalliz/images/home/lock.png %}">
+	      		</div>
+	    	</form>
+	    	<p>Mot de passe oublié ?</p>
+	    	<a id="sign-in-button" href="#">Se connecter</a>
+		</div>
+		<div id="invitation">
+			<p>Vous n'avez pas de compte sur Master Courses ? Demandez votre invitation !</p>
+			<form>
+				<div class="form-container">
+					<input class="mail prospect" type="email" placeholder="Email">
+					<img src="{% static /dalliz/images/home/mail.png %}">
+				</div>
+			</form>
+			<a id="invitation-button" href="#">Envoyer</a>
+			<div id="successmessage">
+				<p>Votre inscription a bien été prise en compte !</p>
+			</div>
+			<div class="mailnotok errormessage">
+				<p>Le mail que vous avez donné est incorrect.</p>
+			</div>
+			<div class="errormessage">
+				<p>Oups, il semble qu'un problème soit survenu lors de l'enregistrement de votre mail, veuillez réessayer.</p>
+			</div>
+		</div>
+		<div id="follow-us">
+			<ul>
+				<li class="facebook_icon">
+					<a href="https://www.facebook.com/mastercourses" target="_blank" title="Suivez-nous sur notre page Facebook !"></a>
+				</li>
+				<li class="twitter_icon">
+					<a href="https://twitter.com/mastercourses" target="_blank" title="Suivez-nous sur Twitter !"></a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<footer>
+		<div class="footer-top">
+			<div class="footer-container">
+					<h2><a href="http://blog.mastercourses.com"> Blog </a></h2>
+					<p>•</p>
+			</div>
+			<div class="footer-container">
+					<div class="mini-container">
+						<h2>Suivez-nous : </h2>
+					</div>
+					<div class="mini-container">
+						<ul class="social-widget">
+							<li class="facebook_icon">
+								<a href="https://www.facebook.com/mastercourses" target="_blank" title="Suivez-nous sur notre page Facebook !"></a>
+							</li>
+							<li class="twitter_icon">
+								<a href="https://twitter.com/mastercourses" target="_blank" title="Suivez-nous sur Twitter !"></a>
+							</li>
+							<li class="google_icon">
+								<a href="https://plus.google.com/b/113481628276817850414/113481628276817850414" target="_blank" title="Suivez-nous sur Google+ !"></a>
+							</li>
+							<li class="linked_in_icon">
+								<a href="https://www.linkedin.com/company/dalliz" target="_blank" title="Suivez-nous sur LinkedIn !"></a>
+							</li>
+						</ul>
+					</div>
+			</div>
+			<div class="footer-container">
+						<p id="last-bullet">•</p>
+						<h2><a href="mailto:hello@dalliz.com?Subject=Prise%20de%20contact"> Contactez-nous ! </a></h2>
+			</div>
+		</div>
+		<div class="footer-bottom">
+				<ul class="dropdown-aligned">
+					<li id="footer-int"><a href="/partenariat/">Partenariat</a></li>
+					<li>•</li>
+					<li id="footer-int">Jobs</li>
+					<li>•</li>
+					<li id="footer-int"><a href="/mentions-legales/">Mentions légales</a></li>
+					<li>•</li>
+					<li id="footer-int"><a href="/conditions-generale-d-utilisation/">Conditions générales d'utilisation</a></li>
+					<li>•</li>
+					<!-- <li id="footer-int"><a href="/a-propos-de-dalliz/">À propos de Master Courses</a></li>
+					<li>•</li> -->
+					<li id="footer-int">Master Courses © 2013</li>
+				</ul>	
+		</div>
+	</footer>
+		
+	  <script>
+	  // document.write('<script src=' +
+	  // ('__proto__' in {} ? 'js/vendor/zepto' : 'js/vendor/jquery') +
+	  // '.js><\/script>')
+	  </script>
+	  
+	  <script src="{% static /dalliz/js/foundation.min.js %}"></script>
+	  <!--
+	  
+	  <script src="js/foundation/foundation.js"></script>
+	  
+	  <script src="js/foundation/foundation.reveal.js"></script>
+	  
+	  -->
+	  
+	  <script>
+	    $(document).foundation();
+	  </script>
+
+	</body>
+
+	<script type="text/javascript">
+		$(function(){		
+			$("#slideshow").slides({
+				play: 5000
+			});
+		});
+	</script>
+
+</html>

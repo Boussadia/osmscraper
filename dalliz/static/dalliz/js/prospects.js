@@ -1,13 +1,14 @@
 $(document).ready(function(){
-	$('#modalProspect').keypress(function(e){
+	$('.mail.prospect').keypress(function(e){
 		var code = e.charCode;
 		if (code === 13) {
-			$('#send_mail').trigger('click');
+			$('#invitation-button').trigger('click');
 		};
 	})
 
-	$('#send_mail').click(function(){
-		var mail = $('.mail').val();
+	$('#invitation-button').click(function(e){
+		e.preventDefault();
+		var mail = $('.mail.prospect').val();
 		send_mail_prospect(mail);
 	});
 });
@@ -27,20 +28,20 @@ function send_mail_prospect(mail){
 				// console.log(jqXHR);
 				// console.log(textStatus);
 				// console.log(errorThrown);
-				$('.successmessage, .errormessage').hide();
-				$('.smth-wrong').fadeIn();
+				$('#successmessage, .errormessage').hide();
+				$('.errormessage').fadeIn();
 			},
 			success: function(data, textStatus, jqXHR){
 				// console.log(data);
 				// console.log(jqXHR);
 				// console.log(textStatus);
-				$('.successmessage, .errormessage').hide();
-				$('.successmessage').fadeIn();
+				$('#successmessage, .errormessage').hide();
+				$('#successmessage').fadeIn();
 			}
 		});
 
 	}else{
-		$('.successmessage, .errormessage').hide();
+		$('#successmessage, .errormessage').hide();
 		$('.mailnotok').fadeIn();
 	}
 }
