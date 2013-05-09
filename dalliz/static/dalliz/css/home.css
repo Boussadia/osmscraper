@@ -297,6 +297,7 @@ p, h1, h2, h3, h4, h5, h6, div {
     font-size: 1.375em;
     line-height: 1;
     position: absolute;
+    z-index: 10;
     top: 0.5em;
     right: 0.6875em;
     color: #aaaaaa;
