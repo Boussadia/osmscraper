@@ -12,7 +12,7 @@ define([
 
 			},
 			savePosition: function(position){
-				this.set('position', position)
+				this.set('position', position);
 				var that = this;
 				$.ajax({
 					url: '/backend/categorie/id/'+that.get('id')+'/position/'+that.get('position')+'/',
@@ -23,7 +23,23 @@ define([
 
 					}
 				})
-			}
+			},
+      saveName: function(name){
+        this.set('name', name);
+        var that = this;
+
+        $.ajax({
+        url: '/backend/categorie/id/'+that.get('id')+'/name/',
+        type: 'POST',
+        data: {name: that.get('name')},
+        dataType: 'JSON',
+        success: function(data, b, c){
+        	var url = data.url;
+
+        	if (typeof url !== 'undefined') that.set('url', url)
+        }
+        });
+      }
 		});
 		return Category;
 

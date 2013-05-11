@@ -1,11 +1,18 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import re
+import simplejson as json
+
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import Context, loader
 from django.core import serializers
 
+from osmscraper.unaccent import unaccent
+
 from dalliz.models import Category
 
-import simplejson as json
 
 def index(request):
 	categories = Category.objects.filter(parent_category__isnull=True).order_by('position')
@@ -16,7 +23,7 @@ def index(request):
 
 def sub_categories(request, parent_url = None, url = ''):
 	response = {}
-	# Getting element corresponding to url
+    # Getting element corresponding to url
 	category = Category.objects.filter(url = url).order_by('position')
 	if parent_url is not None:
 		category = category.filter(parent_category__url = parent_url)
@@ -85,8 +92,29 @@ def change_position(request, id, position):
 			category.position = position
 			category.save()
 			response = {'status': 200}
+	return HttpResponse(json.dumps(response))
+
+def change_name(request, id):
+	response = {'status': 404}
+
+	if request.method == 'POST':
+		new_name = request.POST['name']
+		category = Category.objects.filter(id = id)
+		if len(category) == 1:
+			category = category[0]
+			category.name = new_name
+			# Now working on url
+			url = unaccent(new_name.lower())
+			reg = r'[^a-z0-9]'
+			url = '-'.join([x for x in re.split(reg, url) if x != ''])
+			category.url = url
+			category.save()
+			response = {'status': 200, 'url': url}
 
 	return HttpResponse(json.dumps(response))
+
+
+
 
 def delete_category(request, id):
 	response = {}

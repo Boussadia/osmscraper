@@ -110,7 +110,7 @@ define([
 		// Pass in our Router module and call it's initialize function
 		this.router = new Router({'vent': this.vent});
 		Backbone.history.start({
-			root: '/backend/categorie'
+			root: '/backend/categorie/'
 		});
 		this.hijax();
 

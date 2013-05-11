@@ -16,9 +16,11 @@ define([
 			initialize: function(option){
 				this.model = option.model || {};
 				this.is_current = option.is_current || false;
+				this.bindTo(this.model, 'change', this.render);
 				return this;
 			},
 			render: function(){
+				this.$el.empty();
 				var template = _.template(this.template);
 				var data = this.model.toJSON();
 				data['class_current'] = this.is_current ? 'current' : '';
@@ -30,11 +32,17 @@ define([
 				this.is_current = bool;
 			},
 			events: {
-				'change input': 'changePosition',
+				'change input.name': 'changeName',
+				'keypup input.name': 'changeName',
+				'keypress input.name': 'changeName',
+				'change input.position': 'changePosition',
 			},
 			changePosition: function(e){
-				this.model.savePosition(this.$el.find('input').val());
-			}
+				this.model.savePosition(this.$el.find('input.position').val());
+			},
+      changeName: function(e){
+        this.model.saveName(this.$el.find('input.name').val());
+      }
 		});
 		return CategoryView;
 

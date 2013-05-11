@@ -22,7 +22,7 @@ define([
 				var url = that.url;
 				if(that.parent_url) url = that.parent_url+'/'+url;
 				$.ajax({
-					url:'categorie/'+url,
+					url:url,
 					type:"GET",
 					dataType:"json",
 					data:{},
@@ -51,7 +51,7 @@ define([
 				var url = that.url;
 				if(that.parent_url) url = that.parent_url+'/'+url;
 				$.ajax({
-					url:'categorie/'+url,
+					url:url,
 					type:"POST",
 					dataType:"json",
 					data:model,
@@ -73,7 +73,7 @@ define([
 			removeFromServer: function(id_to_remove){
 				var that = this;
 				$.ajax({
-					url:'categorie/delete/'+id_to_remove,
+					url:'delete/'+id_to_remove,
 					type:"DELETE",
 					dataType:"json",
 					success: function(data, textStatus, jqXHR){
