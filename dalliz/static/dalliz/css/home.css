@@ -476,16 +476,15 @@ input[type="email"] {
 
 #follow-us {
 	width: 150px;
-	position: relative;
-	margin-left: auto;
-	margin-right: auto;
+	position: absolute;
+  bottom: -8px;
+  left: 160px;
 }
 
 #follow-us ul {
 	display: inline-block;
 	list-style: none;
 	position: relative;
-	top: -50px;
 }
 
 #follow-us ul .facebook_icon, #follow-us ul .twitter_icon {
@@ -626,7 +625,7 @@ footer {
     }
 
 .footer-bottom {
-  height: 33px;
+  height: 35px;
   background-color: #000000;
   position: relative;
   width: 100%;
