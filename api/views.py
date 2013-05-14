@@ -7,16 +7,18 @@ from datetime import datetime, timedelta
 
 from django.db.models import Q, F 
 from django.contrib.sessions.models import Session
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from django.http import Http404
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.request import Request
-from rest_framework.settings import api_settings
-from rest_framework.renderers import XMLRenderer
+from rest_framework import status, permissions
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
-from rest_framework import permissions
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.renderers import XMLRenderer
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.settings import api_settings
+from rest_framework.views import APIView
 
 from cart.base.basecartcontroller import BaseCartController
 from cart.dalliz.dallizcartcontroller import DallizCartController
@@ -31,7 +33,7 @@ from monoprix.models import History as MonoprixHistory, Product as MonoprixProdu
 from ooshop.models import History as OoshopHistory, Product as OoshopProduct, Promotion as OoshopPromotion
 
 from api.renderer import ProductsCSVRenderer, ProductRecommendationCSVRenderer, NewProductsCSVRenderer
-from api.serializer.dalliz.serializer import CategorySerializer
+from api.serializer.dalliz.serializer import CategorySerializer, UserSerializer
 from api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer, CartContentSerializer as AuchanCartContentSerializer
 from api.serializer.auchan.serializer import RecommendationSerializer as AuchanRecommendationSerializer
 from api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer, CartContentSerializer as MonoprixCartContentSerializer
@@ -64,8 +66,6 @@ def osm(function):
 				request = element
 				break
 
-		print request.user
-
 		# Default osm
 		osm = {
 			'name':'monoprix',
@@ -84,13 +84,6 @@ def osm(function):
 
 		# Getting session information
 		session_key = request.session.session_key
-		if session_key is None:
-			request.session.set_test_cookie()
-		else:
-			if request.session.test_cookie_worked():
-				request.session.delete_test_cookie()
-				print 'Test cookie set correctly, removing it!'
-
 		# Getting metacart
 		metacart = None
 		if session_key is not None:
@@ -127,13 +120,52 @@ def osm(function):
 	return wrapper
 
 class BaseAPIView(APIView):
-    """
-	    Base Api view for dalliz api.
-    """
-    renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES + [XMLRenderer]
-    permission_classes = (permissions.IsAuthenticated, )
+	"""
+			Base Api view for dalliz api.
+	"""
+	renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES + [XMLRenderer]
+	authentication_classes = (SessionAuthentication, )
 
-class CategoryAll(BaseAPIView):
+class BetaRestrictionAPIView(APIView):
+	"""
+		Restricting access to beta users only.
+	"""
+	permission_classes = (permissions.IsAuthenticated, )
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------
+#
+#														USER
+#
+#----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+class UserAPI(BaseAPIView):
+	"""
+		User api view.
+	"""
+
+	def post(self, request):
+		username = request.POST['username']
+		password = request.POST['password']
+		user = authenticate(username=username, password=password)
+
+		if user is not None:
+			login(request, user)
+			data = UserSerializer(user).data
+		else:
+			raise AuthenticationFailed
+
+		return Response({'user': data})
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------
+#
+#														CATEGORIES
+#
+#----------------------------------------------------------------------------------------------------------------------------------------------
+
+class CategoryAll(BetaRestrictionAPIView):
 	"""
 		View for all category.
 	"""
@@ -143,7 +175,7 @@ class CategoryAll(BaseAPIView):
 		return {'categories':data}
 
 
-class CategorySimple(BaseAPIView):
+class CategorySimple(BetaRestrictionAPIView):
 	"""
 		Get single category view.
 	"""
@@ -169,7 +201,7 @@ class CategoryProducts(CategorySimple):
 	"""
 	TOP_PRODUCTS_COUNT = 5
 	MID_PRODUCTS_COUNT = 17
-	renderer_classes = BaseAPIView.renderer_classes + [ProductsCSVRenderer]
+	renderer_classes = BetaRestrictionAPIView.renderer_classes + [ProductsCSVRenderer]
 	@osm
 	def get(self, request, id_category, type_fetched, key, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
 		category = self.get_object(id_category)
@@ -242,7 +274,7 @@ class CategoryMatching(CategorySimple):
 	"""
 		Get recommendation for product
 	"""
-	renderer_classes = BaseAPIView.renderer_classes + [ProductRecommendationCSVRenderer]
+	renderer_classes = BetaRestrictionAPIView.renderer_classes + [ProductRecommendationCSVRenderer]
 
 	@osm
 	def get(self, request, id_category, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
@@ -305,11 +337,19 @@ class CategoryMatching(CategorySimple):
 		else:
 			return {'products':serialized}
 
-class NewProducts(BaseAPIView):
+
+#----------------------------------------------------------------------------------------------------------------------------------------------
+#
+#														PRODUCTS
+#
+#----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+class NewProducts(BetaRestrictionAPIView):
 	"""
 		API view for extracting new products (created in the last 7 days)
 	"""
-	renderer_classes = BaseAPIView.renderer_classes + [NewProductsCSVRenderer]
+	renderer_classes = BetaRestrictionAPIView.renderer_classes + [NewProductsCSVRenderer]
 
 	@osm
 	def get(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
@@ -372,7 +412,7 @@ class NewProducts(BaseAPIView):
 		else:
 			return {'products':serialized}
 
-class Product(BaseAPIView):
+class Product(BetaRestrictionAPIView):
 	"""
 		API view for a product.
 	"""
@@ -411,7 +451,7 @@ class ProductRecommendation(Product):
 	"""
 		Get Recommendation for product
 	"""
-	# renderer_classes = BaseAPIView.renderer_classes + [ProductRecommendationCSVRenderer]
+	# renderer_classes = BetaRestrictionAPIView.renderer_classes + [ProductRecommendationCSVRenderer]
 
 	@osm
 	def get(self, request, reference, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
@@ -448,7 +488,14 @@ class ProductRecommendation(Product):
 
 		return {'recommendations':recommendations, 'product': serialized.data}
 
-class CartAPIView(BaseAPIView):
+
+#----------------------------------------------------------------------------------------------------------------------------------------------
+#
+#														CART
+#
+#----------------------------------------------------------------------------------------------------------------------------------------------
+
+class CartAPIView(BetaRestrictionAPIView):
 	@osm
 	def get(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
 		# Getting cart for osm
@@ -484,7 +531,7 @@ class CartAPIView(BaseAPIView):
 
 		return {'cart':{'content': data, 'quantity': quantity_products}}
 
-class CartManagementAPIView(BaseAPIView):
+class CartManagementAPIView(BetaRestrictionAPIView):
 	"""
 		Cart Management api view
 	"""
@@ -539,6 +586,8 @@ class CartManagementAPIView(BaseAPIView):
 		}
 
 		return {'carts':carts}
+
+
 
 
 

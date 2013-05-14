@@ -10,11 +10,12 @@ define([
 			},
 			url: function(){
 				if (this.prospect) return '/prospects';
-				return '/prospects';
+				return '/api/auth/login/';
 			},
 			initialize: function(){
 				this.prospect = false;
 				this.vent.on('user:prospect', this.registerProspect, this);
+				this.vent.on('user:authenticate', this.authenticate, this);
 			},
 			registerProspect: function(options){
 				var mail = options.mail;
@@ -24,11 +25,19 @@ define([
 				this.save({}, {
 					success: function(){
 						that.vent.trigger('user:prospect:approve');
+						that.prospect = false;
 					},
 					error: function(){
 						that.vent.trigger('user:prospect:error');
 					}
 				});
+			},
+			authenticate: function(options){
+				var name = options.name;
+				var pass = options.pass;
+				this.set('name', name);
+				this.set('pass', pass);
+				this.save();
 			},
 			save: function(attributes, options){
 				options || (options = {});
@@ -36,8 +45,13 @@ define([
 
 				if(this.prospect){
 					options.emulateJSON = true;
-					// options.emulateHTTP = true;
 					options.data = {'mail': this.get('mail')};
+				}else{
+					options.emulateJSON = true;
+					options.data = {
+						'username': 'ahmed',
+						'password': '2asefthukom,3'
+					};
 				}
 
 				return BaseModel.prototype.save.apply(this, [attributes, options]);

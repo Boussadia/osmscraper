@@ -3,6 +3,8 @@
 
 from __future__ import absolute_import # Import because of modules names
 
+from django.contrib.auth.models import User
+
 from rest_framework import serializers
 from dalliz.models import Category
 
@@ -56,6 +58,13 @@ class CategorySerializer(serializers.ModelSerializer):
 			return Category.objects.filter(parent_category = category).order_by('position')
 		else:
 			return Category.objects.filter(parent_category__isnull = True).order_by('position')
+
+
+
+class UserSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = User
+		exclude = ('password', 'groups', 'user_permissions')
 
 
 

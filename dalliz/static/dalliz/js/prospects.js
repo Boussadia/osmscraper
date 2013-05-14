@@ -2,6 +2,7 @@ $(document).ready(function(){
 	$('.mail.prospect').keypress(function(e){
 		var code = e.charCode;
 		if (code === 13) {
+			e.preventDefault();
 			$('#invitation-button').trigger('click');
 		};
 	})
