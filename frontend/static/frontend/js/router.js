@@ -12,7 +12,7 @@ define([
 			this.vent = options.vent || null;
 		},
 		index: function(){
-			var url = '/categorie/epicerie-sucree/cafes-et-chicorees'
+			var url = '/categorie/epicerie-sucree/cafes-et-chicorees';
 			this.navigate(url, true);
 		},
 		category: function(parentCategoryName, childCategoryName){

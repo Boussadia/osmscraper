@@ -4,14 +4,14 @@
 		paths: {
 			'jquery': 'libs/jquery/jquery',
 			'jqueryUi': 'libs/jquery/jqueryui',
-			'autocomplete': 'libs/jquery/jquery.autocomplete',
+			'cookie': 'libs/jquery/jquery.cookie',
 			'modernizr': 'libs/modernizr/modernizr.custom.97975',
 			'underscore': 'libs/underscore/underscore',
 			'backbone': 'libs/backbone/backbone'
 		},
 		shim: {
-			'autocomplete': {
-				deps: ['jqueryUi', 'jquery'],
+			'cookie': {
+				deps: ['jquery'],
 			},
 			'jqueryUi': {
 				deps: ['jquery'],

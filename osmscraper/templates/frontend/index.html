@@ -2,11 +2,40 @@
 <!--[if IE 8]> 				 <html class="no-js lt-ie9" lang="fr" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="fr" > <!--<![endif]-->
 	<head>
-		<meta charset="utf-8" />
+		<title> MasterCourses, Comparateur de panier </title>
+
+		<!-- Classic meta description -->
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Content-Language" content="fr-fr">
 		<meta name="viewport" content="width=device-width" />
-		<title> Master Courses </title>
+		<meta name="author" content="www.mastercourses.com" >
+		<meta name="description" content="Faites des économies sur vos courses en ligne en trouvant le prix le moins cher pour votre panier.">
+		<meta name="keywords" content="mastercourses, drive, économiser de l'argent, comparateur de panier, supermarchés en ligne, courses moins chères, courses en ligne, courses pas chères, comparateur courses, livraison à domicile">
+
+		<!-- Bing authentication -->
+		<meta name="msvalidate.01" content="E4AF46245775AA2147B1DCDA91022A88" />
+
+		<!-- Detectify -->
+		<meta name="detectify-verification" content="be485bb0b2d44b7e6a0d7efa7e6752bf" />
+
+
+		<!-- Open graph meta tags -->
+		<meta property="og:title" content="MasterCourses" >
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="http://www.mastercourses.com">
+		<meta property="og:locale" content="fr-fr" >
+		<meta property="og:site_name" content="MasterCourses">
+		<meta property="og:description" content="Faites des économies sur vos courses en ligne en trouvant le prix le moins cher pour votre panier.">
+		<meta property="og:image" content="{% static /dalliz/images/logo_og.png %}">
+		<meta property="fb:admins" content="1478671803" />
+
+		<meta name="robots" content="all" />
+
+		<!-- Favico -->
+		<link href="{% static /dalliz/images/favicon.ico %}" rel="icon" type="image/x-icon" />
 
 		<!-- CSS -->
+		<!-- <link href="{% static frontend/css/foundation.min.css %}" rel="stylesheet"> -->
 		<link href="{% static frontend/css/main.css %}" rel="stylesheet">
 
 		<!-- JS -->
@@ -15,17 +44,18 @@
 		{% else %}
 			<script data-main="{{STATIC_URL}}frontend/js/main.js" src="{% static frontend/js/libs/require/require.js%}"></script>
 		{% endif %}
+		<script src="{% static /dalliz/js/jquery-1.9.1.js %}"></script>
+		<script src="{% static /dalliz/js/slides.min.jquery.js %}"></script>
 
+		<script src="{% static /dalliz/js/vendor/custom.modernizr.js %}"></script>
+		<script src="{% static /dalliz/js/foundation.min.js %}"></script>
 	</head>
 	<body>
 
 
 		<!-- HEADER -->
 		<div id="user-bar">
-			<a href="#" id="profile-button">
-				<div class="top-icon" id='top-icon-play'><img src="{% static frontend/img/header/play-icon.png %}"></div>
-				<div class="top-icon">Ahmed</div>
-				<div class="top-icon"><img src="{% static frontend/img/header/user-icon.png %}"></div>
+			<a id="profile-button">
 			</a>
 		</div>
 		<div id="main-logo-bar">
@@ -58,6 +88,8 @@
 				</aside>
 			</div>
 		</section>
+
+		
 
 		<!-- FOOTER -->
 		<footer>
@@ -106,8 +138,58 @@
 						<li>•</li> -->
 						<li id="footer-int">Master Courses © 2013</li>
 					</ul>	
-			</div>
-		</footer>
+		 	</div>
 
+
+		</footer>
+		
+		<!-- Login Modal window-->
+		<div id="loginModal" class="reveal-modal">
+			<!-- <a class="close-reveal-modal no-hijax" >&#215;</a> -->
+			<div id="modal-header">Master Courses est en beta privée !</div>
+			<div id="sign-in">
+				<form>
+					<div class="form-container">
+						<input type="email" placeholder="Email">
+						<img src="{% static /dalliz/images/home/mail.png %}">
+					</div>
+					<div class="form-container">
+						<input type="password" placeholder="Mot de passe">
+						<img src="{% static /dalliz/images/home/lock.png %}">
+					</div>
+				</form>
+				<p>Mot de passe oublié ?</p>
+				<a id="sign-in-button" class='no-hijax'>Se connecter</a>
+			</div>
+			<div id="invitation">
+				<p>Vous n'avez pas de compte sur Master Courses ? Demandez votre invitation !</p>
+				<form>
+					<div class="form-container">
+						<input class="mail prospect" type="email" placeholder="Email">
+						<img src="{% static /dalliz/images/home/mail.png %}">
+					</div>
+				</form>
+				<a id="invitation-button" class='no-hijax'>Envoyer</a>
+				<div id="successmessage">
+					<p>Votre inscription a bien été prise en compte !</p>
+				</div>
+				<div class="mailnotok errormessage">
+					<p>Le mail que vous avez donné est incorrect.</p>
+				</div>
+				<div class="errormessage">
+					<p>Oups, il semble qu'un problème soit survenu lors de l'enregistrement de votre mail, veuillez réessayer.</p>
+				</div>
+			</div>
+			<div id="follow-us">
+				<ul>
+					<li class="facebook_icon">
+						<a class='no-hijax' href="https://www.facebook.com/mastercourses" target="_blank" title="Suivez-nous sur notre page Facebook !"></a>
+					</li>
+					<li class="twitter_icon">
+						<a class='no-hijax' href="https://twitter.com/mastercourses" target="_blank" title="Suivez-nous sur Twitter !"></a>
+					</li>
+				</ul>
+			</div>
+		</div>
 	</body>
 </html>

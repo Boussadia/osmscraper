@@ -155,6 +155,7 @@ header.top + div.gap{
 	font-weight: bold;
 	margin-right: 8px;
 	margin-top: 7px;
+	text-transform: capitalize;
 }
 
 #top-icon-play{
@@ -1027,6 +1028,271 @@ button:hover, button:focus, .button:hover, .button:focus {
 				max-width: 70%;
 				position: absolute;
 			}
+
+
+/************************************************************************************************************************************
+*
+*															Sign In Modal
+*
+*************************************************************************************************************************************/
+
+/*POP UP*/
+
+.reveal-modal-bg {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background: black;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 98;
+  display: none;
+  top: 0;
+  left: 0; }
+
+.reveal-modal {
+  visibility: hidden;
+  display: none;
+  position: absolute;
+  z-index: 99;
+  height: auto;
+  background-color: #fff;
+  left: 28%;
+  margin-left: 0;
+  width: 80%;
+  background-color: white;
+  padding: 1.25em;
+  border: solid 1px #666666;
+  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  top: 50px; }
+
+  .reveal-modal > :first-child {
+    margin-top: 0; }
+  .reveal-modal > :last-child {
+    margin-bottom: 0; }
+  .reveal-modal .close-reveal-modal {
+    font-size: 1.375em;
+    line-height: 1;
+    position: absolute;
+    z-index: 10;
+    top: 0.5em;
+    right: 0.6875em;
+    color: #aaaaaa;
+    font-weight: bold;
+    cursor: pointer; }
+
+form {
+  margin: 0 0 1em; 
+  top: 24px;
+  position: relative;
+}
+
+input[type="password"],
+input[type="email"] {
+  background-color: white;
+  font-family: inherit;
+  border: 1px solid #cccccc;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.75);
+  display: block;
+  font-size: 0.875em;
+  margin: 0 0 1em 0;
+  padding: 0.5em;
+  height: 2.3125em;
+  width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: -webkit-box-shadow 0.45s, border-color 0.45s ease-in-out;
+  -moz-transition: -moz-box-shadow 0.45s, border-color 0.45s ease-in-out;
+  transition: box-shadow 0.45s, border-color 0.45s ease-in-out; 
+}
+
+  input[type="password"]:focus,
+  input[type="email"]:focus {
+    -webkit-box-shadow: 0 0 5px #999999;
+    -moz-box-shadow: 0 0 5px #999999;
+    box-shadow: 0 0 5px #999999;
+    border-color: #999999; 
+  }
+
+  input[type="password"]:focus,
+  input[type="email"]:focus {
+    background: #fafafa;
+    border-color: #999999;
+    outline: none; 
+  }
+
+  input[type="password"][disabled],
+  input[type="email"][disabled] {
+    background-color: #dddddd; 
+  }
+
+#loginModal {
+  width: 480px;
+  height: 455px;
+  z-index: 19999;
+  position: absolute;
+  top: 138px;
+}
+
+.reveal-modal-bg{
+	z-index: 19998;
+}
+
+#modal-header {
+  height: 30px;
+  border-bottom: 1px solid #e2e3e5;
+  color: #424242;
+  font-weight: bold;
+  font-size: 22px;
+  top: -5px;
+  position: relative;
+}
+
+.form-container {
+  width: 360px;
+}
+
+#sign-in {
+    border-bottom: 1px solid #e2e3e5;
+    height: 200px;
+}
+
+  #sign-in .form-container:first-child > img {
+    position: absolute;
+    top: 11px;
+    left: 330px;
+  }
+
+  #sign-in .form-container:last-child > img {
+    position: absolute;
+    top: 55px;
+    left: 333px;
+  }
+
+#sign-in p {
+    font-size: 11px;
+    color: #9f9fa1;
+    top: 12px;
+    position: relative;
+    left: 8px;
+}
+
+#sign-in-button {
+  display: block;
+  position: relative;
+  top: 16px;
+  height: 50px;
+  width: 150px;
+  background-color: #78cc00;
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+  padding-top: 15px;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+  #sign-in-button:hover {
+    background-color: #6fb900;
+  }
+
+  #sign-in-button:active {
+    background-color: #60a026;
+  }
+
+#invitation .form-container > img {
+    position: absolute;
+    top: 11px;
+    left: 330px;
+}
+
+#invitation form {
+  top: 0;
+}
+
+#invitation-button {
+  display: block;
+  position: relative;
+  height: 35px;
+  width: 90px;
+  background-color: #078bc9;
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+  padding-top: 9px;
+  font-size: 16px;
+}
+
+  #invitation-button:hover {
+    background-color: #0682bd;
+  }
+
+  #invitation-button:active {
+    background-color: #056c9e;
+  }
+
+.errormessage, #successmessage{
+  display: none;
+}
+.errormessage {
+  position: relative;
+  float: right;
+  color: red;
+  font-weight: bold;
+  font-size: 12px;
+  top: -37px;
+  width: 380px;
+  left: 50px;
+}
+
+#successmessage {
+  position: relative;
+  float: right;
+  color: green;
+  font-weight: bold;
+  top: -35px;
+  left: 50px;
+  font-size: 12px;
+  width: 380px;
+}
+
+#follow-us {
+	width: 150px;
+	position: absolute;
+	bottom: -8px;
+	left: 160px;
+}
+
+#follow-us ul {
+	display: inline-block;
+	list-style: none;
+	position: relative;
+}
+
+#follow-us ul .facebook_icon, #follow-us ul .twitter_icon {
+		float: left;
+		border: none !important;
+		margin-right: 16px;
+	}
+
+		#follow-us ul li a {
+			display: block;
+			width: 32px;
+			height: 32px;
+			background-image: url(../img/footer/social_sprits_5px.png);
+			background-position: 0px -42px;
+		}
+
+#follow-us ul .facebook_icon a {
+	background-position: -5px -5px !important;
+}
+
+#follow-us ul .twitter_icon a {
+	background-position: -42px -5px !important;
+}
 
 
 /************************************************************************************************************************************

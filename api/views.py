@@ -16,6 +16,7 @@ from rest_framework.request import Request
 from rest_framework.settings import api_settings
 from rest_framework.renderers import XMLRenderer
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework import permissions
 
 from cart.base.basecartcontroller import BaseCartController
 from cart.dalliz.dallizcartcontroller import DallizCartController
@@ -63,12 +64,15 @@ def osm(function):
 				request = element
 				break
 
+		print request.user
+
 		# Default osm
 		osm = {
 			'name':'monoprix',
 			'type':'shipping',
 			'location':None
 		}
+
 		if request.method in ['GET', 'POST']:
 			parameters = getattr(request, request.method)
 			if 'osm_name' in parameters:
@@ -127,6 +131,7 @@ class BaseAPIView(APIView):
 	    Base Api view for dalliz api.
     """
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES + [XMLRenderer]
+    permission_classes = (permissions.IsAuthenticated, )
 
 class CategoryAll(BaseAPIView):
 	"""

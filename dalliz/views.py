@@ -13,6 +13,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from django.template import Context, loader
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
 from templates import templates
 # from osmscraper.utility import *
@@ -85,7 +86,8 @@ A bientôt,
 
 L'équipe Master Courses """
 				send_mail(subject, message, 'hello@dalliz.com', [mail], fail_silently=False)
-				send_mail('Nouveau prospect', 'Mail : '+mail+'.\nNombre d\'inscrits : '+str(nb_prospects), 'hello@dalliz.com', ['hello@dalliz.com'] , fail_silently=False)
+				if not settings.DEBUG:
+					send_mail('Nouveau prospect', 'Mail : '+mail+'.\nNombre d\'inscrits : '+str(nb_prospects), 'hello@dalliz.com', ['hello@dalliz.com'] , fail_silently=False)
 
 
 			response = {'status': 200}
