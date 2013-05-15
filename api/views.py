@@ -146,8 +146,11 @@ class UserAPI(BaseAPIView):
 	"""
 
 	def get(self, request):
-		data = UserSerializer(request.user).data
-		return Response(data)
+		try:
+			data = UserSerializer(request.user).data
+			return Response(data)
+		except Exception, e:
+			return {};
 
 
 	def post(self, request):
