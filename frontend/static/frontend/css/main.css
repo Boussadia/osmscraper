@@ -1003,12 +1003,15 @@ div.promo-type {
 	height: 32px;
 	width: 140px;
 	border-radius: 4px;
-	background-color: #78cc00;
+	background-color: #63c20c;
 	color: white;
 	text-align: center;
 	padding-top: 9px;
 	font-size: 17px;
 	margin: auto;
+	position: relative;
+	cursor: pointer;
+	top: 17px;
 }
 
 .cta:hover {
