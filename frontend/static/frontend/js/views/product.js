@@ -28,8 +28,9 @@ define([
 				return this;
 			},
 			events: {
-				'click div.plus': 'addToCart',
-				'click div.minus': 'removeFromCart',
+				'click a.add-cart': 'addToCart',
+				'click a.plus': 'addToCart',
+				'click a.minus': 'removeFromCart',
 			},
 			addToCart: function(){
 				var quantity = this.product.get('quantity_in_cart');

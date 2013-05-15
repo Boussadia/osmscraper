@@ -6,25 +6,18 @@
 		<p><%= brand.name %></p>
 		<p><%= name %></p>
 		<p> <%= package.package_quantity %> x <%= package.package_measure %> <%= package.package_unit %></p>
-		<a class='add-cart no-hijax'></a>
+		
+		<% if(quantity_in_cart === 0) {%>
+			<a class='add-cart no-hijax'></a>
+		<%}%>
+
+
 		<% if( history[0].is_promotion ){%>
 				<div class="promo-shadow"></div>
 				<div class="promo-type"> <%= (((history[0].price-history[0].before)/history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
 
 		<%}%>
 	</div>
-	<% if( !history[0].is_promotion ){%>
-		<div class="price-bloc">
-			<p><%= history[0].price %> €</p>
-			<p><%= history[0].unit_price %>  €/<%= unit.name%></p>
-		</div>
-	<%}else{%>
-		<div class="price-bloc-promo">
-			<p><%= history[0].before %> €</p>
-			<p><%= history[0].price %>  €</p>
-			<p>1.49€/Kg</p> <!-- TO DO : PRICE PER UNIT -->
-		</div>
-	<%}%>
 
 	<% if(quantity_in_cart !== 0) {%>
 		<div class="mask-bloc">
@@ -38,7 +31,7 @@
 					</div>
 					<a class="plus no-hijax">+</a>
 					<a class="minus no-hijax">-</a>
-					<a class="how-much no-hijax">3</a>
+					<a class="how-much no-hijax"><%=quantity_in_cart%></a>
 				</div>
 
 			<%}else{ // PROMOTION%> 
@@ -51,12 +44,25 @@
 					</div>
 					<a class="plus no-hijax">+</a>
 					<a class="minus no-hijax">-</a>
-					<a class="how-much no-hijax">3</a>
+					<a class="how-much no-hijax"><%=quantity_in_cart%></a>
 				</div>
 				<div class="promo-shadow"></div>
 				<div class="promo-type"> <%= (((history[0].price-history[0].before)/history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
 
 			<%}%>
 		</div>
+	<% }else{%>
+		<% if( !history[0].is_promotion ){%>
+			<div class="price-bloc">
+				<p><%= history[0].price %> €</p>
+				<p><%= history[0].unit_price %>  €/<%= unit.name%></p>
+			</div>
+		<%}else{%>
+			<div class="price-bloc-promo">
+				<p><%= history[0].before %> €</p>
+				<p><%= history[0].price %>  €</p>
+				<p>1.49€/Kg</p> <!-- TO DO : PRICE PER UNIT -->
+			</div>
+		<%}%>
 	<% } %>
 </div>
