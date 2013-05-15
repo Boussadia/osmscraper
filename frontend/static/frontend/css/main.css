@@ -99,7 +99,6 @@ a {
 
 header {
 	margin-bottom: 7px;
-	height: 100%;
 }
 
 header.top{
@@ -113,7 +112,7 @@ header.top #menu{
 }
 
 header.top .block-right{
-	height: 100%;
+	height: 1000%;
 }
 
 /* Hack : When header is in fixed position, sets a div with same width to fill gap */
@@ -750,7 +749,7 @@ li.has-dropdown.show {
 	.price-bloc p:nth-child(2) {
 		font-size: 11px;
 		right: 3px;
-		top: 19px;
+		top: 3px;
 		color: #9f9f9f;
 	}
 
@@ -1012,14 +1011,20 @@ div.promo-type {
 	position: relative;
 	cursor: pointer;
 	top: 17px;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .cta:hover {
-	background-color: #6fb900;
+	background-color: #51a10a;
 }
 
 .cta:active {
-	background-color: #60a026;
+	background-color: #438409;
 }
 
 button:hover, button:focus, .button:hover, .button:focus {
@@ -1354,7 +1359,7 @@ input[type="email"] {
   top: 16px;
   height: 50px;
   width: 150px;
-  background-color: #78cc00;
+  background-color: #63c20c;
   color: white;
   text-align: center;
   border-radius: 4px;
@@ -1364,11 +1369,11 @@ input[type="email"] {
 }
 
   #sign-in-button:hover {
-    background-color: #6fb900;
+    background-color: #51a10a;
   }
 
   #sign-in-button:active {
-    background-color: #60a026;
+    background-color: #438409;
   }
 
 #invitation .form-container > img {
