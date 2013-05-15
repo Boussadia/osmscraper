@@ -1,6 +1,6 @@
 (function(){
 	require.config({
-		// urlArgs: "bust=" + (new Date()).getTime(),
+		urlArgs: "bust=" + (new Date()).getTime(),
 		paths: {
 			'jquery': 'libs/jquery/jquery',
 			'jqueryUi': 'libs/jquery/jqueryui',
