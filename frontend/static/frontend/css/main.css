@@ -93,11 +93,13 @@ a {
 	float: right;
 	top: 7px;
 	background-color: white;
+	height: 4000px;
 }
 
 
 header {
 	margin-bottom: 7px;
+	height: 100%;
 }
 
 header.top{
@@ -110,15 +112,23 @@ header.top #menu{
 	top: 0px;
 }
 
+header.top .block-right{
+	height: 100%;
+}
+
 /* Hack : When header is in fixed position, sets a div with same width to fill gap */
 header + div.gap{
 	display: none;
-	height: 127px;
+	height: 85px;
 
 }
 
 header.top + div.gap{
 	display: block;
+}
+
+header.top .block-right{
+	top: 0px;
 }
 
 #menu{
@@ -524,7 +534,6 @@ li.has-dropdown.show {
 *************************************************************************************************************************************/
 
 #main{
-	overflow-x: hidden;
 	top: 35px;
 }
 
@@ -1462,6 +1471,7 @@ footer {
 	min-width: 1024px;
 	clear: both;
 	height: 81px;
+	z-index: 4000;
 }
 
 .footer-top {
