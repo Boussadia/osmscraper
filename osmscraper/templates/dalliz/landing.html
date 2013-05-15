@@ -41,6 +41,7 @@
 		<!-- JS -->
 
 		<script src="{% static /dalliz/js/jquery-1.9.1.js %}"></script>
+		<script src="{% static /dalliz/js/jquery.cookie.js %}"></script>
 		<script src="{% static /dalliz/js/slides.min.jquery.js %}"></script>
 
 		<script src="{% static /dalliz/js/vendor/custom.modernizr.js %}"></script>
@@ -126,6 +127,7 @@
 	</section>
 
 	<div id="myModal" class="reveal-modal">
+		{% csrf_token %}
 		<a class="close-reveal-modal">&#215;</a>
 		<div id="modal-header">Master Courses est en beta privée !</div>
 		<div id="sign-in">

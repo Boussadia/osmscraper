@@ -13,7 +13,7 @@ define([
 				this.osms = options.osms || new OsmsCollection([], {'vent': this.vent});
 
 				this.bindTo(this.osms, 'change', this.render);
-				this.vent.on('window:scroll', this.set_fixed_position, this);
+				// this.vent.on('window:scroll', this.set_fixed_position, this);
 			},
 			render: function(){
 				this.closeSubViews();

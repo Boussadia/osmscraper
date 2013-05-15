@@ -22,9 +22,11 @@ define([
 				this.$el.find('a').click();
 			},
 			activate: function(){
+				this.$el.addClass(this.activateClass);
 				this.$el.find('p').addClass(this.activateClass);
 			},
 			unactivate: function(){
+				this.$el.removeClass(this.activateClass);
 				this.$el.find('p').removeClass(this.activateClass);
 			}
 		});

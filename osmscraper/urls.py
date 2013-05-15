@@ -30,7 +30,7 @@ urlpatterns = patterns('',
     url(r'^mturk/', include('mturk.urls')),
 
      # Include dev frontend urls
-    url(r'^dev/', include('frontend.urls')),
+    url(r'^comparateur/', include('frontend.urls')),
 
     # Tags creator app
     url(r'^backend/tags/(?P<id_category>(\d+))(/(?P<tags>(.+)))?/?$', 'tags.views.tags'),
@@ -85,15 +85,6 @@ urlpatterns = patterns('',
     url(r'^sitemap\.xml$', TemplateView.as_view(template_name='dalliz/sitemap.xml') ),
     
     url(r'^.*$', RedirectView.as_view(url='/')),
-    
-    # url(r'^produit/(?P<name>((\w)+-?)+)/?$','dalliz.views.product'),
-    # url(r'^categorie/(?P<sub_category>((\w)+-?)+)/?$','dalliz.views.category'),
-    # url(r'^panier/?$','dalliz.views.cart'),
-    # url(r'^add/cart/?$','dalliz.views.add_to_cart'),
-    # url(r'^remove/cart/?$','dalliz.views.remove_from_cart'),
-    # url(r'^login/?$','dalliz.views.login'),
-    # url(r'^logout/?$','dalliz.views.logout'),
-    # url(r'^compte/?$','dalliz.views.account'),
 )
 
 

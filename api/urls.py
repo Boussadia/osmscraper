@@ -12,6 +12,7 @@ import rest_framework
 urlpatterns = patterns('',
     # # Authentication
     url(r'auth/login/?$', views.UserAPI.as_view()),
+    url(r'auth/logout/?$', views.UserAPI.as_view()),
 
 	# Category
     url(r'categories/all/?$', views.CategoryAll.as_view()),

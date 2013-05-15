@@ -1,3 +1,14 @@
-<% if (is_active ) {%><div class="top-icon" id='top-icon-play'><img src=""></div><% } %>
+<% if (is_active ) {%>
+	<div class="top-icon" id='top-icon-play'>
+		<div>
+			<img src="">
+			<ul>
+				<li><a class="no-hijax" id='logout'>Se déconnecter</a></li>
+			</ul>
+		</div>
+	</div>
+<% } %>
+
 <div class="top-icon"><%= username %></div>
+
 <% if (is_active ) {%> <div class="top-icon"><img src=""></div><% } %>

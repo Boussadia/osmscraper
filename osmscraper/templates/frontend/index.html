@@ -35,7 +35,7 @@
 		<link href="{% static /dalliz/images/favicon.ico %}" rel="icon" type="image/x-icon" />
 
 		<!-- CSS -->
-		<!-- <link href="{% static frontend/css/foundation.min.css %}" rel="stylesheet"> -->
+		<link href="{% static frontend/css/dropit.css %}" rel="stylesheet">
 		<link href="{% static frontend/css/main.css %}" rel="stylesheet">
 
 		<!-- JS -->
@@ -50,12 +50,12 @@
 
 		<!-- HEADER -->
 		<div id="user-bar">
-			<a id="profile-button">
+			<div id="beta"><img src="{% static /dalliz/images/home/ruban.png %}"></div>
+			<a id="profile-button" class='no-hijax'>
 			</a>
 		</div>
 		<div id="main-logo-bar">
 			<a href="/"><img src="{% static frontend/img/header/logo-small.png %}"></a>
-			<div id="sub-bar"></div>
 		</div>
 		<!-- MENU -->
 		<header class='block'>
@@ -64,6 +64,20 @@
 					<ul class="left"></ul>
 				</div>
 			</nav>
+			<div class="block-right">
+				<!-- CART -->
+				<div id="cart" class="transition"></div>
+
+				<!-- COMPARATOR -->
+				<aside id="comparator">
+					<div id='mycart'></div>
+					<div class='top-bar'></div>
+					<div id="osms">
+					</div>
+					<!-- <a class="cta" href="" data-reveal-id="myModal">Faites vos courses ici !</a> -->
+					<a class="cta no-hijax">Commander</a>
+				</aside>
+			</div>
 		</header>
 		<div class='gap'></div>
 
@@ -71,17 +85,6 @@
 		<!-- PAGE CONTENT -->
 		<section id="main" class='block'>
 			<div class="block-left"></div>
-			<div class="block-right">
-				<!-- CART -->
-				<div id="cart" class="transition"></div>
-
-				<!-- COMPARATOR -->
-				<aside id="comparator">
-					<div id="osms">
-					</div>
-					<button class="ctl">Commander</button>
-				</aside>
-			</div>
 		</section>
 
 		

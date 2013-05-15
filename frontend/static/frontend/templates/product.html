@@ -2,20 +2,16 @@
 	<div class="top-bloc">
 		<div class="img-bloc">
 			<img src="<%= image_url %>">
-			<% if( history[0].is_promotion ){%>
-				<p> <%= (((history[0].price-history[0].before)/history[0].before).toFixed(2)*100).toFixed(0) %> %</p>
-			<%}%>
 		</div>
 		<p><%= brand.name %></p>
 		<p><%= name %></p>
 		<p> <%= package.package_quantity %> x <%= package.package_measure %> <%= package.package_unit %></p>
-		<div class="qte">
-			<div class='plus <% if(quantity_in_cart === 0) {%> bottom <% } %>'>+</div>
-			<% if(quantity_in_cart>0) {%>
-				<div><%= quantity_in_cart %></div>
-				<div class='minus bottom'>-</div>
-			<% } %>
-		</div>
+		<a class='add-cart no-hijax'></a>
+		<% if( history[0].is_promotion ){%>
+				<div class="promo-shadow"></div>
+				<div class="promo-type"> <%= (((history[0].price-history[0].before)/history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
+
+		<%}%>
 	</div>
 	<% if( !history[0].is_promotion ){%>
 		<div class="price-bloc">
@@ -26,6 +22,41 @@
 		<div class="price-bloc-promo">
 			<p><%= history[0].before %> €</p>
 			<p><%= history[0].price %>  €</p>
+			<p>1.49€/Kg</p> <!-- TO DO : PRICE PER UNIT -->
 		</div>
 	<%}%>
+
+	<% if(quantity_in_cart !== 0) {%>
+		<div class="mask-bloc">
+
+			<% if( !history[0].is_promotion ){ // NO PROMOTION%>
+
+				<div class="qte">
+					<div class=" price-bloc">
+						<p><%= history[0].price %> €</p>
+						<p><%= history[0].unit_price %>  €/<%= unit.name%></p>
+					</div>
+					<a class="plus no-hijax">+</a>
+					<a class="minus no-hijax">-</a>
+					<a class="how-much no-hijax">3</a>
+				</div>
+
+			<%}else{ // PROMOTION%> 
+
+				<div class="qte">
+					<div class="price-bloc-promo">
+						<p class="promo-line"><%= history[0].before %> €</p>
+						<p><%= history[0].price %>  €</p>
+						<p>1,49€/Kg</p> <!-- TO DO : PRICE PER UNIT -->
+					</div>
+					<a class="plus no-hijax">+</a>
+					<a class="minus no-hijax">-</a>
+					<a class="how-much no-hijax">3</a>
+				</div>
+				<div class="promo-shadow"></div>
+				<div class="promo-type"> <%= (((history[0].price-history[0].before)/history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
+
+			<%}%>
+		</div>
+	<% } %>
 </div>

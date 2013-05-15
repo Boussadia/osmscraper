@@ -17,7 +17,7 @@ define([
 				options || (options = {});
 				this.cart = options.cart || new CartModel({}, {'vent': this.vent});
 				this.bindTo(this.cart, 'change', this.render);
-				this.vent.on('window:scroll', this.set_fixed_position, this);
+				// this.vent.on('window:scroll', this.set_fixed_position, this);
 			},
 			render: function(){
 				this.closeSubViews();

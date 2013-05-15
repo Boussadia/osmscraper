@@ -1,4 +1,12 @@
-<p <% if (name === 'promotions') {%>class='promotion' <%}%> ><%= name %> (<%= count %>)</p>
+<div class="products-header <% if (name === 'promotions') {%> promotion <%}%>">
+	<p ><%= name %> (<%= count %>)</p>	
+	<p> 3 </p> <!-- TO DO : NOMBRE DE MARQUES -->
+	<p> marques : toutes </p>
+	<span></span>
+	<p>Filtres</p>
+	<span></span>
+</div>
+
 <div class='inner'>
 	<div class='products-container'></div>
 </div>

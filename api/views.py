@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 from django.db.models import Q, F 
 from django.contrib.sessions.models import Session
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import Http404
 
@@ -146,23 +146,29 @@ class UserAPI(BaseAPIView):
 	"""
 
 	def get(self, request):
-		print request.user
 		data = UserSerializer(request.user).data
 		return Response(data)
 
 
 	def post(self, request):
-		username = request.POST['username']
-		password = request.POST['password']
-		user = authenticate(username=username, password=password)
+		if 'username' in request.POST and 'password' in request.POST:
+			# login user
+			username = request.POST['username']
+			password = request.POST['password']
+			user = authenticate(username=username, password=password)
 
-		if user is not None:
-			login(request, user)
-			data = UserSerializer(user).data
+			if user is not None:
+				login(request, user)
+				data = UserSerializer(user).data
+			else:
+				raise AuthenticationFailed
+
+			return Response(data)
 		else:
-			raise AuthenticationFailed
+			# logout user
+			logout(request)
+			return Response({})
 
-		return Response(data)
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------

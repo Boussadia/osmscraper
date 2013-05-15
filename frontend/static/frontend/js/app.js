@@ -109,7 +109,7 @@ define([
 			// Router module
 			var router = new Router({'vent': that.Vent});
 			that.Router = router;
-			Backbone.history.start({ pushState: true, root:"/dev"});
+			Backbone.history.start({ pushState: true, root:"/comparateur"});
 
 			// Use absolute URLs  to navigate to anything not in your Router.
 			// Only need this for pushState enabled browsers

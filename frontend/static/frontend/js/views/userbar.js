@@ -2,6 +2,7 @@ define([
 	'views/base',
 	'models/user',
 	'text!../../templates/userbar.html',
+	'dropit'
 	], function(BaseView, UserModel, userBarTemplate){
 
 		var UserBarView = BaseView.extend({
@@ -16,8 +17,22 @@ define([
 				this.$el.empty();
 				var data = this.user.toJSON();
 				this.$el.append(this.template(data));
+
+				this.$el.find('#top-icon-play').dropit({
+					submenuEl: 'ul',
+					triggerEl: 'img',
+					triggerParentEl: 'div'
+				})
 				return this;
+			},
+			events: {
+				// Dropdown
+				'click #logout': 'logout',
+			},
+			logout: function(event){
+				this.user.logout();
 			}
+
 		});
 
 		return UserBarView;

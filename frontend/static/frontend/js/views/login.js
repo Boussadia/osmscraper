@@ -1,7 +1,7 @@
 define([
 	'views/base',
 	'modernizr',
-	'foundation'
+	'foundation',
 	], function(BaseView){
 
 		var LoginView = BaseView.extend({
@@ -27,6 +27,8 @@ define([
 				if (!this.shown) this.$el.foundation('reveal', 'open');
 				this.shown = true;
 			},
+
+			// Authentication related methods
 			authenticate: function(event){
 				if(event.type === 'keypress'){
 					var code = event.charCode;
@@ -41,6 +43,12 @@ define([
 					this.vent.trigger('user:authenticate', options);
 				}
 			},
+			successAuthentication: function(){
+				// this.vent.trigger('route:go:start');
+				window.location.reload();
+			},
+
+			// Invitation related methods
 			invitation: function(event){
 				if(event.type === 'keypress'){
 					var code = event.charCode;

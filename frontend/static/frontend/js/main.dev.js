@@ -1,9 +1,10 @@
 (function(){
 	require.config({
-		urlArgs: "bust=" + (new Date()).getTime(),
+		// urlArgs: "bust=" + (new Date()).getTime(),
 		paths: {
 			'jquery': 'libs/jquery/jquery',
 			'jqueryUi': 'libs/jquery/jqueryui',
+			'dropit': 'libs/jquery/dropit',
 			'cookie': 'libs/jquery/jquery.cookie',
 			'modernizr': 'libs/modernizr/modernizr.custom',
 			'underscore': 'libs/underscore/underscore',
@@ -15,6 +16,9 @@
 				deps: ['jquery'],
 			},
 			'jqueryUi': {
+				deps: ['jquery'],
+			},
+			'dropit': {
 				deps: ['jquery'],
 			},
 			'backbone': {
