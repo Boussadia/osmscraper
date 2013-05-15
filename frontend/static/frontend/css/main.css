@@ -229,7 +229,7 @@ header.top .block-right{
 
 #menu ul.left > li {
 	float: left;
-	width: 8.334%;
+	width: 8.333%;
 	font-size: 64%;
 }
 
@@ -685,7 +685,7 @@ li.has-dropdown.show {
 		font-size: 13px;
 		width: 94%;
 		text-align: left;
-		line-height: 0.8;
+		line-height: 1;
 	}
 
 	.top-bloc p:nth-child(4) {
@@ -1476,6 +1476,7 @@ input[type="email"] {
 
 footer {
 	position: relative;
+	top: 49px;
 	width: 100%;
 	min-width: 1024px;
 	clear: both;
