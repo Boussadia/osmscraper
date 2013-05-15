@@ -162,6 +162,14 @@ header.top + div.gap{
 	position: relative;
 }
 
+#top-icon-play img{
+	content: url(../img/header/play-icon.png);
+}
+
+.top-icon img:last-child{
+	content: url(../img/header/user-icon.png);
+}
+
 #main-logo-bar {
 	width: 100%;
 	min-width: 1024px;

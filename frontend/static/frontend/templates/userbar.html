@@ -1,3 +1,3 @@
-<% if (authenticated ) {%><div class="top-icon" id='top-icon-play'><img src="{% static frontend/img/header/play-icon.png %}"></div><% } %>
-<div class="top-icon"><%= name %></div>
-<% if (authenticated ) {%> <div class="top-icon"><img src="{% static frontend/img/header/user-icon.png %}"></div><% } %>
+<% if (is_active ) {%><div class="top-icon" id='top-icon-play'><img src=""></div><% } %>
+<div class="top-icon"><%= username %></div>
+<% if (is_active ) {%> <div class="top-icon"><img src=""></div><% } %>

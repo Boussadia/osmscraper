@@ -1,5 +1,7 @@
 define([
-	'views/base'
+	'views/base',
+	'modernizr',
+	'foundation'
 	], function(BaseView){
 
 		var LoginView = BaseView.extend({
@@ -8,12 +10,14 @@ define([
 				this.vent.on('user:403', this.show, this);
 				this.vent.on('user:prospect:approve', this.approveProspect, this);
 				this.vent.on('user:prospect:error', this.show, this);
+				this.vent.on('user:authenticate:success', this.successAuthentication, this);
+				this.vent.on('user:authenticate:failure', this.failureAuthentication, this);
 				this.shown = false;
 			},
 			events: {
 				// Authenticate user
 				'click #sign-in-button': 'authenticate',
-				// 'keypress .mail.prospect': 'authenticate',
+				'keypress #sign-in input': 'authenticate',
 
 				// Prospect registration
 				'click #invitation-button': 'invitation',
@@ -24,10 +28,18 @@ define([
 				this.shown = true;
 			},
 			authenticate: function(event){
-				var options={};
-				options.name = this.$el.find('.form-container input[type=email]').val();
-				options.pass = this.$el.find('.form-container input[type=password]').val();
-				this.vent.trigger('user:authenticate', options);
+				if(event.type === 'keypress'){
+					var code = event.charCode;
+					if (code === 13){
+						event.preventDefault();
+						this.$el.find('#sign-in-button').trigger('click');
+					}
+				}else{
+					var options={};
+					options.name = this.$el.find('.form-container input[type=email]').val();
+					options.pass = this.$el.find('.form-container input[type=password]').val();
+					this.vent.trigger('user:authenticate', options);
+				}
 			},
 			invitation: function(event){
 				if(event.type === 'keypress'){

@@ -6,6 +6,7 @@ define([
 	'collections/osms',
 	'models/osm',
 	'models/cart',
+	'models/user',
 	'views/menu',
 	'views/main',
 	'views/comparator',
@@ -13,7 +14,7 @@ define([
 	'views/login',
 	'views/userbar',
 	'cookie'
-], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView){
+], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel, UserModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView){
 
 	function MasterCoursesApp(){
 		// Global Scope
@@ -85,8 +86,10 @@ define([
 		// Login view
 		this.Views.login = new LoginView({'vent': this.Vent});
 
-		// User Bar
-		this.Views.userbar = new UserBarView({'vent': this.Vent});
+		// User
+		this.Models.user = new UserModel({}, {'vent': this.Vent});
+		this.Models.user.fetch(); // Getting user details from server
+		this.Views.userbar = new UserBarView({'user': this.Models.user, 'vent': this.Vent});
 		this.Views.userbar.render();
 
 		// Comparator

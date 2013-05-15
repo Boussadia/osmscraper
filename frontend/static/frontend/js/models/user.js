@@ -4,8 +4,8 @@ define([
 
 		var UserModel = BaseModel.extend({
 			defaults:{
-				authenticated: false,
-				name: 'se connecter',
+				is_active: false,
+				username: 'se connecter',
 				mail: ''
 			},
 			url: function(){
@@ -14,6 +14,7 @@ define([
 			},
 			initialize: function(){
 				this.prospect = false;
+				console.log(this.vent);
 				this.vent.on('user:prospect', this.registerProspect, this);
 				this.vent.on('user:authenticate', this.authenticate, this);
 			},
@@ -35,13 +36,15 @@ define([
 			authenticate: function(options){
 				var name = options.name;
 				var pass = options.pass;
-				this.set('name', name);
-				this.set('pass', pass);
-				this.save();
+				this.save({username: name, password: pass});
 			},
 			save: function(attributes, options){
+				attributes || (attributes = {});
+				var username = attributes.username || '';
+				var password = attributes.password || '';
 				options || (options = {});
 				var vent = this.vent;
+				var that = this;
 
 				if(this.prospect){
 					options.emulateJSON = true;
@@ -49,9 +52,22 @@ define([
 				}else{
 					options.emulateJSON = true;
 					options.data = {
-						'username': 'ahmed',
-						'password': '2asefthukom,3'
+						'username': username,
+						'password': password
 					};
+					options.success = function(data, textStatus, jqXHR){
+						vent.trigger('user:authenticate:success');
+						console.log(data);
+						console.log(textStatus);
+						console.log(jqXHR);
+						console.log(that.toJSON());
+					}
+					options.error = function(jqXHR, textStatus, errorThrown){
+						vent.trigger('user:authenticate:failure');
+						console.log(jqXHR);
+						console.log(textStatus);
+						console.log(errorThrown);
+					}
 				}
 
 				return BaseModel.prototype.save.apply(this, [attributes, options]);

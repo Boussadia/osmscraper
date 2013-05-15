@@ -5,9 +5,10 @@
 			'jquery': 'libs/jquery/jquery',
 			'jqueryUi': 'libs/jquery/jqueryui',
 			'cookie': 'libs/jquery/jquery.cookie',
-			'modernizr': 'libs/modernizr/modernizr.custom.97975',
+			'modernizr': 'libs/modernizr/modernizr.custom',
 			'underscore': 'libs/underscore/underscore',
-			'backbone': 'libs/backbone/backbone'
+			'backbone': 'libs/backbone/backbone',
+			'foundation': 'libs/foundation/foundation.min',
 		},
 		shim: {
 			'cookie': {
@@ -23,8 +24,11 @@
 			'underscore': {
 				exports: '_'
 			},
-			'modernizr':{
+			'modernizr': {
 				exports: 'Modernizr'
+			},
+			'foundation': {
+				deps: ['jquery']
 			}
 		},
 		

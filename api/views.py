@@ -145,6 +145,12 @@ class UserAPI(BaseAPIView):
 		User api view.
 	"""
 
+	def get(self, request):
+		print request.user
+		data = UserSerializer(request.user).data
+		return Response(data)
+
+
 	def post(self, request):
 		username = request.POST['username']
 		password = request.POST['password']
@@ -156,7 +162,7 @@ class UserAPI(BaseAPIView):
 		else:
 			raise AuthenticationFailed
 
-		return Response({'user': data})
+		return Response(data)
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------
