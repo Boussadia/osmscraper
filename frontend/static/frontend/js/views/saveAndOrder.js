@@ -9,6 +9,7 @@ define([
 			this.$el.empty();
 			var data = this.model;
 			this.$el.append(this.template(data));
+			this.$el.hide();
 			return this;
 		}
 	})
@@ -56,6 +57,7 @@ define([
 		render: function(){
 			this.$el.empty();
 			this.$el.append(this.mainTemplate(this.data));
+			this.$el.hide();
 			return this;
 		},
 		showSubMenu: function(e){

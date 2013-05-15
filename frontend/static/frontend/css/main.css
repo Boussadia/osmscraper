@@ -225,11 +225,12 @@ header.top .block-right{
 	margin-bottom: 0px;
 	padding-left: 0%;
 	margin-top: 0px;
+	box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #menu ul.left > li {
 	float: left;
-	width: 7.143%;
+	width: 8.334%;
 	font-size: 64%;
 }
 
