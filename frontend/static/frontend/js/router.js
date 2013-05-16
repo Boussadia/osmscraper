@@ -3,6 +3,7 @@ define([
 ], function(Backbone){
 	Router = Backbone.Router.extend({
 		routes: {
+			'': 'index',
 			'start': 'index',
 			'start/': 'index',
 			'categorie/:parentCategoryName/:childCategoryName': 'category',
