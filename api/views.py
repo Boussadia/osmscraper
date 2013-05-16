@@ -245,7 +245,6 @@ class CategoryProducts(CategorySimple):
 		product_class_name = '%sProduct'%osm_name.capitalize()
 		if product_class_name in global_keys:
 			Product = globals()[product_class_name]
-			# products = Product.objects.filter(, , dalliz_category__parent_category = category)
 			kwargs = {
 				'exists':True,
 			}
@@ -260,6 +259,10 @@ class CategoryProducts(CategorySimple):
 				products = Product.objects.filter(**kwargs).distinct('reference')
 
 			products_count = products.count() # Adding total count of products in category
+
+			# Now getting brands information
+			brands = set([ p.brand.brandmatch_set.all()[0].dalliz_brand for p in products[:] if p.brand is not None and len(p.brand.brandmatch_set.all())>0])
+			brands_count = len(brands)
 
 			if 'TOP_PRODUCTS_COUNT' in request.GET:
 				CategoryProducts.TOP_PRODUCTS_COUNT = request.GET['TOP_PRODUCTS_COUNT']
@@ -280,7 +283,7 @@ class CategoryProducts(CategorySimple):
 		if serialized is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
 		else:
-			response = {'products':serialized.data, 'category':{'name': category.name, 'count': products_count}}
+			response = {'products':serialized.data, 'category':{'name': category.name, 'count': products_count, 'brands': {'count': brands_count, 'content': {}}}}
 			if type_fetched == 'promotions':
 				response['category']['name'] = type_fetched
 			return response

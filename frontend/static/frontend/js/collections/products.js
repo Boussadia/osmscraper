@@ -16,8 +16,6 @@ define([
 			// this arguments is implemented in order to fetch products acordingly to user needs to look for more products
 			index_key: 0,
 			url:function(){
-				// console.log(this.id );
-				// console.log(this.TYPE_TO_FETCH );
 				return '/api/categories/id/'+this.id+'/'+this.TYPE_TO_FETCH+'/'+KEYS[this.index_key];
 			},
 			
@@ -35,6 +33,7 @@ define([
 			parse: function(resp, xhr){
 				this.name = resp.category.name;
 				this.count = resp.category.count;
+				this.brands = resp.category.brands
 				return resp.products;
 			},
 			fetch: function(options){
