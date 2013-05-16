@@ -733,14 +733,13 @@ li.has-dropdown.show {
 		}*/
 
 .price-bloc, .price-bloc-promo {
-	width: 75%;
+	width: 63%;
 	height: 32px;
 	position: relative;
 	top: 15px;
 }
 	.price-bloc.price-mask{
-		right: 30px;
-	top: 23px;		
+		top: 23px;		
 	}
 
 	.price-bloc p, .price-bloc-promo p {
@@ -765,7 +764,6 @@ li.has-dropdown.show {
 	}
 
 	.price-bloc-promo.price-mask{
-		right: 21px;
 		top: 23px;
 	}
 
