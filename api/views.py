@@ -33,7 +33,7 @@ from monoprix.models import History as MonoprixHistory, Product as MonoprixProdu
 from ooshop.models import History as OoshopHistory, Product as OoshopProduct, Promotion as OoshopPromotion
 
 from api.renderer import ProductsCSVRenderer, ProductRecommendationCSVRenderer, NewProductsCSVRenderer
-from api.serializer.dalliz.serializer import CategorySerializer, UserSerializer
+from api.serializer.dalliz.serializer import CategorySerializer, UserSerializer, BrandSerializer
 from api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer, CartContentSerializer as AuchanCartContentSerializer
 from api.serializer.auchan.serializer import RecommendationSerializer as AuchanRecommendationSerializer
 from api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer, CartContentSerializer as MonoprixCartContentSerializer
@@ -283,7 +283,7 @@ class CategoryProducts(CategorySimple):
 		if serialized is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
 		else:
-			response = {'products':serialized.data, 'category':{'name': category.name, 'count': products_count, 'brands': {'count': brands_count, 'content': {}}}}
+			response = {'products':serialized.data, 'category':{'name': category.name, 'count': products_count, 'brands': {'count': brands_count, 'content': BrandSerializer(brands, many = True).data}}}
 			if type_fetched == 'promotions':
 				response['category']['name'] = type_fetched
 			return response

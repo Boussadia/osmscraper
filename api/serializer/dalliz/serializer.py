@@ -6,7 +6,7 @@ from __future__ import absolute_import # Import because of modules names
 from django.contrib.auth.models import User
 
 from rest_framework import serializers
-from dalliz.models import Category
+from dalliz.models import Category, Brand
 
 class DallizBrandField(serializers.RelatedField):
 	def to_native(self, value):
@@ -67,4 +67,7 @@ class UserSerializer(serializers.ModelSerializer):
 		exclude = ('password', 'groups', 'user_permissions')
 
 
+class BrandSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Brand
 
