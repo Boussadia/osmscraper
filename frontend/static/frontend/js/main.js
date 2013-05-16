@@ -9,6 +9,7 @@
 			'underscore': 'libs/underscore/underscore',
 			'backbone': 'libs/backbone/backbone',
 			'foundation': 'libs/foundation/foundation.min',
+			'analytics': 'libs/google/analytics'
 		},
 		shim: {
 			'cookie': {
