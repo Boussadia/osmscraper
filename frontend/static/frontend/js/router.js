@@ -1,6 +1,7 @@
 define([
 	'backbone',
-], function(Backbone){
+	'analytics'
+], function(Backbone, GooglAnalyticsHelper){
 	Router = Backbone.Router.extend({
 		routes: {
 			'': 'index',
@@ -12,6 +13,8 @@ define([
 		initialize: function(options){
 			options || (options = {})
 			this.vent = options.vent || null;
+			GooglAnalyticsHelper.init();
+			this.bind('route', this._trackPageview);
 		},
 		index: function(){
 			var url = '/categorie/epicerie-sucree/cafes-et-chicorees';
@@ -22,6 +25,11 @@ define([
 			this.vent.trigger('route:category', {'url': url});
 		},
 		any: function(any){
+		},
+		_trackPageview: function() {
+			var url;
+			url = Backbone.history.getFragment();
+			GooglAnalyticsHelper.track('/'+url);
 		}
 	});
 
