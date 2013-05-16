@@ -738,6 +738,10 @@ li.has-dropdown.show {
 	position: relative;
 	top: 15px;
 }
+	.price-bloc.price-mask{
+		right: 30px;
+	top: 23px;		
+	}
 
 	.price-bloc p, .price-bloc-promo p {
 		display: inline-block;
@@ -760,12 +764,21 @@ li.has-dropdown.show {
 		color: #9f9f9f;
 	}
 
+	.price-bloc-promo.price-mask{
+		right: 21px;
+		top: 23px;
+	}
+
 	.price-bloc-promo p:first-child {
-		font-size: 13px;
+		font-size: 11px;
 		margin-left: 5px;
 		text-decoration: line-through;
 		font-weight: bold;;
 		color: #9f9f9f;
+	}
+	
+	.price-bloc-promo.price-mask p:first-child{
+		right: 68px;
 	}
 
 	.price-bloc-promo p:nth-child(2) {

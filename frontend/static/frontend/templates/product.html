@@ -25,7 +25,7 @@
 			<% if( !history[0].is_promotion ){ // NO PROMOTION%>
 
 				<div class="qte">
-					<div class=" price-bloc">
+					<div class="price-bloc price-mask">
 						<p><%= history[0].price %> €</p>
 						<p><%= history[0].unit_price %>  €/<%= unit.name%></p>
 					</div>
@@ -37,10 +37,10 @@
 			<%}else{ // PROMOTION%> 
 
 				<div class="qte">
-					<div class="price-bloc-promo">
+					<div class="price-bloc-promo price-mask">
 						<p class="promo-line"><%= history[0].before %> €</p>
 						<p><%= history[0].price %>  €</p>
-						<p>1,49€/Kg</p> <!-- TO DO : PRICE PER UNIT -->
+						<p><%= history[0].unit_price %>  €/<%= unit.name%></p>
 					</div>
 					<a class="plus no-hijax">+</a>
 					<a class="minus no-hijax">-</a>
@@ -61,7 +61,7 @@
 			<div class="price-bloc-promo">
 				<p><%= history[0].before %> €</p>
 				<p><%= history[0].price %>  €</p>
-				<p>1.49€/Kg</p> <!-- TO DO : PRICE PER UNIT -->
+				<p><%= history[0].unit_price %>  €/<%= unit.name%></p>
 			</div>
 		<%}%>
 	<% } %>
