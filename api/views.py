@@ -82,17 +82,26 @@ def osm(function):
 			if 'osm_location' in parameters:
 				osm['location'] = parameters['osm_location']
 
-		# Getting session information
+		# Getting session/user information for metacart retrieval
 		session_key = request.session.session_key
+		user = request.user
+
 		# Getting metacart
 		metacart = None
-		if session_key is not None:
+
+		if user.is_anonymous() and session_key is not None:
+			# If not logged in, get metacart by session id
 			metacart = MetaCart.objects.filter(session__session_key = session_key)
 			if len(metacart)>0:
+				# Metacart retrieved
 				metacart = metacart[0]
 			else:
+				# No metacart set for this session, create one and associate it to session
 				metacart = MetaCart(session = Session.objects.get(session_key = session_key))
 				metacart.save()
+		elif not user.is_anonymous():
+			# User is authenticated, retrieve metacart
+			metacart = MetaCart.objects.get(user = user)
 
 		# Setting cart
 		cart_controller = DallizCartController(osm = osm['name'], metacart = metacart)
@@ -163,6 +172,24 @@ class UserAPI(BaseAPIView):
 			if user is not None:
 				login(request, user)
 				data = UserSerializer(user).data
+
+				# Now checking if user is associated with meta cart
+				metacart = MetaCart.objects.filter(user = user)
+				if metacart.count()>0:
+					# Metacart retrieved, ok nothing to do
+					pass
+				else:
+					# No metacart set for this user, check if the current session is associated with metacart
+					metacart = MetaCart.objects.filter(session = request.session)
+					if metacart.count()>0:
+						# Metacart retrieved, associate it with user
+						metacart = metacart[0]
+						metacart.user = user
+						metacart.save()
+					else:
+						# No cart was found, create one and associate it with user
+						metacart = MetaCart(user = user)
+						metacart.save()
 			else:
 				raise AuthenticationFailed
 
