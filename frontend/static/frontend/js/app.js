@@ -106,9 +106,19 @@ define([
 
 		// Callback function needed in order to wait for the menu to be built
 		this.Views.menu.build(function(){
+			bootstrap(that);
+		});
+
+		// Main View
+		this.Views.main = new MainView({'vent': this.Vent});
+
+	}
+
+	// Application bootstraping
+	function bootstrap(application){
 			// Router module
-			var router = new Router({'vent': that.Vent});
-			that.Router = router;
+			var router = new Router({'vent': application.Vent});
+			application.Router = router;
 			Backbone.history.start({ pushState: true, root:"/comparateur"});
 
 			// Use absolute URLs  to navigate to anything not in your Router.
@@ -120,9 +130,10 @@ define([
 					// Get the anchor href and protcol
 					var href = $(this).attr("href");
 					var protocol = this.protocol + "//";
+
 					// Ensure the protocol is not part of URL, meaning its relative.
 					// Stop the event bubbling to ensure the link will not cause a page refresh.
-					if (href.slice(protocol.length) !== protocol) {
+					if (protocol !== 'javascript://' && href.slice(protocol.length) !== protocol) {
 						evt.preventDefault();
 
 						// Note by using Backbone.history.navigate, router events will not be
@@ -135,15 +146,10 @@ define([
 
 			// Setting listner of scroll events on window
 			$(window).scroll(function(event){
-				that.Vent.trigger('window:scroll');
+				application.Vent.trigger('window:scroll');
 			})
 
-		});
-
-		// Main View
-		this.Views.main = new MainView({'vent': this.Vent});
-
-	}
+		}
 
 	// Specific methods for csrf control
 	function csrfSafeMethod(method) {
