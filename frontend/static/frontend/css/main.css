@@ -578,6 +578,29 @@ li.has-dropdown.show {
 	overflow: hidden;
 }
 
+.carousel-control{
+	width: 44px;
+	height: 100px;
+	background-image: url(../img/main/carousel-control.png);
+	background-repeat: no-repeat;
+	display: inline-block;
+	position: absolute;
+	z-index: 1;
+	top: 63px;
+	cursor: pointer;
+	display: none;
+}
+
+.carousel-control.right{
+	background-position: -44px 0px;
+	right: -5px;
+}
+
+.carousel-control.left{
+	background-position: 0;
+	opacity: .5;
+}
+
 .products .inner.touch{
 	position: relative;
 	width: 100%;
@@ -812,10 +835,10 @@ li.has-dropdown.show {
 	display: block;
 	bottom: -30px;
 	right: -1px;
-	width: 31px;
-	height: 34px;
-	background: url(../img/main/add-cart.png); 
-	background-position: 31px 0px;
+	width: 34px;
+	height: 37px;
+	background: url(../img/main/add-cart.png);
+	background-position: 34px 0px;
 }
 
 .add-cart:hover {
