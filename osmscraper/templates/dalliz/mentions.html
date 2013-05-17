@@ -1,26 +1,227 @@
-{% extends "dalliz/base.html" %}
+<!DOCTYPE html>
+<!--[if IE 8]> <html class="no-js lt-ie9" lang="fr" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="fr" > <!--<![endif]-->
 
-{% block title %}
-Mentions légales
-{% endblock %}
+	<head>
+		<title> MasterCourses, Comparateur de panier </title>
 
-{% block css%}
-<link rel="stylesheet" type="text/css" href="{% static dalliz/css/mentions.css %}">
-{% endblock %}
+		<!-- Classic meta description -->
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Content-Language" content="fr-fr">
+		<meta name="viewport" content="width=device-width" />
+		<meta name="author" content="www.mastercourses.com" >
+		<meta name="description" content="Faites des économies sur vos courses en ligne en trouvant le prix le moins cher pour votre panier.">
+		<meta name="keywords" content="mastercourses, drive, économiser de l'argent, comparateur de panier, supermarchés en ligne, courses moins chères, courses en ligne, courses pas chères, comparateur courses, livraison à domicile">
 
-{% block content %}
+		<!-- Bing authentication -->
+		<meta name="msvalidate.01" content="E4AF46245775AA2147B1DCDA91022A88" />
 
-<section id="mentions" class="block container">
-	<h1>Mentions légales</h1>
-	<p><em>Le site Dalliz est édité par :</em></p>
-	<p>Ahmed Boussadia<br>
-	54,56 avenue Cousin de Méricourt - 94230 Cachan<br>
-	<a href="mailto:ahmed@dalliz.com">ahmed@dalliz.com</a><br><br>
-	<p><em>Le site dalliz.com est hébergé par la société :</em></p>
-	<p>Heroku, Inc.<br>
-	321 11th Street<br>
-	San Francisco, CA 94103, United States</p>
+		<!-- Detectify -->
+		<meta name="detectify-verification" content="be485bb0b2d44b7e6a0d7efa7e6752bf" />
 
-</section>
 
-{% endblock %}
+		<!-- Open graph meta tags -->
+		<meta property="og:title" content="MasterCourses" >
+		<meta property="og:type" content="website">
+		<meta property="og:url" content="http://www.mastercourses.com">
+		<meta property="og:locale" content="fr-fr" >
+		<meta property="og:site_name" content="MasterCourses">
+		<meta property="og:description" content="Faites des économies sur vos courses en ligne en trouvant le prix le moins cher pour votre panier.">
+		<meta property="og:image" content="{% static /dalliz/images/logo_og.png %}">
+		<meta property="fb:admins" content="1478671803" />
+
+		<meta name="robots" content="all" />
+
+		<!-- Favico -->
+		<link href="{% static /dalliz/images/favicon.ico %}" rel="icon" type="image/x-icon" />
+
+		<!-- CSS -->
+		<link rel="stylesheet" href="{% static /dalliz/css/home.css %}" />
+
+		<!-- JS -->
+
+		<script src="{% static /dalliz/js/jquery-1.9.1.js %}"></script>
+		<script src="{% static /dalliz/js/jquery.cookie.js %}"></script>
+		<script src="{% static /dalliz/js/slides.min.jquery.js %}"></script>
+
+		<script src="{% static /dalliz/js/vendor/custom.modernizr.js %}"></script>
+
+		<script type="text/javascript" src="{% static dalliz/js/prospects.js %}"></script>
+
+
+	</head>
+
+	<body>
+		<header class="main-container">
+			<div id="top-bar">
+				<div id="beta"><img src="{% static /dalliz/images/home/ruban.png %}"></div>
+				<a href="" data-reveal-id="myModal">
+					<!-- <div class="top-icon"><img src="img/header/play-icon.png"></div> -->
+					<div class="top-icon">Se connecter</div>
+					<!-- <div class="top-icon"><img src="img/header/user-icon.png"></div> -->
+				</a>
+			</div>
+			<div id="logo-bar" class="block">
+				<a href="#"><img src="{% static /dalliz/images/header/logo-small.png %}"></a>
+			</div>
+		</header>
+		
+
+
+		<div class="ml-container">
+			<h1>Mentions légales</h1>
+			<p>Le comparateur de supermarchés en ligne Master Courses est édité par la société :<br>
+			DALLIZ S.A.S au capital de 5 000 €<br>
+			791 257 827 RCS Paris<br>
+			N° T.V.A intracommunautaire : FR 66 791257827<br>
+			N° SIRET 791 257 827 00018<br>
+			Code APE 6209Z<br>
+			Siège social : Boite 37 - 23 rue du Départ - 75014 Paris<br>
+			Numéro de téléphone : 06 81 65 95 85<br>
+			Adresse électronique : hello@dalliz.com<br>
+			Président de la société : Ahmed Boussadia<br>
+			Directeur de la Publication : Ahmed Boussadia, en qualité de Président de la société</p>
+			<p>Hébergement : Microsoft France S.A.S.<br>
+			39, quai du Président Roosevelt - 92130 Issy-les-Moulineaux <br>
+			Téléphone : 09 70 01 90 90</p>
+			<p>Références CNIL Déclaration n° 1628330 v 0</p>
+		</div>
+
+		<div id="myModal" class="reveal-modal">
+			{% csrf_token %}
+			<a class="close-reveal-modal">&#215;</a>
+			<div id="modal-header">Master Courses est en beta privée !</div>
+			<div id="sign-in">
+				<form>
+		      		<div class="form-container">
+		        		<input type="email" placeholder="Email">
+		            <img src="{% static /dalliz/images/home/mail.png %}">
+		      		</div>
+		      		<div class="form-container">
+		        		<input type="password" placeholder="Mot de passe">
+		            <img src="{% static /dalliz/images/home/lock.png %}">
+		      		</div>
+		    	</form>
+		    	<p>Mot de passe oublié ?</p>
+		    	<a id="sign-in-button" href="#">Se connecter</a>
+			</div>
+			<div id="invitation">
+				<p>Vous n'avez pas de compte sur Master Courses ? Demandez votre invitation !</p>
+				<form>
+					<div class="form-container">
+						<input class="mail prospect" type="email" placeholder="Email">
+						<img src="{% static /dalliz/images/home/mail.png %}">
+					</div>
+				</form>
+				<a id="invitation-button" href="#">Envoyer</a>
+				<div id="successmessage">
+					<p>Votre inscription a bien été prise en compte !</p>
+				</div>
+				<div class="mailnotok errormessage">
+					<p>Le mail que vous avez donné est incorrect.</p>
+				</div>
+				<div class="errormessage">
+					<p>Oups, il semble qu'un problème soit survenu lors de l'enregistrement de votre mail, veuillez réessayer.</p>
+				</div>
+			</div>
+			<div id="follow-us">
+				<ul>
+					<li class="facebook_icon">
+						<a href="https://www.facebook.com/mastercourses" target="_blank" title="Suivez-nous sur notre page Facebook !"></a>
+					</li>
+					<li class="twitter_icon">
+						<a href="https://twitter.com/mastercourses" target="_blank" title="Suivez-nous sur Twitter !"></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+
+		<footer>
+			<div class="footer-top">
+				<div class="footer-container">
+						<h2><a href="http://blog.mastercourses.com"> Blog </a></h2>
+						<p>•</p>
+				</div>
+				<div class="footer-container">
+						<div class="mini-container">
+							<h2>Suivez-nous : </h2>
+						</div>
+						<div class="mini-container">
+							<ul class="social-widget">
+								<li class="facebook_icon">
+									<a href="https://www.facebook.com/mastercourses" target="_blank" title="Suivez-nous sur notre page Facebook !"></a>
+								</li>
+								<li class="twitter_icon">
+									<a href="https://twitter.com/mastercourses" target="_blank" title="Suivez-nous sur Twitter !"></a>
+								</li>
+								<li class="google_icon">
+									<a href="https://plus.google.com/b/113481628276817850414/113481628276817850414" target="_blank" title="Suivez-nous sur Google+ !"></a>
+								</li>
+								<li class="linked_in_icon">
+									<a href="https://www.linkedin.com/company/dalliz" target="_blank" title="Suivez-nous sur LinkedIn !"></a>
+								</li>
+							</ul>
+						</div>
+				</div>
+				<div class="footer-container">
+							<p id="last-bullet">•</p>
+							<h2><a href="mailto:hello@dalliz.com?Subject=Prise%20de%20contact"> Contactez-nous ! </a></h2>
+				</div>
+			</div>
+			<div class="footer-bottom">
+					<ul class="dropdown-aligned">
+						<li id="footer-int"><a href="/partenariat/">Partenariat</a></li>
+						<li>•</li>
+						<li id="footer-int">Jobs</li>
+						<li>•</li>
+						<li id="footer-int"><a href="/mentions-legales/">Mentions légales</a></li>
+						<li>•</li>
+						<li id="footer-int"><a href="/conditions-generale-d-utilisation/">Conditions générales d'utilisation</a></li>
+						<li>•</li>
+						<!-- <li id="footer-int"><a href="/a-propos-de-dalliz/">À propos de Master Courses</a></li>
+						<li>•</li> -->
+						<li id="footer-int">Master Courses © 2013</li>
+					</ul>	
+			</div>
+		</footer>
+
+		<script>
+			// document.write('<script src=' +
+			// ('__proto__' in {} ? 'js/vendor/zepto' : 'js/vendor/jquery') +
+			// '.js><\/script>')
+		</script>
+
+		<script src="{% static /dalliz/js/foundation.min.js %}"></script>
+
+		<script>
+			$(document).foundation();
+		</script>
+
+		<!-- Google Analytics -->
+
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-33426317-3']);
+			_gaq.push(['_setDomainName', 'mastercourses.com']);
+			_gaq.push(['_setAllowLinker', true]);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+
+		<script type="text/javascript">
+			$(function(){		
+				$("#slideshow").slides({
+					play: 5000
+				});
+			});
+		</script>
+
+	</body>
+
+</html>
