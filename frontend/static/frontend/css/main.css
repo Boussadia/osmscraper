@@ -215,7 +215,7 @@ header.top .block-right{
 }	
 
 #menu ul.left {
-    float: left !important;
+	float: left !important;
 	list-style: none;
 	position: relative;
 	display: inline-block;
@@ -742,7 +742,8 @@ li.has-dropdown.show {
 	top: 15px;
 }
 	.price-bloc.price-mask{
-		top: 23px;		
+		top: 23px;
+		right: 5px;		
 	}
 
 	.price-bloc p, .price-bloc-promo p {
@@ -774,8 +775,8 @@ li.has-dropdown.show {
 		font-size: 11px;
 		margin-left: 5px;
 		text-decoration: line-through;
-		font-weight: bold;;
 		color: #9f9f9f;
+		width: 39px;
 	}
 	
 	.price-bloc-promo.price-mask p:first-child{
@@ -784,7 +785,7 @@ li.has-dropdown.show {
 
 	.price-bloc-promo p:nth-child(2) {
 		font-size: 16px;
-		right: 3px;
+		right: 5px;
 		font-weight: bold;
 		color: #ff7800;
 	}
@@ -792,7 +793,7 @@ li.has-dropdown.show {
 	.price-bloc-promo p:nth-child(3) {
 		font-size: 11px;
 		top: 3px;
-		right: 3px;
+		right: 6px;
 		color: #9f9f9f;
 	}
 
@@ -843,8 +844,8 @@ li.has-dropdown.show {
 	position: absolute;
 	display: block;
 	color: #6eb72c;
-	width: 31px;
-	height: 35px;
+	width: 34px;
+	height: 38px;
 	background: url(../img/main/quantity-sprite.png);
 }
 
@@ -855,17 +856,18 @@ li.has-dropdown.show {
 }
 .qte a:nth-child(3) {
 	font-size: 34px;
-	right: 34px;
+	right: 38px;
 	top: 0px;
 }
 
 .qte a:nth-child(4) {	
 	color: white;
-	right: 17px;
-	top: -28px;
-	padding-top: 7px;
-	font-size: 22px;
-	background-position: 31px 0px;
+	right: 19px;
+	top: -32px;
+	padding-top: 10px;
+	font-size: 20px;
+	font-weight: bold;
+	background-position: 34px 0px;
 }
 
 div.promo-type {
@@ -904,7 +906,7 @@ div.promo-type {
 
 @media only screen and (min-width: 1172px) {
 	.product:last-child {
-  		display: block;
+		display: block;
 	}
 
 	.product{
@@ -972,30 +974,25 @@ div.promo-type {
 		display: inline-block;
 		position: relative;
 		float: left;
-		height: 40px;
+		height: 23px;
+		width: 91px;
 		top: 8px;
-		margin-bottom: 15px; 
+		left: 5%;
 		background: url(../img/comparator/sprites_osm.png);
+		background-size: 100%;
+		background-repeat: no-repeat;
 	}
 
 		#auchan, #menu .icone.auchan {
-			width: 38px;
-			background-position: 0 0;
-			left: 6px;
-			top: 0;
+			background-position: 0 42%;
 		}
 
 		#ooshop, #menu .icone.ooshop {
-			width: 52px;
-			background-position: -38px 0;
-			top: 0;
+			background-position: 0 0;
 		}
 
 		#monoprix, #menu .icone.monoprix {
-			width: 48px;
-			background-position: -90px 0;
-			left: 2px;
-			top: 0;
+			background-position: 0 14%;
 		}
 
 		#menu .icone.monoprix, #menu .icone.ooshop, #menu .icone.auchan{
@@ -1016,6 +1013,8 @@ div.promo-type {
 		font-weight: bold;
 		margin-bottom: 15px;
 		margin-top: 12px;
+		font-size: 64%;
+		left: 10px;
 	}
 
 .cta {
@@ -1049,18 +1048,18 @@ div.promo-type {
 }
 
 button:hover, button:focus, .button:hover, .button:focus {
-    background-color: #5fb000; }
+	background-color: #5fb000; }
 
 @media only screen {
   .cta {
-    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
-    -webkit-transition: background-color 300ms ease-out;
-    -moz-transition: background-color 300ms ease-out;
-    transition: background-color 300ms ease-out; }
-    .ctl:active {
-      -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2) inset;
-      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2) inset; }
+	-webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+	-webkit-transition: background-color 300ms ease-out;
+	-moz-transition: background-color 300ms ease-out;
+	transition: background-color 300ms ease-out; }
+	.ctl:active {
+	  -webkit-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2) inset;
+	  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.2) inset; }
 }
 
 /************************************************************************************************************************************
@@ -1299,22 +1298,22 @@ input[type="email"] {
 
   input[type="password"]:focus,
   input[type="email"]:focus {
-    -webkit-box-shadow: 0 0 5px #999999;
-    -moz-box-shadow: 0 0 5px #999999;
-    box-shadow: 0 0 5px #999999;
-    border-color: #999999; 
+	-webkit-box-shadow: 0 0 5px #999999;
+	-moz-box-shadow: 0 0 5px #999999;
+	box-shadow: 0 0 5px #999999;
+	border-color: #999999; 
   }
 
   input[type="password"]:focus,
   input[type="email"]:focus {
-    background: #fafafa;
-    border-color: #999999;
-    outline: none; 
+	background: #fafafa;
+	border-color: #999999;
+	outline: none; 
   }
 
   input[type="password"][disabled],
   input[type="email"][disabled] {
-    background-color: #dddddd; 
+	background-color: #dddddd; 
   }
 
 #loginModal {
@@ -1344,28 +1343,28 @@ input[type="email"] {
 }
 
 #sign-in {
-    border-bottom: 1px solid #e2e3e5;
-    height: 200px;
+	border-bottom: 1px solid #e2e3e5;
+	height: 200px;
 }
 
   #sign-in .form-container:first-child > img {
-    position: absolute;
-    top: 11px;
-    left: 330px;
+	position: absolute;
+	top: 11px;
+	left: 330px;
   }
 
   #sign-in .form-container:last-child > img {
-    position: absolute;
-    top: 55px;
-    left: 333px;
+	position: absolute;
+	top: 55px;
+	left: 333px;
   }
 
 #sign-in p {
-    font-size: 11px;
-    color: #9f9fa1;
-    top: 12px;
-    position: relative;
-    left: 8px;
+	font-size: 11px;
+	color: #9f9fa1;
+	top: 12px;
+	position: relative;
+	left: 8px;
 }
 
 #sign-in-button {
@@ -1384,17 +1383,17 @@ input[type="email"] {
 }
 
   #sign-in-button:hover {
-    background-color: #51a10a;
+	background-color: #51a10a;
   }
 
   #sign-in-button:active {
-    background-color: #438409;
+	background-color: #438409;
   }
 
 #invitation .form-container > img {
-    position: absolute;
-    top: 11px;
-    left: 330px;
+	position: absolute;
+	top: 11px;
+	left: 330px;
 }
 
 #invitation form {
@@ -1415,11 +1414,11 @@ input[type="email"] {
 }
 
   #invitation-button:hover {
-    background-color: #0682bd;
+	background-color: #0682bd;
   }
 
   #invitation-button:active {
-    background-color: #056c9e;
+	background-color: #056c9e;
   }
 
 .errormessage, #successmessage{
