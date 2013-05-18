@@ -171,8 +171,9 @@ section#cta-container {
 	display:inline-block;
 	list-style:none;
 	overflow:hidden;
-	margin-right: 40px;
-	width: 28%;
+	margin-right: 10px;
+	padding-left: 60px;
+	width: 31.9%;
 }
 #slider-pagination li a {
 	background-image: url(../images/home/hiw.png);
