@@ -42,7 +42,7 @@
 
 		<script src="{% static /dalliz/js/jquery-1.9.1.js %}"></script>
 		<script src="{% static /dalliz/js/jquery.cookie.js %}"></script>
-		<script src="{% static /dalliz/js/slides.min.jquery.js %}"></script>
+		<script src="{% static /dalliz/js/script.js %}"></script>
 
 		<script src="{% static /dalliz/js/vendor/custom.modernizr.js %}"></script>
 
@@ -65,65 +65,63 @@
 				<a href="#"><img src="{% static /dalliz/images/header/logo-small.png %}"></a>
 			</div>
 		</header>
-		<section id="slideshow" class="main-container block">
-				<div class="slides-container">
-					<div>
-						<div class="message">
-							<p>Économisez jusqu'à 20%</p> <p>sur vos courses en ligne !</p>
-						</div>
-						<a href="" data-reveal-id="myModal"><img src="{% static /dalliz/images/home/pub1.png %}" alt="catégories alimentaires"></a>
+		<section id="cta-container" class="main-container block">
+			<div class="message">
+			<p>Vos courses en ligne,</p> <p>plus simples</p> <p>et jusqu'à 20% moins cher !</p>
+			</div>
+			<a data-reveal-id="myModal"><img src="{% static /dalliz/images/home/pub1.png %}" alt="catégories alimentaires"></a>
+			<a class="cta" data-reveal-id="myModal">Faites vos courses ici !</a>
+		</section>
+
+		<section class="main-container block" id='slider-pitch'>
+			<div id="separator"></div>
+			<div id="gallery">
+				<div id="slider-menu">
+				<ul id="slider-pagination">
+					<li class="menuItem">
+						<a href=""><div></div></a>
+						<div>Je compose</div>
+					</li>
+					<li class="menuItem">
+						<a href=""><div></div></a>
+						<div>J'économise</div>
+					</li>
+					<li class="menuItem">
+						<a href=""><div></div></a>
+						<div>Je commande</div>
+					</li>
+				</ul>
+				</div>
+				<div id="slides">
+					<div class="slide">
+						<img src="{% static /dalliz/images/home/compose.png %}" width="220" height="220" alt="composer" />
+						<p>Je compose mon panier de courses. J’y trouve tout ce dont j’ai besoin au quotidien.</p>
 					</div>
-					<div>
-						<div class="message">
-							<p>Drive ou livraison à domicile,</p><p>c'est vous qui choisissez !</p>
-						</div>
-						<a href="" data-reveal-id="myModal"><img src="{% static /dalliz/images/home/pub2.png %}" alt="catégories hygiène et beauté"></a>
+					<div class="slide">
+						<img src="{% static /dalliz/images/home/compare.png %}" width="220" height="220" alt="comparer" />
+						<p>Je compare le prix de mon panier chez les différents supermarchés en ligne.</p>
 					</div>
-					<div>
-						<div class="message">
-							<p>Gagnez du temps grâce</p><p> aux courses en ligne !</p>
-						</div>
-						<a href="" data-reveal-id="myModal"><img src="{% static /dalliz/images/home/pub3.png %}" alt="catégorie maison et entretien"></a>
+					<div class="slide"><img src="{% static /dalliz/images/home/commande.png %}" width="220" height="220" alt="commander" />
+						<p>Je commande mon panier, avec l’assurance du prix le moins cher.</p>
 					</div>
 				</div>
-				<a class="cta" href="" data-reveal-id="myModal">Faites vos courses ici !</a>
+			</div>
 		</section>
+
+
 		<section class="main-container block">
 			<div id="separator"></div>
-			<div class="explanation">Les supermarchés comparés</div>
 			<table id="osms">
-				<tr>
+				<tbody><tr>
 					<td><img src="{% static /dalliz/images/home/monop.gif %}"></td>
 					<td><img src="{% static /dalliz/images/home/auchan.jpg %}"></td>
 					<td><img src="{% static /dalliz/images/home/ooshop.png %}"></td>
-				</tr>
-			</table>
-		</section>
-		<section id="pitch-container"class="main-container block">
-			<div id="separator"></div>
-			<div class="explanation">Comment çà marche</div>
 
-			<table id="pitch">
-				<tr>
-					<td><img src="{% static /dalliz/images/home/compose.png %}"></td>
-					<td><img src="{% static /dalliz/images/home/compare.png %}"></td>
-					<td><img src="{% static /dalliz/images/home/commande.png %}"></td>
+					<td><img src="{% static /dalliz/images/home/auchan-nb.png %}"></td>
+					<td><img src="{% static /dalliz/images/home/carrefour-nb.png %}"></td>
+					<td><img src="{% static /dalliz/images/home/u-nb.png %}"></td>
 				</tr>
-				<tr>
-					<td>
-						<h3>Je compose</h3>
-						<p>mon panier de courses. J’y trouve tout ce dont j’ai besoin au quotidien.</p>
-					</td>
-					<td>
-						<h3>Je compare</h3>
-						<p>le prix de mon panier chez les différents supermarchés en ligne.</p>
-					</td>
-					<td>
-						<h3>Je commande</h3>
-						<p>mon panier, avec l’assurance du prix le moins cher.</p>
-					</td>
-				</tr>
-			</table>
+			</tbody></table>
 		</section>
 
 		<div id="myModal" class="reveal-modal">
@@ -249,14 +247,6 @@
 				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
 				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 			})();
-		</script>
-
-		<script type="text/javascript">
-			$(function(){		
-				$("#slideshow").slides({
-					play: 5000
-				});
-			});
 		</script>
 
 	</body>

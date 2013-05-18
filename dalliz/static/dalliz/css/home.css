@@ -109,73 +109,136 @@ p, h1, h2, h3, h4, h5, h6, div {
 
 /* Slide Show */
 
-#slideshow {
+section#cta-container {
+	height: 320px;
+}
+
+#cta-container a:nth-child(2) {
 	position: relative;
-	height: 420px;
+	float: right;
+	right: 3%; 
+	top: -170px;
 }
-
-#slideshow .slides-container {
-	width: 100%;
-	height: 100%;
-	padding-left: 7%;
-}
-
-.slides-container div {
-	width: 100%;
-	height: 100%;
-	display: block;
-}
-
-.slides-container div a {
-	position: absolute;
-	left: 450px; 
-	top: 20px;
-}
-
-.message p {
+#cta-container .message p {
 	position: relative;
 	font-size: 28px;
 	font-weight: bold;
 	line-height: 15px;
-	top: 80px;
-	width: 430px;
+	width: 500px;
 }
-
-#slideshow .pagination {
+#cta-container .message p:nth-child(2), #cta-container .message p:nth-child(3) {
+	left: 120px;
+}
+#gallery {
+	width: 960px;
+	overflow: hidden;
 	position: relative;
-	z-index: 9;
-	float: right;
-	right: 320px;
-	display: inline-block;
-	bottom: 100px;
+	margin-left: auto;
+	margin-right: auto;
+	top: -100px;
+}
+#slides {
+	height:300px;
+	width:960px;
+	overflow:hidden;
+}
+.slide {
+	float:left;
+	width: 960px;
+	margin-top: 30px;
 }
 
-	#slideshow .pagination li {
-		float:left;
-		margin:0 1px;
-		list-style: none;
-	}
-
-		#slideshow .pagination li a {
-			display: block;
-			width: 11px;
-			height: 0;
-			padding-top: 12px;
-			background-image: url(../images/home/pagination.png);
-			background-position: 0px 0px;
-			float: left;
-			overflow: hidden;
-		}
-
-		#slideshow .pagination li.current a {
-			background-position:-9px 0px;
-		}
-
-.cta {
+.slide img{
 	display: block;
-	position: absolute;
-	top: 220px;
-	left: 220px;
+	margin-left: 90px;
+}
+.slide p {
+	top: -140px;
+	font-size: 16px;
+	left: 300px;
+	width: 280px;
+	position: relative;
+	margin-left: 100px;
+}
+#menu {
+	height:45px;
+}
+#slider-pagination {
+	margin:0px;
+	padding:0px;
+}
+#slider-pagination li {
+	display:inline-block;
+	list-style:none;
+	overflow:hidden;
+	margin-right: 40px;
+	width: 28%;
+}
+#slider-pagination li a {
+	background-image: url(../images/home/hiw.png);
+}
+li.act a{
+	cursor:pointer;
+}
+.menuItem a {
+	display: block;
+	height: 40px;
+	width: 37px;
+}
+.menuItem a img{
+	border:none;
+	width: 37px;
+	height: 40px;
+}
+.menuItem div {
+	height: 20px;
+	position: relative;
+	top: -31px;
+	left: 46px;
+	font-size: 22px;
+	font-weight: bold;
+	margin-right: 40px;
+	color: #666666;
+}
+
+#slider-pitch{
+	height: 400px;
+}
+#slider-pagination li:first-child.act a {
+	background-position: 0px 0px;	
+}
+#slider-pagination li:nth-child(3).act a {
+	background-position: 37px 0px;	
+}
+#slider-pagination li:nth-child(2).act a {
+	background-position: 74px 0px;	
+}
+#slider-pagination li:first-child a {
+	background-position: 0px 40px;	
+}
+#slider-pagination li:nth-child(3) a {
+	background-position: 37px 40px;	
+}
+#slider-pagination li:nth-child(2) a {
+	background-position: 74px 40px;	
+}
+#slider-pagination li:nth-child(1).act div {
+	color: #078bc9;	
+}
+#slider-pagination li:nth-child(3).act div {
+	color: #63c20c;	
+}
+#slider-pagination li:nth-child(2).act div {
+	color: #ff7800;	
+}
+
+
+
+ .cta {
+	display: block;
+	top: 110px;
+	position: relative;
+	left: 260px;
 	z-index: 9;
 	height: 50px;
 	width: 190px;
@@ -183,8 +246,11 @@ p, h1, h2, h3, h4, h5, h6, div {
 	background-color: #63c20c;
 	color: white;
 	text-align: center;
-	padding-top: 16px;
+	padding-top: 17px;
 	font-size: 17px;
+	font-size: 15px;
+	top: 50px;
+	cursor: pointer;
 }
 
 .cta:hover {
@@ -219,7 +285,7 @@ p, h1, h2, h3, h4, h5, h6, div {
 #osms {
 	position: relative;
 	width: 100%;
-	height: 200px;
+	height: 160px;
 	margin-left: auto;
 	margin-right: auto;
 }
