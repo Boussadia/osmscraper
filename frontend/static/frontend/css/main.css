@@ -735,26 +735,6 @@ li.has-dropdown.show {
 		user-select: none;
 	}
 
-		/*
-
-		.qte div:nth-child(1) {
-			top: -43px;
-		}
-
-		.qte div:nth-child(2) {
-			top: -20px;
-			font-size: 20px;
-		}
-
-		.qte div:nth-child(3) {
-
-		}
-
-		.qte div.bottom{
-			top: 3px;
-			z-index: 1987
-		}*/
-
 .price-bloc, .price-bloc-promo {
 	width: 63%;
 	height: 32px;
@@ -1253,47 +1233,41 @@ button:hover, button:focus, .button:hover, .button:focus {
 /*POP UP*/
 
 .reveal-modal-bg {
-  position: fixed;
-  height: 100%;
-  width: 100%;
-  background: black;
-  background: rgba(0, 0, 0, 0.45);
-  z-index: 98;
-  display: none;
-  top: 0;
-  left: 0; }
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	background: black;
+	background: rgba(0, 0, 0, 0.45);
+	z-index: 98;
+	display: none;
+	top: 0;
+	left: 0; }
 
 .reveal-modal {
-  visibility: hidden;
-  display: none;
-  position: absolute;
-  z-index: 99;
-  height: auto;
-  background-color: #fff;
-  left: 28%;
-  margin-left: 0;
-  width: 80%;
-  background-color: white;
-  padding: 1.25em;
-  border: solid 1px #666666;
-  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-  top: 50px; }
+	visibility: hidden;
+	display: none;
+	position: absolute;
+	z-index: 99;
+	left: 28%;
+	margin-left: 0;
+	background-color: white;
+	padding: 1.25em;
+	top: 50px; }
 
-  .reveal-modal > :first-child {
-    margin-top: 0; }
-  .reveal-modal > :last-child {
-    margin-bottom: 0; }
-  .reveal-modal .close-reveal-modal {
-    font-size: 1.375em;
-    line-height: 1;
-    position: absolute;
-    z-index: 10;
-    top: 0.5em;
-    right: 0.6875em;
-    color: #aaaaaa;
-    font-weight: bold;
-    cursor: pointer; }
+	.reveal-modal > :first-child {
+	margin-top: 0; }
+	.reveal-modal > :last-child {
+	margin-bottom: 0; }
+	.reveal-modal .close-reveal-modal {
+	font-size: 1.375em;
+	line-height: 1;
+	position: absolute;
+	z-index: 10;
+	top: 0.5em;
+	right: 0.6875em;
+	color: #aaaaaa;
+	font-weight: bold;
+	cursor: pointer; }
 
 form {
   margin: 0 0 1em; 
