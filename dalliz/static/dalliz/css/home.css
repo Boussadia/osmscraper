@@ -260,6 +260,10 @@ p, h1, h2, h3, h4, h5, h6, div {
 	}
 
 /* Mentions legales*/
+.ml-container{
+	margin-left: 40px;
+}
+
 .ml-container p {
 	margin-bottom: 50px;
 	line-height: 1.2;

@@ -838,11 +838,11 @@ li.has-dropdown.show {
 	width: 34px;
 	height: 37px;
 	background: url(../img/main/add-cart.png);
-	background-position: 34px 0px;
+	background-position: 0px 0px;
 }
 
 .add-cart:hover {
-	background-position: 0px 0px;
+	background-position: 34px 0px;
 }
 
 .add-box {
