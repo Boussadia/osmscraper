@@ -38,14 +38,6 @@ define([
 
 					this.render();
 				},this);
-
-				// this.vent.on('osm', function(osm){
-				// 	this.orderView.model = {
-				// 		'url': osm['name'],
-				// 		'name': osm['name']
-				// 	}
-				// 	this.orderView.render();
-				// }, this);
 			},
 			render: function(){
 				// Resetting view
