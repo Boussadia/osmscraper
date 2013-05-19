@@ -16,22 +16,25 @@ define([
 				this.render();
 
 				this.vent.on('carts', function(carts){
-					console.log(this.osms);
-					var min = this.osms.models.min(function(osm){
-						console.log(osm.price);
-						return osm.price
+
+					// Getting active osm
+					var active_osm = _.find(carts, function(cart){
+						return cart.active;
 					});
-					console.log(min);
+					
+					// Getting cart with minimum cart price
+					var min = _.min(carts, function(cart){
+						return cart.price
+					});
 
-					// var min = price;
-
-					// for (var i in carts){
-					// 	if (carts[i].price<min) min = carts[i].price;
-					// }
-
-					// this.data = {
-					// 	price_to_save: min - price,
-					// }
+					// Setting price to save
+					try{
+						this.data = {
+							price_to_save: - (active_osm.price-min.price),
+						}
+					}catch(e){
+						console.log(e);
+					}
 
 					this.render();
 				},this);

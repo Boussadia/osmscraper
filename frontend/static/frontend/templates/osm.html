@@ -1,4 +1,6 @@
-<div class="osm <% if( active ) { %> active <% } %>">
-	<div class="<%= name %>"></div>
-	<p><%= price %> €</p>
-</div>
+<% if( !active ) { %>
+  <div class="osm">
+	  <div class="<%= name %>"></div>
+	  <p><%= price %> €</p>
+  </div>
+<% } %>

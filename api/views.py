@@ -111,6 +111,7 @@ def osm(function):
 			'id': cart_controller.carts[o].cart.id,
 			'price':  (lambda x: x.cart.cart_history_set.all()[0].price if len(x.cart.cart_history_set.all())>0 else 0)(cart_controller.carts[o]),
 			'created': (lambda x: x.cart.cart_history_set.all()[0].created if len(x.cart.cart_history_set.all())>0 else None)(cart_controller.carts[o]),
+			'active': (metacart.current_osm == cart_controller.carts[o].cart.osm)
 		}
 			for o in cart_controller.carts
 		}

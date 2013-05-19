@@ -6,15 +6,12 @@ define([
 			defaults:{
 				name: 'monoprix',
 				price: 0,
-				active: false
+				active: true
 			},
 			initialize: function(attributes, options){
 				// Global events
 				this.vent.on('carts', function(carts){
 					var price = carts[this.get('name')].price;
-					// console.log(this);
-					// console.log(carts);
-					// console.log(price);
 					this.set('price', price);
 				},this);
 				this.vent.on('osm', function(osm){
