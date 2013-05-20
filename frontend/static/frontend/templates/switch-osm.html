@@ -1,0 +1,10 @@
+<% if (active){%>
+	<p id="my-osm">Mon magasin</p>
+<% }%>
+<div class="<%= name %>"></div>
+<p class="osms-switch-price"><%= price.toFixed(2) %> €</p>
+<p class="osms-switch-shipping">dont frais de livraison : 9,99 €</p>
+<p>2 produits substitués</p>
+<% if (!active){%>
+	<a class="cta comparer no-hijax">Choisir ce magasin</a>
+<% }%>

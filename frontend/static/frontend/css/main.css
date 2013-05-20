@@ -1313,6 +1313,9 @@ button:hover, button:focus, .button:hover, .button:focus {
 SWITCH OSMS ********
 ---------------------*/
 
+#switch{
+	display: none;
+}
 
 .osms-switch-bg {
 	position: fixed;
@@ -1338,6 +1341,7 @@ SWITCH OSMS ********
 	background-color: white;
 	padding: 1.25em;
 	top: 50px;
+	position: fixed;
 }
 
 .open {
@@ -1364,6 +1368,7 @@ SWITCH OSMS ********
   font-size: 22px;
   top: -5px;
   position: relative;
+  width: 510px;
 }
 
 .osms-switch-active, .osms-switch-inactive {
@@ -1421,22 +1426,22 @@ SWITCH OSMS ********
 	margin-top: 45px;
 }
 
-#monoprix, #ooshop, #auchandirect {
+#switch .monoprix, #switch .ooshop, #switch .auchan {
 	background-image: url(../img/comparator/sprites_osm.png);
 	width: 135px;
 	height: 34px;
 	margin: auto;
 }
  
- #monoprix {
+ #switch .monoprix {
  	background-position: 0px 238px;
  }
 
- #ooshop {
+ #switch .ooshop {
  	background-position: 0px 102px;
  }
 
- #auchandirect {
+ #switch .auchan {
  	background-position: 0px 170px;
  }
 

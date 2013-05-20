@@ -13,8 +13,9 @@ define([
 	'views/cart',
 	'views/login',
 	'views/userbar',
+	'views/switch',
 	'cookie'
-], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel, UserModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView){
+], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel, UserModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView, SwitchView){
 
 	function MasterCoursesApp(){
 		// Global Scope
@@ -101,6 +102,9 @@ define([
 		this.Views.cart = new CartView({'cart': this.Models.cart, 'vent': this.Vent});
 		this.Models.cart.fetch();
 
+		// Switch
+		this.Views.switch = new SwitchView({'osms': this.Collections.osms, 'vent': this.Vent});
+
 		var that = this;
 
 		// Callback function needed in order to wait for the menu to be built
@@ -135,7 +139,7 @@ define([
 
 					// Ensure the protocol is not part of URL, meaning its relative.
 					// Stop the event bubbling to ensure the link will not cause a page refresh.
-					if (protocol !== 'javascript://' && href.slice(protocol.length) !== protocol) {
+					if (protocol !== 'javascript://' && href && href.slice(protocol.length) !== protocol) {
 						evt.preventDefault();
 
 						// Note by using Backbone.history.navigate, router events will not be

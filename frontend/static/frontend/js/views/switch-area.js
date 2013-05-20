@@ -16,6 +16,12 @@ define([
 			this.$el.empty();
 			this.$el.append(this.template(this.data));
 			return this;
+		},
+		events: {
+			'click .cta.comparer': 'showSwitcher'
+		},
+		showSwitcher: function(event){
+			this.vent.trigger('view:switch:show');
 		}
 	});
 	
