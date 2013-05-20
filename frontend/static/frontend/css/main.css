@@ -1097,8 +1097,11 @@ div.promo-type {
 }
 
 #active-osm .osm p{
-	font-size: 10px;
-	right: 2px;
+  font-size: 11px;
+  position: relative;
+  font-weight: normal;
+  top: -7px;
+  right: 3px
 }
 
 .cta {
