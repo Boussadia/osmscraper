@@ -970,8 +970,8 @@ div.promo-type {
 	height: 25px;
 	background: url(../img/comparator/switch.png);
 	display: inline-block;
-	float: right;
-	margin-right: 10px;
+	float: left;
+	margin-left: 15px;
 	position: relative;
 	top: 15px;
 }
@@ -980,7 +980,7 @@ div.promo-type {
 	display: inline-block;
 	float: right;
 	position: relative;
-	min-width: 80px;
+	top: -3px;
 }
 
 #switch-area > div > div:not(.switch) p{
@@ -1001,7 +1001,6 @@ div.promo-type {
 	clear: left;
 	top: 7px;
 	position: relative;
-	padding-right: 5px;
 }
 
 	.osm div.auchan, .osm div.ooshop, .osm div.monoprix{
@@ -1035,10 +1034,9 @@ div.promo-type {
 		float: right;
 		color: #424242;
 		font-weight: bold;
-		margin-bottom: 15px;
-		margin-top: 12px;
-		font-size: 64%;
-		left: 10px;
+		top: 3px;
+		font-size: 11px;
+		right: -3px;
 	}
 
 #active-osm{
@@ -1086,6 +1084,12 @@ div.promo-type {
 	font-weight: bold;
 	text-align: right;
 	font-size: 20px;
+	color: #63c20c;
+}
+
+#active-osm .osm p{
+	font-size: 10px;
+	right: 2px;
 }
 
 .cta {
@@ -1111,10 +1115,12 @@ div.promo-type {
 
 .cta.commander{
 	margin-top: 46px;
+	width: 80%;
 }
 
 .cta.comparer{
 	background-color: #ff7800;
+	width: 80%;
 }
 
 .cta:hover {
@@ -1153,16 +1159,6 @@ button:hover, button:focus, .button:hover, .button:focus {
 *															CART
 *
 *************************************************************************************************************************************/
-
-/*#main-bis{
-	position: absolute;
-	width: 100%;
-	min-width: 1024px;
-	padding-left: 30px;
-	padding-right: 30px;
-	overflow-x: hidden;
-	overflow-y: visible; 
-}*/
 
 #vert-bar {
 	position: absolute;
@@ -1334,9 +1330,8 @@ SWITCH OSMS ********
 	height: 380px;
 	top: 50px;
 	display: none;
-	position: absolute;
 	z-index: 3001;
-	left: 28%;
+	left: 20%;
 	margin-left: 0;
 	background-color: white;
 	padding: 1.25em;
