@@ -92,10 +92,9 @@ define([
 		this.Views.userbar = new UserBarView({'user': this.Models.user, 'vent': this.Vent});
 		this.Views.userbar.render();
 
-		// Comparator
+		// Comparator, rendering comparator after fetching menu
 		this.Collections.osms = new OsmsCollections([], {'vent': this.Vent});
 		this.Collections.osms.add([{'name': 'auchan'}, {'name': 'monoprix'}, {'name': 'ooshop'}], {'vent': this.Vent});
-		this.Views.comparator = new ComparatorView({'osms':this.Collections.osms , 'vent': this.Vent});
 
 		// Cart
 		this.Models.cart = new CartModel({}, {'vent': this.Vent});
@@ -107,6 +106,9 @@ define([
 		// Callback function needed in order to wait for the menu to be built
 		this.Views.menu.build(function(){
 			bootstrap(that);
+			// Here rendering comprator (for interface construction coherence)
+			that.Views.comparator = new ComparatorView({'osms':that.Collections.osms , 'vent': that.Vent});
+			// that.Views.comparator.render();
 		});
 
 		// Main View

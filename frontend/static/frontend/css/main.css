@@ -434,6 +434,14 @@ header.top .block-right{
 	background-color: #078bc9;
 }
 
+.top-bar.orange{
+	background-color: #ff7800;
+}
+
+.top-bar.green{
+	background-color: #63c10b;
+}
+
 #menu li.has-dropdown.show .submenu{
 	display: block;
 }
@@ -931,6 +939,7 @@ div.promo-type {
 	box-shadow: -2px 0px 4px rgba(0,0,0,0.2);
 	height: 100%;
 	z-index: 3000;
+	background-color: white;
 }
 
 #comparator.top{
@@ -982,8 +991,7 @@ div.promo-type {
 
 #osms {
 	width: 100%;
-	height: 230px;
-	top: 25px;
+	padding-bottom: 14px;
 	position: relative;
 }
 
@@ -996,17 +1004,7 @@ div.promo-type {
 	padding-right: 5px;
 }
 
-.osm.active {
-	width: 100%;
-	padding-right: 5px;
-	height: 40px;
-	clear: left;
-	top: 7px;
-	position: relative;
-	background-color: #e2e3e5;
-}
-
-	.osm div, .osm.active div {
+	.osm div.auchan, .osm div.ooshop, .osm div.monoprix{
 		display: inline-block;
 		position: relative;
 		float: left;
@@ -1031,7 +1029,7 @@ div.promo-type {
 			background-position: 0 14%;
 		}
 
-	.osm p, .osm.active p {
+	.osm p{
 		display: inline-block;
 		position: relative;
 		float: right;
@@ -1042,6 +1040,53 @@ div.promo-type {
 		font-size: 64%;
 		left: 10px;
 	}
+
+#active-osm{
+	padding-bottom: 10px;
+}
+
+#active-osm .osm > div{
+	width: 135px;
+	height: 34px;
+	margin-left: auto;
+	margin-right: auto;
+	left: initial;
+	float: initial;
+	top: initial;
+	display: block;
+}
+
+#active-osm > div.cart-summary{
+	height: 51px;
+	width: 144px;
+	margin: auto;
+	margin-bottom: 15px;
+	vertical-align: bottom;
+}
+
+#active-osm > div.cart-summary .cart-logo{
+	width: 32px;
+	height: 27px;
+	background: url(../img/comparator/cart-logo.png);
+	display: inline-block;
+	float: right;
+	margin-right: 10px;
+	position: relative;
+	top: 15px;
+}
+
+#active-osm > div.cart-summary > div:not(.cart-logo){
+	display: inline-block;
+	float: right;
+	position: relative;
+	min-width: 80px;
+}
+
+#active-osm > div.cart-summary > div:not(.cart-logo) p{
+	font-weight: bold;
+	text-align: right;
+	font-size: 20px;
+}
 
 .cta {
 	display: block;
@@ -1065,8 +1110,7 @@ div.promo-type {
 }
 
 .cta.commander{
-	top: 17px;
-
+	margin-top: 46px;
 }
 
 .cta.comparer{

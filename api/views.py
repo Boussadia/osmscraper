@@ -608,6 +608,7 @@ class CartManagementAPIView(BetaRestrictionAPIView):
 			'id': cart_controller.carts[o].cart.id,
 			'price': cart_controller.carts[o].cart.cart_history_set.all()[0].price,
 			'created':cart_controller.carts[o].cart.cart_history_set.all()[0].created,
+			'active': (request.cart_controller.metacart.current_osm == cart_controller.carts[o].cart.osm)
 		}
 			for o in cart_controller.carts
 		}
@@ -627,6 +628,7 @@ class CartManagementAPIView(BetaRestrictionAPIView):
 			'id': cart_controller.carts[o].cart.id,
 			'price': cart_controller.carts[o].cart.cart_history_set.all()[0].price,
 			'created':cart_controller.carts[o].cart.cart_history_set.all()[0].created,
+			'active': (request.cart_controller.metacart.current_osm == cart_controller.carts[o].cart.osm)
 		}
 			for o in cart_controller.carts
 		}
