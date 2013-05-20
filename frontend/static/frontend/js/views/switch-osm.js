@@ -24,6 +24,7 @@ define([
 			this.osm.set('active', true);
 			this.osm.save();
 			this.vent.trigger('osm', this.osm.toJSON());
+			this.vent.trigger('view:switch:hide');
 		}
 	});
 

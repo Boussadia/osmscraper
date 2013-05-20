@@ -43,7 +43,7 @@ define([
 
 			if (!category_already_fetched){
 				// If the category was not fetched, proceed
-				var categoryCollection = new CategoryCollection([], {'id': category_id, 'vent': this.vent});
+				var categoryCollection = new CategoryCollection([], {'id': category_id,'osm': this.current_osm, 'vent': this.vent});
 				categoryCollection.current = true;
 				categories.splice(index_insert, 0, categoryCollection);
 

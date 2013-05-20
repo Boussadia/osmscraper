@@ -14,6 +14,12 @@ define([
 			initialize: function(models, options){
 				options || (options = {});
 				this.id = options.id || null;
+				this.osm = options.osm || '';
+				this.current_osm = '';
+
+				this.vent.on('osm', function(osm){
+					this.current_osm = osm.name;
+				}, this);
 			},
 			parse: function(resp, xhr){
 				var that = this;

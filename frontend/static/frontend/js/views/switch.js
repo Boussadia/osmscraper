@@ -15,6 +15,7 @@ define([
 
 			// Global events
 			this.vent.on('view:switch:show', this.show, this);
+			this.vent.on('view:switch:hide', this.hide, this);
 		},
 		render: function(){
 			this.closeSubViews();

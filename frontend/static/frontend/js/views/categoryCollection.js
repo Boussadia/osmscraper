@@ -36,10 +36,10 @@ define([
 				options || (options = {});
 				var category_id = options.id || 0;
 
-				if (category_id && this.collection.id === category_id){
+				if (category_id && this.collection.id === category_id && this.collection.current_osm === this.collection.osm){
 					this.collection.current = true;
 					this.$el.show();
-				}else if(category_id && this.collection.id !== category_id){
+				}else if(category_id && (this.collection.id !== category_id || this.collection.current_osm !== this.collection.osm)){
 					this.collection.current = false;
 					this.$el.hide();
 				}
