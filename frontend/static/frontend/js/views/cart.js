@@ -17,7 +17,7 @@ define([
 				options || (options = {});
 				this.cart = options.cart || new CartModel({}, {'vent': this.vent});
 				this.bindTo(this.cart, 'change', this.render);
-				// this.vent.on('window:scroll', this.set_fixed_position, this);
+
 			},
 			render: function(){
 				this.closeSubViews();
@@ -27,7 +27,7 @@ define([
 
 				// Categories in cart
 				_.each(data['content'], function(category, i){
-					var view = new CategoryInCartView({'content': category, 'vent': this.vent});
+					var view = new CategoryInCartView({'el': this.$el.find('#current_cart .accordion-header'), 'content': category, 'vent': this.vent});
 					var products = new MiniProductsCollection( category.products, {'vent': this.vent});
 					var productsView = new MiniProductsView({'products': products, 'vent': this.vent});
 					this.addSubView(view);

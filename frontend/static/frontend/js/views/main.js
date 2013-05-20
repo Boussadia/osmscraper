@@ -9,9 +9,10 @@ define([
 	var MainView = BaseView.extend({
 		el: 'section#main div.block-left',
 		SCROLL_TRIGGER: 90,
-		initialize: function(){
-			this.current_osm = 'monoprix';
+		initialize: function(options){
+			this.current_osm = options.current_osm;
 			this.categories = {};
+			this.categories[this.current_osm] = [];
 
 			// Global event listening
 			this.vent.on('window:scroll', this.scrollController, this);
