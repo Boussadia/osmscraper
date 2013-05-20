@@ -193,10 +193,19 @@ header.top .block-right{
 #main-logo-bar {
 	width: 100%;
 	min-width: 1024px;
-	height: 100px;
+	height: 110px;
 	padding-left: 30px;
 	padding-right: 30px;
 	background-color: white;
+}
+
+#main-logo-bar div {
+	position: relative;
+	float: left;
+	margin: 0;
+	top: 70px;
+	right: 272px;
+	font-size: 15.5px;
 }
 
 #main-logo-bar a {
@@ -1116,11 +1125,13 @@ div.promo-type {
 .cta.commander{
 	margin-top: 46px;
 	width: 80%;
+	padding-top: 8px;
 }
 
 .cta.comparer{
 	background-color: #ff7800;
 	width: 80%;
+	padding-top: 7px;
 }
 
 .cta:hover {
