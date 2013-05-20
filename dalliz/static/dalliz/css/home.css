@@ -110,25 +110,24 @@ p, h1, h2, h3, h4, h5, h6, div {
 /* Slide Show */
 
 section#cta-container {
-	height: 320px;
+	height: 260px;
 }
 
 #cta-container a:nth-child(2) {
 	position: relative;
 	float: right;
 	right: 3%; 
-	top: -170px;
+	top: -140px;
 }
 #cta-container .message p {
 	position: relative;
-	font-size: 28px;
+	font-size: 22px;
 	font-weight: bold;
 	line-height: 15px;
 	width: 500px;
+	left: 5%;
 }
-#cta-container .message p:nth-child(2), #cta-container .message p:nth-child(3) {
-	left: 120px;
-}
+
 #gallery {
 	width: 960px;
 	overflow: hidden;
@@ -239,7 +238,7 @@ li.act a{
 	display: block;
 	top: 110px;
 	position: relative;
-	left: 260px;
+	left: 15%;
 	z-index: 9;
 	height: 50px;
 	width: 190px;
