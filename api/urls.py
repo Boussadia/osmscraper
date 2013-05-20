@@ -10,7 +10,7 @@ from api import views
 import rest_framework
 
 urlpatterns = patterns('',
-    # # Authentication
+    # Authentication
     url(r'auth/login/?$', views.UserAPI.as_view()),
     url(r'auth/logout/?$', views.UserAPI.as_view()),
 
@@ -28,6 +28,9 @@ urlpatterns = patterns('',
     # Cart
     url(r'cart/?$', views.CartAPIView.as_view()),
     url(r'cart/product/(?P<reference>(\d+))(/quantity/(?P<quantity>(\d+)))?/?$', views.CartManagementAPIView.as_view()),
+
+    # Osm
+    url(r'osm/?$', views.OSMAPIView.as_view()),
 )
 
 urlpatterns += patterns('',

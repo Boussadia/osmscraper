@@ -66,22 +66,6 @@ def osm(function):
 				request = element
 				break
 
-		# Default osm
-		osm = {
-			'name':'monoprix',
-			'type':'shipping',
-			'location':None
-		}
-
-		if request.method in ['GET', 'POST']:
-			parameters = getattr(request, request.method)
-			if 'osm_name' in parameters:
-				osm['name'] = parameters['osm_name']
-			if 'osm_type' in parameters:
-				osm['type'] = parameters['osm_type']
-			if 'osm_location' in parameters:
-				osm['location'] = parameters['osm_location']
-
 		# Getting session/user information for metacart retrieval
 		session_key = request.session.session_key
 		user = request.user
@@ -104,8 +88,24 @@ def osm(function):
 			metacart = MetaCart.objects.get(user = user)
 
 		# Setting cart
-		cart_controller = DallizCartController(osm = osm['name'], metacart = metacart)
+		cart_controller = DallizCartController(osm = metacart.current_osm, metacart = metacart)
 		request.cart_controller = cart_controller
+
+		# Default osm
+		osm = {
+			'name':metacart.current_osm,
+			'type':'shipping',
+			'location':None
+		}
+
+		if request.method in ['GET', 'POST']:
+			parameters = getattr(request, request.method)
+			if 'osm_name' in parameters:
+				osm['name'] = parameters['osm_name']
+			if 'osm_type' in parameters:
+				osm['type'] = parameters['osm_type']
+			if 'osm_location' in parameters:
+				osm['location'] = parameters['osm_location']
 
 		carts = { o: {
 			'id': cart_controller.carts[o].cart.id,
@@ -597,6 +597,8 @@ class CartManagementAPIView(BetaRestrictionAPIView):
 
 	@osm
 	def post(self, request, reference, quantity = 1, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+		print '###########################################################################################'
+		print request.POST
 		product = self.get_product(reference, osm_name)
 		cart_controller = request.cart_controller
 		if quantity is not None:
@@ -636,6 +638,31 @@ class CartManagementAPIView(BetaRestrictionAPIView):
 		return {'carts':carts}
 
 
+#----------------------------------------------------------------------------------------------------------------------------------------------
+#
+#														OSM
+#
+#----------------------------------------------------------------------------------------------------------------------------------------------
+
+class OSMAPIView(BetaRestrictionAPIView):
+	"""
+		This class handles osm switching.
+	"""
+
+	@osm
+	def get(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+		# No computing necessary
+		return {}
+
+	@osm
+	def post(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+		new_osm_name = request.DATA['new_name']
+		if 'new_type' in request.DATA:
+			new_osm_type = request.DATA['new_type']
+		if 'new_location' in request.DATA:
+			new_osm_location = request.DATA['new_location']
+		request.cart_controller.set_osm(new_osm_name)
+		return Response({})
 
 
 

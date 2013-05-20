@@ -100,7 +100,8 @@ class DallizCartController(object):
 	def set_osm(self, new_osm):
 		if self.osm_verification(new_osm):
 			self.osm = new_osm
-			self.metacart.osm = new_osm
+			self.metacart.current_osm = new_osm
+			self.metacart.save()
 		else:
 			raise ErrorNotProperOSM(new_osm)
 

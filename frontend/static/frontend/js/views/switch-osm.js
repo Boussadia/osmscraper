@@ -16,6 +16,14 @@ define([
 			var template = this.template(data);
 			this.$el.append(template);
 			return this;
+		},
+		events:{
+			'click .cta.comparer': 'switchToThisOSM'
+		},
+		switchToThisOSM: function(){
+			this.osm.set('active', true);
+			this.osm.save();
+			this.vent.trigger('osm', this.osm.toJSON());
 		}
 	});
 

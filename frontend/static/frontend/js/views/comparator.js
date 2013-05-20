@@ -50,6 +50,7 @@ define([
 					});
 
 					this.active_osm = active_osm_found || this.active_osm;
+					this.render();
 
 				}, this);
 			},

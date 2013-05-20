@@ -28,7 +28,6 @@ define([
 					view.render();
 				}else{
 					view = new SwitchOSMView({'osm': osm, 'vent': this.vent});
-					console.log(view.render());
 					this.$el.find('.inactive-area').append(view.render().el);
 				}
 			}, this);

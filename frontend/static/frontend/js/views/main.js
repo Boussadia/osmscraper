@@ -10,10 +10,17 @@ define([
 		el: 'section#main div.block-left',
 		SCROLL_TRIGGER: 90,
 		initialize: function(){
-			this.categories = [];
+			this.current_osm = 'monoprix';
+			this.categories = {};
 
 			// Global event listening
 			this.vent.on('window:scroll', this.scrollController, this);
+
+			// Updating current osm
+			this.vent.on('osm', function(osm){
+				this.current_osm = osm.name;
+				if (!this.categories[this.current_osm]) this.categories[this.current_osm] = [];
+			}, this);
 		},
 		addCategory: function(category_id){
 			// First we have to determine if the category was already fetched from server or not.
@@ -21,7 +28,9 @@ define([
 			var index = null
 			var index_insert = 0;
 
-			_.each(this.categories, function(category, i){
+			var categories = this.categories[this.current_osm];
+
+			_.each(categories, function(category, i){
 				if(category.id == category_id){
 					category_already_fetched = true;
 					category.current = true;
@@ -36,7 +45,7 @@ define([
 				// If the category was not fetched, proceed
 				var categoryCollection = new CategoryCollection([], {'id': category_id, 'vent': this.vent});
 				categoryCollection.current = true;
-				this.categories.splice(index_insert, 0, categoryCollection);
+				categories.splice(index_insert, 0, categoryCollection);
 
 				var that = this;
 				var that = this;

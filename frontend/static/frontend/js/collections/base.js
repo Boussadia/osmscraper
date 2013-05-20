@@ -9,8 +9,8 @@ define([
 			var that = this;
 
 			this.on('sync', function(model, resp, options){
-				if (typeof that.vent.trigger !== 'undefined') that.vent.trigger('osm', resp.osm);
-				if (typeof that.vent.trigger !== 'undefined') that.vent.trigger('carts', resp.carts);
+				if ( (typeof that.vent !== 'undefined') && that.vent.hasOwnProperty('trigger') && (typeof resp !== 'undefined') && (typeof resp.carts !== 'undefined')) that.vent.trigger('carts', resp.carts);
+				
 			});
 
 			this.on('error', function(model, resp, options ){

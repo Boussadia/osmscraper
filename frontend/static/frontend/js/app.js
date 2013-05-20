@@ -56,12 +56,12 @@ define([
 
 		// Settings listeners
 		this.Vent.on('route:category', this.category, this);
-		// this.Vent.on('route:product', this.product, this);
+		// this.Vent.on('route:product', this.product, this); TODO
 		this.Vent.on('osm', function(osm){
 			// Settings values of osm
-			that.data.osm_location = osm.location;
-			that.data.osm_name = osm.name;
-			that.data.osm_type = osm.type;
+			that.data.osm_location = osm.location || that.data.osm_location;
+			that.data.osm_name = osm.name || that.data.osm_name;
+			that.data.osm_type = osm.type || that.data.osm_type;
 		}, this);
 	}
 
