@@ -977,7 +977,7 @@ div.promo-type {
 #switch-area > div .switch{
 	width: 25px;
 	height: 25px;
-	background: url(../img/comparator/switch.png);
+	background: url(../img/comparator/swap.png);
 	display: inline-block;
 	float: left;
 	margin-left: 15px;
@@ -1096,12 +1096,12 @@ div.promo-type {
 	color: #63c20c;
 }
 
-#active-osm .osm p{
-  font-size: 11px;
-  position: relative;
-  font-weight: normal;
-  top: -7px;
-  right: 3px
+#active-osm .osm p {
+	font-size: 11px;
+	position: relative;
+	font-weight: normal;
+	top: -7px;
+	right: 3px;
 }
 
 .cta {
@@ -1174,149 +1174,254 @@ button:hover, button:focus, .button:hover, .button:focus {
 *
 *************************************************************************************************************************************/
 
-#vert-bar {
+.block-right{
+	padding: 0;
+	width: 14.3%;
+	display: inline-block;
 	position: absolute;
-	height: 750px;
-	width: 4px;
-	background-color: #60a026;
-	top: 0px;
-}
-
-#cart-icone {
-	position: relative;
-	right: 58px;
-	width: 59px;
-	height: 118px;
-	background: url(../img/cart/cart-container.png);
-	top: -240px;
-	cursor: pointer;
-}
-
-#cart-icone p {
-			font-weight: bold;
-			text-align: center;
-			bottom: 16px;
-			position: absolute;
-			left: 22px;
-			color: white;
-		}
-
-#cart {
-	z-index: 2014;
-	display: none;
-	position: absolute;
-	width: 400px;
-	height: 800px;
+	float: right;
+	top: 7px;
+	right: 83.3%;
 	background-color: white;
-	right: -396px; 
+	height: 4000px;
 }
 
-#cart div.scrollarea{
-	height: 68%;
-	overflow-y: scroll;
-	overflow-x: hidden;
-}
+														#cart {
+															position: absolute;
+															width: 582%;
+															height: 800px;
+															background-color: white;
+															right: -582%; 
+															box-shadow: -3px -1px 4px rgba(0, 0, 0, 0.1);
+															z-index: 3003;
+														}
+
+														#cart-header {
+															position: relative;
+															height: 90px;
+															border-bottom: 5px solid #e2e3e5;
+														}
+
+														#cart-header > div {
+															position: relative;
+															float: left;
+															width: 50%;
+															height: 90px;
+															text-align: center;
+														}
+
+														#sel-osm-cart {
+															border-right: 1px solid #e2e3e5;
+														}
+
+														#cart-header div div {
+															position: relative;
+															background-image: url(../img/comparator/sprites_osm.png);
+															width: 135px;
+															height: 34px;
+															margin: auto;
+															top: 15px;
+														}
+
+															#sel-osm-cart div {
+																background-position: 0px 102px;
+															}
+
+															#active-osm-cart div {
+																background-position: 0px 238px;
+															}
+
+
+															#cart-header div p {
+																position: relative;
+																top: 6px;
+																font-size: 14px;
+																margin: 0;
+															}
+
+
+														#cart div.scrollarea{
+															height: 68%;
+															overflow-y: auto;
+															overflow-x: hidden;
+															padding-left: 20px;
+															padding-right: 20px;
+														}
 
 .transition{
 	transition: right 0.75s;
 	-webkit-transition: right 0.75s;
 }
 
-#cart.top {
-	position: fixed;
-	right: -366px;
-	top: 85px;
+														.cart-recap-accordion {
+															width: 100%;
+															float: right;
+															position: relative;
+														}	
+
+														.accordion-header {
+															position: relative;
+															height: 45px;
+														}
+
+															.accordion-header div {
+																position: relative;
+																float: left;
+																width: 50%;
+																height: 45px;
+															}
+
+															.accordion-header div:first-child {
+																border-right: 1px solid #e2e3e5;
+																padding-right: 20px;
+															}
+
+															.accordion-header div:nth-child(2) {
+																padding-left: 20px;
+															}
+
+																.accordion-header div p {
+																		color: #078bc9;
+																		font-weight: bold;
+																		display: inline-block;
+																		text-transform: capitalize;
+																}
+
+															.product-recap {
+																width: 100%;
+																position: relative;
+															}
+
+															.sel-osm-product, .active-osm-product {
+																position: relative;
+																float: left;
+																width: 50%;
+																height: 85px;
+															}
+
+															.sel-osm-product {
+																padding-right: 140px;
+																border-right: 1px solid #e2e3e5;
+															}
+
+															.active-osm-product {
+																padding-left: 20px;
+																padding-right: 120px;
+															}
+
+															.prod-desc {
+																position: relative;
+																float: left;
+																width: 72%;
+															}
+
+															.product-recap .prod-desc p {
+																position: relative;
+																display: block;
+																margin: 3px;
+																font-size: 12px;
+																font-weight: normal;
+															}
+
+															.product-recap .prod-desc p:first-child {
+																font-weight: bold;
+															}
+
+															.product-recap img {
+																	display: block;
+																	position: relative;
+																	float: left;
+																	height: 70px;
+																}
+
+															#recap-price-qty {
+																position: absolute;
+																float: right;
+																top: 30px;
+																right: 30px;
+																width: 120px;
+															}
+
+															.active-osm-product #recap-price-qty {
+																right: 10px;
+															}
+
+															#recap-qty {
+																top: -11px;
+																right: 65px;
+																width: 110px;
+															}
+
+															#recap-qty p {
+																display: inline-block;
+																position: relative;
+																top: 0;
+															}
+
+															#recap-qty p:first-child {
+																font-size: 12px;
+																font-weight: normal;
+																color: #424242;
+																display: block;
+																right: -38px;
+															}
+
+															#recap-qty p:nth-child(3) {
+																position: relative;
+																font-size: 14px;
+																font-weight: bold;
+															}
+
+															#osm-recap-promo .promo-shadow {
+																right: -106px;
+																top: -20px;
+															}
+
+															#osm-recap-promo .promo-type {
+																right: -106px;
+																top: -15px;
+															}
+
+															.unavailable-mask {
+																position: absolute;
+																float: left;
+																width: 50%;
+																height: 85px;
+																top: 78px;
+																padding-left: 70px;
+																padding-top: 60px;
+																font-size: 11px;
+																z-index: 1;
+																background: rgba(0, 0, 0, 0.05);
+															}
+
+																.unavailable-mask div:first-child {
+																	display: inline-block;
+																	position: relative;
+																	float: left;
+																	width: 25px;
+																	height: 26px;
+																	background: url(../cart/img/home/swap.png);
+																}
+
+																.unavailable-mask div:nth-child(2) {
+									display: inline-block;
+									position: relative;
+									float: left;
+									width: 113px;
+									height: 70px;
+									top: -63px;
+									right: -80px;
+									background: url(../cart/img/home/replacement.png);
+									}
+
+.unavailable-mask div:last-child {
+position: relative;
+float: left;
+color: #ff7800;
+top: 7px;
+right: 105px;
 }
-
-#cart.open:not(.top){
-	right: -25px;
-
-}
-
-#cart.open.top{
-	right: 0px;
-
-}
-
-/*#cart:hover {
-	left: 0px;
-}*/
-
-#cart-recap-accordion {
-	width: 100%;
-	float: right;
-	position: relative;
-	padding-left: 35px;
-}	
-
-		#cart-recap-accordion .accordion-header p {
-			color: #078bc9;
-			font-weight: bold;
-			display: inline-block;
-			text-transform: capitalize;
-		}
-
-		#cart-recap-accordion .accordion-header div {
-			position: relative;
-			width: 100%;
-			height: 2px;
-			top: -10px;
-			background-color: #078bc9;
-		}
-
-		.products-recap {
-			width: 100%;
-			position: relative;
-			background-color: white;
-			top: -10px;
-		}
-
-		.product-recap {
-			width: 100%;
-			border-bottom: 1px solid #9f9fa1;
-			padding-top: auto;
-			padding-bottom: auto;
-			position: relative;
-			height: 75px;
-			padding-top: 10px;
-		}
-
-		.products-recap p.minus, .products-recap p.plus{
-			cursor: pointer;
-		}
-
-			.products-recap .product-recap img {
-				height: 50px;
-				position: relative;
-				top: -45px;
-				display: block;
-				left: 71%;
-			}
-
-			.products-recap .product-recap p {
-				font-weight: bold;
-				position: relative;
-				display: inline-block;
-				bottom: -30px;
-			}
-
-			.recap-price {
-				margin-right: 36px;
-			}
-
-			.products-recap .product-recap span {
-				position: relative;
-				font-size: 65%;
-			}
-
-			.products-recap .product-recap span:first-child {
-				font-weight: bold;
-			}
-
-			div.prod-desc {
-				max-width: 70%;
-				position: absolute;
-			}
 
 
 /*---------------------
@@ -1417,10 +1522,11 @@ SWITCH OSMS ********
 	color: #ff7800;
 }
 
-.osms-switch-shipping {
+.osms-switch-shipping, .bonus {
 	font-size: 11px;
 	top: -5px;
 }
+
 
 #my-osm {
 	position: absolute;

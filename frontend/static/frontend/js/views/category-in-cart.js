@@ -5,7 +5,6 @@ define([
 	], function(_, BaseView, categoryInCartTemplate){
 
 		var CategoryInCartView = BaseView.extend({
-			className: 'accordion-header',
 			template: _.template(categoryInCartTemplate),
 			initialize: function(options){
 				options || (options = {});
