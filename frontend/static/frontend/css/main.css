@@ -934,17 +934,17 @@ div.promo-type {
 *															COMPARATEUR
 *
 *************************************************************************************************************************************/
-
-
 #comparator {
 	width: 14.3%;
-	position: absolute;
+	position: relative;
 	box-shadow: -2px 0px 4px rgba(0,0,0,0.2);
 	height: 100%;
 	z-index: 3000;
 	background-color: white;
-	right: 0.1%;
+	right: 0;
+	float: left;
 }
+
 
 #comparator.top{
 	width: 14.3%;
@@ -1195,25 +1195,38 @@ button:hover, button:focus, .button:hover, .button:focus {
 	width: 100%;
 	display: inline-block;
 	position: absolute;
-	float: right;
 	top: 7px;
-	right: 22px;
+	right: 0;
 	height: 4000px;
+	padding-left: 30px;
+	padding-right: 30px;
+	overflow-x: hidden;
+	overflow-y: visible;
 }
 
-.block-right.open-cart{
-	right: 83.3%;
+#test {
+			position: relative;
+			float: right;
+			width: 100%;
+			height: 100%;
+			right: -85.7%;
+		}
+
+#test.open-cart{
+	right: 0%;
 }
 
-														#cart {
-															position: absolute;
-															width: 83.3%;
-															height: 800px;
-															background-color: white;
-															right: -83.2%;
-															box-shadow: -3px -1px 4px rgba(0, 0, 0, 0.1);
-															z-index: 2999;
-														}
+														
+#cart {
+	position: relative;
+	float: right;
+	width: 85.7%;
+	height: 100%;
+	background-color: white;
+	right: 0;
+	box-shadow: -3px -1px 4px rgba(0, 0, 0, 0.1);
+	z-index: 2999;
+}
 
 														.open-cart #cart{
 															display: block;
