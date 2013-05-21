@@ -292,6 +292,7 @@ def set_tags_to_product(product, tags, osm, set_match = True):
 			except Exception, e:
 				connection._rollback()
 
+		match = get_match(product, osm)
 		if set_match and match is not None:
 			[ set_tags_to_product(getattr(match,other_osm+'_product'), tags, other_osm, set_match = False)  for other_osm in available_osms.keys() if other_osm != osm]
 @csrf_exempt
