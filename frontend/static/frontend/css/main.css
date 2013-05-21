@@ -1108,15 +1108,15 @@ div.promo-type {
 	color: #63c20c;
 }
 
-#active-osm .osm p { 
-	font-size: 84%; 
-	position: relative; 
-	float: left; 
-	left: 3%; 
-	margin: 0; 
-	margin-bottom: 18px; 
-	font-weight: normal; 
-	top: 5px; 
+#active-osm .osm p {
+	font-size: 84%;
+	position: relative;
+	float: left;
+	left: 3%;
+	margin: 0;
+	margin-bottom: 18px;
+	font-weight: normal;
+	top: 5px;
 }
 
 .cta {
