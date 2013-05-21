@@ -1214,6 +1214,11 @@ button:hover, button:focus, .button:hover, .button:focus {
 															right: -582%; 
 															box-shadow: -3px -1px 4px rgba(0, 0, 0, 0.1);
 															z-index: 2999;
+															display: none;
+														}
+
+														.open-cart #cart{
+															display: block;
 														}
 
 														#cart-header {
