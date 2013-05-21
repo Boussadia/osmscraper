@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import mechanize
+from urllib import urlencode
+
 from scrapers.base.basecrawler import BaseCrawler, Singleton
 
 class OoshopCrawler(BaseCrawler, Singleton):
@@ -47,3 +50,27 @@ class OoshopCrawler(BaseCrawler, Singleton):
 				- html : fetched html
 		"""
 		return self.__do_PostBack(url, eventTarget = brand['eventTarget'], eventArgument = '', ctrl = 'ctl00$cphC$pn3T1$upPN3T1', options = {brand['eventTarget']:brand['value'], 'ctl00$cphC$pn3T1$ctl01$ddlTri':'Aucun', '__VIEWSTATE': brand['__VIEWSTATE']})
+
+	def login_user(self, url, data):
+		"""
+			This method authenticates and logs in user into oohop website
+		"""
+		new_data = urlencode(data)
+		request = mechanize.Request(url, new_data)
+		request.add_header('Accept', '*/*')
+		request.add_header('Accept-Encoding', 'gzip,deflate,sdch')
+		# request.add_header('X-MicrosoftAjax', 'Delta=true')
+		request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+		request.add_header('Accept-Language', 'en-US,en;q=0.8')
+		request.add_header('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3')
+		request.add_header('Cache-Control', 'no-cache')
+		request.add_header('Origin', 'http://www.ooshop.com')
+		request.add_header('Referer', url)
+		request.add_header('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31')
+
+		# request.add_header('X-Requested-With', 'XMLHttpRequest')
+		# request.add_header('X-Prototype-Version', '1.7')
+		return self.do_request(request = request)
+
+
+

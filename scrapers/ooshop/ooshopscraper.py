@@ -309,6 +309,61 @@ class OoshopScraper(BaseScraper):
 
 		return is_served, code
 
+	def login_user(self, user_email = 'ahmed.boussadia@hotmail.fr', password = '2asefthukom,3'):
+		"""
+			This method checks if a given area is served by ooshop.
+
+			Input :
+				- code_postal (string) : french postal code of a city.
+			Output:
+				- boolean : True -> served, False -> not served
+				- code : was the request successfull? (200 = OK)
+		"""
+		is_served = False
+		# Clearing cookies
+		# self.crawler.empty_cookie_jar()
+
+		# Verification url
+		url = 'http://www.ooshop.com/courses-en-ligne/WebForms/Utilisateur/VerifEligibilite.aspx'
+		html, code = self.crawler.get(url)
+		if code == 200:
+			self.parser.set_html(html)
+			form_data = self.parser.get_form_values()
+			# Setting postal code argument to the one povided & other necessary post value
+			form_data['ctl00$sm'] = 'ctl00$sm|ctl00$cphC$elig$lv$LoginButton'
+			form_data['ctl00$cphC$elig$lv$utilisateur'] = user_email
+			form_data['ctl00$cphC$elig$lv$mot_pass'] = password
+			form_data['ctl00$cphC$elig$lv$LoginButton'] = 'VALIDER'
+			form_data['__EVENTTARGET'] = ''
+			form_data['__EVENTARGUMENT'] = ''
+			form_data['__LASTFOCUS'] = ''
+			form_data['ctl00$xCoordHolder'] = 0
+			form_data['ctl00$yCoordHolder'] = 281
+			form_data['ctl00$ucDetProd$AjoutPanier1$nbrProduit'] = 1
+
+			# Deleting unecessary post argument
+			del form_data['ctl00$Perso$ucAu$SubmitButton']
+			del form_data['ctl00$Perso$ucAu$ValiderEmail']
+			del form_data['ctl00$headerCtrl$btOK']
+			del form_data['ctl00$cphC$elig$ValiderEmail2']
+			del form_data['ctl00$ucDetProd$AjoutPanier1$btPan']
+			del form_data['ctl00$cphC$elig$bEli']
+			del form_data['ctl00$Perso$ucAu$lv$LoginButton']
+
+			# geting response
+			html, code = self.crawler.login_user(url, data = form_data)
+			if code == 200:
+				# Parsing html
+				self.parser.set_html(html)
+				# is_served = self.parser.get_eligibility() TOBE DONE : check if user logedin
+			else:
+				print 'Error %d'%(code)
+
+		else:
+			print 'Something went wrong : error %d'%(code)
+
+		return is_served, code
+
 
 	def is_available(self, product_url):
 		"""
