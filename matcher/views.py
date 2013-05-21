@@ -347,9 +347,10 @@ def tags(request, osm, product_id, tags):
 					if created:
 						tag_db.stemmed_name = stemmed_name
 						tag_db.save()
-					db_tags.append(t)
+					db_tags.append(tag_db)
 			else:
 				db_tags = []
+
 			set_tags_to_product(product, db_tags, osm, set_match = True)
 			response['status'] = 200
 	else:
