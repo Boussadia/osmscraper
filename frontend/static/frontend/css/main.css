@@ -962,6 +962,22 @@ div.promo-type {
 	height: 85px;
 }
 
+#mycart .controller{
+	background: url(../img/main/carousel-control.png);
+	background-size: 66px 75px;
+	width: 33px;
+	display: inline-block;
+	height: 75px;
+	float: right;
+	position: relative;
+	top: -11px;
+	cursor: pointer;
+}
+
+#mycart .controller.open-cart{
+	background-position-x: -33px;
+}
+
 #switch-area{
 	color: #ff7800;
 }
@@ -1025,15 +1041,15 @@ div.promo-type {
 		background-repeat: no-repeat;
 	}
 
-		.osm div.auchan {
+		.osm div.auchan, .auchan {
 			background-position: 0 42%;
 		}
 
-		.osm div.ooshop {
+		.osm div.ooshop, .ooshop {
 			background-position: 0 0;
 		}
 
-		.osm div.monoprix {
+		.osm div.monoprix, .monoprix {
 			background-position: 0 14%;
 		}
 
@@ -1181,9 +1197,13 @@ button:hover, button:focus, .button:hover, .button:focus {
 	position: absolute;
 	float: right;
 	top: 7px;
-	right: 83.3%;
+	right: 1.5%;
 	background-color: white;
 	height: 4000px;
+}
+
+.block-right.open-cart{
+	right: 83.3%;
 }
 
 														#cart {
@@ -1193,7 +1213,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 															background-color: white;
 															right: -582%; 
 															box-shadow: -3px -1px 4px rgba(0, 0, 0, 0.1);
-															z-index: 3003;
+															z-index: 2999;
 														}
 
 														#cart-header {
@@ -1223,15 +1243,6 @@ button:hover, button:focus, .button:hover, .button:focus {
 															top: 15px;
 														}
 
-															#sel-osm-cart div {
-																background-position: 0px 102px;
-															}
-
-															#active-osm-cart div {
-																background-position: 0px 238px;
-															}
-
-
 															#cart-header div p {
 																position: relative;
 																top: 6px;
@@ -1254,7 +1265,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 }
 
 														.cart-recap-accordion {
-															width: 100%;
+															width: 50%;
 															float: right;
 															position: relative;
 														}	
@@ -1295,7 +1306,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 															.sel-osm-product, .active-osm-product {
 																position: relative;
 																float: left;
-																width: 50%;
+																width: 100%;
 																height: 85px;
 															}
 
@@ -1401,7 +1412,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 																	float: left;
 																	width: 25px;
 																	height: 26px;
-																	background: url(../cart/img/home/swap.png);
+																	background: url(../img/comparator/swap.png);
 																}
 
 																.unavailable-mask div:nth-child(2) {
@@ -1412,7 +1423,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 									height: 70px;
 									top: -63px;
 									right: -80px;
-									background: url(../cart/img/home/replacement.png);
+									background: url(../img/comparator/replacement.png);
 									}
 
 .unavailable-mask div:last-child {

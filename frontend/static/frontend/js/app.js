@@ -111,7 +111,7 @@ define([
 		this.Views.menu.build(function(){
 			bootstrap(that);
 			// Here rendering comprator (for interface construction coherence)
-			that.Views.comparator = new ComparatorView({'osms':that.Collections.osms , 'vent': that.Vent});
+			that.Views.comparator = new ComparatorView({'osms':that.Collections.osms,  'cart': that.Models.cart, 'vent': that.Vent});
 			// that.Views.comparator.render();
 		});
 

@@ -56,9 +56,12 @@ class HistoryField(serializers.RelatedField):
 			'store': osm_location
 		} for p in promotions]
 
-
-
-		return merge_history_promotion(history_data, promotion_data)
+		
+		
+		if 'type' in self.context and self.context['type'] == 'promotions':
+			return merge_history_promotion([], promotion_data)
+		else:
+			return merge_history_promotion(history_data, promotion_data)
 
 class PriceField(serializers.RelatedField):
 	def to_native(self, history_set):
@@ -106,7 +109,7 @@ class ProductSerializer(serializers.ModelSerializer):
 	brand = DallizBrandField()
 	history = HistoryField(source='*')
 	package = PackageSerializer(source = '*')
-	# promotions = serializers.PrimaryKeyRelatedField(many=True, source='promotion_set')
+	promotions = serializers.PrimaryKeyRelatedField(many=True, source='promotion_set')
 	description = DescriptionSerializer(source = '*')
 	osm_url = serializers.URLField(source = 'url')
 	quantity_in_cart = QuantityInCart(source = '*')
@@ -169,7 +172,7 @@ class CartContentSerializer(serializers.ModelSerializer):
 	"""
 
 	"""
-	product = ProductCartSerializer(source = 'product')
+	product = ProductSerializer(source = 'product')
 	class Meta:
 		model = Cart_content
 		exclude = ('id', 'cart')

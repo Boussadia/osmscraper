@@ -1,8 +1,17 @@
-<div class="prod-desc">
-	<span><%= product.brand.name %></span><span> - </span><span><%= product.name %></span><span> </span><span>(<%= product.price.unit_measure %> )</span>
+<div class="active-osm-product">
+	<img src="<%= product.image_url %>">
+	<div class="prod-desc">
+		<p><%= product.brand.name %></p>
+		<p><%= product.name %></p>
+	</div>
+	<div class="qte" id="recap-price-qty">
+		<div class="price-bloc" id="recap-qty">
+			<p>200 g</p>
+			<p><%= product.history[0].price %> €</p>
+			<p><%= product.history[0].unit_price %> €/<%= product.unit.name %></p>
+		</div>
+		<a class="plus">+</a>
+		<a class="minus">-</a>
+		<a class="how-much">1</a>
+	</div>
 </div>
-<p class="recap-price"><%= product.price.price %> €</p>
-<p class='minus'>-</p>
-<p><%= quantity %></p>
-<p class='plus'>+</p>
-<img src="<%= product.image_url %>">

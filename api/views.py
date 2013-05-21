@@ -289,7 +289,7 @@ class CategoryProducts(CategorySimple):
 			products_count = products.count() # Adding total count of products in category
 
 			# Now getting brands information
-			brands = set([ p.brand.brandmatch_set.all()[0].dalliz_brand for p in products[:] if p.brand is not None and len(p.brand.brandmatch_set.all())>0])
+			brands = set([ p.brand.brandmatch_set.all()[0].dalliz_brand for p in products[:] if p.brand is not None and len(p.brand.brandmatch_set.all())==1])
 			brands_count = len(brands)
 
 			if 'TOP_PRODUCTS_COUNT' in request.GET:
@@ -570,12 +570,12 @@ class CartAPIView(BetaRestrictionAPIView):
 			if len(serialized.data)>0:
 				category_cart['products'] = serialized.data
 				# Computing total price
-				category_cart['price'] = sum([ products['product']['price']['price']*products['quantity'] for products in category_cart['products']])
-				quantity_products = quantity_products + sum([ products['quantity'] for products in category_cart['products']])
+				category_cart['price'] = sum([ product['product']['history'][0]['price']*product['quantity'] for product in category_cart['products']])
+				quantity_products = quantity_products + sum([ product['quantity'] for product in category_cart['products']])
 				data.append(category_cart)
 
 
-		return {'cart':{'content': data, 'quantity': quantity_products}}
+		return {'cart':{'content': data, 'name': osm_name, 'quantity': quantity_products}}
 
 class CartManagementAPIView(BetaRestrictionAPIView):
 	"""
@@ -597,8 +597,6 @@ class CartManagementAPIView(BetaRestrictionAPIView):
 
 	@osm
 	def post(self, request, reference, quantity = 1, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
-		print '###########################################################################################'
-		print request.POST
 		product = self.get_product(reference, osm_name)
 		cart_controller = request.cart_controller
 		if quantity is not None:

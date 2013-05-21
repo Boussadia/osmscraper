@@ -56,7 +56,7 @@ class HistoryField(serializers.RelatedField):
 			'store': osm_location
 		} for p in promotions]
 
-		if self.context['type'] == 'promotions':
+		if 'type' in self.context and self.context['type'] == 'promotions':
 			return merge_history_promotion([], promotion_data)
 		else:
 			return merge_history_promotion(history_data, promotion_data)
@@ -170,7 +170,7 @@ class CartContentSerializer(serializers.ModelSerializer):
 	"""
 
 	"""
-	product = ProductCartSerializer(source = 'product')
+	product = ProductSerializer(source = 'product')
 	class Meta:
 		model = Cart_content
 		exclude = ('id', 'cart')
