@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import Context, loader
 from django.core import serializers
+from django.views.decorators.csrf import csrf_exempt
 
 from osmscraper.unaccent import unaccent
 
@@ -20,7 +21,7 @@ def index(request):
 	for i in xrange(0,len(json_categories)):
 		json_categories[i]['id'] = categories[i].id
 	return render(request, 'categories_builder/index.html', {'categories': json.dumps(json_categories)})
-
+@csrf_exempt
 def sub_categories(request, parent_url = None, url = ''):
 	response = {}
     # Getting element corresponding to url
@@ -81,7 +82,7 @@ def sub_categories(request, parent_url = None, url = ''):
 		response['status'] = '404'
 
 	return HttpResponse(json.dumps(response))
-
+@csrf_exempt
 def change_position(request, id, position):
 	response = {'status': 404}
 
@@ -93,7 +94,7 @@ def change_position(request, id, position):
 			category.save()
 			response = {'status': 200}
 	return HttpResponse(json.dumps(response))
-
+@csrf_exempt
 def change_name(request, id):
 	response = {'status': 404}
 
@@ -115,7 +116,7 @@ def change_name(request, id):
 
 
 
-
+@csrf_exempt
 def delete_category(request, id):
 	response = {}
 	# Delete method

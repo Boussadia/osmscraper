@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import Context, loader
+from django.views.decorators.csrf import csrf_exempt
 
 import simplejson as json
 
@@ -141,7 +142,7 @@ def categories(request, osm, level, parent='0'):
 
 	return HttpResponse(json.dumps(response))
 
-
+@csrf_exempt
 def add_link(request):
 	if request.method == 'POST':
 		post = request.POST
@@ -165,7 +166,7 @@ def add_link(request):
 			return HttpResponse(json.dumps({"status":200}))
 		else:
 			return HttpResponse(json.dumps({"status":404}))
-
+@csrf_exempt
 def delete_link(request):
 	if request.method == 'POST':
 		post = request.POST
@@ -190,7 +191,7 @@ def delete_link(request):
 			return HttpResponse(json.dumps({"status":404}))
 
 		return HttpResponse(json.dumps())
-
+@csrf_exempt
 def get_links(request, osm, category_id):
 	if osm == "auchandirect":
 		dalliz_categories = dalliz.models.Category.objects.filter(auchan_category_dalliz_category=category_id)

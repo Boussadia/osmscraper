@@ -15,6 +15,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.db import connection, transaction
 from django.db.models import Q
+from django.views.decorators.csrf import csrf_exempt
 
 from tags.models import Tag
 
@@ -293,7 +294,7 @@ def set_tags_to_product(product, tags, osm, set_match = True):
 
 		if set_match and match is not None:
 			[ set_tags_to_product(getattr(match,other_osm+'_product'), tags, other_osm, set_match = False)  for other_osm in available_osms.keys() if other_osm != osm]
-
+@csrf_exempt
 def comment(request, osm, product_id):
 	"""
 		Saves product comment.
@@ -325,7 +326,7 @@ def comment(request, osm, product_id):
 		response['msg'] = 'Not handling this method'
 
 	return HttpResponse(json.dumps(response))
-
+@csrf_exempt
 def tags(request, osm, product_id, tags):
 	response = {}
 	if osm in available_osms:
@@ -354,7 +355,7 @@ def tags(request, osm, product_id, tags):
 		response['status'] = 404
 		response['msg'] = 'Osm not handled'
 	return HttpResponse(json.dumps(response))
-
+@csrf_exempt
 def set_categories(request, osm, product_id):
 	response = {}
 	if request.method == 'POST':
@@ -383,7 +384,7 @@ def set_categories(request, osm, product_id):
 		response['status'] = 404
 		response['msg'] = 'Not handling this method'
 	return HttpResponse(json.dumps(response))
-
+@csrf_exempt
 def autocomplete_category(request):
 	"""
 		Get all categories that are like term
@@ -401,7 +402,7 @@ def autocomplete_category(request):
 			categories.append(p)
 	response = [{'id':t.id,'label':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(t)+' - '+str(t.id),'value':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(t)+' - '+str(t.id)} for t in categories]	
 	return HttpResponse(json.dumps(response))
-
+@csrf_exempt
 def set_no_similarity(request, osm, osm_from, product_id_to, product_id_from):
 	response = {}
 	if request.method == 'POST':
@@ -435,7 +436,7 @@ def set_no_similarity(request, osm, osm_from, product_id_to, product_id_from):
 
 	return HttpResponse(json.dumps(response))
 
-
+@csrf_exempt
 def set_match(request, osm, osm_from, product_id_to, product_id_from):
 	response = {}
 	# Getting product
@@ -510,7 +511,6 @@ def set_match(request, osm, osm_from, product_id_to, product_id_from):
 
 
 	return HttpResponse(json.dumps(response))
-
 
 def reset_product(product):
 	product.dalliz_category.clear()

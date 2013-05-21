@@ -10,6 +10,7 @@ import itertools
 
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
 from osmscraper.unaccent import unaccent
 
@@ -108,7 +109,7 @@ def selector(request, osm, id):
 	return request, u'brand_matcher/index.html', {u'content': template.render(), u'template': template_content, u'template_value': json.dumps(template_value)}
 
 
-
+@csrf_exempt
 def cancel(request, osm, id):
 	response = {}
 	if request.method == 'POST':
@@ -132,7 +133,7 @@ def cancel(request, osm, id):
 		response = {'status': 404}
 
 	return HttpResponse(json.dumps(response))
-
+@csrf_exempt
 def set(request, osm, osm_brand_id, dalliz_brand_id):
 	response = {}
 	if request.method == 'POST':
@@ -165,7 +166,7 @@ def set(request, osm, osm_brand_id, dalliz_brand_id):
 		response = {'status': 404}
 
 	return HttpResponse(json.dumps(response))
-
+@csrf_exempt
 def autocomplete(request):
 	response = {}
 	term = ''

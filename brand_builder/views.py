@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import Context, loader
 from django.core import serializers
+from django.views.decorators.csrf import csrf_exempt
 
 from dalliz.models import Brand
 
@@ -17,7 +18,7 @@ def index(request):
 		models[i]['url'] = str(models[i]['id'])
 		models[i]['parent_id'] = None
 	return render(request, 'brand_builder/index.html', {'brands': json.dumps(models)})
-
+@csrf_exempt
 def sub_brands(request, id):
 	response = {}
 	# Main brand
@@ -111,7 +112,7 @@ def sub_brands(request, id):
 		response['status'] = '404'
 
 	return HttpResponse(json.dumps(response))
-
+@csrf_exempt
 def delete_brand(request, id):
 	response = {}
 	# Delete method

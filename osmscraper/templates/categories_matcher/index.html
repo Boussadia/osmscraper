@@ -11,6 +11,7 @@
 		<link rel="stylesheet" type="text/css" href="{% static categories_matcher/css/categories_matcher.css %}">
 	</head>
 	<body>
+		{% csrf_token %}
 		<h1>Categories Matcher</h1>
 		<div id="main" class="">
 			<div class="block" id="level_1">

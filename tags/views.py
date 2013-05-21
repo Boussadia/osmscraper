@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template import Context, loader
 from django.db import connection, transaction
+from django.views.decorators.csrf import csrf_exempt
 
 from matcher.base.stemmer import Stemmer
 
@@ -107,7 +108,7 @@ def index(request):
 	tags = [ t.name for t in Tag.objects.all()]
 
 	return render(request, 'tags/index.html', {"categories": json.dumps(categories), "tags": json.dumps(tags)})
-
+@csrf_exempt
 def tags(request, id_category, tags =''):
 	response = {}
 	category = Category.objects.filter(id=id_category)

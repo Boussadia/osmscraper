@@ -9,6 +9,7 @@
 		<script data-main="{{STATIC_URL}}brand_matcher/js/main.js" src="{% static brand_matcher/js/require.js%}"></script>
 	</head>
 	<body>
+		{% csrf_token %}
 		<section id="content">
 			{% autoescape off %}
 				{{content}}
