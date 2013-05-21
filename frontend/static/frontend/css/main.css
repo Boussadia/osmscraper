@@ -1300,7 +1300,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 																height: 45px;
 															}
 
-															.cart-recap-accordion div:first-child {
+															.cart-recap-accordion > div:first-child {
 																border-right: 1px solid #e2e3e5;
 																padding-right: 20px;
 															}
