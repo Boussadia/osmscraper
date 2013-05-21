@@ -31,7 +31,9 @@ p, h1, h2, h3, h4, h5, h6, div {
 
 html,
 body {
-  font-size: 100%; }
+  font-size: 100%;
+  height: 100%;
+}
 
 body {
   background: white;
@@ -43,7 +45,6 @@ body {
   font-style: normal;
   line-height: 1;
   position: relative;
-  height: 100%;
 }
 
 img,
@@ -85,17 +86,6 @@ a {
 	display: inline-block;
 	width: 85.7%;
 	float: left;
-}
-
-.block-right{
-	padding: 0;
-	width: 14.3%;
-	display: inline-block;
-	position: absolute;
-	float: right;
-	top: 7px;
-	background-color: white;
-	height: 4000px;
 }
 
 
@@ -555,6 +545,7 @@ li.has-dropdown.show {
 
 #main{
 	top: 35px;
+	min-height: 95%;
 }
 
 /* Thin bar on top of products section */
@@ -946,12 +937,13 @@ div.promo-type {
 
 
 #comparator {
-	width: 100%;
-	position: relative;
+	width: 14.3%;
+	position: absolute;
 	box-shadow: -2px 0px 4px rgba(0,0,0,0.2);
 	height: 100%;
 	z-index: 3000;
 	background-color: white;
+	right: 0.1%;
 }
 
 #comparator.top{
@@ -1200,7 +1192,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 
 .block-right{
 	padding: 0;
-	width: 14.3%;
+	width: 100%;
 	display: inline-block;
 	position: absolute;
 	float: right;
@@ -1216,13 +1208,12 @@ button:hover, button:focus, .button:hover, .button:focus {
 
 														#cart {
 															position: absolute;
-															width: 582%;
+															width: 83.3%;
 															height: 800px;
 															background-color: white;
-															right: -582%; 
+															right: -83.2%;
 															box-shadow: -3px -1px 4px rgba(0, 0, 0, 0.1);
 															z-index: 2999;
-															display: none;
 														}
 
 														.open-cart #cart{
@@ -1851,7 +1842,7 @@ input[type="email"] {
 
 footer {
 	position: relative;
-	top: 49px;
+	bottom: -49px;
 	width: 100%;
 	min-width: 1024px;
 	clear: both;
