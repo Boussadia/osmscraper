@@ -42,7 +42,9 @@ body {
   font-weight: normal;
   font-style: normal;
   line-height: 1;
-  position: relative; }
+  position: relative;
+  height: 100%;
+}
 
 img,
 object,
@@ -204,8 +206,9 @@ header.top .block-right{
 	float: left;
 	margin: 0;
 	top: 70px;
-	right: 272px;
+	right: 271px;
 	font-size: 15.5px;
+	color: #9f9fa1;
 }
 
 #main-logo-bar a {
@@ -393,8 +396,8 @@ header.top .block-right{
 			background-position: -576px 50px;
 		}
 
-		.left li.has-dropdown.show div.icone.beaute-hygiene {
-			#menu background-position: -640px 50px;
+		#menu .left li.has-dropdown.show div.icone.beaute-hygiene {
+			background-position: -640px 50px;
 		}
 
 		#menu .left li.has-dropdown.show div.icone.maison-entretien {
@@ -954,7 +957,7 @@ div.promo-type {
 #comparator.top{
 	width: 14.3%;
 	position: fixed;
-	top: 85px;549
+	top: 85px;
 	padding-right: 0.65%;
 }
 
@@ -980,6 +983,8 @@ div.promo-type {
 
 #switch-area{
 	color: #ff7800;
+	position: relative;
+	top: -10px;
 }
 
 #switch-area > div{
@@ -1035,7 +1040,7 @@ div.promo-type {
 		height: 23.9px;
 		width: 95px;
 		top: 8px;
-		left: 5%;
+		left: 3%;
 		background: url(../img/comparator/sprites_osm.png);
 		background-size: 100%;
 		background-repeat: no-repeat;
@@ -1061,7 +1066,7 @@ div.promo-type {
 		font-weight: bold;
 		top: 3px;
 		font-size: 11px;
-		right: -3px;
+		right: -2px;
 	}
 
 #active-osm{
@@ -1081,7 +1086,7 @@ div.promo-type {
 
 #active-osm > div.cart-summary{
 	height: 51px;
-	width: 144px;
+	width : 75%;
 	margin: auto;
 	margin-bottom: 15px;
 	vertical-align: bottom;
@@ -1092,8 +1097,7 @@ div.promo-type {
 	height: 27px;
 	background: url(../img/comparator/cart-logo.png);
 	display: inline-block;
-	float: right;
-	margin-right: 10px;
+	float: left; 
 	position: relative;
 	top: 15px;
 }
@@ -1112,12 +1116,15 @@ div.promo-type {
 	color: #63c20c;
 }
 
-#active-osm .osm p {
-	font-size: 11px;
-	position: relative;
-	font-weight: normal;
-	top: -7px;
-	right: 3px;
+#active-osm .osm p { 
+	font-size: 84%; 
+	position: relative; 
+	float: left; 
+	left: 3%; 
+	margin: 0; 
+	margin-bottom: 18px; 
+	font-weight: normal; 
+	top: 5px; 
 }
 
 .cta {
@@ -1142,7 +1149,7 @@ div.promo-type {
 }
 
 .cta.commander{
-	margin-top: 46px;
+	margin-top: 30px;
 	width: 80%;
 	padding-top: 8px;
 }
@@ -1151,6 +1158,7 @@ div.promo-type {
 	background-color: #ff7800;
 	width: 80%;
 	padding-top: 7px;
+	top: -10px;
 }
 
 .cta:hover {
@@ -1197,7 +1205,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 	position: absolute;
 	float: right;
 	top: 7px;
-	right: 1.5%;
+	right: 22px;
 	background-color: white;
 	height: 4000px;
 }
