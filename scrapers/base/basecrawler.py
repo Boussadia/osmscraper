@@ -58,7 +58,7 @@ class BaseCrawler(object):
 		self.__network_failures_retry__ = 0
 
 		# time of last http request
-		self.last_time = time.time()
+		self.last_time = time.time() - BaseCrawler.INTERVAL
 
 	def do_request(self, url ='', data = {}, request = None):
 		"""
@@ -128,10 +128,10 @@ class BaseCrawler(object):
 			else:
 				print "Error when retrieving "+url
 				return None, -1
-		# except Exception, e:
-		# 	print 'Unexpected error occured.'
-		# 	print e
-		# 	return None, -1
+		except Exception, e:
+			print 'Unexpected error occured.'
+			print e
+			return None, -1
 
 	def get(self,url):
 		"""

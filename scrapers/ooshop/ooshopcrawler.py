@@ -59,7 +59,7 @@ class OoshopCrawler(BaseCrawler, Singleton):
 		request = mechanize.Request(url, new_data)
 		request.add_header('Accept', '*/*')
 		request.add_header('Accept-Encoding', 'gzip,deflate,sdch')
-		# request.add_header('X-MicrosoftAjax', 'Delta=true')
+		request.add_header('X-MicrosoftAjax', 'Delta=true')
 		request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
 		request.add_header('Accept-Language', 'en-US,en;q=0.8')
 		request.add_header('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3')
@@ -68,8 +68,6 @@ class OoshopCrawler(BaseCrawler, Singleton):
 		request.add_header('Referer', url)
 		request.add_header('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31')
 
-		# request.add_header('X-Requested-With', 'XMLHttpRequest')
-		# request.add_header('X-Prototype-Version', '1.7')
 		return self.do_request(request = request)
 
 

@@ -350,9 +350,17 @@ class OoshopScraper(BaseScraper):
 			del form_data['ctl00$cphC$elig$bEli']
 			del form_data['ctl00$Perso$ucAu$lv$LoginButton']
 
+			response = '|pageRedirect||/Home.aspx|'
+
 			# geting response
 			html, code = self.crawler.login_user(url, data = form_data)
+
 			if code == 200:
+				# Going to profile page in order to check if user loged in
+				url_profile = 'http://www.ooshop.com/courses-en-ligne/WebForms/Utilisateur/MonCompte.aspx'
+				html, code = self.crawler.get(url_profile)
+				print html
+				print code
 				# Parsing html
 				self.parser.set_html(html)
 				# is_served = self.parser.get_eligibility() TOBE DONE : check if user logedin
