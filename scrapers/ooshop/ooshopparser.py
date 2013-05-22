@@ -522,7 +522,11 @@ class OoshopParser(BaseParser):
 			Extracting cart for a loged user.
 		"""
 		products = []
-		print len(self.parsed_page.find_all('table',{'class': 'productsTable'}))
+		tables = self.parsed_page.find_all('table',{'class': 'productsTable'})
+
+		for table in tables:
+			tbody = table.find('tbody')
+			print 'trs -> %d'%len(tbody.find_all('tr'))
 		return products
 
 

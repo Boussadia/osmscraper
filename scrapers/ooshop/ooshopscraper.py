@@ -393,11 +393,12 @@ class OoshopScraper(BaseScraper):
 				for j in xrange(0,len(pagination)):
 					# Going through every page and get products
 					page = pagination[j]
+
 					if j == 0:
 						# page already fetched, no need to fetch it again
 						pass
 					else:
-						html, code = self.crawler.category_pagination(url_cart, page)
+						html, code = self.crawler.cart_pagination(url_cart, page)
 
 					if code == 200:
 						self.parser.set_html(html)
