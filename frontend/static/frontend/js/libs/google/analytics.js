@@ -24,6 +24,7 @@ function(){
 		track : function(url){
 			_gaq.push(['_trackPageview', "/"+url])
 		}
+		// _trackEvent pour tracker des events spécifiques
 	};
 	return GooglAnalyticsHelper;
 });

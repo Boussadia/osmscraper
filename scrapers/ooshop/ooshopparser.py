@@ -503,6 +503,29 @@ class OoshopParser(BaseParser):
 
 		return product
 
+	def is_logued(self):
+		"""
+			This method checks if a user is logued in.
+
+		"""
+		# Getting bottom user bar
+
+		user_bar = self.parsed_page.find(id='barreperso')
+		if user_bar is not None:
+			deconnexion_btn = user_bar.find(id='ctl00_Perso_ucAu_lv_ls')
+			return deconnexion_btn is not None
+		else:
+			return False
+
+	def get_products_in_cart(self):
+		"""
+			Extracting cart for a loged user.
+		"""
+		products = []
+		print len(self.parsed_page.find_all('table',{'class': 'productsTable'}))
+		return products
+
+
 	#-----------------------------------------------------------------------------------------------------------------------
 	#
 	#									SPECIFIC METHODS TO OOSHOP PARSER

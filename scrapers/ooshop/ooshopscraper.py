@@ -319,9 +319,7 @@ class OoshopScraper(BaseScraper):
 				- boolean : True -> served, False -> not served
 				- code : was the request successfull? (200 = OK)
 		"""
-		is_served = False
-		# Clearing cookies
-		# self.crawler.empty_cookie_jar()
+		is_logued = False
 
 		# Verification url
 		url = 'http://www.ooshop.com/courses-en-ligne/WebForms/Utilisateur/VerifEligibilite.aspx'
@@ -350,8 +348,6 @@ class OoshopScraper(BaseScraper):
 			del form_data['ctl00$cphC$elig$bEli']
 			del form_data['ctl00$Perso$ucAu$lv$LoginButton']
 
-			response = '|pageRedirect||/Home.aspx|'
-
 			# geting response
 			html, code = self.crawler.login_user(url, data = form_data)
 
@@ -359,8 +355,8 @@ class OoshopScraper(BaseScraper):
 				# Going to profile page in order to check if user loged in
 				url_profile = 'http://www.ooshop.com/courses-en-ligne/WebForms/Utilisateur/MonCompte.aspx'
 				html, code = self.crawler.get(url_profile)
-				print html
-				print code
+				self.parser.set_html(html)
+				is_logued =  self.parser.is_logued()
 				# Parsing html
 				self.parser.set_html(html)
 				# is_served = self.parser.get_eligibility() TOBE DONE : check if user logedin
@@ -370,7 +366,51 @@ class OoshopScraper(BaseScraper):
 		else:
 			print 'Something went wrong : error %d'%(code)
 
-		return is_served, code
+		return is_logued, code
+
+	def import_cart(self, user_email = 'ahmed.boussadia@hotmail.fr', password = '2asefthukom,3'):
+		"""
+			Imports cart for a ooshop user.
+		"""
+		cart = []
+
+		# Clearing cookies
+		self.crawler.empty_cookie_jar()
+
+		# log user
+		is_logued, code = self.login_user(user_email, password)
+
+		if code == 200:
+			if is_logued:
+				# user loged, got ot cart page and extract cart from parser
+				url_cart = 'http://www.ooshop.com/courses-en-ligne/WebForms/Panier/ValidationPanierHorsTunnel.aspx'
+				html, code = self.crawler.get(url_cart)
+				self.parser.set_html(html)
+				# Getting pagination
+				self.parser.set_html(html)
+				pagination = self.parser.get_pagination()
+
+				for j in xrange(0,len(pagination)):
+					# Going through every page and get products
+					page = pagination[j]
+					if j == 0:
+						# page already fetched, no need to fetch it again
+						pass
+					else:
+						html, code = self.crawler.category_pagination(url_cart, page)
+
+					if code == 200:
+						self.parser.set_html(html)
+						cart.append(self.parser.get_products_in_cart())
+					else:
+						print "Something went wrong when fetching category page (%d) and brand %s for Ooshop : code %d"%(j+1, brand['name'],code)
+				# Updating products list				
+				print cart
+			else:
+				# user not loged
+				return cart, code, is_logued
+		else:
+			return cart, code, is_logued
 
 
 	def is_available(self, product_url):
