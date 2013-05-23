@@ -935,7 +935,7 @@ div.promo-type {
 *
 *************************************************************************************************************************************/
 #comparator {
-	width: 170px;
+	width: 180px;
 	position: relative;
 	box-shadow: -2px 0px 4px rgba(0,0,0,0.2);
 	height: 100%;
@@ -980,6 +980,7 @@ div.promo-type {
 	position: relative;
 	top: -57px;
 	cursor: pointer;
+	right: -10px;
 }
 
 .open-cart #mycart .controller{
@@ -1248,7 +1249,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 
 .block-right{
 	padding: 0;
-	width: 14.3%;
+	width: 180px;
 	display: inline-block;
 	position: absolute;
 	top: 4px;
