@@ -5,6 +5,7 @@ from __future__ import absolute_import # Import because of modules names
 
 from rest_framework import serializers
 
+import datetime
 from django.utils.timezone import utc
 
 from monoprix.models import Product, History, Promotion, Cart_content
