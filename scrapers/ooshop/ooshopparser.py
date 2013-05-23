@@ -517,6 +517,19 @@ class OoshopParser(BaseParser):
 		else:
 			return False
 
+	def parse_product_in_cart(self, tr):
+		"""
+			For a row in user cart, extract product reference.
+		"""
+		product = {}
+		href = tr.find('div', {'class': 'blkimg'}).find('a').attrs['href']
+		reference = href.split('?NOEUD_IDFO=')[-1]
+		quantity = tr.find('div', {'class': 'basket'}).find('input', {'class': 'txtM'})['value']
+		product['reference'] = reference
+		product['quantity'] = quantity
+		return product
+
+
 	def get_products_in_cart(self):
 		"""
 			Extracting cart for a loged user.
@@ -526,7 +539,7 @@ class OoshopParser(BaseParser):
 
 		for table in tables:
 			tbody = table.find('tbody')
-			print 'trs -> %d'%len(tbody.find_all('tr'))
+			products = products + [self.parse_product_in_cart(tr) for tr in tbody.find_all('tr')]
 		return products
 
 

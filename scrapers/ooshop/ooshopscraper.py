@@ -403,11 +403,11 @@ class OoshopScraper(BaseScraper):
 
 					if code == 200:
 						self.parser.set_html(html)
-						cart.append(self.parser.get_products_in_cart())
+						cart = cart + self.parser.get_products_in_cart()
 					else:
 						print "Something went wrong when fetching category page (%d) and brand %s for Ooshop : code %d"%(j+1, brand['name'],code)
 				# Updating products list				
-				print cart
+				return cart, code, is_logued
 			else:
 				# user not loged
 				return cart, code, is_logued
