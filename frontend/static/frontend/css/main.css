@@ -935,7 +935,7 @@ div.promo-type {
 *
 *************************************************************************************************************************************/
 #comparator {
-	width: 15%;
+	width: 170px;
 	position: relative;
 	box-shadow: -2px 0px 4px rgba(0,0,0,0.2);
 	height: 100%;
@@ -964,8 +964,9 @@ div.promo-type {
 
 #mycart a{
 	display: block;
-	width: 100%;
-	height: 100%;
+	width: 160px;
+	height: 76px;
+	margin-left: 10px;
 	cursor: pointer;
 }
 
@@ -978,6 +979,7 @@ div.promo-type {
 	float: right;
 	position: relative;
 	top: -57px;
+	left: 10px;
 	cursor: pointer;
 }
 
@@ -990,22 +992,25 @@ div.promo-type {
 	width: 50px;
 	height: 41px;
 	position: relative;
-	left: 14%;
+	left: 20px;
+	top: 10px;
 }
 
 #mycart .cart-text{
-	width: 100%;
+	width: 140px;
 	text-align: center;
 	text-transform: uppercase;
 	top: 12%;
 	position: relative;
+	font-size: 14px;
+	top: 20px;
 }
 
 #mycart .cart-qte{
 	float: right;
 	position: relative;
-	right: 23%;
-	top: 7%;
+	right: 40px;
+	top: 20px;
 }
 
 #mycart .cart-qte div{
@@ -1033,14 +1038,14 @@ div.promo-type {
 }
 
 #switch-area > div .switch{
-	width: 25px;
-	height: 25px;
-	background: url(../img/comparator/swap.png);
+	background: url(../img/switch/popup-switch.gif);
 	display: inline-block;
 	float: left;
 	margin-left: 15px;
 	position: relative;
 	top: 15px;
+	width: 23px;
+	height: 22px;
 }
 
 #switch-area > div > div:not(.switch){
@@ -1242,11 +1247,11 @@ button:hover, button:focus, .button:hover, .button:focus {
 	width: 14.3%;
 	display: inline-block;
 	position: absolute;
-	top: 7px;
+	top: 4px;
 	right: 22px;
 	height: 4000px;
 	overflow-x: hidden;
-	overflow-y: visible;
+	overflow-y: hidden;
 }
 
 .block-right.open-cart{
@@ -1259,6 +1264,11 @@ button:hover, button:focus, .button:hover, .button:focus {
 	width: 668%;
 	height: 100%;
 	right: -568.2%;
+	top: 3px;
+}
+
+.top #test{
+	top: 3px;
 }
 
 .block-right.open-cart #test{
@@ -1270,7 +1280,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 #cart {
 	position: relative;
 	float: right;
-	width: 85%;
+	width: 82%;
 	height: 100%;
 	background-color: white;
 	right: 0;
@@ -1349,7 +1359,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 															.accordion-header div {
 																position: relative;
 																float: left;
-																width: 50%;
+																width: 100%;
 																height: 45px;
 															}
 
@@ -1387,6 +1397,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 															}
 
 															.active-osm-product {
+																border-right: 1px solid #e2e3e5;
 																padding-left: 20px;
 																padding-right: 120px;
 															}
@@ -1394,7 +1405,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 															.prod-desc {
 																position: relative;
 																float: left;
-																width: 72%;
+																width: 65%;
 															}
 
 															.product-recap .prod-desc p {
@@ -1425,13 +1436,14 @@ button:hover, button:focus, .button:hover, .button:focus {
 															}
 
 															.active-osm-product #recap-price-qty {
-																right: 10px;
+																right: 5px;
+																top: 35px;
 															}
 
 															#recap-qty {
 																top: -11px;
-																right: 65px;
-																width: 110px;
+																width: 140px;
+																right: 92px; 
 															}
 
 															#recap-qty p {
