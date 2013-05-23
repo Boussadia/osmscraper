@@ -20,6 +20,8 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.views import APIView
 
+from scrapers.ooshop.ooshopscraper import OoshopScraper
+
 from cart.base.basecartcontroller import BaseCartController
 from cart.dalliz.dallizcartcontroller import DallizCartController
 from cart.models import MetaCart
@@ -634,6 +636,37 @@ class CartManagementAPIView(BetaRestrictionAPIView):
 		}
 
 		return {'carts':carts}
+
+class CartImportation(BetaRestrictionAPIView):
+	"""
+		Import cart from ooshop.
+	"""
+
+	@osm
+	def post(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+		ooshop_email = request.DATA['email']
+		ooshop_password = request.DATA['password']
+
+		# Getting cart content from ooshop site
+		scraper = OoshopScraper()
+		cart, code, is_logued = scraper.import_cart(user_email = ooshop_email, password = ooshop_password)
+		
+		if not is_logued:
+			raise AuthenticationFailed
+		else:
+			# Setting cart 
+			cart_controller = request.cart_controller
+			cart_controller.set_osm('ooshop')
+			cart_controller.empty()
+			for content in cart:
+				product = OoshopProduct.objects.filter(reference = content['reference'])
+				if product.count() == 0:
+					print 'Product not found : '+content['reference']
+				else:
+					product = product[0]
+					cart_controller.add_product(product, content['quantity'])
+
+			return {'test': cart}
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------

@@ -3,6 +3,10 @@
 
 from __future__ import absolute_import # Import because of modules names
 
+import datetime
+
+from django.utils.timezone import utc
+
 from rest_framework import serializers
 
 from ooshop.models import Product, History, Promotion, Cart_content
@@ -12,7 +16,7 @@ def merge_history_promotion(history, promotion, limit = 5):
 	"""
 		This function merges 2 dict one representing a promotion, one representing a history, both have to be ordered.
 	"""
-	return sorted(history+promotion, key=(lambda item: item['end'] if 'end' in item else item['created']))[:limit][::-1]
+	return sorted(history+promotion, key=(lambda item: item['end'] if 'end' in item and item['end'] is not None else item['created']))[:limit][::-1]
 
 class DescriptionSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -45,6 +49,7 @@ class HistoryField(serializers.RelatedField):
 			}
 			for h in histories]
 
+
 		promotion_data = [{
 			'is_promotion': True,
 			'start': p.start,
@@ -53,7 +58,8 @@ class HistoryField(serializers.RelatedField):
 			'price': p.after,
 			'unit_price': p.unit_price,
 			'availability': p.availability,
-			'store': osm_location
+			'store': osm_location,
+			'created': datetime.datetime(year = 2000, month = 1, day = 1).replace(tzinfo=utc) # Sometimes end and start are not provided (delaty in scraper)
 		} for p in promotions]
 
 		

@@ -6,6 +6,7 @@ define([
 	'collections/osms',
 	'models/osm',
 	'models/cart',
+	'models/cart-importation',
 	'models/user',
 	'views/menu',
 	'views/main',
@@ -15,7 +16,7 @@ define([
 	'views/userbar',
 	'views/switch',
 	'cookie'
-], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel, UserModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView, SwitchView){
+], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel, CartImporationModel, UserModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView, SwitchView){
 
 	function MasterCoursesApp(){
 		// Global Scope
@@ -101,6 +102,7 @@ define([
 		this.Models.cart = new CartModel({}, {'vent': this.Vent});
 		this.Views.cart = new CartView({'cart': this.Models.cart, 'vent': this.Vent});
 		this.Models.cart.fetch();
+		this.Models.cart_importation = new CartImporationModel({}, {'vent': this.Vent});
 
 		// Switch
 		this.Views.switch = new SwitchView({'osms': this.Collections.osms, 'vent': this.Vent});
