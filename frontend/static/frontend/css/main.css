@@ -1268,7 +1268,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 }
 
 .top #test{
-	top: 3px;
+	top: 0px;
 }
 
 .block-right.open-cart #test{
