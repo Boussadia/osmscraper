@@ -125,22 +125,23 @@
 		</section>
 
 		<div id="myModal" class="reveal-modal">
-			{% csrf_token %}
 			<a class="close-reveal-modal">&#215;</a>
 			<div id="modal-header">Master Courses est en beta privée !</div>
 			<div id="sign-in">
-				<form>
-		      		<div class="form-container">
-		        		<input type="email" placeholder="Email">
-		            <img src="{% static /dalliz/images/home/mail.png %}">
-		      		</div>
-		      		<div class="form-container">
-		        		<input type="password" placeholder="Mot de passe">
-		            <img src="{% static /dalliz/images/home/lock.png %}">
-		      		</div>
+				<form  method='post' action='/comparateur/start/'>
+					<div class="form-container">
+						<input name='username' type="email" placeholder="Email">
+						<img src="{% static /dalliz/images/home/mail.png %}">
+					</div>
+					<div class="form-container">
+						<input name='password' type="password" placeholder="Mot de passe">
+						{% csrf_token %}
+						<img src="{% static /dalliz/images/home/lock.png %}">
+					</div>
+
 		    	</form>
 		    	<p>Mot de passe oublié ?</p>
-		    	<a id="sign-in-button" href="#">Se connecter</a>
+		    	<a tyep='submit' id="sign-in-button" href="#">Se connecter</a>
 			</div>
 			<div id="invitation">
 				<p>Vous n'avez pas de compte sur Master Courses ? Demandez votre invitation !</p>

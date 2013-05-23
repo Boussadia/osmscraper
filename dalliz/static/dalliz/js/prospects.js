@@ -79,7 +79,9 @@ function login(name, pass){
 			// $('.errormessage').fadeIn();
 		},
 		success: function(data, textStatus, jqXHR){
-			window.location = '/comparateur/start/'
+			// console.log($('#sign-in form'));
+			$('#sign-in form').submit();
+			// window.location = '/comparateur/start/'
 		}
 	});
 }
