@@ -282,7 +282,7 @@ class CategoryProducts(CategorySimple):
 			kwargs.update(kwargs_location_promotion)
 
 			if type_fetched == 'promotions':
-				kwargs.update({'promotion__id__isnull': False, 'dalliz_category__parent_category': category})
+				kwargs.update({'promotion__id__isnull': False, 'promotion__type' : 's','dalliz_category__parent_category': category}) # Only handeling simple promotions
 				products = Product.objects.filter(~Q(promotion__end__lte = F('history__created'))).filter(**kwargs).distinct('reference')
 			else:
 				kwargs.update({'dalliz_category': category})

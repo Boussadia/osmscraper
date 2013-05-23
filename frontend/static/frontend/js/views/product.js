@@ -20,14 +20,16 @@ define([
 			},
 			render: function(){
 				// Only render if associated product was fetched from server
-				if(!this.product.isNew()){
-					this.$el.empty();
-					var data = this.product.toJSON();
-					if (data.name.length > this.MAX_NAME_LENGTH){
-						data.name = data.name.substring(0, this.MAX_NAME_LENGTH-3)+'...';
+				try{
+					if(!this.product.isNew()){
+						this.$el.empty();
+						var data = this.product.toJSON();
+						if (data.name.length > this.MAX_NAME_LENGTH){
+							data.name = data.name.substring(0, this.MAX_NAME_LENGTH-3)+'...';
+						}
+						this.$el.append(this.template(data));
 					}
-					this.$el.append(this.template(data));
-				}
+				}catch(e){}
 				return this;
 			},
 			events: {
