@@ -22,7 +22,7 @@ define([
 					var that = this;
 					options.success = function( data,  textStatus, jqXHR){
 						if( typeof data.attributes.carts !== 'undefined' && typeof vent !== 'undefined') vent.trigger('carts', data.attributes.carts);
-						if( typeof data.attributes.osm !== 'undefined' && typeof vent !== 'undefined') vent.trigger('osm', data.attributes.osm);
+						// if( typeof data.attributes.osm !== 'undefined' && typeof vent !== 'undefined') vent.trigger('osm', data.attributes.osm);
 						vent.trigger('cart:newproduct');
 					}
 				}

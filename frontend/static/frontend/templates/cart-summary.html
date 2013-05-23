@@ -1,2 +1,11 @@
-<div style='visibility: hidden;'><%= quantity %></div>
-<div class="controller"></div>
+<a class="no-hijax">
+	<div class='caddie'></div>
+	<div class='cart-qte'>
+		<div>
+			<%= quantity %>
+		</div>
+		<div class='txt-articles'> article<%if(quantity>1){%>s<%}%></div>
+	</div>
+	<div class='cart-text'> mon panier</div>
+	<div class="controller"></div>
+</a>

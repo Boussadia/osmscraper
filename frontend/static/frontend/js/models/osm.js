@@ -20,7 +20,6 @@ define([
 				},this);
 
 				this.vent.on('osm', function(osm){
-					// console.log(osm);
 					var active = (osm.name === this.get('name') ? true : false );
 					this.set('active', active);
 				}, this);
@@ -36,16 +35,20 @@ define([
 					'new_name': this.get('name')
 				}
 				options.success = function(data, textStatus, jqXHR){
-						that.vent.trigger('route:category:force');
+					
+					// that.vent.trigger('route:category:force');
 				}
 
 				options.error = function(jqXHR, textStatus, errorThrown){
-						console.log(jqXHR);
-						console.log(textStatus);
-						console.log(errorThrown);
+					console.log(jqXHR);
+					console.log(textStatus);
+					console.log(errorThrown);
 				}
 
 				return BaseModel.prototype.save.apply(this, [attributes, options]);
+			},
+			parse: function(resp, xhr){
+				return resp.osm;
 			}
 		});
 

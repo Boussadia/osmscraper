@@ -21,6 +21,7 @@ define([
 			this.vent.on('osm', function(osm){
 				this.current_osm = osm.name;
 				if (!this.categories[this.current_osm]) this.categories[this.current_osm] = [];
+				this.vent.trigger('route:category:force');
 			}, this);
 		},
 		addCategory: function(category_id){

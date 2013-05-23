@@ -58,6 +58,7 @@ define([
 		// Settings listeners
 		this.Vent.on('route:category', this.category, this);
 		// this.Vent.on('route:product', this.product, this); TODO
+
 		this.Vent.on('osm', function(osm){
 			// Settings values of osm
 			that.data.osm_location = osm.location || that.data.osm_location;

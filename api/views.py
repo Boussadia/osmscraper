@@ -97,7 +97,7 @@ def osm(function):
 		osm = {
 			'name':metacart.current_osm,
 			'type':'shipping',
-			'location':None
+			'location':None,
 		}
 
 		if request.method in ['GET', 'POST']:
@@ -123,9 +123,11 @@ def osm(function):
 		data = function( self , *args, **kwargs)
 
 		if isinstance(data, dict):
-			data.update({'osm': osm})
+			# data.update({'osm': osm})
 			if 'carts' not in data:
 				data.update({'carts': carts})
+			if 'osm' not in data:
+				data.update({'osm': osm})
 			return Response(data)
 		else:
 			return data
@@ -693,7 +695,22 @@ class OSMAPIView(BetaRestrictionAPIView):
 		if 'new_location' in request.DATA:
 			new_osm_location = request.DATA['new_location']
 		request.cart_controller.set_osm(new_osm_name)
-		return Response({})
+		carts = { o: {
+			'id': request.cart_controller.carts[o].cart.id,
+			'price':  (lambda x: x.cart.cart_history_set.all()[0].price if len(x.cart.cart_history_set.all())>0 else 0)(request.cart_controller.carts[o]),
+			'created': (lambda x: x.cart.cart_history_set.all()[0].created if len(x.cart.cart_history_set.all())>0 else None)(request.cart_controller.carts[o]),
+			'active': (request.cart_controller.metacart.current_osm == request.cart_controller.carts[o].cart.osm)
+		}
+			for o in request.cart_controller.carts
+		}
+		osm = {
+			'name':request.cart_controller.metacart.current_osm,
+			'type':'shipping',
+			'location':None,
+			'active': True
+
+		}
+		return {'carts': carts, 'osm': osm}
 
 
 

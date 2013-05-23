@@ -17,7 +17,7 @@ define([
 			return this;
 		},
 		events: {
-			'click .controller': 'showOrHide'
+			'click a': 'showOrHide'
 		},
 		showOrHide: function(){
 			var className = 'open-cart';
