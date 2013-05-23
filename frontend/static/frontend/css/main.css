@@ -1194,28 +1194,31 @@ button:hover, button:focus, .button:hover, .button:focus {
 
 .block-right{
 	padding: 0;
-	width: 100%;
+	width: 14.3%;
 	display: inline-block;
 	position: absolute;
 	top: 7px;
-	right: 0;
+	right: 22px;
 	height: 4000px;
-	padding-left: 30px;
-	padding-right: 30px;
 	overflow-x: hidden;
 	overflow-y: visible;
+}
+
+.block-right.open-cart{
+	width: 95.9%;
 }
 
 #test {
 	position: relative;
 	float: right;
-	width: 110%;
+	width: 668%;
 	height: 100%;
-	right: -95.7%;
+	right: -568.2%;
 }
 
-#test.open-cart{
+.block-right.open-cart #test{
 	right: 0%;
+	width: 100%;
 }
 
 														
@@ -1277,9 +1280,14 @@ button:hover, button:focus, .button:hover, .button:focus {
 															padding-right: 20px;
 														}
 
-.transition{
-	transition: right 0.75s;
-	-webkit-transition: right 0.75s;
+.transition-wr{
+	transition: width 0.75s, right 0.75s;
+	-webkit-transition: width 0.75s, right 0.75s;
+}
+
+.transition-w{
+	transition: width 0.75s;
+	-webkit-transition: width 0.75s;
 }
 
 														.cart-recap-accordion {

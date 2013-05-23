@@ -57,10 +57,10 @@ define([
 				return this;
 			},
 			show: function(){
-				this.$el.parent().addClass('open-cart')
+				$('.block-right').addClass('open-cart')
 			},
 			hide: function(){
-				this.$el.parent().removeClass('open-cart')
+				$('.block-right').removeClass('open-cart')
 			},
 			set_fixed_position: function(){
 				var scrollTop = $(window).scrollTop();
