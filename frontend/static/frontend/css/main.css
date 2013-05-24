@@ -76,8 +76,8 @@ a {
 	position: relative;
 	width: 100%;
 	min-width: 1024px;
-	padding-left: 30px;
-	padding-right: 30px;
+	padding-left: 20px;
+	padding-right: 20px;
 }
 
 .block-left{
@@ -125,7 +125,7 @@ header.top .block-right{
 #menu{
 	background: white;
 	position: relative;
-	width: 85.7%;
+	width: 82.5%;
 	float: left;
 	top: 7px;
 	height: 86px;
@@ -864,19 +864,24 @@ li.has-dropdown.show {
 	right: 0px;
 	top: 0px;
 	background-position: 0px 0px;
+	font-size: 26px;
+	padding-top: 4px;
+	padding-right: 1px;
 }
 .qte a:nth-child(3) {
 	font-size: 34px;
 	right: 38px;
 	top: 0px;
+	padding-right: 1px;
 }
 
 .qte a:nth-child(4) {	
 	color: white;
 	right: 19px;
 	top: -32px;
-	padding-top: 10px;
-	font-size: 20px;
+	padding-top: 9px;
+	padding-right: 1px;
+	font-size: 18px;
 	font-weight: bold;
 	background-position: 34px 0px;
 }
@@ -911,6 +916,7 @@ div.promo-type {
 	top: 0;
 	background-color: rgba(0, 0, 0, 0.1);
 	text-align: center;
+	right: 1px;
 }
 
 
@@ -937,7 +943,7 @@ div.promo-type {
 #comparator {
 	width: 180px;
 	position: relative;
-	box-shadow: -2px 0px 4px rgba(0,0,0,0.2);
+	box-shadow: -2px 0px 5px rgba(0,0,0,0.2);
 	height: 100%;
 	z-index: 3000;
 	background-color: white;
@@ -1082,21 +1088,21 @@ div.promo-type {
 		width: 95px;
 		top: 8px;
 		left: 10px;
-		background: url(../img/comparator/sprites_osm.png);
+		background: url(../img/comparator/sprites_osm_nb.png);
 		background-size: 100%;
 		background-repeat: no-repeat;
 	}
 
 		.osm div.auchan, .auchan {
-			background-position: 0 42%;
+			background-position: 0 42% !important;
 		}
 
 		.osm div.ooshop, .ooshop {
-			background-position: 0 0;
+			background-position: 0 0 !important;
 		}
 
 		.osm div.monoprix, .monoprix {
-			background-position: 0 14%;
+			background-position: 0 14% !important;
 		}
 
 	.osm p{
@@ -1118,7 +1124,7 @@ div.promo-type {
 	height: 70px;
 }
 
-#active-osm .osm > div{
+#active-osm .osm > div:not(#minimum-shipping){
 	width: 135px;
 	height: 34px;
 	margin-left: auto;
@@ -1127,6 +1133,7 @@ div.promo-type {
 	float: initial;
 	top: initial;
 	display: block;
+	background: url(../img/comparator/sprites_osm.png);
 }
 
 #active-osm > div.cart-summary{
@@ -1248,19 +1255,18 @@ button:hover, button:focus, .button:hover, .button:focus {
 *************************************************************************************************************************************/
 
 .block-right{
-	padding: 0;
-	width: 180px;
-	display: inline-block;
+	width: 18.5%;
 	position: absolute;
 	top: 4px;
-	right: 22px;
+	right : 7px;
 	height: 4000px;
+	padding-left: 4px; 
 	overflow-x: hidden;
 	overflow-y: hidden;
 }
 
 .block-right.open-cart{
-	width: 95.9%;
+	width: 98.2%;
 }
 
 #test {
@@ -1285,16 +1291,18 @@ button:hover, button:focus, .button:hover, .button:focus {
 #cart {
 	position: relative;
 	float: left;
-	width: 82%;
+	width: 81.6%;
 	height: 100%;
 	background-color: white;
 	right: 0;
+	left: 80px;
 	box-shadow: -3px -1px 4px rgba(0, 0, 0, 0.1);
 	z-index: 2999;
 }
 
 														.open-cart #cart{
 															display: block;
+															left: 0px;
 														}
 
 														#cart-header {
@@ -1936,7 +1944,7 @@ footer {
 
 .footer-top {
 	height: 48px;
-	background-color: #212121;
+	background-color: #9f9fa1;
 	position: relative;
 	width: 100%;
 	min-width: 1024px;
@@ -1952,8 +1960,12 @@ footer {
 	float: left;
 }
 
+.footer-container div:nth-child(2){
+	width: 60%;
+}
+
 .mini-container {
-	width: 50%;
+	width: 40%;
 	height: 100%;
 	position: relative;
 	display: inline-block;
@@ -2006,6 +2018,7 @@ footer {
 		border: none !important;
 		clear: none;
 		line-height: 100%;
+		margin-right: 20px;
 	}
 
 		.social-widget li a {
@@ -2018,7 +2031,7 @@ footer {
 
 .footer-bottom {
 	height: 35px;
-	background-color: #000000;
+	background-color: #424242;
 	position: relative;
 	width: 100%;
 	min-width: 1024px;

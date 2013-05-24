@@ -44,6 +44,8 @@ define([
 			}, this)
 
 			if (!category_already_fetched){
+				console.log(this.current_osm);
+				console.log(category_id);
 				// If the category was not fetched, proceed
 				var categoryCollection = new CategoryCollection([], {'id': category_id,'osm': this.current_osm, 'vent': this.vent});
 				categoryCollection.current = true;
