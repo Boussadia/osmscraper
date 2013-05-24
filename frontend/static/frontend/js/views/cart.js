@@ -39,6 +39,7 @@ define([
 				// Getting data for current cart
 				var data = {};
 				data['current'] = this.cart.toJSON();
+				data['suggested'] = this.suggested_cart.toJSON();
 				this.$el.append(this.template(data));
 			
 
@@ -51,9 +52,19 @@ define([
 					this.addSubView(productsView);
 				}, this);
 
+				// Now dealing with suggested cart
+				_.each(data['suggested']['content'], function(category, i){
+					var view = new CategoryInCartView({'el': this.$el.find('#suggested_cart .accordion-header'), 'content': category, 'vent': this.vent});
+					var products = new MiniProductsCollection( category.products, {'vent': this.vent});
+					var productsView = new MiniProductsView({'products': products, el:this.$el.find('#suggested_cart .products-recap'), 'vent': this.vent});
+					this.addSubView(view);
+					this.addSubView(productsView);
+				}, this);
+
+
 				// Rendering sub views
 				_.each(this.subViews, function(view, i){
-					this.$el.find('div#cart-recap-accordion').append(view.render().el);
+					view.render()
 				}, this)
 
 				// $('#cart-recap-accordion').accordion();
