@@ -17,6 +17,9 @@ define([
 				options || (options = {});
 				// Representing current_cart, if current cart changed, fetched current cart from server
 				this.cart = options.cart || new CartModel({}, {'vent': this.vent});
+				this.suggested_cart = options.suggested_cart || new CartModel({}, {'vent': this.vent});
+				this.osms = options.osms;
+
 				this.vent.on('osm', function(osm){
 					if(this.cart.get('name') !== osm.name){
 						this.cart.fetch();

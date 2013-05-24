@@ -6,6 +6,7 @@ define([
 	'collections/osms',
 	'models/osm',
 	'models/cart',
+	'models/suggested_cart',
 	'models/cart-importation',
 	'models/user',
 	'views/menu',
@@ -16,7 +17,7 @@ define([
 	'views/userbar',
 	'views/switch',
 	'cookie'
-], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel, CartImporationModel, UserModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView, SwitchView){
+], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel, SuggestedCartModel,CartImporationModel, UserModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView, SwitchView){
 
 	function MasterCoursesApp(){
 		// Global Scope
@@ -40,6 +41,7 @@ define([
 		Backbone.originalSync = Backbone.sync; // Saving reference of original sunc method
 		Backbone.sync = function(method, model, options){
 			options || (options = {});
+
 			if(method === 'create' || method === 'update' || method === 'patch'){
 				options.attrs || (options.attrs = {});
 				_.extend(options.attrs, that.data);
@@ -47,9 +49,11 @@ define([
 				if(!options.attrs.osm_location) delete options.attrs.osm_location;
 			}else{
 				options.data || (options.data = {});
+				var data = _.clone(options.data);
 				_.extend(options.data, that.data);
 				// Removing location if null (causes 500 error from server)
 				if(!options.data.osm_location) delete options.data.osm_location;
+				if ('osm_name' in data) options.data.osm_name = data.osm_name; // for the suggeted cart
 			}
 
 			return Backbone.originalSync(method, model, options);
@@ -100,8 +104,10 @@ define([
 		this.Collections.osms.add([{'name': 'auchan'}, {'name': 'monoprix'}, {'name': 'ooshop'}], {'vent': this.Vent});
 
 		// Cart
-		this.Models.cart = new CartModel({}, {'vent': this.Vent});
-		this.Views.cart = new CartView({'cart': this.Models.cart, 'vent': this.Vent});
+		this.Models.cart = new CartModel({}, {'vent': this.Vent, 'osms': this.Collections.osms});
+		this.Models.suggested_cart = new SuggestedCartModel({}, {'vent': this.Vent, 'osms': this.Collections.osms});
+
+		this.Views.cart = new CartView({'cart': this.Models.cart, 'suggested_cart': this.Models.suggested_cart, 'osms':this.Collections.osms,'vent': this.Vent});
 		this.Models.cart.fetch();
 		this.Models.cart_importation = new CartImporationModel({}, {'vent': this.Vent});
 
