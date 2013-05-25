@@ -76,8 +76,8 @@ a {
 	position: relative;
 	width: 100%;
 	min-width: 1024px;
-	padding-left: 20px;
-	padding-right: 20px;
+	padding-left: 30px;
+	padding-right: 30px;
 }
 
 .block-left{
@@ -91,6 +91,10 @@ a {
 
 header {
 	margin-bottom: 7px;
+}
+
+header.block{
+	padding: 0;
 }
 
 header.top{
@@ -125,11 +129,12 @@ header.top .block-right{
 #menu{
 	background: white;
 	position: relative;
-	width: 82.5%;
+	width: 100%;
 	float: left;
 	top: 7px;
 	height: 86px;
 	z-index: 1988;
+	padding-right: 180px;
 }
 
 #menu > div{
@@ -864,24 +869,19 @@ li.has-dropdown.show {
 	right: 0px;
 	top: 0px;
 	background-position: 0px 0px;
-	font-size: 26px;
-	padding-top: 4px;
-	padding-right: 1px;
 }
 .qte a:nth-child(3) {
 	font-size: 34px;
 	right: 38px;
 	top: 0px;
-	padding-right: 1px;
 }
 
 .qte a:nth-child(4) {	
 	color: white;
 	right: 19px;
 	top: -32px;
-	padding-top: 9px;
-	padding-right: 1px;
-	font-size: 18px;
+	padding-top: 10px;
+	font-size: 20px;
 	font-weight: bold;
 	background-position: 34px 0px;
 }
@@ -916,7 +916,6 @@ div.promo-type {
 	top: 0;
 	background-color: rgba(0, 0, 0, 0.1);
 	text-align: center;
-	right: 1px;
 }
 
 
@@ -942,13 +941,13 @@ div.promo-type {
 *************************************************************************************************************************************/
 #comparator {
 	width: 180px;
-	position: relative;
-	box-shadow: -2px 0px 5px rgba(0,0,0,0.2);
+	position: absolute;
+	box-shadow: -2px 0px 4px rgba(0,0,0,0.2);
 	height: 100%;
 	z-index: 3000;
 	background-color: white;
-	right: 0;
 	float: left;
+	left: 0;
 }
 
 
@@ -977,20 +976,20 @@ div.promo-type {
 }
 
 #mycart .controller{
-	background: url(../img/main/carousel-control.png);
-	background-size: 66px 75px;
-	width: 33px;
-	display: inline-block;
-	height: 75px;
-	float: right;
+	background: url(../img/main/comparator-control.png);
+	background-position: 0px 0px;
+	width: 26px;
+	height: 62px;
+	float: left;
 	position: relative;
-	top: -57px;
+	top: -50px;
 	cursor: pointer;
-	right: -10px;
+	right: -146px;
 }
 
 .open-cart #mycart .controller{
-	background-position-x: -33px;
+	background-position-x: -27px;
+	right: 10px;
 }
 
 #mycart .caddie{
@@ -1088,21 +1087,21 @@ div.promo-type {
 		width: 95px;
 		top: 8px;
 		left: 10px;
-		background: url(../img/comparator/sprites_osm_nb.png);
+		background: url(../img/comparator/sprites_osm.png);
 		background-size: 100%;
 		background-repeat: no-repeat;
 	}
 
 		.osm div.auchan, .auchan {
-			background-position: 0 42% !important;
+			background-position: 0 42%;
 		}
 
 		.osm div.ooshop, .ooshop {
-			background-position: 0 0 !important;
+			background-position: 0 -171px;
 		}
 
 		.osm div.monoprix, .monoprix {
-			background-position: 0 14% !important;
+			background-position: 0 14%;
 		}
 
 	.osm p{
@@ -1124,7 +1123,7 @@ div.promo-type {
 	height: 70px;
 }
 
-#active-osm .osm > div:not(#minimum-shipping){
+#active-osm .osm > div{
 	width: 135px;
 	height: 34px;
 	margin-left: auto;
@@ -1133,7 +1132,6 @@ div.promo-type {
 	float: initial;
 	top: initial;
 	display: block;
-	background: url(../img/comparator/sprites_osm.png);
 }
 
 #active-osm > div.cart-summary{
@@ -1255,23 +1253,26 @@ button:hover, button:focus, .button:hover, .button:focus {
 *************************************************************************************************************************************/
 
 .block-right{
-	width: 18.5%;
+	padding: 0;
+	width: 184px;
+	display: inline-block;
 	position: absolute;
 	top: 4px;
-	right : 7px;
+	right: 0;
 	height: 4000px;
-	padding-left: 4px; 
 	overflow-x: hidden;
 	overflow-y: hidden;
 }
 
 .block-right.open-cart{
-	width: 98.2%;
+	width: 100%;
+	padding-left: 0;
 }
 
 #test {
 	position: relative;
 	float: right;
+	padding-left: 180px;
 	width: 668%;
 	height: 100%;
 	right: -568.2%;
@@ -1290,20 +1291,14 @@ button:hover, button:focus, .button:hover, .button:focus {
 														
 #cart {
 	position: relative;
-	float: left;
-	width: 81.6%;
+	float: right;
+	width: 100%;
 	height: 100%;
 	background-color: white;
 	right: 0;
-	left: 80px;
 	box-shadow: -3px -1px 4px rgba(0, 0, 0, 0.1);
 	z-index: 2999;
 }
-
-														.open-cart #cart{
-															display: block;
-															left: 0px;
-														}
 
 														#cart-header {
 															position: relative;
@@ -1944,7 +1939,7 @@ footer {
 
 .footer-top {
 	height: 48px;
-	background-color: #9f9fa1;
+	background-color: #212121;
 	position: relative;
 	width: 100%;
 	min-width: 1024px;
@@ -1960,12 +1955,8 @@ footer {
 	float: left;
 }
 
-.footer-container div:nth-child(2){
-	width: 60%;
-}
-
 .mini-container {
-	width: 40%;
+	width: 50%;
 	height: 100%;
 	position: relative;
 	display: inline-block;
@@ -2018,7 +2009,6 @@ footer {
 		border: none !important;
 		clear: none;
 		line-height: 100%;
-		margin-right: 20px;
 	}
 
 		.social-widget li a {
@@ -2031,7 +2021,7 @@ footer {
 
 .footer-bottom {
 	height: 35px;
-	background-color: #424242;
+	background-color: #000000;
 	position: relative;
 	width: 100%;
 	min-width: 1024px;
