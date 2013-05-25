@@ -1253,13 +1253,12 @@ button:hover, button:focus, .button:hover, .button:focus {
 *************************************************************************************************************************************/
 
 .block-right{
-	padding: 0;
 	width: 184px;
-	display: inline-block;
+	height: 4000px;
 	position: absolute;
 	top: 4px;
 	right: 0;
-	height: 4000px;
+	padding-left: 4px;
 	overflow-x: hidden;
 	overflow-y: hidden;
 }
