@@ -28,9 +28,17 @@ define([
 			events: {
 				// Dropdown
 				'click #logout': 'logout',
+				'click .top-icon:not(#top-icon-play)': 'showSubMenu',
 			},
 			logout: function(event){
 				this.user.logout();
+			},
+			showSubMenu: function(e){
+				e.preventDefault();
+				console.log($('#top-icon-play img'));
+				setTimeout(function(){
+					$('#top-icon-play img').trigger('click');
+				}, 10)
 			}
 
 		});
