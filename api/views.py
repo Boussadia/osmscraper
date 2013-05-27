@@ -109,28 +109,14 @@ def osm(function):
 			if 'osm_location' in parameters:
 				osm['location'] = parameters['osm_location']
 
-		carts = { o: {
-			'id': cart_controller.carts[o].cart.id,
-			'price':  (lambda x: x.cart.cart_history_set.all()[0].price if len(x.cart.cart_history_set.all())>0 else 0)(cart_controller.carts[o]),
-			'created': (lambda x: x.cart.cart_history_set.all()[0].created if len(x.cart.cart_history_set.all())>0 else None)(cart_controller.carts[o]),
-			'active': (metacart.current_osm == cart_controller.carts[o].cart.osm)
-		}
-			for o in cart_controller.carts
-		}
-
 		kwargs.update(dict([ ( 'osm_%s'%k , v) for k,v in osm.iteritems()]))
 
 		data = function( self , *args, **kwargs)
 
 		if isinstance(data, dict):
-			# data.update({'osm': osm})
-			if 'carts' not in data:
-				data.update({'carts': carts})
-			if 'osm' not in data:
-				data.update({'osm': osm})
 			return Response(data)
-		else:
-			return data
+
+		return data
 	return wrapper
 
 class BaseAPIView(APIView):
@@ -546,6 +532,23 @@ class ProductRecommendation(Product):
 #----------------------------------------------------------------------------------------------------------------------------------------------
 
 class CartAPIView(BetaRestrictionAPIView):
+	"""
+		Cart Management api view
+	"""
+	def get_product(self, reference, osm_name):
+		
+			global_keys = globals().keys()
+			product_class_name = '%sProduct'%osm_name.capitalize()
+
+			if product_class_name in global_keys:
+				Product = globals()[product_class_name]
+				try:
+					return Product.objects.get(reference = reference)
+				except Product.DoesNotExist:
+					raise Http404
+			else:
+				raise Http404
+
 	@osm
 	def get(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
 		# Getting cart for osm
@@ -580,24 +583,6 @@ class CartAPIView(BetaRestrictionAPIView):
 
 
 		return {'cart':{'content': data, 'name': osm_name, 'quantity': quantity_products}}
-
-class CartManagementAPIView(BetaRestrictionAPIView):
-	"""
-		Cart Management api view
-	"""
-	def get_product(self, reference, osm_name):
-		
-			global_keys = globals().keys()
-			product_class_name = '%sProduct'%osm_name.capitalize()
-
-			if product_class_name in global_keys:
-				Product = globals()[product_class_name]
-				try:
-					return Product.objects.get(reference = reference)
-				except Product.DoesNotExist:
-					raise Http404
-			else:
-				raise Http404
 
 	@osm
 	def post(self, request, reference, quantity = 1, osm_name = 'monoprix', osm_type='shipping', osm_location=None):

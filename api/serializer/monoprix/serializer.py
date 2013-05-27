@@ -174,8 +174,15 @@ class CartContentSerializer(serializers.ModelSerializer):
 	"""
 
 	"""
+	from api.serializer.ooshop.serializer import ProductSerializer as OoshopProductSerializer
+	from api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer
 	product = ProductSerializer(source = 'product')
+	ooshop_product = OoshopProductSerializer(source='ooshop_content.product')
+	auchan_product = AuchanProductSerializer(source='auchan_content.product')
+
 	class Meta:
 		model = Cart_content
 		exclude = ('id', 'cart')
+		depth = 1
+		
 

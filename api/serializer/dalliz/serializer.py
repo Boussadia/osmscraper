@@ -70,4 +70,3 @@ class UserSerializer(serializers.ModelSerializer):
 class BrandSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Brand
-

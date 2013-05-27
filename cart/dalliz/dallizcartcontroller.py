@@ -129,7 +129,7 @@ class DallizCartController(object):
 	def add_product(self, product, quantity = 1):
 		if self.carts[self.osm] is None:
 			self.carts[self.osm] = DallizCartController.AVAILABLE_OSMS[self.osm]['class']()
-		self.carts[self.osm].add_product(product, quantity)
+		self.carts[self.osm].add_product(product, quantity, is_user_added = True, is_match = False, is_suggested = False, is_user_set = False)
 		self.set_cart(self.carts[self.osm], self.osm)
 
 	@osm

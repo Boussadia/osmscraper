@@ -167,9 +167,15 @@ class CartContentSerializer(serializers.ModelSerializer):
 	"""
 
 	"""
+	from api.serializer.ooshop.serializer import ProductSerializer as OoshopProductSerializer
+	from api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer
 	product = ProductSerializer(source = 'product')
+	ooshop_product = OoshopProductSerializer(source='ooshop_content.product')
+	monoprix_product = MonoprixProductSerializer(source='monoprix_content.product')
+
 	class Meta:
 		model = Cart_content
 		exclude = ('id', 'cart')
+		depth = 1
 
 

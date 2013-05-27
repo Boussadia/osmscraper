@@ -235,11 +235,16 @@ class BaseCartController(object):
 		self.cart.cart_history_set.create(price = self.price, computed = computed)
 
 	@price
-	def add_product(self, product, quantity = 1):
+	def add_product(self, product, quantity = 1, is_user_added = True, is_match = False, is_suggested = False, is_user_set = False):
 		if quantity >0:
 			content, created = self.cart.cart_content_set.get_or_create( product = product)
 			if created:
 				content.quantity = quantity
+				content.is_user_added = is_user_added
+				content.is_match = is_match
+				content.is_suggested = is_suggested
+				content.is_user_set = is_user_set
+
 			else:
 				content.quantity = content.quantity + quantity 
 			content.save()
@@ -330,18 +335,30 @@ class BaseCartController(object):
 				match = match[0]
 				mathed_product = getattr(match, self.cart.osm+'_product') # Evil hack!! Or is it? I love Python :D
 				if mathed_product is not None:
-					self.add_product(mathed_product, quantity)
+					match_content = self.add_product(mathed_product, quantity, is_user_added = False, is_match = True, is_suggested = False)
+					setattr(match_content, c.cart.osm+'_content', c)
+					setattr(c, match_content.cart.osm+'_content', match_content)
+					c.save()
+					match_content.save()
 					# print '\tMatch : '+mathed_product.url
 				else:
 					# Look for similarities
 					similarities = self.get_similarites(base_product, base_osm)
 					if(len(similarities)>0):
-						self.add_product(similarities[0][0], quantity)
+						sim_content = self.add_product(similarities[0][0], quantity, is_user_added = False, is_match = False, is_suggested = True)
+						setattr(sim_content, c.cart.osm+'_content', c)
+						setattr(c, sim_content.cart.osm+'_content', sim_content)
+						c.save()
+						sim_content.save()
 			else:
 				# Look for similarities
 				similarities = self.get_similarites(base_product, base_osm)
 				if(len(similarities)>0):
-					self.add_product(similarities[0][0], quantity)
+					sim_content = self.add_product(similarities[0][0], quantity, is_user_added = False, is_match = False, is_suggested = True)
+					setattr(sim_content, c.cart.osm+'_content', c)
+					setattr(c, sim_content.cart.osm+'_content', sim_content)
+					c.save()
+					sim_content.save()
 
 
 

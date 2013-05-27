@@ -178,8 +178,13 @@ class CartContentSerializer(serializers.ModelSerializer):
 	"""
 
 	"""
+	from api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer
+	from api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer
 	product = ProductSerializer(source = 'product')
+	monoprix_product = MonoprixProductSerializer(source='monoprix_content.product')
+	auchan_product = AuchanProductSerializer(source='auchan_content.product')
 	class Meta:
 		model = Cart_content
 		exclude = ('id', 'cart')
+		depth = 1
 
