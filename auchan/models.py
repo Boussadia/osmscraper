@@ -17,7 +17,7 @@ class ShippingArea(models.Model):
 class Category(models.Model):
 	name = models.CharField(max_length=100)
 	parent_category = models.ForeignKey('self', null = True)
-	url = models.CharField(max_length=9999, null=True, unique = True)
+	url = models.CharField(max_length=9999, null=True)
 	created = models.DateTimeField(auto_now_add=True)
 	updated = models.DateTimeField(auto_now=True, auto_now_add=True)
 	exists = models.BooleanField(default = True)
@@ -26,7 +26,7 @@ class Category(models.Model):
 	dalliz_category = models.ManyToManyField(Dalliz_category, related_name="auchan_category_dalliz_category")
 
 	class Meta:
-		unique_together = ("name", "parent_category")
+		unique_together = ("name", "parent_category", "url")
 
 	def __unicode__(self):
 		return self.name
