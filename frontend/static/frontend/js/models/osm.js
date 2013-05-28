@@ -30,6 +30,7 @@ define([
 				var vent = this.vent;
 				var that = this;
 				options.emulateJSON = true;
+				this.vent.trigger('osm:current', this.toJSON());
 
 				options.data = {
 					'new_name': this.get('name')

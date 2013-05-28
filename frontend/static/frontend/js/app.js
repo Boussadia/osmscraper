@@ -115,6 +115,7 @@ define([
 
 		// Switch
 		this.Views.switch = new SwitchView({'osms': this.Collections.osms, 'vent': this.Vent});
+		this.Views.switch.render();
 
 		var that = this;
 

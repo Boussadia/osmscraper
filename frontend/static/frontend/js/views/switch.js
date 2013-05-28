@@ -11,7 +11,7 @@ define([
 		initialize: function(options){
 			this.osms = options.osms;
 
-			this.bindTo(this.osms, 'change', this.render);
+			this.bindTo(this.osms, 'add change', this.render);
 
 			// Global events
 			this.vent.on('view:switch:show', this.show, this);
@@ -23,20 +23,22 @@ define([
 			this.$el.append(this.template({}));
 
 			this.osms.each(function(osm){
+
 				var view;
 				if (osm.get('active')){
 					view = new SwitchOSMView({'osm': osm, 'el': this.$el.find('.osms-switch-active'), 'vent': this.vent});
 					view.render();
+
 				}else{
 					view = new SwitchOSMView({'osm': osm, 'vent': this.vent});
 					this.$el.find('.inactive-area').append(view.render().el);
 				}
+
 			}, this);
 
 			return this;
 		},
 		show: function(){
-			console.log(this.el);
 			this.$el.show();
 		},
 		hide: function(){

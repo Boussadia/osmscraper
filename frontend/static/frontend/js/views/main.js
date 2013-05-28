@@ -18,8 +18,7 @@ define([
 
 			// Updating current osm
 			this.bindTo(this.osms, 'change', function(osm, options){
-				console.log(osm);
-				console.log(options);
+				
 			});
 		},
 		get_current_osm: function(){
