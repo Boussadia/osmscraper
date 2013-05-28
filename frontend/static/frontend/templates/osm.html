@@ -1,6 +1,6 @@
 <% if( !active ) { %>
 	<div class="osm">
 		<div class="<%= name %>"></div>
-		<p><%= price %> €</p>
+		<p><%= price.toFixed(2) %> €</p>
 	</div>
 <% } %>
