@@ -14,6 +14,18 @@ define([
 					return osm.get('active');
 				}, this);
 				return active_osm;
+			},
+			get_min_osm: function(){
+				var min_osm = this.min(function(osm){
+					return osm.get('price');
+				}, this)
+				return min_osm;
+
+			},
+			get_price_to_save: function(){
+				var min_osm = this.get_min_osm();
+				var active_osm = this.get_active_osm();
+				return min_osm.get('price') - active_osm.get('price');
 			}
 		});
 

@@ -7,14 +7,15 @@ define([
 		el: '#switch-area',
 		template:  _.template(switchAreaTemplate),
 		initialize: function(options){
-			this.data = {
-				price_to_save: 0,
-			}
-			this.data = options.data || this.data;
+			this.osms = options.osms;
+			this.bindTo(this.osms, 'change', this.render);
 		},
 		render: function(){
 			this.$el.empty();
-			this.$el.append(this.template(this.data));
+			var data = {
+				price_to_save: this.osms.get_price_to_save()
+			}
+			this.$el.append(this.template(data));
 
 			return this;
 		},

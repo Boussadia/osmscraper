@@ -672,7 +672,8 @@ class OSMSAPIView(BetaRestrictionAPIView):
 			'name':cart_controller.metacart.current_osm,
 			'type':'shipping',
 			'location':None,
-			'active': True
+			'active': True,
+			'price': cart_controller.carts[cart_controller.metacart.current_osm].price
 
 		}
 
@@ -684,7 +685,8 @@ class OSMSAPIView(BetaRestrictionAPIView):
 					'name':o['name'],
 					'type':'shipping',
 					'location':None,
-					'active': False
+					'active': False,
+					'price': cart_controller.carts[o['name']].price
 				})
 
 		return osms
@@ -707,7 +709,8 @@ class OSMSAPIView(BetaRestrictionAPIView):
 			'name':request.cart_controller.metacart.current_osm,
 			'type':'shipping',
 			'location':None,
-			'active': True
+			'active': True,
+			'price': request.cart_controller.carts[request.cart_controller.metacart.current_osm].price
 
 		}
 		return osm

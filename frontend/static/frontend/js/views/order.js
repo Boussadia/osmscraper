@@ -7,16 +7,13 @@ define([
 	var OrderView = BaseView.extend({
 		template: _.template(orderTemplate),
 		initialize: function(options){
-			this.data = {
-				price: 0,
-				name: 'monoprix',
-				minimum: 70
-			}
-			this.data = options.data || this.data;
+			this.osms = options.osms;
+			this.bindTo(this.osms, 'change', this.render);
 		},
 		render: function() {
 			this.$el.empty();
-			this.$el.append(this.template(this.data));
+			var data = this.osms.get_active_osm().toJSON();
+			this.$el.append(this.template(data));
 			return this;
 		}
 	});
