@@ -78,14 +78,14 @@ def set_dalliz_categories_to_products(old_dalliz_categories, new_dalliz_categori
 
 
 	# Setting tags :
+	dalliz_categories_to_add = new
 	for product in products:
 		dalliz_categories = product.dalliz_category.all()
 		dalliz_categories_to_remove = [c for c in dalliz_categories if c in removed]
-		dalliz_categories_to_add = new
 		[product.dalliz_category.remove(c) for c in dalliz_categories_to_remove] # removing category
 		[product.dalliz_category.add(c) for c in dalliz_categories_to_add] # adding category
 
-	return dalliz_categories_to_add, dalliz_categories_to_remove
+	return new, removed
 
 def migrate():
 	# putting all dalliz category to corresponding products
