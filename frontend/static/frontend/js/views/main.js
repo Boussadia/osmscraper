@@ -26,7 +26,6 @@ define([
 			var active_osm = this.osms.detect(function(osm, i){
 				return osm.get('active');
 			}, this);
-			console.log(active_osm);
 			return active_osm;
 		},
 		addCategory: function(category_id){
@@ -36,10 +35,8 @@ define([
 			var index_insert = 0;
 
 			var current_osm = this.get_current_osm();
-
 			if (!this.categories[current_osm.get('name')]) this.categories[current_osm.get('name')] = [];
 			var categories = this.categories[current_osm.get('name')];
-
 
 			_.each(categories, function(category, i){
 				if(category.id == category_id){
@@ -73,7 +70,7 @@ define([
 			}
 		},
 		render: function(categoryCollection){
-			var view = new CategoryCollectionView({'collection': categoryCollection, 'vent': this.vent});
+			var view = new CategoryCollectionView({'collection': categoryCollection, 'osms': this.osms,'vent': this.vent});
 			this.addSubView(view);
 			this.$el.append(view.render().el);
 			categoryCollection.current ? view.$el.show() : view.$el.hide();

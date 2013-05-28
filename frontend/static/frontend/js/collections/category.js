@@ -22,7 +22,6 @@ define([
 				}, this);
 			},
 			parse: function(resp, xhr){
-				console.log(resp)
 				return resp.subs;
 			}
 

@@ -13,6 +13,7 @@ define([
 			initialize: function(options){
 				options || (options = {});
 				this.collection = options.collection || new CategoryCollection([], {'vent': this.vent});
+				this.osms = options.osms;
 
 				// Global events
 				this.vent.on('route:category', this.showOrHide, this);
@@ -40,11 +41,12 @@ define([
 			showOrHide: function(options){
 				options || (options = {});
 				var category_id = options.id || 0;
+				var current_osm = this.osms.get_active_osm();
 
-				if (category_id && this.collection.id === category_id && this.collection.current_osm === this.collection.osm){
+				if (category_id && this.collection.id === category_id && current_osm.get('name') === this.collection.osm){
 					this.collection.current = true;
 					this.$el.show();
-				}else if(category_id && (this.collection.id !== category_id || this.collection.current_osm !== this.collection.osm)){
+				}else if(category_id && (this.collection.id !== category_id || current_osm.get('name') !== this.collection.osm)){
 					this.collection.current = false;
 					this.$el.hide();
 				}

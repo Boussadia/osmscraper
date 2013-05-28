@@ -37,7 +37,6 @@ define([
 				this.bindTo(this.products, 'add', this.render);
 			},
 			render: function(product){
-				console.log(this.el);
 				if(typeof product !== 'undefined'){
 					var view = new ProductView({'product': product, 'vent': this.vent})
 					this.addSubView(view);

@@ -7,7 +7,6 @@ define([
 			initialize: function(attributes, options){
 				options || (options = {});
 				attributes || (attributes = {});
-				console.log(this.toJSON());
 				if (attributes.name === 'promotions'){
 					var type = 'promotions';
 				}else{

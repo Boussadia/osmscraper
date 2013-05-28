@@ -29,28 +29,23 @@ define([
 		this.Vent = _.extend({}, Backbone.Events);
 
 
-		// Data sent to server to control osm
-		this.data = {
-			'osm_name': 'monoprix',
-			'osm_type': 'shipping',
-			'osm_location': null
-		}
 		var that = this;
 
 		// Overriding base Backbone sync method
 		Backbone.originalSync = Backbone.sync; // Saving reference of original sunc method
 		Backbone.sync = function(method, model, options){
 			options || (options = {});
+			var base_data = that.get_data();
 
 			if(method === 'create' || method === 'update' || method === 'patch'){
 				options.attrs || (options.attrs = {});
-				_.extend(options.attrs, that.data);
+				_.extend(options.attrs, base_data);
 				// Removing location if null (causes 500 error from server)
 				if(!options.attrs.osm_location) delete options.attrs.osm_location;
 			}else{
 				options.data || (options.data = {});
 				var data = _.clone(options.data);
-				_.extend(options.data, that.data);
+				_.extend(options.data, base_data);
 				// Removing location if null (causes 500 error from server)
 				if(!options.data.osm_location) delete options.data.osm_location;
 				if ('osm_name' in data) options.data.osm_name = data.osm_name; // for the suggeted cart
@@ -62,13 +57,6 @@ define([
 		// Settings listeners
 		this.Vent.on('route:category', this.category, this);
 		// this.Vent.on('route:product', this.product, this); TODO
-
-		this.Vent.on('osm:current', function(osm){ // CHANGED
-			// Settings values of osm
-			that.data.osm_location = osm.location || that.data.osm_location;
-			that.data.osm_name = osm.name || that.data.osm_name;
-			that.data.osm_type = osm.type || that.data.osm_type;
-		}, this);
 	}
 
 	/*******************************************************************************************************************************************
@@ -83,6 +71,20 @@ define([
 		if(category_id){
 			this.Views.main.addCategory(category_id);
 		}
+	}
+
+	MasterCoursesApp.prototype.get_data = function(){
+		// Data sent to server to control osm
+		var data = {
+			'osm_name': 'monoprix',
+			'osm_type': 'shipping',
+			'osm_location': null
+		}
+		if(this.Collections.osms){
+			var active_osm = this.Collections.osms.get_active_osm();
+			if (active_osm) data['osm_name'] = active_osm.get('name');
+		}
+		return data;
 	}
 
 	// Method to call in order to start application
@@ -121,7 +123,7 @@ define([
 			bootstrap(that);
 			// Here rendering comprator (for interface construction coherence)
 			that.Views.comparator = new ComparatorView({'osms':that.Collections.osms,  'cart': that.Models.cart, 'vent': that.Vent});
-			// that.Views.comparator.render();
+			that.Views.comparator.render();
 		});
 
 		// Main View

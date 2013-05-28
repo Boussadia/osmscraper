@@ -23,6 +23,12 @@ define([
 					}, this)
 				}
 				return BaseCollection.prototype.sync.apply(this, [method, collection, options]);
+			},
+			get_active_osm: function(){
+				var active_osm = _.find(this.models, function(osm, i){
+					return osm.get('active');
+				}, this);
+				return active_osm;
 			}
 		});
 
