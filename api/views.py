@@ -218,9 +218,9 @@ class CategorySimple(BetaRestrictionAPIView):
 		except Category.DoesNotExist:
 			raise Http404
 	@osm
-	def get(self, request, id_category,**kwargs):
+	def get(self, request, id_category, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
 		category = self.get_object(id_category)
-		subs = CategorySerializer.all(category)
+		subs = CategorySerializer.all(category, leaves=True, osm_name = osm_name, osm_type = osm_type, osm_location = osm_location)
 		data = CategorySerializer(category).data
 		data.update({'subs': subs})
 		if data is None:
@@ -279,7 +279,7 @@ class CategoryProducts(CategorySimple):
 			products_count = products.count() # Adding total count of products in category
 
 			# Now getting brands information
-			brands = set([ p.brand.brandmatch_set.all()[0].dalliz_brand for p in products[:] if p.brand is not None and len(p.brand.brandmatch_set.all())==1])
+			brands = set([ p.brand.brandmatch_set.all()[0].dalliz_brand for p in products[:] if p.brand is not None and p.brand.brandmatch_set.all().count()==1])
 			brands_count = len(brands)
 
 			if 'TOP_PRODUCTS_COUNT' in request.GET:

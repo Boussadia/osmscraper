@@ -22,15 +22,6 @@ define([
 				}, this);
 			},
 			parse: function(resp, xhr){
-				var that = this;
-				// Adding promotion category
-				resp.category.subs.unshift({
-					id: that.id,
-					leave: true,
-					name: "promotions",
-					parent_category: that.id,
-					position: 0,
-				})
 				return resp.category.subs;
 			}
 
