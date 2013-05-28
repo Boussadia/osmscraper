@@ -21,18 +21,19 @@ define([
 				this.closeSubViews();
 				var that = this;
 				this.collection.each(function(category){
-					console.log(category.get('count'));
-					var products = category.products;
-					var data = category.toJSON();
-					var rendered = that.template(data);
-					that.$el.append(rendered);
-					var view = new ProductsView({'products': products,'el': that.$el.find('.products-container'), 'vent': that.vent});
-					if(category.get('count') !== 0) that.addSubView(view);
+					if(category.get('count') !== 0){
+						var products = category.products;
+						var data = category.toJSON();
+						var rendered = that.template(data);
+						that.$el.append(rendered);
+						var view = new ProductsView({'products': products,'el': that.$el.find('.products-container'), 'vent': that.vent});
+						that.addSubView(view);
+					}
 				})
 
 				// Separation between title and products
 				_.each(this.subViews, function(subView){
-					console.log(subView.render().el);
+					subView.render().el;
 				})
 				return this;
 			},

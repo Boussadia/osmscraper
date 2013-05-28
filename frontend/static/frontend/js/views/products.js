@@ -37,28 +37,18 @@ define([
 				this.bindTo(this.products, 'add', this.render);
 			},
 			render: function(product){
-				if(!this.rendered){
-					var data = {'name': this.products.name, 'count': this.products.count, 'brands': this.products.brands};
-					console.log(data);
-					if (typeof data.name !== 'undefined'){
-						this.$el.append(this.template(data));
-						// Scroll events have to be binded by jquery like so
-						this.rendered = true;
-					}
-
-				}
-
+				console.log(this.el);
 				if(typeof product !== 'undefined'){
 					var view = new ProductView({'product': product, 'vent': this.vent})
 					this.addSubView(view);
-					this.$el.find('.products-container').append(view.render().el);
+					this.$el.append(view.render().el);
 				}else{
 					this.closeSubViews();
 					this.$el.empty();
 					var that = this;
 					this.products.each(function(product){
 						var view = new ProductView({'product': product, 'vent': this.vent})
-						that.$el.find('.products-container').append(view.render().el);
+						that.$el.append(view.render().el);
 					});
 				}
 
@@ -72,12 +62,12 @@ define([
 						// console.log(plus)
 					}
 
-					if (this.products.length < this.products.count) this.$el.find('.products-container').append(plus);
+					if (this.products.length < this.products.count) this.$el.append(plus);
 				};
 
 				if(Modernizr.touch){
 					this.$el.find('.inner').addClass('touch');
-					if (this.products.length>5) this.$el.find('.products-container').width(this.products.length*this.PRODUCT_WIDTH);
+					if (this.products.length>5) this.$el.width(this.products.length*this.PRODUCT_WIDTH);
 				}
 
 				this.$el.find('.inner.touch').bind( 'scroll', {context: this}, this.touchSwipeListener);
@@ -95,7 +85,7 @@ define([
 					// var that = this;
 					var $el = that.$el;
 					var base_width = $el.find('.inner').outerWidth();
-					var width = $el.find('.products-container').outerWidth();
+					var width = $el.outerWidth();
 					var left = $el.find('.product').offset().left;
 					var calculus = (left+width-base_width)/base_width;
 					if(calculus<.1){
@@ -111,12 +101,7 @@ define([
 				if (!this.fetching){
 					this.products.fetch({
 						more: true,
-						success: function(collection, response, options){
-							collection.each(function(model){
-								model.vent = vent;
-							});
-
-						}
+						'vent': vent,
 					});
 				}
 			}
