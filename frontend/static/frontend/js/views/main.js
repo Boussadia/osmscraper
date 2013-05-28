@@ -15,10 +15,11 @@ define([
 
 			// Global event listening
 			this.vent.on('window:scroll', this.scrollController, this);
+			var that = this;
 
 			// Updating current osm
 			this.bindTo(this.osms, 'change', function(osm, options){
-				
+				that.vent.trigger('route:category:force');
 			});
 		},
 		get_current_osm: function(){
