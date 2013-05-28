@@ -10,7 +10,7 @@ define([
 				
 			},
 			parse: function(resp, xhr){
-				return resp.cart;
+				return resp;
 			}
 		})
 

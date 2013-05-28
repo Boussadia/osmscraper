@@ -8,7 +8,7 @@ PROJECT_ROOT = '/'.join(SITE_ROOT.split('/')[:-1])
 
 # Django settings for osmscraper project.
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH = False
 
@@ -16,7 +16,7 @@ ADMINS = (
     ('Ahmed Boussadia', 'ahmed@dalliz.com'),
 )
 
-ALLOWED_HOSTS =['127.0.0.1', 'www.dalliz.com', 'dalliz.cloudapp.net', 'www.mastercourses.com']
+ALLOWED_HOSTS =['127.0.0.1', '192.168.0.13', 'www.dalliz.com', 'dalliz.cloudapp.net', 'www.mastercourses.com']
 
 MANAGERS = ADMINS
 

@@ -113,7 +113,7 @@ def osm(function):
 
 		data = function( self , *args, **kwargs)
 
-		if isinstance(data, dict):
+		if not isinstance(data, Response):
 			return Response(data)
 
 		return data
@@ -205,7 +205,7 @@ class CategoryAll(BetaRestrictionAPIView):
 	@osm
 	def get(self, request, format=None,**kwargs):
 		data = CategorySerializer.all()
-		return {'categories':data}
+		return data
 
 
 class CategorySimple(BetaRestrictionAPIView):
@@ -226,7 +226,7 @@ class CategorySimple(BetaRestrictionAPIView):
 		if data is None:
 			return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
 		else:
-			return {'category':data}
+			return data
 
 class CategoryProducts(CategorySimple):
 	"""
@@ -301,9 +301,7 @@ class CategoryProducts(CategorySimple):
 		if serialized is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
 		else:
-			response = {'products':serialized.data, 'category':{'name': category.name, 'count': products_count, 'brands': {'count': brands_count, 'content': BrandSerializer(brands, many = True).data}}}
-			if type_fetched == 'promotions':
-				response['category']['name'] = type_fetched
+			response = serialized.data
 			return response
 
 class CategoryMatching(CategorySimple):
@@ -371,7 +369,7 @@ class CategoryMatching(CategorySimple):
 		if serialized is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
 		else:
-			return {'products':serialized}
+			return serialized
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------
@@ -446,7 +444,7 @@ class NewProducts(BetaRestrictionAPIView):
 		if serialized is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
 		else:
-			return {'products':serialized}
+			return serialized
 
 class Product(BetaRestrictionAPIView):
 	"""
@@ -481,7 +479,7 @@ class Product(BetaRestrictionAPIView):
 		if serialized is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
 		else:
-			return {'product':serialized.data}
+			return serialized.data
 
 class ProductRecommendation(Product):
 	"""
@@ -582,7 +580,7 @@ class CartAPIView(BetaRestrictionAPIView):
 				data.append(category_cart)
 
 
-		return {'cart':{'content': data, 'name': osm_name, 'quantity': quantity_products}}
+		return {'content': data, 'name': osm_name, 'quantity': quantity_products}
 
 	@osm
 	def post(self, request, reference, quantity = 1, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
@@ -662,15 +660,40 @@ class CartImportation(BetaRestrictionAPIView):
 #
 #----------------------------------------------------------------------------------------------------------------------------------------------
 
-class OSMAPIView(BetaRestrictionAPIView):
+class OSMSAPIView(BetaRestrictionAPIView):
 	"""
 		This class handles osm switching.
 	"""
 
-	@osm
-	def get(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+	def get_osms(self, cart_controller):
+		osms = []
 		# No computing necessary
-		return {}
+		active_osm = {
+			'name':cart_controller.metacart.current_osm,
+			'type':'shipping',
+			'location':None,
+			'active': True
+
+		}
+
+		osms.append(active_osm)
+		
+		for o in AVAILABLE_OSMS:
+			if o['name'] != active_osm['name']:
+				osms.append({
+					'name':o['name'],
+					'type':'shipping',
+					'location':None,
+					'active': False
+				})
+
+		return osms
+
+
+	@osm
+	def get(self, request, **kwargs):
+
+		return self.get_osms(request.cart_controller)
 
 	@osm
 	def post(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
@@ -680,14 +703,6 @@ class OSMAPIView(BetaRestrictionAPIView):
 		if 'new_location' in request.DATA:
 			new_osm_location = request.DATA['new_location']
 		request.cart_controller.set_osm(new_osm_name)
-		carts = { o: {
-			'id': request.cart_controller.carts[o].cart.id,
-			'price':  (lambda x: x.cart.cart_history_set.all()[0].price if len(x.cart.cart_history_set.all())>0 else 0)(request.cart_controller.carts[o]),
-			'created': (lambda x: x.cart.cart_history_set.all()[0].created if len(x.cart.cart_history_set.all())>0 else None)(request.cart_controller.carts[o]),
-			'active': (request.cart_controller.metacart.current_osm == request.cart_controller.carts[o].cart.osm)
-		}
-			for o in request.cart_controller.carts
-		}
 		osm = {
 			'name':request.cart_controller.metacart.current_osm,
 			'type':'shipping',
@@ -695,7 +710,7 @@ class OSMAPIView(BetaRestrictionAPIView):
 			'active': True
 
 		}
-		return {'carts': carts, 'osm': osm}
+		return osm
 
 
 

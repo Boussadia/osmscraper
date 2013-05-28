@@ -16,11 +16,11 @@ define([
 					var active = carts[this.get('name')].active;
 					this.set('price', price);
 					this.set('active', active);
-					if(active) this.vent.trigger('osm', this.toJSON());
+					if(active) this.vent.trigger('osm:current', this.toJSON());
 				},this);
 
-				this.vent.on('osm', function(osm){
-					var active = (osm.name === this.get('name') ? true : false );
+				this.vent.on('osm:current', function(osm){
+					var active = (osm.name === this.get('name'));
 					this.set('active', active);
 				}, this);
 			},
@@ -46,9 +46,6 @@ define([
 				}
 
 				return BaseModel.prototype.save.apply(this, [attributes, options]);
-			},
-			parse: function(resp, xhr){
-				return resp.osm;
 			}
 		});
 

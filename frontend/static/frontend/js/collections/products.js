@@ -31,10 +31,7 @@ define([
 
 			},
 			parse: function(resp, xhr){
-				this.name = resp.category.name;
-				this.count = resp.category.count;
-				this.brands = resp.category.brands
-				return resp.products;
+				return resp;
 			},
 			fetch: function(options){
 				options = options ? _.clone(options) : {};

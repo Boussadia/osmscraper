@@ -17,12 +17,13 @@ define([
 				this.osm = options.osm || '';
 				this.current_osm = '';
 
-				this.vent.on('osm', function(osm){
+				this.vent.on('osm:current', function(osm){
 					this.current_osm = osm.name;
 				}, this);
 			},
 			parse: function(resp, xhr){
-				return resp.category.subs;
+				console.log(resp)
+				return resp.subs;
 			}
 
 		});

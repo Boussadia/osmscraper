@@ -63,7 +63,7 @@ define([
 		this.Vent.on('route:category', this.category, this);
 		// this.Vent.on('route:product', this.product, this); TODO
 
-		this.Vent.on('osm', function(osm){
+		this.Vent.on('osm:current', function(osm){ // CHANGED
 			// Settings values of osm
 			that.data.osm_location = osm.location || that.data.osm_location;
 			that.data.osm_name = osm.name || that.data.osm_name;
@@ -101,7 +101,7 @@ define([
 
 		// Comparator, rendering comparator after fetching menu
 		this.Collections.osms = new OsmsCollections([], {'vent': this.Vent});
-		this.Collections.osms.add([{'name': 'auchan'}, {'name': 'monoprix'}, {'name': 'ooshop'}], {'vent': this.Vent});
+		this.Collections.osms.fetch({'vent': this.Vent});
 
 		// Cart
 		this.Models.cart = new CartModel({}, {'vent': this.Vent, 'osms': this.Collections.osms});
@@ -125,7 +125,7 @@ define([
 		});
 
 		// Main View
-		this.Views.main = new MainView({'vent': this.Vent});
+		this.Views.main = new MainView({'vent': this.Vent, 'osms': this.Collections.osms});
 
 	}
 

@@ -10,19 +10,24 @@ define([
 		el: 'section#main div.block-left',
 		SCROLL_TRIGGER: 90,
 		initialize: function(options){
-			this.current_osm = options.current_osm;
+			this.osms = options.osms;
 			this.categories = {};
-			this.categories[this.current_osm] = [];
 
 			// Global event listening
 			this.vent.on('window:scroll', this.scrollController, this);
 
 			// Updating current osm
-			this.vent.on('osm', function(osm){
-				this.current_osm = osm.name;
-				if (!this.categories[this.current_osm]) this.categories[this.current_osm] = [];
-				this.vent.trigger('route:category:force');
+			this.bindTo(this.osms, 'change', function(osm, options){
+				console.log(osm);
+				console.log(options);
+			});
+		},
+		get_current_osm: function(){
+			var active_osm = this.osms.detect(function(osm, i){
+				return osm.get('active');
 			}, this);
+			console.log(active_osm);
+			return active_osm;
 		},
 		addCategory: function(category_id){
 			// First we have to determine if the category was already fetched from server or not.
@@ -30,7 +35,11 @@ define([
 			var index = null
 			var index_insert = 0;
 
-			var categories = this.categories[this.current_osm];
+			var current_osm = this.get_current_osm();
+
+			if (!this.categories[current_osm.get('name')]) this.categories[current_osm.get('name')] = [];
+			var categories = this.categories[current_osm.get('name')];
+
 
 			_.each(categories, function(category, i){
 				if(category.id == category_id){
@@ -41,29 +50,22 @@ define([
 					index_insert = i + 1;
 					category.current = false;
 				}
-			}, this)
+			}, this);
 
 			if (!category_already_fetched){
-				console.log(this.current_osm);
+				console.log(current_osm.get('name'));
 				console.log(category_id);
 				// If the category was not fetched, proceed
-				var categoryCollection = new CategoryCollection([], {'id': category_id,'osm': this.current_osm, 'vent': this.vent});
+				var categoryCollection = new CategoryCollection([], {'id': category_id,'osm': current_osm.get('name'), 'vent': this.vent});
 				categoryCollection.current = true;
 				categories.splice(index_insert, 0, categoryCollection);
 
 				var that = this;
-				var that = this;
 				categoryCollection.fetch({
+					'vent': this.vent,
 					success:function(collection, response, options){
 						collection.each(function(model){
-							model.vent = that.vent;
-							model.fetch_products({
-								'success': function(coll, resp, opt){
-									coll.each(function(mod){
-										mod.vent = that.vent;
-									})
-								}
-							});
+							model.fetch_products({'vent': that.vent});
 						});
 						that.render(categoryCollection)
 					}

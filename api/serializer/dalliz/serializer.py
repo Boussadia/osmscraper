@@ -80,7 +80,7 @@ class CategorySerializer(serializers.ModelSerializer):
 					brands = set([ p.brand.brandmatch_set.all()[0].dalliz_brand for p in products[:] if p.brand is not None and p.brand.brandmatch_set.all().count()==1])
 					brands_count = len(brands)
 					# Updating data
-					data['products'] = products_count
+					data['count'] = products_count
 					data['brands'] = {'count': brands_count, 'content': BrandSerializer(brands, many = True).data}
 
 			serialized.append(data)
@@ -98,7 +98,6 @@ class CategorySerializer(serializers.ModelSerializer):
 			'leave': True,
 			'parent_category': category.id,
 			'position': 0,
-			'products': 0,
 			'subs': [],
 			'brands': {'count':0, 'content':[]},
 			'url': category.url+"/promotions"
@@ -130,7 +129,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 		# Removing duplicates
 		products = set(products)
-		promotions['products']= len(products)
+		promotions['count']= len(products)
 
 		# Now getting brands information
 		promotions['brands']['content'] = set([ p.brand.brandmatch_set.all()[0].dalliz_brand for p in list(products) if p.brand is not None and p.brand.brandmatch_set.all().count()==1])

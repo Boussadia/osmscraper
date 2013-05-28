@@ -39,6 +39,7 @@ define([
 			render: function(product){
 				if(!this.rendered){
 					var data = {'name': this.products.name, 'count': this.products.count, 'brands': this.products.brands};
+					console.log(data);
 					if (typeof data.name !== 'undefined'){
 						this.$el.append(this.template(data));
 						// Scroll events have to be binded by jquery like so
