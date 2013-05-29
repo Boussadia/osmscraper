@@ -148,8 +148,8 @@ class Cart_content(models.Model):
 	is_user_set = models.BooleanField(default=False)
 
 	# Related products
-	monoprix_content = models.ForeignKey('monoprix.Cart_content', null = True, related_name = 'auchan_monoprix_related_content')
-	ooshop_content = models.ForeignKey('ooshop.Cart_content', null = True, related_name = 'auchan_ooshop_related_content')
+	monoprix_content = models.ForeignKey('monoprix.Cart_content', null = True, related_name = 'auchan_monoprix_related_content', on_delete=models.SET_NULL)
+	ooshop_content = models.ForeignKey('ooshop.Cart_content', null = True, related_name = 'auchan_ooshop_related_content', on_delete=models.SET_NULL)
 
 	class Meta:
 		unique_together = ("cart", "product")
