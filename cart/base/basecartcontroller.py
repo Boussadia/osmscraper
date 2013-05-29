@@ -322,10 +322,11 @@ class BaseCartController(object):
 		self.empty()
 
 		# Getting base cart content
-		content = base_cart.cart_content_set.all()
+		contents = base_cart.cart_content_set.all()
 		base_osm = base_cart.osm
+		equivalence_store = {}
 
-		for c in content:
+		for c in contents:
 			base_product = c.product
 			quantity = c.quantity
 
@@ -338,6 +339,13 @@ class BaseCartController(object):
 					match_content = self.add_product(mathed_product, quantity, is_user_added = False, is_match = True, is_suggested = False)
 					setattr(match_content, c.cart.osm+'_content', c)
 					setattr(c, match_content.cart.osm+'_content', match_content)
+					equivalence_store[c] = {
+						'content': match_content,
+						'is_user_added': False,
+						'is_match': True,
+						'is_suggested': False
+					}
+
 					c.save()
 					match_content.save()
 					# print '\tMatch : '+mathed_product.url
@@ -348,6 +356,12 @@ class BaseCartController(object):
 						sim_content = self.add_product(similarities[0][0], quantity, is_user_added = False, is_match = False, is_suggested = True)
 						setattr(sim_content, c.cart.osm+'_content', c)
 						setattr(c, sim_content.cart.osm+'_content', sim_content)
+						equivalence_store[c] = {
+							'content': sim_content,
+							'is_user_added': False,
+							'is_match': False,
+							'is_suggested': True
+						}
 						c.save()
 						sim_content.save()
 			else:
@@ -357,8 +371,16 @@ class BaseCartController(object):
 					sim_content = self.add_product(similarities[0][0], quantity, is_user_added = False, is_match = False, is_suggested = True)
 					setattr(sim_content, c.cart.osm+'_content', c)
 					setattr(c, sim_content.cart.osm+'_content', sim_content)
+					equivalence_store[c] = {
+						'content': sim_content,
+						'is_user_added': False,
+						'is_match': False,
+						'is_suggested': True
+					}
 					c.save()
 					sim_content.save()
+
+		return equivalence_store
 
 
 

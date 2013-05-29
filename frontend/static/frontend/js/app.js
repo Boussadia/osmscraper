@@ -111,7 +111,9 @@ define([
 
 		this.Views.cart = new CartView({'cart': this.Models.cart, 'suggested_cart': this.Models.suggested_cart, 'osms':this.Collections.osms,'vent': this.Vent});
 		this.Models.cart.fetch();
-		this.Models.cart_importation = new CartImporationModel({}, {'vent': this.Vent});
+		this.Models.suggested_cart.fetch();
+		
+		// this.Models.cart_importation = new CartImporationModel({}, {'vent': this.Vent});
 
 		// Switch
 		this.Views.switch = new SwitchView({'osms': this.Collections.osms, 'vent': this.Vent});

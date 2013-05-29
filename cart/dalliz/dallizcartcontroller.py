@@ -112,6 +112,7 @@ class DallizCartController(object):
 		# First step : setting osm
 		self.set_osm(osm)
 		self.carts[osm] = cart
+		equivalences = {}
 		setattr(self.metacart, osm+'_cart', cart.cart)
 
 		# We now have to build other carts
@@ -121,7 +122,19 @@ class DallizCartController(object):
 					self.carts[other_osm] = DallizCartController.AVAILABLE_OSMS[other_osm]['class']()
 					setattr(self.metacart, other_osm+'_cart', self.carts[other_osm].cart)
 				
-				self.carts[other_osm].set_equivalent_cart(self.carts[osm].cart)
+				equivalences[other_osm] = self.carts[other_osm].set_equivalent_cart(self.carts[osm].cart)
+
+		# Setting equivalent content for ohter osms
+		for other_osm in DallizCartController.AVAILABLE_OSMS.keys():
+			if other_osm != osm:
+				for other_osm_bis in DallizCartController.AVAILABLE_OSMS.keys():
+					if other_osm_bis != osm and other_osm_bis != other_osm:
+						for c in  equivalences[other_osm].keys():
+							other_content = equivalences[other_osm][c]['content']
+							other_content_bis = equivalences[other_osm_bis][c]['content']
+							setattr(other_content_bis, other_content.cart.osm+'_content', other_content)
+							other_content_bis.save()
+
 
 		self.metacart.save()
 

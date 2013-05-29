@@ -20,12 +20,6 @@ define([
 				this.suggested_cart = options.suggested_cart || new CartModel({}, {'vent': this.vent});
 				this.osms = options.osms;
 
-				this.vent.on('osm', function(osm){
-					if(this.cart.get('name') !== osm.name){
-						this.cart.fetch();
-					}
-				}, this);
-
 				this.vent.on('show:panier', this.show, this);
 				this.vent.on('hide:panier', this.hide, this);
 

@@ -586,6 +586,7 @@ class CartAPIView(BetaRestrictionAPIView):
 	def post(self, request, reference, quantity = 1, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
 		product = self.get_product(reference, osm_name)
 		cart_controller = request.cart_controller
+
 		if quantity is not None:
 			cart_controller.add_product(product, int(quantity))
 		else:
