@@ -27,7 +27,7 @@ define([
 						var data = category.toJSON();
 						var rendered = that.template(data);
 						that.$el.append(rendered);
-						var view = new ProductsView({'products': products,'el': that.$el.find('.products-container'), 'vent': that.vent});
+						var view = new ProductsView({'products': products,'el': that.$el.find('.products:last-child .products-container'), 'vent': that.vent});
 						that.addSubView(view);
 					}
 				})
