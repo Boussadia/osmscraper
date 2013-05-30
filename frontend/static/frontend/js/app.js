@@ -6,7 +6,6 @@ define([
 	'collections/osms',
 	'models/osm',
 	'models/cart',
-	'models/suggested_cart',
 	'models/cart-importation',
 	'models/user',
 	'views/menu',
@@ -17,7 +16,7 @@ define([
 	'views/userbar',
 	'views/switch',
 	'cookie'
-], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel, SuggestedCartModel,CartImporationModel, UserModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView, SwitchView){
+], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel,CartImporationModel, UserModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView, SwitchView){
 
 	function MasterCoursesApp(){
 		// Global Scope
@@ -107,11 +106,9 @@ define([
 
 		// Cart
 		this.Models.cart = new CartModel({}, {'vent': this.Vent, 'osms': this.Collections.osms});
-		this.Models.suggested_cart = new SuggestedCartModel({}, {'vent': this.Vent, 'osms': this.Collections.osms});
 
-		this.Views.cart = new CartView({'cart': this.Models.cart, 'suggested_cart': this.Models.suggested_cart, 'osms':this.Collections.osms,'vent': this.Vent});
+		this.Views.cart = new CartView({'cart': this.Models.cart, 'osms':this.Collections.osms,'vent': this.Vent});
 		this.Models.cart.fetch();
-		this.Models.suggested_cart.fetch();
 		
 		// this.Models.cart_importation = new CartImporationModel({}, {'vent': this.Vent});
 

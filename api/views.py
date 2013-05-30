@@ -576,6 +576,13 @@ class CartAPIView(BetaRestrictionAPIView):
 				category_cart['products'] = serialized.data
 				# Computing total price
 				category_cart['price'] = sum([ product['product']['history'][0]['price']*product['quantity'] for product in category_cart['products']])
+				for osm in AVAILABLE_OSMS:
+					if osm['name'] != osm_name:
+						category_cart[osm['name']+'_price'] = sum([ product[osm['name']+'_product']['history'][0]['price']*product['quantity'] for product in category_cart['products'] if product[osm['name']+'_product'] is not None])
+					else:
+						category_cart[osm['name']+'_price'] = category_cart['price']
+
+
 				quantity_products = quantity_products + sum([ product['quantity'] for product in category_cart['products']])
 				data.append(category_cart)
 

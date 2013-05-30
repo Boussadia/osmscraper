@@ -1,153 +1,76 @@
-<div id="cart-header">
-	<div id="sel-osm-cart">
-		<p>Panier équivalent chez</p>
-		<div class='<%= suggested.name%>'></div>
-	</div>
-	<div id="active-osm-cart">
-		<p>Mon panier chez</p>
-		<div class='<%= current.name%>'></div>
-	</div>
-</div>
-<div class="scrollarea">
-	<div id='current_cart' class="cart-recap-accordion">
-		<div class="accordion-header">
-		</div>
-		<div class="products-recap">
-			<!-- <div class="product-recap">
-				<div class="sel-osm-product">
-					<img src="http://courses.monoprix.fr/assets/ctx/2096589626/static/photos/16/51/53/7/g-1651537.jpg">
-					<div class="prod-desc">
-						<p>Lavazza</p>
-						<p>Grains de café, Espresso ksjdlks dsdjksd jksj ddsjd ev</p>
-					</div>
-					<div class="qte" id="recap-price-qty">
-						<div class="price-bloc" id="recap-qty">
-							<p>200 g</p>
-							<p>18.95 €/Kg</p>
-							<p>4.17 €</p>
-						</div>
-						<a class="plus">+</a>
-						<a class="minus">-</a>
-						<a class="how-much">1</a>
-					</div>
-				</div>
-				<div class="active-osm-product">
-					<img src="http://courses.monoprix.fr/assets/ctx/2096589626/static/photos/16/51/53/7/g-1651537.jpg">
-					<div class="prod-desc">
-						<p>Lavazza</p>
-						<p>Grains de café, Espresso</p>
-					</div>
-					<div class="qte" id="recap-price-qty">
-						<div class="price-bloc" id="recap-qty">
-							<p>200 g</p>
-							<p>4.31 €</p>
-							<p>2.43 €/kg</p>
-						</div>
-						<a class="plus">+</a>
-						<a class="minus">-</a>
-						<a class="how-much">1</a>
-					</div>
-				</div>
-			</div> -->
-		</div>
-	</div>
+	<!-- CART -->
+	<link rel="stylesheet" type="text/css" href="cart.css">
 
-	<div id='suggested_cart' class="cart-recap-accordion">
-		<div class="accordion-header">
-			<!-- <div>
-				<span></span>
-				<p>épicerie sucrée</p>
-				<p>6.74 €</p>
+	<div id="cart" class="transition">
+		<div id="cart-header">
+			<div id="sel-osm-cart">
+				<p>Panier équivalent chez</p>
+				<div class='<%= suggested %>'></div>
 			</div>
-			<div>
-				<span></span>
-				<p>épicerie sucrée</p>
-				<p>5.74 €</p>
-			</div> -->
+			<div id="active-osm-cart">
+				<p>Mon panier chez</p>
+				<div class='<%= name %>'></div> 
+			</div>
 		</div>
-		<div class="products-recap">
-			<!-- <div class="product-recap">
-				<div class="sel-osm-product">
-					<img src="http://courses.monoprix.fr/assets/ctx/2096589626/static/photos/16/51/53/7/g-1651537.jpg">
-					<div class="prod-desc">
-						<p>Lavazza</p>
-						<p>Grains de café, Espresso ksjdlks dsdjksd jksj ddsjd ev</p>
+		<div class="scrollarea">
+			
+			
+
+
+			<!-- Category -->
+			<!-- <div id="cart-recap-accordion">
+				<div class="accordion-header">
+					<div>
+						<span></span>
+						<p>épicerie salée</p>
+						<p>6.74 €</p>
 					</div>
-					<div class="qte" id="recap-price-qty">
-						<div class="price-bloc" id="recap-qty">
-							<p>200 g</p>
-							<p>18.95 €/Kg</p>
-							<p>4.17 €</p>
-							<div id="osm-recap-promo">
-								<div class="promo-shadow"></div>
-								<div class="promo-type"> -6% </div>
+
+					<div>
+						<span></span>
+						<p>épicerie salée</p>
+						<p>5.74 €</p>
+					</div>
+				</div>
+				<div class="products-recap">
+					<div class="product-recap">
+						<div class="sel-osm-product">
+							<img src="http://courses.monoprix.fr/assets/ctx/2096589626/static/photos/16/51/53/7/g-1651537.jpg">
+							<div class="prod-desc">
+								<p>Lavazza</p>
+								<p>Grains de café, Espresso ksjdlks dsdjksd jksj ddsjd ev</p>
+							</div>
+							<div class="qte" id="recap-price-qty">
+								<div class="price-bloc" id="recap-qty">
+									<p>200 g</p>
+									<p>18.95 €/Kg</p>
+									<p>4.17 €</p>
+								</div>
+								<a class="plus">+</a>
+								<a class="minus">-</a>
+								<a class="how-much">1</a>
 							</div>
 						</div>
-						<a class="plus">+</a>
-						<a class="minus">-</a>
-						<a class="how-much">1</a>
-					</div>
-				</div>
-				<div class="active-osm-product">
-					<img src="http://courses.monoprix.fr/assets/ctx/2096589626/static/photos/16/51/53/7/g-1651537.jpg">
-					<div class="prod-desc">
-						<p>Lavazza</p>
-						<p>Grains de café, Espresso</p>
-					</div>
-					<div class="qte" id="recap-price-qty">
-						<div class="price-bloc" id="recap-qty">
-							<p>200 g</p>
-							<p>2.43 €/kg</p>
-							<p>5.43 €</p>
+						<div class="active-osm-product">
+							<img src="http://courses.monoprix.fr/assets/ctx/2096589626/static/photos/16/51/53/7/g-1651537.jpg">
+							<div class="prod-desc">
+								<p>Lavazza</p>
+								<p>Grains de café, Espresso</p>
+							</div>
+							<div class="qte" id="recap-price-qty">
+								<div class="price-bloc" id="recap-qty">
+									<p>200 g</p>
+									<p>4.31 €</p>
+									<p>2.43 €/kg</p>
+								</div>
+								<a class="plus">+</a>
+								<a class="minus">-</a>
+								<a class="how-much">1</a>
+							</div>
 						</div>
-						<a class="plus">+</a>
-						<a class="minus">-</a>
-						<a class="how-much">1</a>
-					</div>
-				</div>
-			</div>
-			<div class="product-recap">
-				<div class="unavailable-mask">
-					<div></div>
-					<div></div>
-					<div>voir d'autres produits de remplacement</div>
-				</div>
-				<div class="sel-osm-product">
-					<img src="http://courses.monoprix.fr/assets/ctx/2096589626/static/photos/12/79/46/8/g-1279468.jpg">
-					<div class="prod-desc">
-						<p>Maison du Café</p>
-						<p>Dosettes de café saveur vanille et crème de liqueur, Rio de Janeiro</p>
-					</div>
-					<div class="qte" id="recap-price-qty">
-						<div class="price-bloc" id="recap-qty">
-							<p>200 g</p>
-							<p>2.43 €/kg</p>
-							<p>2.43</p>
-						</div>
-						<a class="plus">+</a>
-						<a class="minus">-</a>
-						<a class="how-much">1</a>
-					</div>
-				</div>
-				<div class="active-osm-product">
-					<img src="http://courses.monoprix.fr/assets/ctx/2096589626/static/photos/12/79/46/8/g-1279468.jpg">
-					<div class="prod-desc">
-						<p>Maison du Café</p>
-						<p>Dosettes de café saveur vanille et crème de liqueur, Rio de Janeiro</p>
-					</div>
-					<div class="qte" id="recap-price-qty">
-						<div class="price-bloc" id="recap-qty">
-							<p>200 g</p>
-							<p>2.43 €/kg</p>
-							<p>2.43 €</p>
-						</div>
-						<a class="plus">+</a>
-						<a class="minus">-</a>
-						<a class="how-much">1</a>
 					</div>
 				</div>
 			</div> -->
+
 		</div>
 	</div>
-
-</div>

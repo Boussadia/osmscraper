@@ -10,6 +10,7 @@ define([
 			className: 'product-recap',
 			initialize: function(options){
 				options || (options = {});
+				this.suggested = options.suggested;
 				this.product = options.product || new ProductModel({}, {'vent': this.vent});
 
 				this.bindTo(this.product, 'change', this.render);
@@ -17,6 +18,7 @@ define([
 			render: function(){
 				this.$el.empty();
 				var data = this.product.toJSON();
+				data['suggested'] = this.suggested;
 				this.$el.append(this.template(data));
 				return this;
 			},

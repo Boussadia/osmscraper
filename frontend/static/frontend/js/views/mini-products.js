@@ -14,7 +14,7 @@ define([
 				this.closeSubViews();
 				this.$el.empty();
 				this.products.each(function(product){
-					var view = new MiniProductView({'product': product, 'vent': this.vent});
+					var view = new MiniProductView({'product': product, 'suggested': this.products.suggested, 'vent': this.vent});
 					this.addSubView(view);
 				}, this);
 

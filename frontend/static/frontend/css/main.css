@@ -1365,7 +1365,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 }
 
 														.cart-recap-accordion {
-															width: 50%;
+															width: 100%;
 															float: right;
 															position: relative;
 														}	
@@ -1378,7 +1378,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 															.accordion-header div {
 																position: relative;
 																float: left;
-																width: 100%;
+																width: 50%;
 																height: 45px;
 															}
 
@@ -1406,7 +1406,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 															.sel-osm-product, .active-osm-product {
 																position: relative;
 																float: left;
-																width: 100%;
+																width: 50%;
 																height: 85px;
 															}
 
@@ -1500,7 +1500,6 @@ button:hover, button:focus, .button:hover, .button:focus {
 																float: left;
 																width: 50%;
 																height: 85px;
-																top: 78px;
 																padding-left: 70px;
 																padding-top: 60px;
 																font-size: 11px;
@@ -1518,23 +1517,24 @@ button:hover, button:focus, .button:hover, .button:focus {
 																}
 
 																.unavailable-mask div:nth-child(2) {
-									display: inline-block;
-									position: relative;
-									float: left;
-									width: 113px;
-									height: 70px;
-									top: -63px;
-									right: -80px;
-									background: url(../img/comparator/replacement.png);
-									}
+																	position: relative;
+																	color: #ff7800;
+																	top: 11px;
+																	font-size: 12px;
+																	font-weight: bold;
+																	left: 7px;
+																}
 
-.unavailable-mask div:last-child {
-position: relative;
-float: left;
-color: #ff7800;
-top: 7px;
-right: 105px;
-}
+																.unavailable-mask div:last-child {
+																	display: inline-block;
+																	position: relative;
+																	float: left;
+																	width: 113px;
+																	height: 70px;
+																	top: -71px;
+																	right: -168px;
+																	background: url(../img/comparator/replacement.png);
+																}
 
 
 /*---------------------

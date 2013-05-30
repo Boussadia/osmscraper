@@ -1,13 +1,11 @@
 define([
 	'underscore',
-	'collections/miniproducts',
 	'models/cart',
 	'views/base',
 	'views/category-in-cart',
-	'views/mini-products',
 	'text!../../templates/cart.html',
 	'jqueryUi'
-	], function(_, MiniProductsCollection, CartModel, BaseView, CategoryInCartView, MiniProductsView, cartTemplate){
+	], function(_, CartModel, BaseView, CategoryInCartView, cartTemplate){
 
 		var CartView = BaseView.extend({
 			el: "div#cart",
@@ -17,7 +15,6 @@ define([
 				options || (options = {});
 				// Representing current_cart, if current cart changed, fetched current cart from server
 				this.cart = options.cart || new CartModel({}, {'vent': this.vent});
-				this.suggested_cart = options.suggested_cart || new CartModel({}, {'vent': this.vent});
 				this.osms = options.osms;
 
 				this.vent.on('show:panier', this.show, this);
@@ -28,40 +25,25 @@ define([
 
 			},
 			render: function(){
-				this.closeSubViews();
-				this.$el.empty();
-				// Getting data for current cart
-				var data = {};
-				data['current'] = this.cart.toJSON();
-				data['suggested'] = this.suggested_cart.toJSON();
-				this.$el.append(this.template(data));
-			
+				if(this.cart.get('name') !== this.cart.suggested){
+					this.closeSubViews();
+					this.$el.empty();
+					// Getting data for current cart
+					var data = {};
+					data = this.cart.toJSON();
+					data['suggested'] = this.cart.suggested;
+					this.$el.append(this.template(data));
+				
 
-				// Categories in cart
-				_.each(data['current']['content'], function(category, i){
-					var view = new CategoryInCartView({'el': this.$el.find('#current_cart .accordion-header'), 'content': category, 'vent': this.vent});
-					var products = new MiniProductsCollection( category.products, {'vent': this.vent});
-					var productsView = new MiniProductsView({'products': products, el:this.$el.find('#current_cart .products-recap'), 'vent': this.vent});
-					this.addSubView(view);
-					this.addSubView(productsView);
-				}, this);
+					// Categories in cart
+					_.each(data['content'], function(category, i){
+						var view = new CategoryInCartView({'content': category, 'suggested':this.cart.suggested, 'vent': this.vent});
+						this.addSubView(view);
+						this.$el.find('.scrollarea').append(view.render().el);
+					}, this);
 
-				// Now dealing with suggested cart
-				_.each(data['suggested']['content'], function(category, i){
-					var view = new CategoryInCartView({'el': this.$el.find('#suggested_cart .accordion-header'), 'content': category, 'vent': this.vent});
-					var products = new MiniProductsCollection( category.products, {'vent': this.vent});
-					var productsView = new MiniProductsView({'products': products, el:this.$el.find('#suggested_cart .products-recap'), 'vent': this.vent});
-					this.addSubView(view);
-					this.addSubView(productsView);
-				}, this);
-
-
-				// Rendering sub views
-				_.each(this.subViews, function(view, i){
-					view.render()
-				}, this)
-
-				// $('#cart-recap-accordion').accordion();
+					// $('#cart-recap-accordion').accordion();
+				}
 				return this;
 			},
 			show: function(){
