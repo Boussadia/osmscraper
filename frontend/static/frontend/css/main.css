@@ -1537,7 +1537,71 @@ button:hover, button:focus, .button:hover, .button:focus {
 																}
 
 																
+/*POPUP PROD SUBSTITUTION*/ 
 
+#substitution{
+	display: none;
+}
+
+.equivalent-switch {
+	width: 780px;
+	height: 380px;
+	top: 50px;
+/*	display: none;*/
+	position: absolute;
+	z-index: 3004;
+	/*left: 110%;*/
+	margin-left: 0;
+	background-color: white;
+	padding: 1.25em;
+}
+
+.equivalent-switch-bg {
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	background: black;
+	background: rgba(0, 0, 0, 0.45);
+	z-index: 3003;
+	/*display: none;*/ 
+	top: 0;
+	left: 0;
+}
+
+.equivalent-switch .products-container {
+	width: 700px;
+}
+
+.equivalent-switch .product {
+	width: 165px;
+	height: 280px;
+	margin-top: 15px;
+}
+
+.equivalent-switch .inner {
+	overflow-x: scroll;
+	overflow-y: hidden;
+}
+
+.product .cta.comparer {
+	width: 70%;
+	padding-top: 7px;
+}
+
+.equivalent-switch .price-bloc, .equivalent-switch .price-bloc-promo {
+	top: 0;
+}
+
+.osms-switch-close {
+    font-size: 1.375em;
+    line-height: 1;
+    position: absolute;
+    top: 0.5em;
+    right: 0.6875em;
+    color: #aaaaaa;
+    font-weight: bold;
+    cursor: pointer; 
+}
 
 /*---------------------
 SWITCH OSMS ********
