@@ -15,7 +15,7 @@
 
 				<% if( product.history[0].is_promotion ){%>
 						<div class="promo-shadow"></div>
-						<div class="promo-type"> <%= (((product.history[0].price-history[0].before)/product.history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
+						<div class="promo-type"> <%= (((product.history[0].price-product.history[0].before)/product.history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
 
 				<%}%>
 			</div>
@@ -54,7 +54,7 @@
 
 							<% if( reco.product.history[0].is_promotion ){%>
 									<div class="promo-shadow"></div>
-									<div class="promo-type"> <%= (((reco.product.history[0].price-history[0].before)/reco.product.history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
+									<div class="promo-type"> <%= (((reco.product.history[0].price-reco.product.history[0].before)/reco.product.history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
 
 							<%}%>
 						</div>
