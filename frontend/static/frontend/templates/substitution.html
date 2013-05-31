@@ -1,0 +1,83 @@
+<div class="equivalent-switch">
+	<a class="osms-switch-close">×</a>
+	<div id="osms-switch-header">Sélectionnez votre produit de substitution préféré</div>
+	
+
+	<div class="product">
+		<div class="box">
+			<div class="top-bloc">
+				<div class="img-bloc">
+					<img src="<%= product.image_url %>">
+				</div>
+				<p><%= product.brand.name %></p>
+				<p><%= product.name %></p>
+				<p> <%= product.package.package_quantity %> x <%= product.package.package_measure %> <%= product.package.package_unit %></p>
+
+				<% if( product.history[0].is_promotion ){%>
+						<div class="promo-shadow"></div>
+						<div class="promo-type"> <%= (((product.history[0].price-history[0].before)/product.history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
+
+				<%}%>
+			</div>
+
+			<% if( !product.history[0].is_promotion ){%>
+				<div class="price-bloc">
+					<p><%= product.history[0].price %> €</p>
+					<p><%= product.history[0].unit_price %>  €/<%= product.unit.name%></p>
+				</div>
+			<%}else{%>
+				<div class="price-bloc-promo">
+					<p><%= product.history[0].before %> €</p>
+					<p><%= product.history[0].price %>  €</p>
+					<p><%= product.history[0].unit_price %>  €/<%= product.unit.name%></p>
+				</div>
+			<%}%>
+		</div>
+	</div>
+	<div id="switch-icon"><img src="/static/frontend/img/switch/popup-switch.gif"></div>
+
+	<div class="inner">
+		<div class="products-container">
+			<% for (var i = 0; i<recommendations[suggested].length; i++){
+				var reco = recommendations[suggested][i];
+
+				%>
+				<div class="product">
+					<div class="box">
+						<div class="top-bloc">
+							<div class="img-bloc">
+								<img src="<%= reco.product.image_url %>">
+							</div>
+							<p><%= reco.product.brand.name %></p>
+							<p><%= reco.product.name %></p>
+							<p> <%= reco.product.package.package_quantity %> x <%= reco.product.package.package_measure %> <%= reco.product.package.package_unit %></p>
+
+							<% if( reco.product.history[0].is_promotion ){%>
+									<div class="promo-shadow"></div>
+									<div class="promo-type"> <%= (((reco.product.history[0].price-history[0].before)/reco.product.history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
+
+							<%}%>
+						</div>
+
+						<% if( !reco.product.history[0].is_promotion ){%>
+							<div class="price-bloc">
+								<p><%= reco.product.history[0].price %> €</p>
+								<p><%= reco.product.history[0].unit_price %>  €/<%= reco.product.unit.name%></p>
+							</div>
+						<%}else{%>
+							<div class="price-bloc-promo">
+								<p><%= reco.product.history[0].before %> €</p>
+								<p><%= reco.product.history[0].price %>  €</p>
+								<p><%= reco.product.history[0].unit_price %>  €/<%= reco.product.unit.name%></p>
+							</div>
+						<%}%>
+						<a class="cta comparer">Choisir</a>
+					</div>
+				</div>
+
+			<%}%>
+		</div>
+	</div>
+</div>
+
+<div class="equivalent-switch-bg"></div>
