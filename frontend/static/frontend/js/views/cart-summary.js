@@ -8,9 +8,12 @@ define([
 		template: _.template(cartSummaryTemplate),
 		initialize: function(options){
 			this.cart = options.cart;
+			this.bindTo(this.cart, 'change', this.render);
 			 
 		},
 		render: function(){
+			this.closeSubViews();
+			this.$el.empty();
 			var data = {};
 			data = this.cart.toJSON();
 			this.$el.append(this.template(data));

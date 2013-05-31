@@ -15,15 +15,15 @@ urlpatterns = patterns('',
     url(r'auth/logout/?$', views.UserAPI.as_view()),
 
 	# Category
-    url(r'categories/all/?$', views.CategoryAll.as_view()),
-    url(r'categories/id/(?P<id_category>(\d+))/subs/?$', views.CategorySimple.as_view()),
-    url(r'categories/id/(?P<id_category>(\d+))/(?P<type_fetched>products|promotions)/(?P<key>all|mid|end|top)/?$', (views.CategoryProducts.as_view())),
-    url(r'categories/id/(?P<id_category>(\d+))/products/matching/?$', views.CategoryMatching.as_view()),
+    url(r'categories/all/?$', cache_page(60 * 60 * 24)(views.CategoryAll.as_view())),
+    url(r'categories/id/(?P<id_category>(\d+))/subs/?$', cache_page(60 * 60 * 24)(views.CategorySimple.as_view())),
+    url(r'categories/id/(?P<id_category>(\d+))/(?P<type_fetched>products|promotions)/(?P<key>all|mid|end|top)/?$', cache_page(60 * 60 * 24)(views.CategoryProducts.as_view())),
+    url(r'categories/id/(?P<id_category>(\d+))/products/matching/?$', cache_page(60 * 60 * 24)(views.CategoryMatching.as_view())),
 
     # Products
-    url(r'product/new/?', views.NewProducts.as_view()),
-    url(r'product/reference/(?P<reference>(\d+))/?$', views.Product.as_view()),
-    url(r'product/reference/(?P<reference>(\d+))/recommendations/?$', views.ProductRecommendation.as_view()),
+    url(r'product/new/?', cache_page(60 * 60 * 24)(views.NewProducts.as_view())),
+    url(r'product/reference/(?P<reference>(\d+))/?$', cache_page(60 * 60 * 24)(views.Product.as_view())),
+    url(r'product/reference/(?P<reference>(\d+))/recommendations/?$', cache_page(60 * 60 * 24)(views.ProductRecommendation.as_view())),
 
     # Cart
     url(r'cart/?$', views.CartAPIView.as_view()),

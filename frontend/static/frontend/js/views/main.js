@@ -22,19 +22,13 @@ define([
 				that.vent.trigger('route:category:force');
 			});
 		},
-		get_current_osm: function(){
-			var active_osm = this.osms.detect(function(osm, i){
-				return osm.get('active');
-			}, this);
-			return active_osm;
-		},
 		addCategory: function(category_id){
 			// First we have to determine if the category was already fetched from server or not.
 			var category_already_fetched = false;
 			var index = null
 			var index_insert = 0;
 
-			var current_osm = this.get_current_osm();
+			var current_osm = this.osms.get_active_osm();
 			if (!this.categories[current_osm.get('name')]) this.categories[current_osm.get('name')] = [];
 			var categories = this.categories[current_osm.get('name')];
 

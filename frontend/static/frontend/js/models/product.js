@@ -35,7 +35,7 @@ define([
 				return BaseModel.prototype.save.apply(this, [attributes, options]);
 			},
 			set_quantity: function(options){
-				options || (options.reference);
+				options || (options = {});
 
 				var local_reference = this.get('reference')
 				var cart_reference = options.reference;

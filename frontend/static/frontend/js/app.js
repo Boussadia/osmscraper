@@ -100,34 +100,37 @@ define([
 		this.Views.userbar = new UserBarView({'user': this.Models.user, 'vent': this.Vent});
 		this.Views.userbar.render();
 
-		// Comparator, rendering comparator after fetching menu
-		this.Collections.osms = new OsmsCollections([], {'vent': this.Vent});
-		this.Collections.osms.fetch({'vent': this.Vent});
-
-		// Cart
-		this.Models.cart = new CartModel({}, {'vent': this.Vent, 'osms': this.Collections.osms});
-
-		this.Views.cart = new CartView({'cart': this.Models.cart, 'osms':this.Collections.osms,'vent': this.Vent});
-		this.Models.cart.fetch();
-		
-		// this.Models.cart_importation = new CartImporationModel({}, {'vent': this.Vent});
-
-		// Switch
-		this.Views.switch = new SwitchView({'osms': this.Collections.osms, 'vent': this.Vent});
-		this.Views.switch.render();
-
 		var that = this;
 
-		// Callback function needed in order to wait for the menu to be built
-		this.Views.menu.build(function(){
-			bootstrap(that);
-			// Here rendering comprator (for interface construction coherence)
-			that.Views.comparator = new ComparatorView({'osms':that.Collections.osms,  'cart': that.Models.cart, 'vent': that.Vent});
-			that.Views.comparator.render();
-		});
+		// Comparator, rendering comparator after fetching menu
+		this.Collections.osms = new OsmsCollections([], {'vent': this.Vent});
+		this.Collections.osms.fetch({
+			'vent': this.Vent,
+			success: function(){
+				// Cart
+				that.Models.cart = new CartModel({}, {'vent': that.Vent, 'osms': that.Collections.osms});
 
-		// Main View
-		this.Views.main = new MainView({'vent': this.Vent, 'osms': this.Collections.osms});
+				that.Views.cart = new CartView({'cart': that.Models.cart, 'osms':that.Collections.osms,'vent': that.Vent});
+				that.Models.cart.fetch();
+				
+				// that.Models.cart_importation = new CartImporationModel({}, {'vent': that.Vent});
+
+				// Switch
+				that.Views.switch = new SwitchView({'osms': that.Collections.osms, 'vent': that.Vent});
+				that.Views.switch.render();
+
+				// Callback function needed in order to wait for the menu to be built
+				that.Views.menu.build(function(){
+					bootstrap(that);
+					// Here rendering comprator (for interface construction coherence)
+					that.Views.comparator = new ComparatorView({'osms':that.Collections.osms,  'cart': that.Models.cart, 'vent': that.Vent});
+					that.Views.comparator.render();
+				});
+
+				// Main View
+				that.Views.main = new MainView({'vent': that.Vent, 'osms': that.Collections.osms});
+			}
+		});
 
 	}
 
