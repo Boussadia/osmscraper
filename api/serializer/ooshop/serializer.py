@@ -157,13 +157,12 @@ class RecommendationSerializer(serializers.ModelSerializer):
 	"""
 
 	"""
-	brand = DallizBrandField(source = 'brand')
-	osm_url = serializers.URLField(source = 'url')
+	product = ProductSerializer(source='*')
 	score = ScoreField(source='*')
 	is_match = MatchField(source='*')
 	class Meta:
 		model = Product
-		fields = ('brand', 'name', 'reference', 'score', 'osm_url', 'is_match')
+		fields = ('product', 'score', 'is_match')
 
 class ProductCartSerializer(serializers.ModelSerializer):
 	brand = DallizBrandField()
