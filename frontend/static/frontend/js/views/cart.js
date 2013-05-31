@@ -1,11 +1,13 @@
 define([
 	'underscore',
+	'jquery',
 	'models/cart',
 	'views/base',
 	'views/category-in-cart',
+	'views/substitution',
 	'text!../../templates/cart.html',
 	'jqueryUi'
-	], function(_, CartModel, BaseView, CategoryInCartView, cartTemplate){
+	], function(_, $, CartModel, BaseView, CategoryInCartView, SubstitutionView, cartTemplate){
 
 		var CartView = BaseView.extend({
 			el: "div#cart",
@@ -22,6 +24,10 @@ define([
 
 				// Rendering when cart changes
 				this.bindTo(this.cart, 'change', this.render);
+
+				// Substitution View (apart from other views)
+				this.substitutionView = new SubstitutionView({el: $('#substitution')});
+				this.vent.on('product:recomandation', this.substitution, this);
 
 			},
 			render: function(){
@@ -69,6 +75,16 @@ define([
 			cartClickHandler: function(e){
 
 				this.$el.hasClass('open') ? this.$el.removeClass('open') : this.$el.addClass('open');
+			},
+			substitution: function(product){
+				var that = this; 
+				product.fetch({
+					success: function(){
+						that.substitutionView.product = product;
+						that.substitutionView.suggested = that.cart.suggested;
+						that.substitutionView.render().$el.show();
+					}
+				});
 			}
 		});
 

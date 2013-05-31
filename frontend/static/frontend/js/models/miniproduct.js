@@ -3,6 +3,7 @@ define([
 	], function(BaseModel){
 
 		var MiniProductModel = BaseModel.extend({
+			url: '',
 			save: function(attributes, options){
 				options || (options = {});
 				var cart = options.cart || false;
@@ -22,6 +23,12 @@ define([
 				}
 
 				return BaseModel.prototype.save.apply(this, [attributes, options]);
+			},
+			fetch: function(options){
+				options = options ? _.clone(options) : {};
+				var reference = this.get('product').reference;
+				options.url = '/api/product/reference/'+reference+'/recommendations/';
+				return BaseModel.prototype.fetch.apply(this, [options]);;
 			}
 		})
 

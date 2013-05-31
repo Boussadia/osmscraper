@@ -24,7 +24,8 @@ define([
 			},
 			events: {
 				'click p.minus': 'lessQte',
-				'click p.plus': 'moreQte'
+				'click p.plus': 'moreQte',
+				'click .unavailable-mask div:last-child': 'showSubstitution',
 			},
 			moreQte: function(e){
 				var quantity = this.product.get('quantity');
@@ -38,6 +39,9 @@ define([
 					this.product.save(null, {'cart': true, 'remove': 1, 'vent': this.vent});
 				}
 
+			},
+			showSubstitution: function(e){
+				this.vent.trigger('product:recomandation', this.product);
 			}
 		});
 

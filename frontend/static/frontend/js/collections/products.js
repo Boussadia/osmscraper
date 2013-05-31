@@ -9,7 +9,7 @@ define([
 
 		var ProductsCollections = BaseCollection.extend({
 			model: ProductModel,
-			NUM_INITIAL_PRODUCTS_TO_FETCH: 5,
+			NUM_INITIAL_PRODUCTS_TO_FETCH: 6,
 			TYPE_TO_FETCH: 'products',
 			
 			// key = 'top' or 'mid' or 'end'

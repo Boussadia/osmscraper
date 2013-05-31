@@ -474,7 +474,7 @@ class Product(BetaRestrictionAPIView):
 		serializer_class_name = '%sProductSerializer'%osm_name.capitalize()
 		if serializer_class_name in global_keys:
 			Serializer = globals()[serializer_class_name]
-			serialized = Serializer(product, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}})
+			serialized = Serializer(product, context = {'osm': {'name':osm['name'],'type': osm_type, 'location':osm_location}})
 
 		if serialized is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
@@ -504,7 +504,7 @@ class ProductRecommendation(Product):
 				if match is not None and osm['name'] != osm_name and osm['name'] in osm_recommendation:
 					serializer_class_name = '%sRecommendationSerializer'%osm['name'].capitalize()
 					Serializer = globals()[serializer_class_name]
-					recommendations[osm['name']] = [ Serializer(match, context = { 'matching': True}).data]
+					recommendations[osm['name']] = [ Serializer(match, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}, 'matching': True}).data]
 					osm_recommendation.remove(osm['name'])
 
 		# Processing recommendation
@@ -513,14 +513,8 @@ class ProductRecommendation(Product):
 				serializer_class_name = '%sRecommendationSerializer'%osm.capitalize()
 				Serializer = globals()[serializer_class_name]
 				similarities = BaseCartController.similarities(osm, product, osm_name)
-				recommendations[osm] = [ Serializer(p, context = {'score': score, 'matching': False}).data for p, score in similarities]
-
-		# Serializing product
-		serializer_class_name = '%sRecommendationSerializer'%osm_name.capitalize()
-		Serializer = globals()[serializer_class_name]
-		serialized = Serializer(product)
-
-		return {'recommendations':recommendations, 'product': serialized.data}
+				recommendations[osm] = [ Serializer(p, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}, 'score': score, 'matching': False}).data for p, score in similarities]
+		return {'recommendations':recommendations}
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------

@@ -1534,6 +1534,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 																	color: #ff7800;
 																	top: 7px;
 																	right: 105px;
+																	cursor: pointer;
 																}
 
 																
