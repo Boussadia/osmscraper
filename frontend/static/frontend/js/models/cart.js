@@ -46,7 +46,7 @@ define([
 
 				if (this.suggested === this.get('name')) this.set_suggested();
 			},
-			check_quantity: function(options){
+			check_quantity: function(model, options){
 				var content = this.toJSON().content;
 				var to_send = {}
 				_.each(content, function(category){

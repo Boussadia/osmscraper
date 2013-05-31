@@ -157,6 +157,9 @@ class Cart_content(models.Model):
 	ooshop_content = models.ForeignKey('ooshop.Cart_content', null = True, related_name = 'monoprix_ooshop_related_content', on_delete=models.SET_NULL)
 	auchan_content = models.ForeignKey('auchan.Cart_content', null = True, related_name = 'monoprix_auchan_related_content', on_delete=models.SET_NULL)
 
+	def __unicode__(self):
+		return '%s - %d'%(self.product, self.quantity)
+		
 	class Meta:
 		unique_together = ("cart", "product")
 

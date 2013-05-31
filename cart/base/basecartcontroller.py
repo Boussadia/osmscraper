@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from django.db import connection, transaction
+
 from copy import deepcopy
 from datetime import datetime, timedelta
 from operator import mul
@@ -246,8 +248,12 @@ class BaseCartController(object):
 				content.is_user_set = is_user_set
 			else:
 				content.quantity = content.quantity + quantity 
-			content.save()
-			return content
+			try:
+				content.save()
+				return content
+			except Exception, e:
+				connection._rollback()
+				return None
 		else:
 			return None
 
@@ -264,13 +270,22 @@ class BaseCartController(object):
 		if content is not None:
 			if quantity is None:
 				# Removing completly product from cart
-				content.delete()
+				try:
+					content.delete()
+				except Exception, e:
+					connection._rollback()
 			else:
 				if quantity > 0 and content.quantity > quantity:
 					content.quantity = content.quantity - quantity
-					content.save()
+					try:
+						content.save()
+					except Exception, e:
+						connection._rollback()
 				else:
-					content.delete()
+					try:
+						content.delete()
+					except Exception, e:
+						connection._rollback()
 
 	@price
 	def empty(self):
@@ -345,8 +360,16 @@ class BaseCartController(object):
 						'is_suggested': False
 					}
 
-					content.save()
-					match_content.save()
+					try:
+						content.save()
+					except Exception, e:
+						print e
+
+					try:
+						match_content.save()
+					except Exception, e:
+						print e
+
 					# print '\tMatch : '+mathed_product.url
 				else:
 					# Look for similarities
@@ -361,8 +384,16 @@ class BaseCartController(object):
 							'is_match': False,
 							'is_suggested': True
 						}
-						content.save()
-						sim_content.save()
+						try:
+							content.save()
+						except Exception, e:
+							connection._rollback()
+
+						try:
+							sim_content.save()
+						except Exception, e:
+							connection._rollback()
+
 			else:
 				# Look for similarities
 				similarities = self.get_similarites(base_product, base_osm)
@@ -376,8 +407,16 @@ class BaseCartController(object):
 						'is_match': False,
 						'is_suggested': True
 					}
-					content.save()
-					sim_content.save()
+					try:
+						content.save()
+					except Exception, e:
+						connection._rollback()
+
+					try:
+						sim_content.save()
+					except Exception, e:
+						connection._rollback()
+
 
 		return equivalence_store
 

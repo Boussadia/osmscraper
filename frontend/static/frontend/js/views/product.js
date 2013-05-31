@@ -47,6 +47,10 @@ define([
 				if (quantity-1>=0){
 					this.product.set('quantity_in_cart', quantity - 1);
 					this.product.save(null, {'cart': true, 'remove': 1, 'vent': this.vent});
+					this.vent.trigger('product:quantity:set', {
+						'reference': this.product.get('reference'),
+						'quantity': this.product.get('quantity_in_cart')
+					})
 				}
 
 			}
