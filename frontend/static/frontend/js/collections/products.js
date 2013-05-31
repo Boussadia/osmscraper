@@ -40,6 +40,7 @@ define([
 				}
 				var more = options.more || false;
 				var next_index = this.index_key + 1;
+				var that = this;
 
 				if (more && next_index<KEYS.length){
 					options.remove = false;
@@ -48,6 +49,11 @@ define([
 					return ;
 				}else if(!more){
 					this.index_key = 0;
+				}
+
+				options.success = function(collection, response, option){
+					// console.log(collection);
+					that.vent.trigger('request:products:quantity', {'products': collection.toJSON()});
 				}
 				return BaseCollection.prototype.fetch.apply(this, [options]);
 			}

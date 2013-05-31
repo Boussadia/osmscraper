@@ -88,15 +88,15 @@ class QuantityInCart(serializers.IntegerField):
 	"""
 	def to_native(self, product):
 		quantity = 0
-		if 'cart' in self.context:
-			cart = self.context['cart'] # Getting cart from context
-		else:
-			cart = None
+		# if 'cart' in self.context:
+		# 	cart = self.context['cart'] # Getting cart from context
+		# else:
+		# 	cart = None
 
-		if cart:
-			for content in cart.cart_content_set.filter(product = product):
-				if content.product == product:
-					quantity = quantity + content.quantity
+		# if cart:
+		# 	for content in cart.cart_content_set.filter(product = product):
+		# 		if content.product == product:
+		# 			quantity = quantity + content.quantity
 
 		return quantity
 

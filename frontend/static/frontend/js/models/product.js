@@ -9,6 +9,11 @@ define([
 			defaults: {
 				'name': 'test'
 			},
+			initialize: function(){
+				// Getting quantity in cart
+				this.vent.on('product:quantity:set', this.set_quantity, this);
+
+			},
 			save: function(attributes, options){
 				options || (options = {});
 				var cart = options.cart || false;
@@ -28,6 +33,18 @@ define([
 				}
 
 				return BaseModel.prototype.save.apply(this, [attributes, options]);
+			},
+			set_quantity: function(options){
+				options || (options.reference);
+
+				var local_reference = this.get('reference')
+				var cart_reference = options.reference;
+
+
+				if(local_reference === cart_reference){
+					var quantity = options.quantity || 0;
+					this.set('quantity_in_cart', quantity);
+				}
 			}
 		})
 

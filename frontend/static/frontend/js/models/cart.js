@@ -1,6 +1,7 @@
 define([
+	'underscore',
 	'models/base'
-	], function(BaseModel){
+	], function(_, BaseModel){
 
 		var CartModel = BaseModel.extend({
 			url: '/api/cart',
@@ -19,6 +20,9 @@ define([
 
 					}
 				}, this);
+
+				// Messages for products quantity
+				this.vent.on('request:products:quantity', this.check_quantity, this);
 				
 			},
 			parse: function(resp, xhr){
@@ -37,6 +41,27 @@ define([
 				}
 
 				if (this.suggested === this.get('name')) this.set_suggested();
+			},
+			check_quantity: function(options){
+				var content = this.toJSON().content;
+				var to_send = {}
+				_.each(content, function(category){
+					var products = category.products;
+					_.each(products, function(product){
+						var reference = product.product.reference;
+						var quantity = product.quantity;
+						to_send[reference] = quantity;
+					}, this);
+				}, this);
+
+				_.each(to_send, function(quantity,reference){
+					var option_to_send = {
+						'reference': reference,
+						'quantity': quantity
+					}
+
+					this.vent.trigger('product:quantity:set', option_to_send);
+				},this)
 			}
 		})
 
