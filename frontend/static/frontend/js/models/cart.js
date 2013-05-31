@@ -14,7 +14,8 @@ define([
 				this.vent.on('cart:newproduct', this.fetch, this);
 				this.on('change',  this.check_quantity, this);
 
-				this.osms.on('change add', function(osm){
+				this.osms.on('sync', function(osm){
+
 					if(osm.get('active') &&  this.get('name') !== osm.get('name')){
 						this.set('name', osm.get('name'));
 						this.set_suggested();

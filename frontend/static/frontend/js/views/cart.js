@@ -31,22 +31,23 @@ define([
 
 			},
 			render: function(){
-				if(this.cart.get('name') !== this.cart.suggested){
-					this.closeSubViews();
-					this.$el.empty();
-					// Getting data for current cart
-					var data = {};
-					data = this.cart.toJSON();
-					data['suggested'] = this.cart.suggested;
-					this.$el.append(this.template(data));
-				
+				this.closeSubViews();
+				this.$el.empty();
+				// Getting data for current cart
+				var data = {};
+				data = this.cart.toJSON();
+				data['suggested'] = this.cart.suggested;
+				this.$el.append(this.template(data));
+			
 
-					// Categories in cart
-					_.each(data['content'], function(category, i){
-						var view = new CategoryInCartView({'content': category, 'suggested':this.cart.suggested, 'vent': this.vent});
-						this.addSubView(view);
-						this.$el.find('.scrollarea').append(view.render().el);
-					}, this);
+				// Categories in cart
+				_.each(data['content'], function(category, i){
+					var view = new CategoryInCartView({'content': category, 'suggested':this.cart.suggested, 'vent': this.vent});
+					this.addSubView(view);
+					this.$el.find('.scrollarea').append(view.render().el);
+				}, this);
+				if(this.cart.get('name') !== this.cart.suggested){
+
 
 					// $('#cart-recap-accordion').accordion();
 				}
@@ -79,6 +80,7 @@ define([
 			substitution: function(product){
 				var that = this; 
 				product.fetch({
+					'osm_name': that.cart.get('name'),
 					success: function(){
 						that.substitutionView.product = product;
 						that.substitutionView.suggested = that.cart.suggested;

@@ -16,8 +16,6 @@ define([
 					options.url = '/api/cart/product/'+this.attributes.product.reference+'/quantity/1';
 					var that = this;
 					options.success = function( data,  textStatus, jqXHR){
-						// if( typeof data.attributes.carts !== 'undefined') vent.trigger('carts', data.attributes.carts);
-						// if( typeof data.attributes.osm !== 'undefined') vent.trigger('osm', data.attributes.osm);
 						vent.trigger('cart:newproduct');
 					}
 				}
