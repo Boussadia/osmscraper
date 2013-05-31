@@ -21,7 +21,7 @@ $(document).ready(function(){
 		login(name, pass)
 	});
 
-	$('.form-container input').keypress(function(e){
+	$('#sign-in .form-container input').keypress(function(e){
 		var code = e.charCode;
 		if (code === 13) {
 			e.preventDefault();
