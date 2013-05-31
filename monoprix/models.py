@@ -158,7 +158,7 @@ class Cart_content(models.Model):
 	auchan_content = models.ForeignKey('auchan.Cart_content', null = True, related_name = 'monoprix_auchan_related_content', on_delete=models.SET_NULL)
 
 	def __unicode__(self):
-		return '%s - %d'%(self.product, self.quantity)
+		return '%s - %d'%(unicode(self.product), self.quantity)
 		
 	class Meta:
 		unique_together = ("cart", "product")

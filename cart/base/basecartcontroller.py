@@ -393,6 +393,14 @@ class BaseCartController(object):
 							sim_content.save()
 						except Exception, e:
 							connection._rollback()
+					else:
+						equivalence_store[content] = {
+							'content': None,
+							'is_user_added': False,
+							'is_match': False,
+							'is_suggested': True
+						}
+
 
 			else:
 				# Look for similarities
@@ -416,6 +424,13 @@ class BaseCartController(object):
 						sim_content.save()
 					except Exception, e:
 						connection._rollback()
+				else:
+					equivalence_store[content] = {
+						'content': None,
+						'is_user_added': False,
+						'is_match': False,
+						'is_suggested': True
+					}
 
 
 		return equivalence_store
