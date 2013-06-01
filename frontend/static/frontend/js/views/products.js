@@ -87,17 +87,15 @@ define([
 			},
 			touchSwipeListener: function(e){
 				e.preventDefault();
-
 				
 				try{
 					var that = e.data.context;
-					// var that = this;
 					var $el = that.$el;
 					var base_width = $el.parent().outerWidth();
 					var width = $el.outerWidth();
 					var left = $el.find('.product').offset().left;
 					var calculus = (left+width-base_width)/base_width;
-					if(calculus<.2){
+					if(calculus<.5){
 						that.getMoreProducts(e);
 
 					}
