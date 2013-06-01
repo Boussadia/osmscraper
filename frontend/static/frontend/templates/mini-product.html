@@ -1,4 +1,4 @@
-<% if(eval(suggested+'_content').is_suggested) {%>
+<% if(eval(suggested+'_content') && eval(suggested+'_content').is_suggested) {%>
 	<div class="unavailable-mask">
 		<div></div>
 		<div></div>
@@ -8,6 +8,7 @@
 
 
 <div class="sel-osm-product">
+	<% if(eval(suggested+'_content')) {%>
 	<img src="<%= eval(suggested+'_product').image_url %>">
 	<div class="prod-desc">
 		<p><%= eval(suggested+'_product').brand.name %></p>
@@ -29,6 +30,7 @@
 		<a class="minus">-</a>
 		<a class="how-much"><%= eval(suggested+'_content').quantity%></a>
 	</div>
+	<%}%>
 </div>
 
 
