@@ -573,11 +573,11 @@ class CartAPIView(BetaRestrictionAPIView):
 				for osm in AVAILABLE_OSMS:
 					try:
 						if osm['name'] != osm_name:
-							category_cart[osm['name']+'_price'] = sum([ product[osm['name']+'_product']['history'][0]['price']*product['>
+							category_cart[osm['name']+'_price'] = sum([ product[osm['name']+'_product']['history'][0]['price']*product['quantity'] for product in category_cart['products'] if product[osm['name']+'_product'] is not None])
 						else:
 							category_cart[osm['name']+'_price'] = category_cart['price']
-						except Exception,e:
-							category_cart[osm['name'] = 0
+					except Exception, e:
+						category_cart[osm['name']+'_price'] = 0
 
 
 				quantity_products = quantity_products + sum([ product['quantity'] for product in category_cart['products']])
