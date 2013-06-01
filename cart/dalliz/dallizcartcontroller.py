@@ -120,7 +120,10 @@ class DallizCartController(object):
 			if other_osm != osm:
 				if self.carts[other_osm] is None:
 					self.carts[other_osm] = DallizCartController.AVAILABLE_OSMS[other_osm]['class']()
-					setattr(self.metacart, other_osm+'_cart', self.carts[other_osm].cart)
+					try:
+						setattr(self.metacart, other_osm+'_cart', self.carts[other_osm].cart)
+					except Exception, e:
+						pass
 				equivalences[other_osm] = self.carts[other_osm].set_equivalent_cart(self.carts[osm].cart)
 
 		self.metacart.save()
@@ -133,10 +136,26 @@ class DallizCartController(object):
 						for content in  equivalences[other_osm].keys():
 							other_content = equivalences[other_osm][content]['content']
 							other_content_bis = equivalences[other_osm_bis][content]['content']
-							setattr(other_content_bis, other_content.cart.osm+'_content', other_content)
-							setattr(content, other_content_bis.cart.osm+'_content', other_content_bis)
-							setattr(content, other_content.cart.osm+'_content', other_content)
-							other_content_bis.save()
+							
+							try:
+								setattr(other_content_bis, other_content.cart.osm+'_content', other_content)
+							except Exception, e:
+								pass
+							
+							try:
+								setattr(content, other_content_bis.cart.osm+'_content', other_content_bis)
+							except Exception, e:
+								pass
+							
+							try:
+								setattr(content, other_content.cart.osm+'_content', other_content)
+							except Exception, e:
+								pass
+
+							try:
+								other_content_bis.save()
+							except Exception, e:
+								pass
 
 
 
