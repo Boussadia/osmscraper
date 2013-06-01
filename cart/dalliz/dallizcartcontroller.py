@@ -134,8 +134,15 @@ class DallizCartController(object):
 				for other_osm_bis in DallizCartController.AVAILABLE_OSMS.keys():
 					if other_osm_bis != osm and other_osm_bis != other_osm:
 						for content in  equivalences[other_osm].keys():
-							other_content = equivalences[other_osm][content]['content']
-							other_content_bis = equivalences[other_osm_bis][content]['content']
+							try:
+								other_content = equivalences[other_osm][content]['content']
+							except Exception, e:
+								pass
+
+							try:
+								other_content_bis = equivalences[other_osm_bis][content]['content']
+							except Exception, e:
+								pass
 							
 							try:
 								setattr(other_content_bis, other_content.cart.osm+'_content', other_content)
