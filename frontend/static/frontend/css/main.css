@@ -585,7 +585,7 @@ li.has-dropdown.show {
 
 .products {
 	width: 100%;
-	height: 290px;
+	height: 313px;
 	position: relative;
 	top: 10px;
 	margin-bottom: -4px;
@@ -616,6 +616,11 @@ li.has-dropdown.show {
 .carousel-control.left{
 	background-position: 0;
 	opacity: .5;
+}
+
+.products .inner{
+	overflow-x: scroll;
+	overflow-y: hidden;
 }
 
 .products .inner.touch{
@@ -671,6 +676,10 @@ li.has-dropdown.show {
 
 .products-header.promotion span{
 	background: url(../img/main/play-orange.png);
+}
+
+.products-container{
+	min-width: 1226px;
 }
 
 /* Products*/
@@ -932,7 +941,7 @@ div.promo-type {
 	}
 
 	.product{
-		width: 17.667%;
+		width: 16.667%;
 	}
 
 	.products .inner.touch .products-container .product{

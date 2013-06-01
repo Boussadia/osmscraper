@@ -62,14 +62,22 @@ define([
 					}
 
 					if (this.products.length < this.products.count) this.$el.append(plus);
+					var outerWidth = this.$el.find('.product').outerWidth();
+					if(outerWidth){
+						// Setting width
+						this.$el.find('.product').width(outerWidth+'px')
+						var products_count = this.$el.find('.product').length;
+						this.$el.width(outerWidth*products_count*1.1);
+					}
 				};
 
 				if(Modernizr.touch){
-					this.$el.find('.inner').addClass('touch');
+					this.$el.parent().addClass('touch');
 					if (this.products.length>5) this.$el.width(this.products.length*this.PRODUCT_WIDTH);
 				}
 
-				this.$el.find('.inner.touch').bind( 'scroll', {context: this}, this.touchSwipeListener);
+
+				this.$el.parent().bind( 'scroll', {context: this}, this.touchSwipeListener);
 
 				
 				return this;
@@ -79,15 +87,17 @@ define([
 			},
 			touchSwipeListener: function(e){
 				e.preventDefault();
+
+				
 				try{
 					var that = e.data.context;
 					// var that = this;
 					var $el = that.$el;
-					var base_width = $el.find('.inner').outerWidth();
+					var base_width = $el.parent().outerWidth();
 					var width = $el.outerWidth();
 					var left = $el.find('.product').offset().left;
 					var calculus = (left+width-base_width)/base_width;
-					if(calculus<.1){
+					if(calculus<.2){
 						that.getMoreProducts(e);
 
 					}
