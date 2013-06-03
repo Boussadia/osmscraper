@@ -50,11 +50,11 @@ urlpatterns = patterns('',
     url(r'^backend/brand/(?P<id>(\d+))/?$', 'apps.backoffice.brand_builder.views.sub_brands'),
 
     # Dalliz backend categories matcher app
-    url(r'^backend/categories_matcher/?$', 'categories_matcher.views.index'),
-    url(r'^backend/categories_matcher/(?P<osm>(\w)+)/(?P<level>\d+)(/(?P<parent>\d+))?/?$', 'categories_matcher.views.categories'),
-    url(r'^backend/categories_matcher/add_link/?$', 'categories_matcher.views.add_link'),
-    url(r'^backend/categories_matcher/delete_link/?$', 'categories_matcher.views.delete_link'),
-    url(r'^backend/categories_matcher/get_links/(?P<osm>(\w)+)/(?P<category_id>\d+)/?$', 'categories_matcher.views.get_links'),
+    url(r'^backend/categories_matcher/?$', 'apps.backoffice.categories_matcher.views.index'),
+    url(r'^backend/categories_matcher/(?P<osm>(\w)+)/(?P<level>\d+)(/(?P<parent>\d+))?/?$', 'apps.backoffice.categories_matcher.views.categories'),
+    url(r'^backend/categories_matcher/add_link/?$', 'apps.backoffice.categories_matcher.views.add_link'),
+    url(r'^backend/categories_matcher/delete_link/?$', 'apps.backoffice.categories_matcher.views.delete_link'),
+    url(r'^backend/categories_matcher/get_links/(?P<osm>(\w)+)/(?P<category_id>\d+)/?$', 'apps.backoffice.categories_matcher.views.get_links'),
 
     # Brand matcher
     url(r'^backend/matcher/(?P<osm>(\w)+)/brand/(?P<id>\d+)/?$','apps.backoffice.brand_matcher.views.selector'),
