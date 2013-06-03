@@ -76,7 +76,7 @@ STATICFILES_DIRS = (
     # os.path.join(SITE_ROOT, 'static'),
     '/'.join([PROJECT_ROOT, 'dalliz', 'static']),
     '/'.join([PROJECT_ROOT, 'categories_matcher', 'static']),
-    '/'.join([PROJECT_ROOT, 'categories_builder', 'static']),
+    '/'.join([PROJECT_ROOT, 'apps/backoffice/categories_builder', 'static']),
     '/'.join([PROJECT_ROOT, 'apps/backoffice/brand_builder', 'static']),
 )
 
@@ -139,7 +139,7 @@ INSTALLED_APPS = (
     'ooshop',
     'apps.scrapers',
     'categories_matcher',
-    'categories_builder',
+    'apps.backoffice.categories_builder',
     'apps.backoffice.brand_builder',
     'apps.backoffice.brand_matcher',
     'dalliz',

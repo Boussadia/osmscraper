@@ -38,11 +38,11 @@ urlpatterns = patterns('',
     url(r'^backend/tags/?$', 'tags.views.index'),
 
     # Dalliz backend categories builder
-    url(r'^backend/categorie/?$', 'categories_builder.views.index'),
-    url(r'^backend/categorie/delete/(?P<id>(\d+))/?$', 'categories_builder.views.delete_category'),
-    url(r'^backend/categorie/id/(?P<id>(\d+))/position/(?P<position>(\d+))/?$', 'categories_builder.views.change_position'),
-    url(r'^backend/categorie/id/(?P<id>(\d+))/name/?$', 'categories_builder.views.change_name'),
-    url(r'^backend/categorie/((?P<parent_url>(.+))/)?(?P<url>(.+))/?$', 'categories_builder.views.sub_categories'),
+    url(r'^backend/categorie/?$', 'apps.backoffice.categories_builder.views.index'),
+    url(r'^backend/categorie/delete/(?P<id>(\d+))/?$', 'apps.backoffice.categories_builder.views.delete_category'),
+    url(r'^backend/categorie/id/(?P<id>(\d+))/position/(?P<position>(\d+))/?$', 'apps.backoffice.categories_builder.views.change_position'),
+    url(r'^backend/categorie/id/(?P<id>(\d+))/name/?$', 'apps.backoffice.categories_builder.views.change_name'),
+    url(r'^backend/categorie/((?P<parent_url>(.+))/)?(?P<url>(.+))/?$', 'apps.backoffice.categories_builder.views.sub_categories'),
 
     # Dalliz brands builder
     url(r'^backend/brand/?$', 'apps.backoffice.brand_builder.views.index'),
