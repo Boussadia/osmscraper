@@ -141,7 +141,7 @@ INSTALLED_APPS = (
     'categories_matcher',
     'categories_builder',
     'apps.backoffice.brand_builder',
-    'brand_matcher',
+    'apps.backoffice.brand_matcher',
     'dalliz',
     'pystache',
     'apps.matcher',

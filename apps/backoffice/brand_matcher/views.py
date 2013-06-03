@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from osmscraper.unaccent import unaccent
 
-from brand_matcher.templates import templates
+from apps.backoffice.brand_matcher.templates import templates
 
 from ooshop.models import Brand as OoshopBrand
 from monoprix.models import Brand as MonoprixBrand

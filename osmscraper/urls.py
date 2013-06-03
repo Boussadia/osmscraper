@@ -57,10 +57,10 @@ urlpatterns = patterns('',
     url(r'^backend/categories_matcher/get_links/(?P<osm>(\w)+)/(?P<category_id>\d+)/?$', 'categories_matcher.views.get_links'),
 
     # Brand matcher
-    url(r'^backend/matcher/(?P<osm>(\w)+)/brand/(?P<id>\d+)/?$','brand_matcher.views.selector'),
-    url(r'^backend/matcher/(?P<osm>(\w)+)/brand/cancel/(?P<id>\d+)/?$', 'brand_matcher.views.cancel'),
-    url(r'^backend/matcher/brand/autocomplete/?$', 'brand_matcher.views.autocomplete'),
-    url(r'^backend/matcher/(?P<osm>(\w)+)/brand/set/(?P<osm_brand_id>\d+)/(?P<dalliz_brand_id>\d+)/?$', 'brand_matcher.views.set'),
+    url(r'^backend/matcher/(?P<osm>(\w)+)/brand/(?P<id>\d+)/?$','apps.backoffice.brand_matcher.views.selector'),
+    url(r'^backend/matcher/(?P<osm>(\w)+)/brand/cancel/(?P<id>\d+)/?$', 'apps.backoffice.brand_matcher.views.cancel'),
+    url(r'^backend/matcher/brand/autocomplete/?$', 'apps.backoffice.brand_matcher.views.autocomplete'),
+    url(r'^backend/matcher/(?P<osm>(\w)+)/brand/set/(?P<osm_brand_id>\d+)/(?P<dalliz_brand_id>\d+)/?$', 'apps.backoffice.brand_matcher.views.set'),
 
     # Product tags cleaner
     url(r'^backend/matcher/(?P<osm>(\w)+)/tags/(?P<category_id>\d+)/?$','apps.matcher.views.category'),
