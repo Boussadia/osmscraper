@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import connection
 from django.core.mail import send_mail
 
-from scrapers.telemarket import Telemarket
+from apps.scrapers.telemarket import Telemarket
 from models import *
 
 from osmscraper.utility import dictfetchall

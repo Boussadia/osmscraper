@@ -2,7 +2,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 
 from mturk.helper import MturkHelper 
-from scrapers.base.basecrawler import BaseCrawler as Crawler
+from apps.scrapers.base.basecrawler import BaseCrawler as Crawler
 
 
 

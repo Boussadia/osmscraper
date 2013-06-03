@@ -20,7 +20,7 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.views import APIView
 
-from scrapers.ooshop.ooshopscraper import OoshopScraper
+from apps.scrapers.ooshop.ooshopscraper import OoshopScraper
 
 from cart.base.basecartcontroller import BaseCartController
 from cart.dalliz.dallizcartcontroller import DallizCartController

@@ -3,7 +3,7 @@
 
 from django.conf import settings
 
-from scrapers.place_du_marche import Place_du_marche
+from apps.scrapers.place_du_marche import Place_du_marche
 from models import *
 
 place_du_marche = Place_du_marche()

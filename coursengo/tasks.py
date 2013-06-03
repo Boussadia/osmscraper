@@ -3,7 +3,7 @@
 
 from django.conf import settings
 
-from scrapers.coursengo import Coursengo
+from apps.scrapers.coursengo import Coursengo
 from models import *
 
 coursengo = Coursengo()

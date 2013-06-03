@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from celery import Celery
 from celery.task import periodic_task, task
 
-from scrapers.auchan.auchanscraper import AuchanScraper
+from apps.scrapers.auchan.auchanscraper import AuchanScraper
 
 celery = Celery('tasks', broker=settings.BROKER_URL)
 

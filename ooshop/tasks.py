@@ -11,7 +11,7 @@ from celery.task import periodic_task, task
 from celery.task.schedules import crontab
 
 
-from scrapers.ooshop.ooshopscraper import OoshopScraper
+from apps.scrapers.ooshop.ooshopscraper import OoshopScraper
 
 
 celery = Celery('tasks', broker=settings.BROKER_URL)

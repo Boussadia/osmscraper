@@ -12,7 +12,7 @@ from monoprix.models import Product as MonoprixProduct
 from auchan.models import Product as AuchanProduct
 from ooshop.models import Product as OoshopProduct
 from mturk.models import Task, ResultTask
-from matcher.models import ProductSimilarity, ProductMatch
+from apps.matcher.models import ProductSimilarity, ProductMatch
 
 osms = ['auchan', 'monoprix', 'ooshop']
 

@@ -20,7 +20,7 @@ from ooshop.models import Brand as OoshopBrand
 from monoprix.models import Brand as MonoprixBrand
 from auchan.models import Brand as AuchanBrand
 from dalliz.models import Brand as DallizBrand
-from matcher.models import BrandMatch
+from apps.matcher.models import BrandMatch
 
 available_osm = {
 	'ooshop':OoshopBrand,

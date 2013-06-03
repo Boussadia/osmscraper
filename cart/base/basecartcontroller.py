@@ -7,7 +7,7 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from operator import mul
 
-from matcher.models import ProductSimilarity, ProductMatch
+from apps.matcher.models import ProductSimilarity, ProductMatch
 
 class BaseCartController(object):
 	"""

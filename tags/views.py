@@ -6,7 +6,7 @@ from django.template import Context, loader
 from django.db import connection, transaction
 from django.views.decorators.csrf import csrf_exempt
 
-from matcher.base.stemmer import Stemmer
+from apps.matcher.base.stemmer import Stemmer
 
 from osmscraper.unaccent import unaccent
 

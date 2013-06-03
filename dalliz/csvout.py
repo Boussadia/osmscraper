@@ -16,7 +16,7 @@ from ooshop.models import Product as OoshopProduct
 from monoprix.models import Product as MonoprixProduct
 from ooshop.models import Product as OldOoshopProduct
 
-from matcher.base.stemmer import BaseHTMLStemmer
+from apps.matcher.base.stemmer import BaseHTMLStemmer
 
 from gensim import corpora, models, similarities
 
