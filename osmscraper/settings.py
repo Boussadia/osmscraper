@@ -145,7 +145,7 @@ INSTALLED_APPS = (
     'dalliz',
     'libs.pystache',
     'apps.matcher',
-    'tags',
+    'apps.tags',
     'cart',
     'rest_framework',
     'api',

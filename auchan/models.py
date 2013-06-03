@@ -1,7 +1,7 @@
 from django.db import models
 
 from dalliz.models import Category as Dalliz_category
-from tags.models import Tag as GeneralTag
+from apps.tags.models import Tag as GeneralTag
 
 class ShippingArea(models.Model):
 	city_name = models.TextField(null=True)

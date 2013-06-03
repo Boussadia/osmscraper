@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
-from tags.models import Tag
+from apps.tags.models import Tag
 
 
 class Unit(models.Model):

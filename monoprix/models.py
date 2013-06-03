@@ -2,7 +2,7 @@ from django.db import models
 
 from dalliz.models import Category as Dalliz_category
 from dalliz.models import Unit as Unit_dalliz
-from tags.models import Tag
+from apps.tags.models import Tag
 
 class Store(models.Model):
 	name = models.TextField(null=True)

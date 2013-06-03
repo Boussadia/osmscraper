@@ -20,7 +20,7 @@ class Migration(SchemaMigration):
 
 
     models = {
-        u'tags.tag': {
+        u'apps.tags.Tag': {
             'Meta': {'object_name': 'Tag'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),

@@ -17,7 +17,7 @@ from django.db import connection, transaction
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 
-from tags.models import Tag
+from apps.tags.models import Tag
 
 from apps.matcher.base.stemmer import Stemmer
 

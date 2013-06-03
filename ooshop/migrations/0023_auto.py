@@ -20,7 +20,7 @@ class Migration(SchemaMigration):
         db.create_table('ooshop_newproduct_tag', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('newproduct', models.ForeignKey(orm['ooshop.newproduct'], null=False)),
-            ('tag', models.ForeignKey(orm['tags.tag'], null=False))
+            ('tag', models.ForeignKey(orm['apps.tags.Tag'], null=False))
         ))
         db.create_unique('ooshop_newproduct_tag', ['newproduct_id', 'tag_id'])
 
@@ -45,7 +45,7 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'parent_category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['dalliz.Category']", 'null': 'True'}),
             'position': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'tags': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['tags.Tag']", 'symmetrical': 'False'}),
+            'tags': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['apps.tags.Tag']", 'symmetrical': 'False'}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'null': 'True'})
         },
         'dalliz.category_main': {
@@ -239,7 +239,7 @@ class Migration(SchemaMigration):
             'package_unit': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'reference': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'unique': 'True', 'null': 'True'}),
             'stemmed_text': ('django.db.models.fields.TextField', [], {'max_length': '9999999999999999999999L', 'null': 'True'}),
-            'tag': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'ooshop_product_tag_dalliz_tag'", 'symmetrical': 'False', 'to': "orm['tags.Tag']"}),
+            'tag': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'ooshop_product_tag_dalliz_tag'", 'symmetrical': 'False', 'to': "orm['apps.tags.Tag']"}),
             'unit': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['ooshop.Unit']", 'null': 'True'}),
             'updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'null': 'True'})
@@ -297,7 +297,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
-        'tags.tag': {
+        'apps.tags.Tag': {
             'Meta': {'object_name': 'Tag'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})

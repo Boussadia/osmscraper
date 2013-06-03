@@ -12,7 +12,7 @@ class Migration(SchemaMigration):
         db.create_table('dalliz_category_tags', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('category', models.ForeignKey(orm['dalliz.category'], null=False)),
-            ('tag', models.ForeignKey(orm['tags.tag'], null=False))
+            ('tag', models.ForeignKey(orm['apps.tags.Tag'], null=False))
         ))
         db.create_unique('dalliz_category_tags', ['category_id', 'tag_id'])
 
@@ -47,7 +47,7 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'parent_category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['dalliz.Category']", 'null': 'True'}),
             'position': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'tags': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['tags.Tag']", 'symmetrical': 'False'}),
+            'tags': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['apps.tags.Tag']", 'symmetrical': 'False'}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'unique': 'True', 'null': 'True'})
         },
         'dalliz.category_main': {
@@ -98,7 +98,7 @@ class Migration(SchemaMigration):
             'sex': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '1'}),
             'token': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'null': 'True'})
         },
-        'tags.tag': {
+        'apps.tags.Tag': {
             'Meta': {'object_name': 'Tag'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})

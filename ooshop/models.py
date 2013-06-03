@@ -2,7 +2,7 @@ from django.db import models
 
 from dalliz.models import Category as Dalliz_category
 from dalliz.models import Unit as Unit_dalliz
-from tags.models import Tag
+from apps.tags.models import Tag
 
 class Unit(models.Model):
 	name = models.CharField(max_length=30, unique=True)

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from dalliz.models import Category
-from tags.models import Tag
+from apps.tags.models import Tag
 
 def diff(l1,l2):
 	"""
