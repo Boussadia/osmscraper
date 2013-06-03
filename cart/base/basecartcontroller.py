@@ -328,6 +328,120 @@ class BaseCartController(object):
 
 		return sorted((scores), key=lambda item: -item[1])
 
+	def get_equivalent_content(self, base_content, base_osm):
+		"""
+			This method takes as argument a cart content database entity and its correspondaing osm,
+			and returns an equivalent cart content.
+		"""
+		base_product = base_content.product
+		quantity = base_content.quantity
+		# First, looking for a match
+		match = base_product.productmatch_set.all()
+		if len(match)>0:
+			match = match[0]
+			mathed_product = getattr(match, self.cart.osm+'_product') # Evil hack!! Or is it? I love Python :D
+			if mathed_product is not None:
+				match_content = self.add_product(mathed_product, quantity, is_user_added = False, is_match = True, is_suggested = False)
+				setattr(match_content, base_content.cart.osm+'_content', base_content)
+				setattr(base_content, match_content.cart.osm+'_content', match_content)
+				equivalent_content = {
+					'content': match_content,
+					'is_user_added': False,
+					'is_match': True,
+					'is_suggested': False
+				}
+
+				try:
+					base_content.save()
+				except Exception, e:
+					print e
+
+				try:
+					match_content.save()
+				except Exception, e:
+					print e
+
+				# print '\tMatch : '+mathed_product.url
+			else:
+				# Look for similarities
+				similarities = self.get_similarites(base_product, base_osm)
+				if(len(similarities)>0):
+					sim_content = self.add_product(similarities[0][0], quantity, is_user_added = False, is_match = False, is_suggested = True)
+					setattr(sim_content, base_content.cart.osm+'_content', base_content)
+					setattr(base_content, sim_content.cart.osm+'_content', sim_content)
+					equivalent_content = {
+						'content': sim_content,
+						'is_user_added': False,
+						'is_match': False,
+						'is_suggested': True
+					}
+					try:
+						base_content.save()
+					except Exception, e:
+						connection._rollback()
+
+					try:
+						sim_content.save()
+					except Exception, e:
+						connection._rollback()
+				else:
+					equivalent_content = {
+						'content': None,
+						'is_user_added': False,
+						'is_match': False,
+						'is_suggested': True
+					}
+
+
+		else:
+			# Look for similarities
+			similarities = self.get_similarites(base_product, base_osm)
+			if(len(similarities)>0):
+				sim_content = self.add_product(similarities[0][0], quantity, is_user_added = False, is_match = False, is_suggested = True)
+				setattr(sim_content, base_content.cart.osm+'_content', base_content)
+				setattr(base_content, sim_content.cart.osm+'_content', sim_content)
+				equivalent_content = {
+					'content': sim_content,
+					'is_user_added': False,
+					'is_match': False,
+					'is_suggested': True
+				}
+				try:
+					base_content.save()
+				except Exception, e:
+					connection._rollback()
+
+				try:
+					sim_content.save()
+				except Exception, e:
+					connection._rollback()
+			else:
+				equivalent_content = {
+					'content': None,
+					'is_user_added': False,
+					'is_match': False,
+					'is_suggested': True
+				}
+
+		return equivalent_content
+
+	def get_content(self, product):
+		"""
+			Retrieving cart content by product.
+		"""
+		content = self.cart.cart_content_set.filter(product = product)
+		if len(content)>0:
+			return content[0]
+		return None
+
+
+	def add_equivalent_content(self, content):
+		"""
+			Adding directly a cart content to cart.
+		"""
+		if content['content'] is not None:
+			self.cart.cart_content_set.add(content['content'])
+
 	def set_equivalent_cart(self, base_cart):
 		"""
 			This method computes equivalent cart from an existing cart of another osm.
