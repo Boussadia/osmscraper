@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import pystache
+import libs.pystache
 import simplejson as json
 import hashlib
 from time import time

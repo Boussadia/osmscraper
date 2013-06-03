@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import pystache
+import libs.pystache
 import os
 
-class Dalliz_pystache_view(pystache.View):
+class Dalliz_pystache_view(libs.pystache.View):
 	def __init__(self):
 		super(Dalliz_pystache_view, self).__init__()
 		self.template_path = os.path.abspath(os.path.dirname(__file__))

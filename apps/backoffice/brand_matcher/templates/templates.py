@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-import pystache
+import libs.pystache
 
-class Osm_brand_matcher_pystache_view(pystache.View):
+class Osm_brand_matcher_pystache_view(libs.pystache.View):
 	def __init__(self):
 		super(Osm_brand_matcher_pystache_view, self).__init__()
 		self.template_path = os.path.abspath(os.path.dirname(__file__))

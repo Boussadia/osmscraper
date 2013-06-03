@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import # Import because of modules names
 
-import pystache
+import libs.pystache
 import simplejson as json
 import hashlib
 from time import time

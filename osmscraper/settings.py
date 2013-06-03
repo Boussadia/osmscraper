@@ -143,7 +143,7 @@ INSTALLED_APPS = (
     'apps.backoffice.brand_builder',
     'apps.backoffice.brand_matcher',
     'dalliz',
-    'pystache',
+    'libs.pystache',
     'apps.matcher',
     'tags',
     'cart',

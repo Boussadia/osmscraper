@@ -1,4 +1,4 @@
-from pystache import Template
+from libs.pystache import Template
 import os.path
 import re
 from types import *
@@ -43,7 +43,7 @@ class View(object):
     
     def get_template(self, template_name):
         if not self.template:
-            from pystache import Loader
+            from libs.pystache import Loader
             template_name = self._get_template_name(template_name)
             self.template = Loader().load_template(template_name, self.template_path, encoding=self.template_encoding, extension=self.template_extension)
         
