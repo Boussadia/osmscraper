@@ -26,9 +26,9 @@ define([
 			// First we have to determine if the category was already fetched from server or not.
 			var category_already_fetched = false;
 			var index = null
-			var index_insert = 0;
 
 			var current_osm = this.osms.get_active_osm();
+			this.categories = {};
 			if (!this.categories[current_osm.get('name')]) this.categories[current_osm.get('name')] = [];
 			var categories = this.categories[current_osm.get('name')];
 
@@ -36,9 +36,7 @@ define([
 				if(category.id == category_id){
 					category_already_fetched = true;
 					category.current = true;
-					index = i;
 				}else if(category.id < category_id){
-					index_insert = i + 1;
 					category.current = false;
 				}
 			}, this);
@@ -47,7 +45,7 @@ define([
 				// If the category was not fetched, proceed
 				var categoryCollection = new CategoryCollection([], {'id': category_id,'osm': current_osm.get('name'), 'vent': this.vent});
 				categoryCollection.current = true;
-				categories.splice(index_insert, 0, categoryCollection);
+				categories.push(categoryCollection);
 
 				var that = this;
 				categoryCollection.fetch({
@@ -60,8 +58,10 @@ define([
 					}
 				});
 			}
+
 		},
 		render: function(categoryCollection){
+			this.closeSubViews();
 			var view = new CategoryCollectionView({'collection': categoryCollection, 'osms': this.osms,'vent': this.vent});
 			this.addSubView(view);
 			this.$el.append(view.render().el);
