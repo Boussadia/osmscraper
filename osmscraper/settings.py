@@ -77,7 +77,7 @@ STATICFILES_DIRS = (
     '/'.join([PROJECT_ROOT, 'dalliz', 'static']),
     '/'.join([PROJECT_ROOT, 'categories_matcher', 'static']),
     '/'.join([PROJECT_ROOT, 'categories_builder', 'static']),
-    '/'.join([PROJECT_ROOT, 'brand_builder', 'static']),
+    '/'.join([PROJECT_ROOT, 'apps/backoffice/brand_builder', 'static']),
 )
 
 # List of finder classes that know how to find static files in
@@ -137,14 +137,14 @@ INSTALLED_APPS = (
     'auchan',
     'monoprix',
     'ooshop',
-    'scrapers',
+    'apps.scrapers',
     'categories_matcher',
     'categories_builder',
-    'brand_builder',
+    'apps.backoffice.brand_builder',
     'brand_matcher',
     'dalliz',
     'pystache',
-    'matcher',
+    'apps.matcher',
     'tags',
     'cart',
     'rest_framework',

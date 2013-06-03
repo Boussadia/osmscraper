@@ -45,9 +45,9 @@ urlpatterns = patterns('',
     url(r'^backend/categorie/((?P<parent_url>(.+))/)?(?P<url>(.+))/?$', 'categories_builder.views.sub_categories'),
 
     # Dalliz brands builder
-    url(r'^backend/brand/?$', 'brand_builder.views.index'),
-    url(r'^backend/brand/delete/(?P<id>(\d+))/?$', 'brand_builder.views.delete_brand'),
-    url(r'^backend/brand/(?P<id>(\d+))/?$', 'brand_builder.views.sub_brands'),
+    url(r'^backend/brand/?$', 'apps.backoffice.brand_builder.views.index'),
+    url(r'^backend/brand/delete/(?P<id>(\d+))/?$', 'apps.backoffice.brand_builder.views.delete_brand'),
+    url(r'^backend/brand/(?P<id>(\d+))/?$', 'apps.backoffice.brand_builder.views.sub_brands'),
 
     # Dalliz backend categories matcher app
     url(r'^backend/categories_matcher/?$', 'categories_matcher.views.index'),
