@@ -139,10 +139,10 @@ class Cart_content(models.Model):
 	is_user_added = models.BooleanField(default=True)
 	is_match = models.BooleanField(default=False)
 	is_suggested = models.BooleanField(default=False)
+	osm_suggested_from = models.CharField(max_length=100, default = 'auchan')
 	is_user_set = models.BooleanField(default=False)
 
 	# Related products
-	related_osm = models.CharField(max_length=9999, null = True)
 	monoprix_content = models.ForeignKey('monoprix.Cart_content', null = True, related_name = 'ooshop_monoprix_related_content', on_delete=models.SET_NULL)
 	auchan_content = models.ForeignKey('auchan.Cart_content', null = True, related_name = 'ooshop_auchan_related_content', on_delete=models.SET_NULL)
 

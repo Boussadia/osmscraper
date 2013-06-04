@@ -1,3 +1,5 @@
+<% product = eval(suggested+'_product');%>
+
 <div class="equivalent-switch">
 	<a class="osms-switch-close">×</a>
 	<div id="osms-switch-header">Sélectionnez votre produit de substitution préféré</div>
@@ -38,8 +40,8 @@
 
 	<div class="inner">
 		<div class="products-container">
-			<% for (var i = 0; i<recommendations[suggested].length; i++){
-				var reco = recommendations[suggested][i];
+			<% for (var i = 0; i<recommendations[current].length; i++){
+				var reco = recommendations[current][i];
 
 				%>
 				<div class="product">

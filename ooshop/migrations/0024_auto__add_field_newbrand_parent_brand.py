@@ -31,7 +31,7 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'parent_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['dalliz.Category']", 'null': 'True'}),
             'position': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'tags': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['apps.tags.Tag']", 'symmetrical': 'False'}),
+            'tags': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['tags.Tag']", 'symmetrical': 'False'}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'null': 'True'})
         },
         u'dalliz.category_main': {
@@ -226,7 +226,7 @@ class Migration(SchemaMigration):
             'package_unit': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'reference': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'unique': 'True', 'null': 'True'}),
             'stemmed_text': ('django.db.models.fields.TextField', [], {'max_length': '9999999999999999999999L', 'null': 'True'}),
-            'tag': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'ooshop_product_tag_dalliz_tag'", 'symmetrical': 'False', 'to': u"orm['apps.tags.Tag']"}),
+            'tag': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'ooshop_product_tag_dalliz_tag'", 'symmetrical': 'False', 'to': u"orm['tags.Tag']"}),
             'unit': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['ooshop.Unit']", 'null': 'True'}),
             'updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'null': 'True'})
@@ -284,7 +284,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
-        u'apps.tags.Tag': {
+        u'tags.Tag': {
             'Meta': {'object_name': 'Tag'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})

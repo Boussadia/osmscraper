@@ -8,93 +8,16 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting model 'PossibleMatch'
-        db.delete_table(u'matcher_possiblematch')
+        # Adding field 'Cart_content.osm_suggested_from'
+        db.add_column(u'auchan_cart_content', 'osm_suggested_from',
+                      self.gf('django.db.models.fields.CharField')(default='monoprix', max_length=100),
+                      keep_default=False)
 
-
-        # Changing field 'NoProductSimilarity.monoprix_product'
-        db.alter_column(u'matcher_noproductsimilarity', 'monoprix_product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['monoprix.Product'], null=True))
-
-        # Changing field 'NoProductSimilarity.ooshop_product'
-        db.alter_column(u'matcher_noproductsimilarity', 'ooshop_product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.Product'], null=True))
-
-        # Changing field 'BrandSimilarity.ooshop_brand'
-        db.alter_column(u'matcher_brandsimilarity', 'ooshop_brand_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.Brand'], null=True))
-
-        # Changing field 'BrandSimilarity.dalliz_brand'
-        db.alter_column(u'matcher_brandsimilarity', 'dalliz_brand_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['dalliz.Brand'], null=True))
-
-        # Changing field 'BrandSimilarity.monoprix_brand'
-        db.alter_column(u'matcher_brandsimilarity', 'monoprix_brand_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['monoprix.Brand'], null=True))
-
-        # Changing field 'ProductMatch.monoprix_product'
-        db.alter_column(u'matcher_productmatch', 'monoprix_product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['monoprix.Product'], unique=True, null=True))
-
-        # Changing field 'ProductMatch.ooshop_product'
-        db.alter_column(u'matcher_productmatch', 'ooshop_product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.Product'], unique=True, null=True))
-
-        # Changing field 'BrandMatch.ooshop_brand'
-        db.alter_column(u'matcher_brandmatch', 'ooshop_brand_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.Brand'], null=True))
-
-        # Changing field 'BrandMatch.dalliz_brand'
-        db.alter_column(u'matcher_brandmatch', 'dalliz_brand_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['dalliz.Brand']))
-
-        # Changing field 'BrandMatch.monoprix_brand'
-        db.alter_column(u'matcher_brandmatch', 'monoprix_brand_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['monoprix.Brand'], null=True))
-
-        # Changing field 'ProductSimilarity.ooshop_product'
-        db.alter_column(u'matcher_productsimilarity', 'ooshop_product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.Product'], null=True))
-
-        # Changing field 'ProductSimilarity.monoprix_product'
-        db.alter_column(u'matcher_productsimilarity', 'monoprix_product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['monoprix.Product'], null=True))
 
     def backwards(self, orm):
-        # Adding model 'PossibleMatch'
-        db.create_table(u'matcher_possiblematch', (
-            ('ooshop_product', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.NewProduct'], null=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('monoprix_product', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['monoprix.NewProduct'], null=True)),
-            ('auchan_product', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auchan.Product'], null=True)),
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-        ))
-        db.send_create_signal(u'matcher', ['PossibleMatch'])
+        # Deleting field 'Cart_content.osm_suggested_from'
+        db.delete_column(u'auchan_cart_content', 'osm_suggested_from')
 
-
-        # Changing field 'NoProductSimilarity.monoprix_product'
-        db.alter_column(u'matcher_noproductsimilarity', 'monoprix_product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['monoprix.NewProduct'], null=True))
-
-        # Changing field 'NoProductSimilarity.ooshop_product'
-        db.alter_column(u'matcher_noproductsimilarity', 'ooshop_product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.NewProduct'], null=True))
-
-        # Changing field 'BrandSimilarity.ooshop_brand'
-        db.alter_column(u'matcher_brandsimilarity', 'ooshop_brand_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.NewBrand'], null=True))
-
-        # Changing field 'BrandSimilarity.dalliz_brand'
-        db.alter_column(u'matcher_brandsimilarity', 'dalliz_brand_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['dalliz.NewBrand'], null=True))
-
-        # Changing field 'BrandSimilarity.monoprix_brand'
-        db.alter_column(u'matcher_brandsimilarity', 'monoprix_brand_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['monoprix.NewBrand'], null=True))
-
-        # Changing field 'ProductMatch.monoprix_product'
-        db.alter_column(u'matcher_productmatch', 'monoprix_product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['monoprix.NewProduct'], unique=True, null=True))
-
-        # Changing field 'ProductMatch.ooshop_product'
-        db.alter_column(u'matcher_productmatch', 'ooshop_product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.NewProduct'], unique=True, null=True))
-
-        # Changing field 'BrandMatch.ooshop_brand'
-        db.alter_column(u'matcher_brandmatch', 'ooshop_brand_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.NewBrand'], null=True))
-
-        # Changing field 'BrandMatch.dalliz_brand'
-        db.alter_column(u'matcher_brandmatch', 'dalliz_brand_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['dalliz.NewBrand']))
-
-        # Changing field 'BrandMatch.monoprix_brand'
-        db.alter_column(u'matcher_brandmatch', 'monoprix_brand_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['monoprix.NewBrand'], null=True))
-
-        # Changing field 'ProductSimilarity.ooshop_product'
-        db.alter_column(u'matcher_productsimilarity', 'ooshop_product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['ooshop.NewProduct'], null=True))
-
-        # Changing field 'ProductSimilarity.monoprix_product'
-        db.alter_column(u'matcher_productsimilarity', 'monoprix_product_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['monoprix.NewProduct'], null=True))
 
     models = {
         u'auchan.brand': {
@@ -103,8 +26,36 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
             'parent_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Brand']", 'null': 'True'})
         },
+        u'auchan.cart': {
+            'Meta': {'object_name': 'Cart'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'osm': ('django.db.models.fields.CharField', [], {'default': "'auchan'", 'max_length': '9999'}),
+            'products': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auchan.Product']", 'through': u"orm['auchan.Cart_content']", 'symmetrical': 'False'})
+        },
+        u'auchan.cart_content': {
+            'Meta': {'unique_together': "(('cart', 'product'),)", 'object_name': 'Cart_content'},
+            'cart': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Cart']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_match': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_suggested': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_user_added': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'is_user_set': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'monoprix_content': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'auchan_monoprix_related_content'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': u"orm['monoprix.Cart_content']"}),
+            'ooshop_content': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'auchan_ooshop_related_content'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': u"orm['ooshop.Cart_content']"}),
+            'osm_suggested_from': ('django.db.models.fields.CharField', [], {'default': "'monoprix'", 'max_length': '100'}),
+            'product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Product']"}),
+            'quantity': ('django.db.models.fields.IntegerField', [], {'default': '0'})
+        },
+        u'auchan.cart_history': {
+            'Meta': {'ordering': "['cart', '-created']", 'object_name': 'Cart_history'},
+            'cart': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Cart']"}),
+            'computed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'price': ('django.db.models.fields.FloatField', [], {'default': '0'})
+        },
         u'auchan.category': {
-            'Meta': {'unique_together': "(('name', 'parent_category'),)", 'object_name': 'Category'},
+            'Meta': {'unique_together': "(('name', 'parent_category', 'url'),)", 'object_name': 'Category'},
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'dalliz_category': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'auchan_category_dalliz_category'", 'symmetrical': 'False', 'to': u"orm['dalliz.Category']"}),
             'exists': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
@@ -112,7 +63,18 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'parent_category': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Category']", 'null': 'True'}),
             'updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'auto_now_add': 'True', 'blank': 'True'}),
-            'url': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'unique': 'True', 'null': 'True'})
+            'url': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'null': 'True'})
+        },
+        u'auchan.history': {
+            'Meta': {'ordering': "['product', '-created']", 'object_name': 'History'},
+            'availability': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'html': ('django.db.models.fields.TextField', [], {'max_length': '9999999999999999999999L', 'null': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'price': ('django.db.models.fields.FloatField', [], {}),
+            'product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Product']"}),
+            'shipping_area': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.ShippingArea']", 'null': 'True'}),
+            'unit_price': ('django.db.models.fields.FloatField', [], {'null': 'True'})
         },
         u'auchan.product': {
             'Meta': {'object_name': 'Product'},
@@ -144,6 +106,30 @@ class Migration(SchemaMigration):
             'url': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'null': 'True'}),
             'valeur_nutritionnelle': ('django.db.models.fields.TextField', [], {'null': 'True'})
         },
+        u'auchan.promotion': {
+            'Meta': {'unique_together': "(('reference', 'shipping_area'),)", 'object_name': 'Promotion'},
+            'after': ('django.db.models.fields.FloatField', [], {}),
+            'availability': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'before': ('django.db.models.fields.FloatField', [], {}),
+            'content': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auchan.Product']", 'symmetrical': 'False'}),
+            'end': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
+            'html': ('django.db.models.fields.TextField', [], {'max_length': '9999999999999999999999L', 'null': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'image_url': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'null': 'True'}),
+            'reference': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'null': 'True'}),
+            'shipping_area': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.ShippingArea']", 'null': 'True'}),
+            'start': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
+            'type': ('django.db.models.fields.CharField', [], {'default': "'u'", 'max_length': '1'}),
+            'unit_price': ('django.db.models.fields.FloatField', [], {'null': 'True'}),
+            'url': ('django.db.models.fields.CharField', [], {'max_length': '9999', 'null': 'True'})
+        },
+        u'auchan.shippingarea': {
+            'Meta': {'object_name': 'ShippingArea'},
+            'city_name': ('django.db.models.fields.TextField', [], {'null': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_shipping_area': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'postal_code': ('django.db.models.fields.TextField', [], {'null': 'True'})
+        },
         u'auchan.tag': {
             'Meta': {'object_name': 'Tag'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -153,13 +139,6 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Unit'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        u'dalliz.brand': {
-            'Meta': {'object_name': 'Brand'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_mdd': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
-            'parent_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['dalliz.Brand']", 'null': 'True'})
         },
         u'dalliz.category': {
             'Meta': {'unique_together': "(('name', 'parent_category'),)", 'object_name': 'Category'},
@@ -175,76 +154,31 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '10'})
         },
-        u'apps.matcher.baseword': {
-            'Meta': {'object_name': 'BaseWord'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'stem': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['apps.matcher.Stem']"}),
-            'text': ('django.db.models.fields.TextField', [], {'unique': 'True', 'null': 'True'})
-        },
-        u'apps.matcher.brandmatch': {
-            'Meta': {'unique_together': "(('dalliz_brand', 'auchan_brand'), ('dalliz_brand', 'ooshop_brand'), ('dalliz_brand', 'monoprix_brand'))", 'object_name': 'BrandMatch'},
-            'auchan_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Brand']", 'null': 'True'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'dalliz_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['dalliz.Brand']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'monoprix_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['monoprix.Brand']", 'null': 'True'}),
-            'ooshop_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['ooshop.Brand']", 'null': 'True'})
-        },
-        u'apps.matcher.brandsimilarity': {
-            'Meta': {'object_name': 'BrandSimilarity'},
-            'auchan_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Brand']", 'null': 'True'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'dalliz_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['dalliz.Brand']", 'null': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'index_name': ('django.db.models.fields.TextField', [], {}),
-            'monoprix_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['monoprix.Brand']", 'null': 'True'}),
-            'ooshop_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['ooshop.Brand']", 'null': 'True'}),
-            'query_name': ('django.db.models.fields.TextField', [], {}),
-            'score': ('django.db.models.fields.FloatField', [], {})
-        },
-        u'apps.matcher.matcherlog': {
-            'Meta': {'object_name': 'MatcherLog'},
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.TextField', [], {}),
-            'type': ('django.db.models.fields.TextField', [], {})
-        },
-        u'apps.matcher.noproductsimilarity': {
-            'Meta': {'unique_together': "(('monoprix_product', 'ooshop_product'), ('monoprix_product', 'auchan_product'), ('ooshop_product', 'auchan_product'))", 'object_name': 'NoProductSimilarity'},
-            'auchan_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Product']", 'null': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'monoprix_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['monoprix.Product']", 'null': 'True'}),
-            'ooshop_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['ooshop.Product']", 'null': 'True'})
-        },
-        u'apps.matcher.productmatch': {
-            'Meta': {'object_name': 'ProductMatch'},
-            'auchan_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Product']", 'unique': 'True', 'null': 'True'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'monoprix_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['monoprix.Product']", 'unique': 'True', 'null': 'True'}),
-            'ooshop_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['ooshop.Product']", 'unique': 'True', 'null': 'True'})
-        },
-        u'apps.matcher.productsimilarity': {
-            'Meta': {'object_name': 'ProductSimilarity'},
-            'auchan_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Product']", 'null': 'True'}),
-            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'index_name': ('django.db.models.fields.TextField', [], {}),
-            'monoprix_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['monoprix.Product']", 'null': 'True'}),
-            'ooshop_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['ooshop.Product']", 'null': 'True'}),
-            'query_name': ('django.db.models.fields.TextField', [], {}),
-            'score': ('django.db.models.fields.FloatField', [], {})
-        },
-        u'apps.matcher.stem': {
-            'Meta': {'object_name': 'Stem'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'word': ('django.db.models.fields.TextField', [], {'unique': 'True', 'null': 'True'})
-        },
         u'monoprix.brand': {
             'Meta': {'object_name': 'Brand'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
             'parent_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['monoprix.Brand']", 'null': 'True'})
+        },
+        u'monoprix.cart': {
+            'Meta': {'object_name': 'Cart'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'osm': ('django.db.models.fields.CharField', [], {'default': "'monoprix'", 'max_length': '9999'}),
+            'products': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['monoprix.Product']", 'through': u"orm['monoprix.Cart_content']", 'symmetrical': 'False'})
+        },
+        u'monoprix.cart_content': {
+            'Meta': {'unique_together': "(('cart', 'product'),)", 'object_name': 'Cart_content'},
+            'auchan_content': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'monoprix_auchan_related_content'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': u"orm['auchan.Cart_content']"}),
+            'cart': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['monoprix.Cart']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_match': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_suggested': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_user_added': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'is_user_set': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'ooshop_content': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'monoprix_ooshop_related_content'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': u"orm['ooshop.Cart_content']"}),
+            'osm_suggested_from': ('django.db.models.fields.CharField', [], {'default': "'ooshop'", 'max_length': '100'}),
+            'product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['monoprix.Product']"}),
+            'quantity': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
         u'monoprix.category': {
             'Meta': {'unique_together': "(('name', 'parent_category'),)", 'object_name': 'Category'},
@@ -299,6 +233,26 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
             'parent_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['ooshop.Brand']", 'null': 'True'})
         },
+        u'ooshop.cart': {
+            'Meta': {'object_name': 'Cart'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'osm': ('django.db.models.fields.CharField', [], {'default': "'ooshop'", 'max_length': '9999'}),
+            'products': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['ooshop.Product']", 'through': u"orm['ooshop.Cart_content']", 'symmetrical': 'False'})
+        },
+        u'ooshop.cart_content': {
+            'Meta': {'unique_together': "(('cart', 'product'),)", 'object_name': 'Cart_content'},
+            'auchan_content': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'ooshop_auchan_related_content'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': u"orm['auchan.Cart_content']"}),
+            'cart': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['ooshop.Cart']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_match': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_suggested': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_user_added': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'is_user_set': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'monoprix_content': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'ooshop_monoprix_related_content'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': u"orm['monoprix.Cart_content']"}),
+            'osm_suggested_from': ('django.db.models.fields.CharField', [], {'default': "'auchan'", 'max_length': '100'}),
+            'product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['ooshop.Product']"}),
+            'quantity': ('django.db.models.fields.IntegerField', [], {'default': '0'})
+        },
         u'ooshop.category': {
             'Meta': {'unique_together': "(('name', 'parent_category'),)", 'object_name': 'Category'},
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -347,7 +301,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
-        u'tags.Tag': {
+        u'tags.tag': {
             'Meta': {'object_name': 'Tag'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
@@ -355,4 +309,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['apps.matcher']
+    complete_apps = ['auchan']

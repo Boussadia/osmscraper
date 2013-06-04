@@ -29,7 +29,7 @@ define([
 				this.bindTo(this.cart, 'change', this.render);
 
 				// Substitution View (apart from other views)
-				this.substitutionView = new SubstitutionView({el: $('#substitution')});
+				this.substitutionView = new SubstitutionView({el: $('#substitution'), 'osms': this.osms});
 				this.vent.on('product:recomandation', this.substitution, this);
 
 			},
@@ -100,8 +100,12 @@ define([
 			},
 			substitution: function(product){
 				var that = this;
+				var osm_name = product.get('osm_suggested_from');
 				product.fetch({
-					'osm_name': that.cart.get('name'),
+					'data':{
+						'osm_name': osm_name,
+					},
+					'reference': product.toJSON()[osm_name+'_product'].reference,
 					success: function(){
 						that.substitutionView.product = product;
 						that.substitutionView.suggested = that.cart.suggested;

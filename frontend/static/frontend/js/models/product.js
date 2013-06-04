@@ -35,9 +35,9 @@ define([
 			},
 			fetch: function(options){
 				options = options ? _.clone(options) : {};
-				var reference = this.get('product').reference;
+				var reference = options.reference || this.get('product').reference;
 				options.url = '/api/product/reference/'+reference+'/recommendations/';
-				return BaseModel.prototype.fetch.apply(this, [options]);;
+				return BaseModel.prototype.fetch.apply(this, [options]);
 			},
 			set_quantity: function(options){
 				options || (options = {});

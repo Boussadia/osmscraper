@@ -151,6 +151,7 @@ class Cart_content(models.Model):
 	is_user_added = models.BooleanField(default=True)
 	is_match = models.BooleanField(default=False)
 	is_suggested = models.BooleanField(default=False)
+	osm_suggested_from = models.CharField(max_length=100, default = 'ooshop')
 	is_user_set = models.BooleanField(default=False)
 
 	# Related products
