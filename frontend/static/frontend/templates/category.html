@@ -8,13 +8,13 @@
 		<span></span>
 	</div>
 
-	<%if (count>threshold && !touch) {%>
+	<%if (count>threshold) {%>
 	<div class="controller left" data-id='<%= id %>'></div>
 	<%}%>
 	<div class='inner'>
 		<div class='products-container transition-l'></div>
 	</div>
-	<%if (count>threshold && !touch) {%>
+	<%if (count>threshold) {%>
 		<div class="controller right" data-id='<%= id %>'></div>
 	<%}%>
 </div>

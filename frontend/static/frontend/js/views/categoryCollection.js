@@ -1,13 +1,12 @@
 define([
 	'underscore',
 	'jquery',
-	'modernizr',
 	'collections/category',
 	'views/base',
 	'views/products',
 	'text!../../templates/category.html'
 	],
-	function(_, $, Modernizr, CategoryCollection, BaseView, ProductsView, categoryTemplate){
+	function(_, $, CategoryCollection, BaseView, ProductsView, categoryTemplate){
 
 		var CategoryCollectionView = BaseView.extend({
 			className: 'category',
@@ -30,7 +29,6 @@ define([
 						var data = category.toJSON();
 						products.count = category.get('count');
 						data['threshold'] = that.THRESHOLD_CONTROLLER;
-						data['touch'] = Modernizr.touch;
 						var rendered = that.template(data);
 						that.$el.append(rendered);
 						var view = new ProductsView({'products': products,'el': that.$el.find('.products:last-child .products-container'), 'vent': that.vent});
