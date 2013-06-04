@@ -644,6 +644,10 @@ footer {
 	float: left;
 }
 
+#social.mini-container{
+	width: 60%;
+}
+
 	div.footer-top h2 {
 	position: relative;
 	top: 3px;

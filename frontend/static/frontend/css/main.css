@@ -178,6 +178,7 @@ header.top .block-right{
 #top-icon-play{
 	position: relative;
 	cursor: pointer;
+	margin-top: 5px;
 }
 
 #top-icon-play img{
@@ -933,6 +934,10 @@ div.promo-type {
 	text-align: center;
 }
 
+#cart .mask-bloc{
+	background: none;
+}
+
 
 
 @media only screen and (min-width: 1172px) {
@@ -1203,7 +1208,7 @@ div.promo-type {
 	position: relative;
 	text-align: center;
 	top: 5px;
-	width: 160px;
+	width: 180px;
 }
 
 .cta {
@@ -1229,7 +1234,7 @@ div.promo-type {
 
 .cta.commander{
 	width: 135px;
-	padding-top: 9px;
+	padding-top: 7px;
 	font-size: 17px;
 }
 
@@ -1719,6 +1724,7 @@ SWITCH OSMS ********
 .osms-switch-inactive .cta{
 	font-size: 14px;
 	margin-top: 40px;
+	padding-top: 8px;
 }
 
 .osms-switch div:last-child {
@@ -2074,11 +2080,15 @@ footer {
 }
 
 .mini-container {
-	width: 50%;
+	width: 40%;
 	height: 100%;
 	position: relative;
 	display: inline-block;
 	float: left;
+}
+
+#social.mini-container{
+	width: 60%;
 }
 
 	div.footer-top h2 {
@@ -2127,6 +2137,7 @@ footer {
 		border: none !important;
 		clear: none;
 		line-height: 100%;
+		margin-left: 10px;
 	}
 
 		.social-widget li a {
