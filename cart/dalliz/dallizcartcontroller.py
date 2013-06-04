@@ -173,7 +173,6 @@ class DallizCartController(object):
 		if self.carts[self.osm] is None:
 			self.carts[self.osm] = DallizCartController.AVAILABLE_OSMS[self.osm]['class']()
 		cart_content = self.carts[self.osm].add_product(product, quantity, is_user_added = True, is_match = False, is_suggested = False, is_user_set = False)
-		# self.carts[self.osm].compute_price()
 
 		equivalent_contents = {}
 
@@ -218,7 +217,6 @@ class DallizCartController(object):
 							other_content.save()
 						except Exception, e:
 							pass
-			# self.carts[osm].compute_price()
 
 	@osm
 	def remove_product(self, product, quantity = None):
@@ -250,7 +248,6 @@ class DallizCartController(object):
 									connection._rollback()
 
 		self.carts[self.osm].remove_product(product, quantity)
-		# self.carts[self.osm].compute_price()
 
 
 	def empty(self):
