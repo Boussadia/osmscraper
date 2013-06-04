@@ -7,7 +7,7 @@ define([
 
 		var ProductView = BaseView.extend({
 			// maximum length of product name,
-			MAX_NAME_LENGTH: 50,
+			MAX_NAME_LENGTH: 40,
 			tagName: 'div',
 			className: 'product',
 			model: ProductModel,

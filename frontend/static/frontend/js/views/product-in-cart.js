@@ -12,8 +12,8 @@ define([
 			try{
 				this.$el.empty();
 				var data = this.product.toJSON();
-				if (data.name.length > this.MAX_NAME_LENGTH){
-					data.name = data.name.substring(0, this.MAX_NAME_LENGTH-3)+'...';
+				if (data.product.name.length > this.MAX_NAME_LENGTH){
+					data.product.name = data.product.name.substring(0, this.MAX_NAME_LENGTH-3)+'...';
 				}
 				this.$el.append(this.template(data));
 			}catch(e){}
