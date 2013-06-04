@@ -15,7 +15,7 @@ urlpatterns = patterns('',
     url(r'auth/logout/?$', views.UserAPI.as_view()),
 
 	# Category
-    url(r'categories/all/?$', cache_page(60 * 60 * 24)(views.CategoryAll.as_view())),
+    url(r'categories/all/?$', cache_page(60 * 60 * 24 * 7)(views.CategoryAll.as_view())),
     url(r'categories/id/(?P<id_category>(\d+))/subs/?$', cache_page(60 * 60 * 24)(views.CategorySimple.as_view())),
     url(r'categories/id/(?P<id_category>(\d+))/(?P<type_fetched>products|promotions)/(?P<key>all|mid|end|top)/?$', cache_page(60 * 60 * 24)(views.CategoryProducts.as_view())),
     url(r'categories/id/(?P<id_category>(\d+))/products/matching/?$', cache_page(60 * 60 * 24)(views.CategoryMatching.as_view())),

@@ -8,6 +8,7 @@ define([
 			url:'/api/osm',
 			model: OsmModel,
 			initialize: function(){
+				this.vent.on('cart:newproduct', this.fetch, this);
 			},
 			get_active_osm: function(){
 				var active_osm = _.find(this.models, function(osm, i){

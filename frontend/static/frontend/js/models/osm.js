@@ -10,10 +10,6 @@ define([
 				active: true
 			},
 			initialize: function(attributes, options){
-				this.vent.on('osm:current', function(osm){
-					var active = (osm.name === this.get('name'));
-					this.set('active', active);
-				}, this);
 			},
 			save: function(attributes, options){
 				attributes || (attributes = {});
