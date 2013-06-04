@@ -24,14 +24,14 @@
 
 			<% if( !product.history[0].is_promotion ){%>
 				<div class="price-bloc">
-					<p><%= product.history[0].price %> €</p>
-					<p><%= product.history[0].unit_price %>  €/<%= product.unit.name%></p>
+					<p><%= product.history[0].price %>€</p>
+					<p><%= product.history[0].unit_price %> €/<%= product.unit.name%></p>
 				</div>
 			<%}else{%>
 				<div class="price-bloc-promo">
-					<p><%= product.history[0].before %> €</p>
-					<p><%= product.history[0].price %>  €</p>
-					<p><%= product.history[0].unit_price %>  €/<%= product.unit.name%></p>
+					<p><%= product.history[0].before %>€</p>
+					<p><%= product.history[0].price %> €</p>
+					<p><%= product.history[0].unit_price %> €/<%= product.unit.name%></p>
 				</div>
 			<%}%>
 		</div>
@@ -64,14 +64,14 @@
 
 						<% if( !reco.product.history[0].is_promotion ){%>
 							<div class="price-bloc">
-								<p><%= reco.product.history[0].price %> €</p>
-								<p><%= reco.product.history[0].unit_price %>  €/<%= reco.product.unit.name%></p>
+								<p><%= reco.product.history[0].price %>€</p>
+								<p><%= reco.product.history[0].unit_price %> €/<%= reco.product.unit.name%></p>
 							</div>
 						<%}else{%>
 							<div class="price-bloc-promo">
-								<p><%= reco.product.history[0].before %> €</p>
-								<p><%= reco.product.history[0].price %>  €</p>
-								<p><%= reco.product.history[0].unit_price %>  €/<%= reco.product.unit.name%></p>
+								<p><%= reco.product.history[0].before %>€</p>
+								<p><%= reco.product.history[0].price %> €</p>
+								<p><%= reco.product.history[0].unit_price %> €/<%= reco.product.unit.name%></p>
 							</div>
 						<%}%>
 						<a class="cta comparer">Choisir</a>

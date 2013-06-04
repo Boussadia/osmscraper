@@ -32,8 +32,8 @@
 
 				<div class="qte">
 					<div class="price-bloc price-mask">
-						<p><%= product.history[0].price %> €</p>
-						<p><%= product.history[0].unit_price %>  €/<%= product.unit.name%></p>
+						<p><%= product.history[0].price %>€</p>
+						<p><%= product.history[0].unit_price %> €/<%= product.unit.name%></p>
 					</div>
 					<a class="plus no-hijax">+</a>
 					<a class="minus no-hijax">-</a>
@@ -44,9 +44,9 @@
 
 				<div class="qte">
 					<div class="price-bloc-promo price-mask">
-						<p class="promo-line"><%= product.history[0].before %> €</p>
-						<p><%= product.history[0].price %>  €</p>
-						<p><%= product.history[0].unit_price %>  €/<%= product.unit.name%></p>
+						<p class="promo-line"><%= product.history[0].before %>€</p>
+						<p><%= product.history[0].price %> €</p>
+						<p><%= product.history[0].unit_price %> €/<%= product.unit.name%></p>
 					</div>
 					<a class="plus no-hijax">+</a>
 					<a class="minus no-hijax">-</a>
@@ -60,14 +60,14 @@
 	<% }else{%>
 		<% if( !product.history[0].is_promotion ){%>
 			<div class="price-bloc">
-				<p><%= product.history[0].price %> €</p>
-				<p><%= product.history[0].unit_price %>  €/<%= unit.name%></p>
+				<p><%= product.history[0].price %>€</p>
+				<p><%= product.history[0].unit_price %> €/<%= unit.name%></p>
 			</div>
 		<%}else{%>
 			<div class="price-bloc-promo">
-				<p><%= product.history[0].before %> €</p>
-				<p><%= product.history[0].price %>  €</p>
-				<p><%= product.history[0].unit_price %>  €/<%= product.unit.name%></p>
+				<p><%= product.history[0].before %>€</p>
+				<p><%= product.history[0].price %> €</p>
+				<p><%= product.history[0].unit_price %> €/<%= product.unit.name%></p>
 			</div>
 		<%}%>
 	<% } %>
