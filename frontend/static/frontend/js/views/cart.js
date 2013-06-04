@@ -99,7 +99,7 @@ define([
 				this.$el.hasClass('open') ? this.$el.removeClass('open') : this.$el.addClass('open');
 			},
 			substitution: function(product){
-				var that = this; 
+				var that = this;
 				product.fetch({
 					'osm_name': that.cart.get('name'),
 					success: function(){

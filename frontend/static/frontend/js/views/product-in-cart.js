@@ -19,6 +19,12 @@ define([
 			}catch(e){}
 			return this;
 		},
+		events: {
+			'click a.add-cart': 'addToCart',
+			'click a.plus': 'addToCart',
+			'click a.minus': 'removeFromCart',
+			'click .unavailable-mask div': 'showSubstitution',
+		},
 		addToCart: function(){
 			var quantity = this.product.get('quantity');
 			this.product.set('quantity', quantity + 1);
@@ -35,6 +41,9 @@ define([
 				})
 			}
 
+		},
+		showSubstitution: function(e){
+			this.vent.trigger('product:recomandation', this.product);
 		}
 	});
 

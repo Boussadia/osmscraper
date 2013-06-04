@@ -1,4 +1,10 @@
 <div class="box">
+	<%if (is_suggested){%>
+		<div class="unavailable-mask">
+			<div></div>
+			<div></div>
+		</div>
+	<%}%>
 	<div class="top-bloc">
 		<div class="img-bloc">
 			<img src="<%= product.image_url %>">
