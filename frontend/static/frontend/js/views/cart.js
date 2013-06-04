@@ -1,13 +1,16 @@
 define([
 	'underscore',
 	'jquery',
+	'collections/products',
 	'models/cart',
 	'views/base',
 	'views/category-in-cart',
 	'views/substitution',
+	'views/product-in-cart',
 	'text!../../templates/cart.html',
+	'text!../../templates/product.html',
 	'jqueryUi'
-	], function(_, $, CartModel, BaseView, CategoryInCartView, SubstitutionView, cartTemplate){
+	], function(_, $, ProductsCollection, CartModel, BaseView, CategoryInCartView, SubstitutionView, ProductInCartView, cartTemplate, productTemplate){
 
 		var CartView = BaseView.extend({
 			el: "div#cart",
@@ -41,16 +44,34 @@ define([
 			
 
 				// Categories in cart
+				// _.each(data['content'], function(category, i){
+				// 	var view = new CategoryInCartView({'content': category, 'suggested':this.cart.suggested, 'vent': this.vent});
+				// 	this.addSubView(view);
+				// 	this.$el.find('.scrollarea').append(view.render().el);
+				// }, this);
+
+
+				// Temporary cart rendering
+				var products_array = [];
+				// // Categories in cart
 				_.each(data['content'], function(category, i){
-					var view = new CategoryInCartView({'content': category, 'suggested':this.cart.suggested, 'vent': this.vent});
+					products_array = products_array.concat(category.products);
+				}, this);
+
+				products_array = _.uniq(products_array, false, function(element){
+					return element.product.reference
+				});
+
+				var products = new ProductsCollection(products_array, {'vent': this.vent});
+
+				products.each(function(product){
+					this.bindTo(product, 'change', this.render);
+					var view = new ProductInCartView({'product': product, 'vent': this.vent});
 					this.addSubView(view);
 					this.$el.find('.scrollarea').append(view.render().el);
 				}, this);
-				if(this.cart.get('name') !== this.cart.suggested){
-
-
-					// $('#cart-recap-accordion').accordion();
-				}
+				
+	
 				return this;
 			},
 			show: function(){

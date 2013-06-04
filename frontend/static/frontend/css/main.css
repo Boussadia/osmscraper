@@ -1338,6 +1338,10 @@ button:hover, button:focus, .button:hover, .button:focus {
 															text-align: center;
 														}
 
+														#cart-header-content{
+															width: 100% !important; 
+														}
+
 														#sel-osm-cart {
 															border-right: 1px solid #e2e3e5;
 														}
