@@ -593,10 +593,14 @@ li.has-dropdown.show {
 	border-bottom: 1px solid #e2e3e5;
 	float: left;
 	padding-left: 10px;
+}
+
+
+.products .inner{
 	overflow: hidden;
 }
 
-.carousel-control{
+.products div.controller{
 	width: 44px;
 	height: 100px;
 	background-image: url(../img/main/carousel-control.png);
@@ -606,22 +610,16 @@ li.has-dropdown.show {
 	z-index: 1;
 	top: 63px;
 	cursor: pointer;
-	display: none;
 }
 
-.carousel-control.right{
+.products div.controller.right{
 	background-position: -44px 0px;
-	right: -5px;
+	right: -24px;
 }
 
-.carousel-control.left{
+.products div.controller.left{
 	background-position: 0;
 	opacity: .5;
-}
-
-.products .inner{
-	overflow-x: scroll;
-	overflow-y: hidden;
 }
 
 .products .inner.touch{
@@ -1379,6 +1377,11 @@ button:hover, button:focus, .button:hover, .button:focus {
 .transition-wr{
 	transition: width 0.75s, right 0.75s;
 	-webkit-transition: width 0.75s, right 0.75s;
+}
+
+.transition-l{
+	transition: left 0.75s;
+	-webkit-transition: left 0.75s;
 }
 
 .transition-w{

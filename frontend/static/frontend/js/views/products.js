@@ -15,6 +15,7 @@ define([
 
 			// Products width
 			PRODUCT_WIDTH: 175,
+			PRODUCT_WIDTH_NO_TOUCH: null,
 			rendered: false,
 
 			tagName:'div',
@@ -24,6 +25,7 @@ define([
 			initialize: function(options){
 				options || (options = {});
 				this.products = options.products || new ProductsCollection([], {'vent': this.vent});
+				this.page = 1;
 				var that = this;
 				this.bindTo(this.products, 'request', function(){
 					that.fetching = true;
@@ -53,17 +55,11 @@ define([
 
 				// Adding plus button if more products are available to fetch
 				if(!Modernizr.touch){
-					var plus;
-					if (this.$el.find('.add-box').length === 0){
-						plus = _.template(plusTemplate)();
-					}else{
-						plus = this.$el.find('.add-box').parent().remove();
-						// console.log(plus)
-					}
 
-					if (this.products.length < this.products.count) this.$el.append(plus);
 					var outerWidth = this.$el.find('.product').outerWidth();
 					if(outerWidth){
+						if (!this.PRODUCT_WIDTH_NO_TOUCH) this.PRODUCT_WIDTH_NO_TOUCH = outerWidth;
+						outerWidth = this.PRODUCT_WIDTH_NO_TOUCH;
 						// Setting width
 						this.$el.find('.product').width(outerWidth+'px')
 						var products_count = this.$el.find('.product').length;
@@ -110,6 +106,53 @@ define([
 						more: true,
 						'vent': vent,
 					});
+				}
+			},
+			more: function(){
+				var nb_products_max = this.products.count;
+				var current_nb_products = this.products.length;
+				var current_page = this.page;
+				var products_per_page = this.products_per_page;
+				var nb_max_pages = Math.ceil(nb_products_max/products_per_page);
+				var max_current_page = Math.ceil(current_nb_products/products_per_page);
+
+				if(max_current_page === current_page && current_page < nb_max_pages && current_nb_products<nb_products_max){
+					// Fetch more product
+					this.getMoreProducts();
+					this.translation(1);
+				}else if(current_page < nb_max_pages){
+					this.translation(1);
+				}
+			},
+			less: function(){
+				var nb_products_max = this.products.count;
+				var current_nb_products = this.products.length;
+				var current_page = this.page;
+				var products_per_page = this.products_per_page;
+				var nb_max_pages = Math.ceil(nb_products_max/products_per_page);
+				var max_current_page = Math.ceil(current_nb_products/products_per_page);
+
+				if(current_page>1){
+					// Fetch more product
+					this.translation(-1);
+				}
+			},
+			translation: function(direction){
+				var width = this.PRODUCT_WIDTH_NO_TOUCH;
+				this.$el.css('position', 'relative');
+				var current_page = this.page;
+				var products_per_page = this.products_per_page;
+				if (direction === 1){
+					var left_offset = -current_page*products_per_page*this.PRODUCT_WIDTH_NO_TOUCH;
+					this.$el.css('left', left_offset+'px');
+					this.page = current_page +1;
+				}else{
+					var left_offset = -(current_page-2)*products_per_page*this.PRODUCT_WIDTH_NO_TOUCH;
+					if(left_offset<0) this.$el.css('left', left_offset+'px');
+					this.page = current_page - 1;
+					if (this.page<1) this.page = 1;
+					if(left_offset>=0) this.$el.css('left', '0px');
+					
 				}
 			}
 		})

@@ -9,7 +9,7 @@ define([
 
 		var ProductsCollections = BaseCollection.extend({
 			model: ProductModel,
-			NUM_INITIAL_PRODUCTS_TO_FETCH: 6,
+			NUM_INITIAL_PRODUCTS_TO_FETCH: 5,
 			TYPE_TO_FETCH: 'products',
 			
 			// key = 'top' or 'mid' or 'end'
@@ -29,9 +29,6 @@ define([
 				// If touch device, fetche
 				if (Modernizr.touch) this.NUM_INITIAL_PRODUCTS_TO_FETCH = 6;
 
-			},
-			parse: function(resp, xhr){
-				return resp;
 			},
 			fetch: function(options){
 				options = options ? _.clone(options) : {};
