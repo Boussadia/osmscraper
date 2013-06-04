@@ -10,21 +10,22 @@ define([
 				active: true
 			},
 			initialize: function(attributes, options){
+				this.vent.on('osm:current', function(osm){
+					var active = (osm.name === this.get('name'));
+					this.set('active', active);
+				}, this);
+				
 			},
 			save: function(attributes, options){
 				attributes || (attributes = {});
 				options || (options = {});
-				var vent = this.vent;
 				var that = this;
+				var vent = that.vent;
 				options.emulateJSON = true;
-				this.vent.trigger('osm:current', this.toJSON());
+				vent.trigger('osm:current', this.toJSON());
 
 				options.data = {
 					'new_name': this.get('name')
-				}
-				options.success = function(data, textStatus, jqXHR){
-					
-					// that.vent.trigger('route:category:force');
 				}
 
 				options.error = function(jqXHR, textStatus, errorThrown){
