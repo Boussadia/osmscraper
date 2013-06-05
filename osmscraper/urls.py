@@ -29,7 +29,7 @@ urlpatterns = patterns('',
     url(r'^mturk/', include('mturk.urls')),
 
      # Include dev frontend urls
-    url(r'^comparateur/', include('frontend.urls')),
+    url(r'^comparateur/', include('apps.frontend.urls')),
 
     # Tags creator app
     url(r'^backend/tags/(?P<id_category>(\d+))(/(?P<tags>(.+)))?/?$', 'apps.tags.views.tags'),

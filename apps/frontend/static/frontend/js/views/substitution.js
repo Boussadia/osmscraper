@@ -15,7 +15,6 @@ define([
 			var data = this.product.toJSON();
 			data['suggested'] = this.product.toJSON().osm_suggested_from;
 			data['current'] = this.osms.get_active_osm().get('name');
-			console.log(data);
 			this.$el.append(this.template(data));
 			var nb_products = this.$el.find('.products-container .product').length;
 			var width_product = this.$el.find('.products-container .product').outerWidth();

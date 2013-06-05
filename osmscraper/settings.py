@@ -150,7 +150,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'apps.api',
     'mturk',
-    'frontend',
+    'apps.frontend',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
