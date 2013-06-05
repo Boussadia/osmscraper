@@ -34,14 +34,14 @@ from monoprix.models import History as MonoprixHistory, Product as MonoprixProdu
 
 from ooshop.models import History as OoshopHistory, Product as OoshopProduct, Promotion as OoshopPromotion
 
-from api.renderer import ProductsCSVRenderer, ProductRecommendationCSVRenderer, NewProductsCSVRenderer
-from api.serializer.dalliz.serializer import CategorySerializer, UserSerializer, BrandSerializer
-from api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer, CartContentSerializer as AuchanCartContentSerializer
-from api.serializer.auchan.serializer import RecommendationSerializer as AuchanRecommendationSerializer
-from api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer, CartContentSerializer as MonoprixCartContentSerializer
-from api.serializer.monoprix.serializer import RecommendationSerializer as MonoprixRecommendationSerializer
-from api.serializer.ooshop.serializer import ProductSerializer as OoshopProductSerializer
-from api.serializer.ooshop.serializer import RecommendationSerializer as OoshopRecommendationSerializer, CartContentSerializer as OoshopCartContentSerializer
+from apps.api.renderer import ProductsCSVRenderer, ProductRecommendationCSVRenderer, NewProductsCSVRenderer
+from apps.api.serializer.dalliz.serializer import CategorySerializer, UserSerializer, BrandSerializer
+from apps.api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer, CartContentSerializer as AuchanCartContentSerializer
+from apps.api.serializer.auchan.serializer import RecommendationSerializer as AuchanRecommendationSerializer
+from apps.api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer, CartContentSerializer as MonoprixCartContentSerializer
+from apps.api.serializer.monoprix.serializer import RecommendationSerializer as MonoprixRecommendationSerializer
+from apps.api.serializer.ooshop.serializer import ProductSerializer as OoshopProductSerializer
+from apps.api.serializer.ooshop.serializer import RecommendationSerializer as OoshopRecommendationSerializer, CartContentSerializer as OoshopCartContentSerializer
 
 AVAILABLE_OSMS = [
 	{

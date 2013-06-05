@@ -148,7 +148,7 @@ INSTALLED_APPS = (
     'apps.tags',
     'cart',
     'rest_framework',
-    'api',
+    'apps.api',
     'mturk',
     'frontend',
     # Uncomment the next line to enable the admin:

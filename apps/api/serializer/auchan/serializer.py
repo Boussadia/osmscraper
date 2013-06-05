@@ -4,13 +4,12 @@
 from __future__ import absolute_import # Import because of modules names
 
 import datetime
-
 from django.utils.timezone import utc
 
 from rest_framework import serializers
 
-from ooshop.models import Product, History, Promotion, Cart_content
-from api.serializer.dalliz.serializer import DallizBrandField
+from auchan.models import Product, History, Promotion, Cart_content
+from apps.api.serializer.dalliz.serializer import DallizBrandField
 
 def merge_history_promotion(history, promotion, limit = 5):
 	"""
@@ -21,7 +20,7 @@ def merge_history_promotion(history, promotion, limit = 5):
 class DescriptionSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Product
-		fields = ('informations', 'ingredients', 'conservation', 'conseils', 'composition', 'avertissements')
+		fields = ('avantages', 'conservation', 'valeur_nutritionnelle', 'pratique', 'ingredients', 'complement')
 
 class PackageSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -49,7 +48,6 @@ class HistoryField(serializers.RelatedField):
 			}
 			for h in histories]
 
-
 		promotion_data = [{
 			'is_promotion': True,
 			'start': p.start,
@@ -62,8 +60,8 @@ class HistoryField(serializers.RelatedField):
 			'created': datetime.datetime(year = 2000, month = 1, day = 1).replace(tzinfo=utc) # Sometimes end and start are not provided (delaty in scraper)
 		} for p in promotions]
 
-		
-		
+
+
 		if 'type' in self.context and self.context['type'] == 'promotions':
 			return merge_history_promotion([], promotion_data)
 		else:
@@ -79,19 +77,10 @@ class PriceField(serializers.RelatedField):
 				'created': histories[0].created,
 				'price': histories[0].price,
 				'unit_price': histories[0].unit_price,
-				'shipping_area': (lambda x: x.id if x is not None else x)(histories[0].shipping_area),
+				'shipping_area': histories[0].shipping_area,
 				'availability': histories[0].availability
 			}
 		return price
-
-class PackageField(serializers.RelatedField):
-	def to_native(self, value):
-		package = {
-			'package_quantity': value['package_quantity'],
-			'package_measure': value['package_measure'],
-			'package_unit': value['package_unit'],
-		}
-		return package
 
 class QuantityInCart(serializers.IntegerField):
 	"""
@@ -122,7 +111,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Product
-		exclude = ('url', 'package_quantity', 'package_measure', 'package_unit', 'informations', 'ingredients', 'conservation', 'conseils', 'composition', 'avertissements', 'goodie', 'origine', 'stemmed_text', 'html', 'exists', 'id', 'comment', 'categories', 'dalliz_category', 'tag', 'created', 'updated')
+		exclude = ('url', 'avantages', 'conservation', 'valeur_nutritionnelle', 'pratique', 'ingredients', 'complement','package_quantity', 'package_measure', 'package_unit', 'stemmed_text', 'html', 'exists', 'id', 'comment', 'categories', 'dalliz_category', 'tag', 'created', 'updated')
 		depth = 1
 
 class HistorySerializer(serializers.ModelSerializer):
@@ -177,13 +166,15 @@ class CartContentSerializer(serializers.ModelSerializer):
 	"""
 
 	"""
-	from api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer
-	from api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer
+	from apps.api.serializer.ooshop.serializer import ProductSerializer as OoshopProductSerializer
+	from apps.api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer
 	product = ProductSerializer(source = 'product')
+	ooshop_product = OoshopProductSerializer(source='ooshop_content.product')
 	monoprix_product = MonoprixProductSerializer(source='monoprix_content.product')
-	auchan_product = AuchanProductSerializer(source='auchan_content.product')
+
 	class Meta:
 		model = Cart_content
 		exclude = ('id', 'cart')
 		depth = 1
+
 

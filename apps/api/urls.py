@@ -5,7 +5,7 @@ from django.conf.urls import patterns, url, include
 from django.http import HttpResponse
 from django.views.decorators.cache import cache_page
 
-from api import views
+from apps.api import views
 
 import rest_framework
 

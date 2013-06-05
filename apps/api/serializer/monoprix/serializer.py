@@ -3,13 +3,13 @@
 
 from __future__ import absolute_import # Import because of modules names
 
+from rest_framework import serializers
+
 import datetime
 from django.utils.timezone import utc
 
-from rest_framework import serializers
-
-from auchan.models import Product, History, Promotion, Cart_content
-from api.serializer.dalliz.serializer import DallizBrandField
+from monoprix.models import Product, History, Promotion, Cart_content
+from apps.api.serializer.dalliz.serializer import DallizBrandField
 
 def merge_history_promotion(history, promotion, limit = 5):
 	"""
@@ -20,7 +20,7 @@ def merge_history_promotion(history, promotion, limit = 5):
 class DescriptionSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Product
-		fields = ('avantages', 'conservation', 'valeur_nutritionnelle', 'pratique', 'ingredients', 'complement')
+		fields = ('description', 'ingredients', 'valeur_nutritionnelle', 'conservation', 'conseil', 'composition')
 
 class PackageSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -32,11 +32,11 @@ class HistoryField(serializers.RelatedField):
 		history_set = product.history_set
 		osm_location = self.context['osm']['location']
 		if osm_location is not None:
-			histories = history_set.filter(shipping_area__id = int(osm_location))[:5]
-			promotions = product.promotion_set.filter(type = Promotion.SIMPLE, shipping_area__id = int(osm_location))[:5]
+			histories = history_set.filter(store__id = int(osm_location))[:5]
+			promotions = product.promotion_set.filter(type = Promotion.SIMPLE, store__id = int(osm_location))[:5]
 		else:
-			histories = history_set.filter(shipping_area__isnull = True)[:5]
-			promotions = product.promotion_set.filter(type = Promotion.SIMPLE, shipping_area__isnull = True)[:5]
+			histories = history_set.filter(store__isnull = True)[:5]
+			promotions = product.promotion_set.filter(type = Promotion.SIMPLE, store__isnull = True)[:5]
 		history_data = [
 			{
 				'is_promotion': False,
@@ -60,8 +60,6 @@ class HistoryField(serializers.RelatedField):
 			'created': datetime.datetime(year = 2000, month = 1, day = 1).replace(tzinfo=utc) # Sometimes end and start are not provided (delaty in scraper)
 		} for p in promotions]
 
-
-
 		if 'type' in self.context and self.context['type'] == 'promotions':
 			return merge_history_promotion([], promotion_data)
 		else:
@@ -77,10 +75,19 @@ class PriceField(serializers.RelatedField):
 				'created': histories[0].created,
 				'price': histories[0].price,
 				'unit_price': histories[0].unit_price,
-				'shipping_area': histories[0].shipping_area,
+				'store': histories[0].store,
 				'availability': histories[0].availability
 			}
 		return price
+
+class PackageField(serializers.RelatedField):
+	def to_native(self, value):
+		package = {
+			'package_quantity': value['package_quantity'],
+			'package_measure': value['package_measure'],
+			'package_unit': value['package_unit'],
+		}
+		return package
 
 class QuantityInCart(serializers.IntegerField):
 	"""
@@ -111,7 +118,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Product
-		exclude = ('url', 'avantages', 'conservation', 'valeur_nutritionnelle', 'pratique', 'ingredients', 'complement','package_quantity', 'package_measure', 'package_unit', 'stemmed_text', 'html', 'exists', 'id', 'comment', 'categories', 'dalliz_category', 'tag', 'created', 'updated')
+		exclude = ('url', 'package_quantity', 'package_measure', 'package_unit', 'ingredients', 'valeur_nutritionnelle', 'conservation', 'conseil', 'composition', 'stemmed_text', 'html', 'exists', 'id', 'comment', 'categories', 'dalliz_category', 'tag', 'created', 'updated')
 		depth = 1
 
 class HistorySerializer(serializers.ModelSerializer):
@@ -166,15 +173,15 @@ class CartContentSerializer(serializers.ModelSerializer):
 	"""
 
 	"""
-	from api.serializer.ooshop.serializer import ProductSerializer as OoshopProductSerializer
-	from api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer
+	from apps.api.serializer.ooshop.serializer import ProductSerializer as OoshopProductSerializer
+	from apps.api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer
 	product = ProductSerializer(source = 'product')
 	ooshop_product = OoshopProductSerializer(source='ooshop_content.product')
-	monoprix_product = MonoprixProductSerializer(source='monoprix_content.product')
+	auchan_product = AuchanProductSerializer(source='auchan_content.product')
 
 	class Meta:
 		model = Cart_content
 		exclude = ('id', 'cart')
 		depth = 1
-
+		
 
