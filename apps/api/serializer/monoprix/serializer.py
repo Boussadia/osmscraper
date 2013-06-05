@@ -9,7 +9,7 @@ import datetime
 from django.utils.timezone import utc
 
 from monoprix.models import Product, History, Promotion, Cart_content
-from apps.api.serializer.dalliz.serializer import DallizBrandField
+from apps.api.serializer.dalliz.serializer import DallizBrandField, PaginationSerializer
 
 def merge_history_promotion(history, promotion, limit = 5):
 	"""
@@ -120,6 +120,14 @@ class ProductSerializer(serializers.ModelSerializer):
 		model = Product
 		exclude = ('url', 'package_quantity', 'package_measure', 'package_unit', 'ingredients', 'valeur_nutritionnelle', 'conservation', 'conseil', 'composition', 'stemmed_text', 'html', 'exists', 'id', 'comment', 'categories', 'dalliz_category', 'tag', 'created', 'updated')
 		depth = 1
+
+class ProductsPaginationSerializer(PaginationSerializer):
+	"""
+		Serailization of Products QuerySet.
+	"""
+	class Meta:
+		object_serializer_class = ProductSerializer
+
 
 class HistorySerializer(serializers.ModelSerializer):
 	# description = DescriptionSerializer(source = 'product')

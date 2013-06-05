@@ -9,6 +9,7 @@ from django.db.models import Q, F
 from django.contrib.sessions.models import Session
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import Http404
 
 from rest_framework import status, permissions
@@ -36,11 +37,11 @@ from ooshop.models import History as OoshopHistory, Product as OoshopProduct, Pr
 
 from apps.api.renderer import ProductsCSVRenderer, ProductRecommendationCSVRenderer, NewProductsCSVRenderer
 from apps.api.serializer.dalliz.serializer import CategorySerializer, UserSerializer, BrandSerializer
-from apps.api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer, CartContentSerializer as AuchanCartContentSerializer
+from apps.api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer, ProductsPaginationSerializer as AuchanProductsPaginationSerializer, CartContentSerializer as AuchanCartContentSerializer
 from apps.api.serializer.auchan.serializer import RecommendationSerializer as AuchanRecommendationSerializer
-from apps.api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer, CartContentSerializer as MonoprixCartContentSerializer
+from apps.api.serializer.monoprix.serializer import ProductSerializer as MonoprixProductSerializer, ProductsPaginationSerializer as MonoprixProductsPaginationSerializer, CartContentSerializer as MonoprixCartContentSerializer
 from apps.api.serializer.monoprix.serializer import RecommendationSerializer as MonoprixRecommendationSerializer
-from apps.api.serializer.ooshop.serializer import ProductSerializer as OoshopProductSerializer
+from apps.api.serializer.ooshop.serializer import ProductSerializer as OoshopProductSerializer, ProductsPaginationSerializer as OoshopProductsPaginationSerializer
 from apps.api.serializer.ooshop.serializer import RecommendationSerializer as OoshopRecommendationSerializer, CartContentSerializer as OoshopCartContentSerializer
 
 AVAILABLE_OSMS = [
@@ -232,18 +233,30 @@ class CategoryProducts(CategorySimple):
 	"""
 		Get products for a category
 	"""
-	TOP_PRODUCTS_COUNT = 5
-	MID_PRODUCTS_COUNT = 17
+	PRODUCTS_PER_PAGE = 5
+	PAGE = 1
 	renderer_classes = BetaRestrictionAPIView.renderer_classes + [ProductsCSVRenderer]
+
 	@osm
-	def get(self, request, id_category, type_fetched, key, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+	def get(self, request, id_category, type_fetched, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
 		category = self.get_object(id_category)
 		serialized = None
 		global_keys = globals().keys()
 
-		# Brands filter
-		brands = request.GET.getlist('brands[]')
+		# Brands filter parameter
+		brands = request.QUERY_PARAMS.getlist('brands[]')
 
+		# Pagination arguments
+		if 'PRODUCTS_PER_PAGE' in request.GET:
+			CategoryProducts.PRODUCTS_PER_PAGE = request.QUERY_PARAMS.get('PRODUCTS_PER_PAGE')
+
+		if 'page' in request.GET:
+			page = request.QUERY_PARAMS.get('page')
+		else:
+			page = CategoryProducts.PAGE
+
+
+		# Building QuerySet
 		# Settings location kwargs :
 		kwargs_location_history = {}
 		kwargs_location_promotion = {}
@@ -274,36 +287,40 @@ class CategoryProducts(CategorySimple):
 
 			if type_fetched == 'promotions':
 				kwargs.update({'promotion__id__isnull': False, 'promotion__type' : 's','dalliz_category__parent_category': category}) # Only handeling simple promotions
-				products = Product.objects.filter(~Q(promotion__end__lte = F('history__created'))).filter(**kwargs).distinct('reference')
+				products_query_set = Product.objects.filter(~Q(promotion__end__lte = F('history__created'))).filter(**kwargs).distinct('reference')
 			else:
 				kwargs.update({'dalliz_category': category})
-				products = Product.objects.filter(**kwargs).distinct('reference')
+				products_query_set = Product.objects.filter(**kwargs).distinct('reference')
 
 			# Filtering before slicing
 			# Filtering by brands
-			# products = products.filter(brand__brandmatch__dalliz_brand__id__in = [2334, 771])
+			# products_query_set = products_query_set.filter(brand__brandmatch__dalliz_brand__id__in = [2334, 771])
 
 
-			if 'TOP_PRODUCTS_COUNT' in request.GET:
-				CategoryProducts.TOP_PRODUCTS_COUNT = request.GET['TOP_PRODUCTS_COUNT']
+			# Generating pagination object
+			paginator = Paginator(products_query_set, CategoryProducts.PRODUCTS_PER_PAGE)
+			try:
+				products = paginator.page(page)
+			except PageNotAnInteger:
+				# If page is not an integer, deliver first page.
+				products = paginator.page(1)
+			except EmptyPage:
+				# If page is out of range (e.g. 9999),
+				# deliver last page of results.
+				products = paginator.page(paginator.num_pages)
 
-			if key == 'top':
-				products = products[:CategoryProducts.TOP_PRODUCTS_COUNT]
-			elif key == 'mid':
-				products = products[CategoryProducts.TOP_PRODUCTS_COUNT:CategoryProducts.MID_PRODUCTS_COUNT]
-			elif key == 'end':
-				products = products[CategoryProducts.MID_PRODUCTS_COUNT:]
 
-		serializer_class_name = '%sProductSerializer'%osm_name.capitalize()
-		cart = getattr(request.cart_controller.metacart, osm_name+'_cart')
+		serializer_class_name = '%sProductsPaginationSerializer'%osm_name.capitalize()
 
 		if serializer_class_name in global_keys:
+			cart = getattr(request.cart_controller.metacart, osm_name+'_cart')
+			context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}, 'time':datetime.now(), 'cart': cart, 'type': type_fetched}
 			Serializer_class = globals()[serializer_class_name]
-			serialized = Serializer_class(products, many = True, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}, 'time':datetime.now(), 'cart': cart, 'type': type_fetched})
-		if serialized is None:
+			serializer = Serializer_class(products, context = context)
+		if serializer is None:
 			return Response(404, status=status.HTTP_400_BAD_REQUEST)
 		else:
-			response = serialized.data
+			response = serializer.data
 			return response
 
 class CategoryMatching(CategorySimple):

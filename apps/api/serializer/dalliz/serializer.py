@@ -5,7 +5,7 @@ from __future__ import absolute_import # Import because of modules names
 
 from django.contrib.auth.models import User
 
-from rest_framework import serializers
+from rest_framework import serializers, pagination
 from dalliz.models import Category, Brand
 
 class DallizBrandField(serializers.RelatedField):
@@ -158,3 +158,37 @@ class UserSerializer(serializers.ModelSerializer):
 class BrandSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Brand
+
+
+# Deafult Pagination Serializer
+class NextPageField(serializers.Field):
+	"""
+	Field that returns a link to the next page in paginated results.
+	"""
+	page_field = 'page'
+
+	def to_native(self, value):
+		if not value.has_next():
+	   		return None
+		page = value.next_page_number()
+		return page
+
+class PreviousPageField(serializers.Field):
+	"""
+	Field that returns a link to the previous page in paginated results.
+	"""
+	page_field = 'page'
+
+	def to_native(self, value):
+		if not value.has_previous():
+			return None
+		page = value.previous_page_number()
+		return page
+
+class PaginationSerializer(pagination.PaginationSerializer):
+	"""
+	A default implementation of a pagination serializer.
+	"""
+	count = serializers.Field(source='paginator.count')
+	next = NextPageField(source='*')
+	previous = PreviousPageField(source='*')
