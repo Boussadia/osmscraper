@@ -74,6 +74,14 @@ define([
 				}else{
 
 				}
+			},
+			is_active: function(){
+				var is_active = false;
+				_.each(this.subViews, function(view, i){
+					var active = view.is_active();
+					if (active) is_active = true;
+				}, this);
+				return is_active;
 			}
 		});
 

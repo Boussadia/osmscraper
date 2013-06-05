@@ -28,6 +28,9 @@ define([
 			unactivate: function(){
 				this.$el.removeClass(this.activateClass);
 				this.$el.find('p').removeClass(this.activateClass);
+			},
+			is_active: function(){
+				return this.$el.hasClass(this.activateClass);
 			}
 		});
 
