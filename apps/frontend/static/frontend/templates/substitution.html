@@ -11,7 +11,7 @@
 				<div class="img-bloc">
 					<img src="<%= product.image_url %>">
 				</div>
-				<p><%= product.brand.name %></p>
+				<p><% if(product.brand) print(product.brand.name); %></p>
 				<p><%= product.name %></p>
 				<p> <%= product.package.package_quantity %> x <%= product.package.package_measure %> <%= product.package.package_unit %></p>
 
@@ -51,7 +51,7 @@
 							<div class="img-bloc">
 								<img src="<%= reco.product.image_url %>">
 							</div>
-							<p><%= reco.product.brand.name %></p>
+							<p><% if(reco.product.brand) print(reco.product.brand.name); %></p>
 							<p><%= reco.product.name %></p>
 							<p> <%= reco.product.package.package_quantity %> x <%= reco.product.package.package_measure %> <%= reco.product.package.package_unit %></p>
 

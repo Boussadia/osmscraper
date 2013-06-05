@@ -3,7 +3,7 @@
 		<div class="img-bloc">
 			<img src="<%= image_url %>">
 		</div>
-		<p><%= brand.name %></p>
+		<p><% if(brand) print(brand.name); %></p>
 		<p><%= name %></p>
 		<p> <%= package.package_quantity %> x <%= package.package_measure %> <%= package.package_unit %></p>
 		

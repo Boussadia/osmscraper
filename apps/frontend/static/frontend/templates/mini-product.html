@@ -1,4 +1,10 @@
-<% if(eval(suggested+'_content') && eval(suggested+'_content').is_suggested) {%>
+<%
+	suggested_product = eval(suggested+'_product');
+	suggested_content = eval(suggested+'_content');
+
+%>
+
+<% if(suggested_content && suggested_content.is_suggested) {%>
 	<div class="unavailable-mask">
 		<div></div>
 		<div></div>
@@ -8,27 +14,27 @@
 
 
 <div class="sel-osm-product">
-	<% if(eval(suggested+'_content')) {%>
-	<img src="<%= eval(suggested+'_product').image_url %>">
+	<% if(suggested_content) {%>
+	<img src="<%= suggested_product.image_url %>">
 	<div class="prod-desc">
-		<p><%= eval(suggested+'_product').brand.name %></p>
-		<p><%= eval(suggested+'_product').name %></p>
+		<p><% if(suggested_product.brand) print(suggested_product.brand.name); %></p>
+		<p><%= suggested_product.name %></p>
 	</div>
 	<div class="qte" id="recap-price-qty">
 		<div class="price-bloc" id="recap-qty">
-			<p><%= eval(suggested+'_product').package.package_quantity %> x <%= eval(suggested+'_product').package.package_measure %> <%= eval(suggested+'_product').package.package_unit %></p>
-			<p><%= eval(suggested+'_product').history[0].unit_price %>€/<%= eval(suggested+'_product').unit.name %></p>
-			<p><%= eval(suggested+'_product').history[0].price %>€</p>
-			<% if( eval(suggested+'_product').history[0].is_promotion ){ %>
+			<p><%= suggested_product.package.package_quantity %> x <%= suggested_product.package.package_measure %> <%= suggested_product.package.package_unit %></p>
+			<p><%= suggested_product.history[0].unit_price %>€/<%= suggested_product.unit.name %></p>
+			<p><%= suggested_product.history[0].price %>€</p>
+			<% if( suggested_product.history[0].is_promotion ){ %>
 				<div id="osm-recap-promo">
 					<div class="promo-shadow"></div>
-					<div class="promo-type"> <%= (((eval(suggested+'_product').history[0].price-eval(suggested+'_product').history[0].before)/eval(suggested+'_product').history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
+					<div class="promo-type"> <%= (((suggested_product.history[0].price-suggested_product.history[0].before)/suggested_product.history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
 				</div>
 			<% } %> 
 		</div>
 		<a class="plus">+</a>
 		<a class="minus">-</a>
-		<a class="how-much"><%= eval(suggested+'_content').quantity%></a>
+		<a class="how-much"><%= suggested_content.quantity%></a>
 	</div>
 	<%}%>
 </div>
@@ -37,7 +43,7 @@
 <div class="active-osm-product">
 	<img src="<%= product.image_url %>">
 	<div class="prod-desc">
-		<p><%= product.brand.name %></p>
+		<p><% if(product.brand) print(product.brand.name); %></p>
 		<p><%= product.name %></p>
 	</div>
 	<div class="qte" id="recap-price-qty">

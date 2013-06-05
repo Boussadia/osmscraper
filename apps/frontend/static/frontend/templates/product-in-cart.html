@@ -9,7 +9,7 @@
 		<div class="img-bloc">
 			<img src="<%= product.image_url %>">
 		</div>
-		<p><%= product.brand.name %></p>
+		<p><% if(product.brand) print(product.brand.name); %></p>
 		<p><%= product.name %></p>
 		<p> <%= product.package.package_quantity %> x <%= product.package.package_measure %> <%= product.package.package_unit %></p>
 		
