@@ -294,7 +294,9 @@ class CategoryProducts(CategorySimple):
 
 			# Filtering before slicing
 			# Filtering by brands
-			# products_query_set = products_query_set.filter(brand__brandmatch__dalliz_brand__id__in = [2334, 771])
+			if len(brands)>0:
+				products_query_set = products_query_set.filter(brand__brandmatch__dalliz_brand__id__in = brands)
+
 
 
 			# Generating pagination object

@@ -24,9 +24,9 @@ define([
 				this.id = category_id;
 				this.fetched_pages = [];
 				this.page = 1;
+				this.max_pages = 2;
 				this.next =  null;
 				this.previous =  null;
-
 
 				// If touch device, fetche
 				if (Modernizr.touch) this.PRODUCTS_PER_PAGE = 6;
@@ -34,6 +34,7 @@ define([
 			},
 			parse: function(resp, xhr){
 				this.count = resp.count;
+				this.max_pages = Math.ceil(this.count/this.PRODUCTS_PER_PAGE);
 				this.next = resp.next;
 				this.previous = resp.previous;
 				return resp.results;
@@ -42,11 +43,13 @@ define([
 				options = options ? _.clone(options) : {};
 
 				var more = options.more || false;
+				var callback = options.callback || null;
 				var that = this;
 
 				if (more){
 					options.remove = false;
-					this.page = this.next || this.page;
+					var next = this.next;
+					if (next) this.page = (this.page < this.next ? this.page + 1 : next);
 				}
 
 				var page_to_fetch = this.page;
@@ -56,12 +59,14 @@ define([
 
 				options.data = {
 					'PRODUCTS_PER_PAGE': this.PRODUCTS_PER_PAGE,
-					'page': this.page
+					'page': this.page,
+					'brands': []
 				}
 
 				options.success = function(collection, response, option){
 					that.vent.trigger('request:products:quantity', {'products': collection.toJSON()});
 					that.fetched_pages.push(page_to_fetch);
+					if (callback) callback();
 				}
 				return BaseCollection.prototype.fetch.apply(this, [options]);
 			}

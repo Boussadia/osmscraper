@@ -25,14 +25,14 @@ define([
 			initialize: function(options){
 				options || (options = {});
 				this.products = options.products || new ProductsCollection([], {'vent': this.vent});
-				this.page = 1;
+				this.products_per_page = this.products.PRODUCTS_PER_PAGE;
+				this.page = this.products.page;
 				var that = this;
 				this.bindTo(this.products, 'request', function(){
 					that.fetching = true;
 				});
 
 				this.bindTo(this.products, 'sync', function(){
-					// that.render()
 					this.fetching = false;
 				});
 
@@ -92,23 +92,24 @@ define([
 					var left = $el.find('.product').offset().left;
 					var calculus = (left+width-base_width)/base_width;
 					if(calculus<.5){
-						that.getMoreProducts(e);
+						that.getMoreProducts();
 
 					}
 				}catch(err){
 					console.log(err);
 				}
 			},
-			getMoreProducts: function(e){
+			getMoreProducts: function(callback){
 				var vent = this.vent;
 				if (!this.fetching){
 					this.products.fetch({
 						more: true,
 						'vent': vent,
+						'callback': callback
 					});
 				}
 			},
-			more: function(){
+			more: function(callback){
 				var nb_products_max = this.products.count;
 				var current_nb_products = this.products.length;
 				var current_page = this.page;
@@ -122,9 +123,11 @@ define([
 					this.translation(1);
 				}else if(current_page < nb_max_pages){
 					this.translation(1);
+					this.products.page = this.products.page +1;
+					if (callback) callback();
 				}
 			},
-			less: function(){
+			less: function(callback){
 				var nb_products_max = this.products.count;
 				var current_nb_products = this.products.length;
 				var current_page = this.page;
@@ -136,6 +139,10 @@ define([
 					// Fetch more product
 					this.translation(-1);
 				}
+
+				this.products.page = (this.products.page > 1 ? this.products.page - 1: 1);
+
+				if (callback) callback();
 			},
 			translation: function(direction){
 				var width = this.PRODUCT_WIDTH_NO_TOUCH;
