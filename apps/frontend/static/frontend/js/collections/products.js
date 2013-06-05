@@ -27,6 +27,7 @@ define([
 				this.max_pages = 2;
 				this.next =  null;
 				this.previous =  null;
+				this.brands = [];
 
 				// If touch device, fetche
 				if (Modernizr.touch) this.PRODUCTS_PER_PAGE = 6;
@@ -43,8 +44,11 @@ define([
 				options = options ? _.clone(options) : {};
 
 				var more = options.more || false;
+				var reset = options.reset || false;
 				var callback = options.callback || null;
 				var that = this;
+				var brands = options.brands || this.brands;
+				this.brands = brands;
 
 				if (more){
 					options.remove = false;
@@ -52,15 +56,23 @@ define([
 					if (next) this.page = (this.page < this.next ? this.page + 1 : next);
 				}
 
+				if(reset){
+					this.fetched_pages = [];
+					this.page = 1;
+					this.max_pages = 2;
+					this.next =  null;
+					this.previous =  null;
+				}
+
+
 				var page_to_fetch = this.page;
 
 				if (this.fetched_pages.indexOf(page_to_fetch)>=0) return null;
 
-
 				options.data = {
 					'PRODUCTS_PER_PAGE': this.PRODUCTS_PER_PAGE,
 					'page': this.page,
-					'brands': []
+					'brands': brands
 				}
 
 				options.success = function(collection, response, option){

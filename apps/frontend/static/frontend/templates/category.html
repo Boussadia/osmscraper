@@ -1,11 +1,12 @@
 <div class="products">
 	<div class="products-header <% if (name === 'promotions') {%> promotion <%}%>">
-		<p ><%= name %> (<%= count %>)</p>	
-		<p> <%= brands.count %> </p>
-		<p> marques : toutes </p>
-		<span></span>
+		<p><%= name %> (<%= count %>)</p>	
+		<p class='brands-controller' data-id='<%= id %>'> <%= brands.count %> </p>
+		<p class='brands-controller' data-id='<%= id %>'> marques : toutes </p>
+		<span class='brands-controller' data-id='<%= id %>'></span>
 		<p>Filtres</p>
 		<span></span>
+		<ul class="brands"></ul>
 	</div>
 
 	<%if (count>threshold) {%>

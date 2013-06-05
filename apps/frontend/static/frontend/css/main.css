@@ -665,6 +665,24 @@ li.has-dropdown.show {
 	height: 50px;
 	padding-top: 18px;
 }
+
+.products-header .brands{
+	display: inline-block;
+	display: none;
+	position: relative;
+	z-index: 10;
+	width: 167px;
+	left: -29%;
+	background-color: blue;
+	color: white;
+	list-style: none;
+	padding: 0;
+}
+
+.products-header .brands-controller{
+	cursor: pointer;
+}
+
 .products-header span {
 	position: relative;
 	float: left;

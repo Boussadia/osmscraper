@@ -1,0 +1,5 @@
+<% for (var i = 0; i<brands.length; i++){
+		var brand = brands[i];
+	%>
+	<li><input type="checkbox" name="brands" value="<%=brand.id%>"> <%=brand.name%><br></li>
+<%}%>

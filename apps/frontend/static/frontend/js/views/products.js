@@ -32,11 +32,14 @@ define([
 					that.fetching = true;
 				});
 
-				this.bindTo(this.products, 'sync', function(){
+				this.bindTo(this.products, 'sync', function(model, resp, options){
 					this.fetching = false;
+					if (options.reset) this.render();
 				});
 
 				this.bindTo(this.products, 'add', this.render);
+
+				this.vent.on('brands:filter',this.filter, this);
 			},
 			render: function(product){
 				if(typeof product !== 'undefined'){
@@ -160,6 +163,28 @@ define([
 					if (this.page<1) this.page = 1;
 					if(left_offset>=0) this.$el.css('left', '0px');
 					
+				}
+			},
+			reset: function(){
+				var nb_products_max = this.products.count;
+				var current_nb_products = this.products.length;
+				this.page = 1;
+				var products_per_page = this.products_per_page;
+				var nb_max_pages = Math.ceil(nb_products_max/products_per_page);
+				var max_current_page = Math.ceil(current_nb_products/products_per_page);
+				this.$el.css('left', '0px');
+			},
+			filter: function(options){
+				if(options.id === this.products.id){
+					var that = this;
+					this.products.fetch({
+						'brands': options.brands,
+						'reset': true,
+						'vent': this.vent,
+						'callback':function(){
+							that.reset();
+						}
+					});
 				}
 			}
 		})

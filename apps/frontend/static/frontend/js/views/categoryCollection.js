@@ -4,9 +4,10 @@ define([
 	'collections/category',
 	'views/base',
 	'views/products',
+	'views/brands-filter',
 	'text!../../templates/category.html'
 	],
-	function(_, $, CategoryCollection, BaseView, ProductsView, categoryTemplate){
+	function(_, $, CategoryCollection, BaseView, ProductsView, BrandsFilterView, categoryTemplate){
 
 		var CategoryCollectionView = BaseView.extend({
 			className: 'category',
@@ -24,17 +25,24 @@ define([
 				var that = this;
 				this.collection.each(function(category){
 					if(category.get('count') !== 0){
-						var products = category.products;
+						// Rendering brands filter
 						var data = category.toJSON();
-						products.count = category.get('count');
+
+						// Rendering products
+						var products = category.products;
 						data['threshold'] = products.PRODUCTS_PER_PAGE;
 						var rendered = that.template(data);
 						that.$el.append(rendered);
+
 						var view = new ProductsView({'products': products,'el': that.$el.find('.products:last-child .products-container'), 'vent': that.vent});
 						that.bindTo(products, 'sync', function(model, resp, options){
 							that.controllerDisplay(model);
 						});
 						that.addSubView(view);
+
+						var data_brands = data.brands.content;
+						var filter_view = new BrandsFilterView({'brands': data_brands, 'category_id': products.id, 'el': that.$el.find('.products:last-child ul.brands'), 'vent': that.vent});
+						that.addSubView(filter_view);
 					}
 				})
 
@@ -47,11 +55,13 @@ define([
 			events: {
 				'click .controller.right': 'moreProducts',
 				'click .controller.left': 'lessProducts',
+				'click .brands-controller': 'showBrandsFilter',
 			},
 			moreProducts: function(e){
 				var id_category = parseInt($(e.target).attr('data-id'));
 				var view = _.find(this.subViews, function(view, i){
-					return view.products.id === id_category;
+					if (view.products) return view.products.id === id_category;
+					return false
 				}, this);
 				if (view){
 					var that = this;
@@ -63,7 +73,8 @@ define([
 			lessProducts: function(e){
 				var id_category = parseInt($(e.target).attr('data-id'));
 				var view = _.find(this.subViews, function(view, i){
-					return view.products.id === id_category;
+					if (view.products) return view.products.id === id_category;
+					return false
 				}, this);
 				if (view){
 					var that = this;
@@ -84,6 +95,20 @@ define([
 					this.collection.current = false;
 					this.$el.hide();
 				}
+			},
+			showBrandsFilter: function(e){
+				// this..is(":visible")
+				var category_id = $(e.target).attr('data-id');
+				category_id = parseInt(category_id);
+				var view = _.find(this.subViews, function(view, i){
+					if (view.category_id) return view.category_id === category_id;
+					return false
+				}, this);
+
+
+
+				if(view && view.$el.is(":visible")) view.$el.css('display', 'none');
+				if(view && !view.$el.is(":visible")) view.$el.css('display', 'inline-block');
 			},
 			controllerDisplay: function(products){
 				var products_id = products.id;
