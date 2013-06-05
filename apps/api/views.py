@@ -241,6 +241,9 @@ class CategoryProducts(CategorySimple):
 		serialized = None
 		global_keys = globals().keys()
 
+		# Brands filter
+		brands = request.GET.getlist('brands[]')
+
 		# Settings location kwargs :
 		kwargs_location_history = {}
 		kwargs_location_promotion = {}
@@ -276,11 +279,10 @@ class CategoryProducts(CategorySimple):
 				kwargs.update({'dalliz_category': category})
 				products = Product.objects.filter(**kwargs).distinct('reference')
 
-			products_count = products.count() # Adding total count of products in category
+			# Filtering before slicing
+			# Filtering by brands
+			# products = products.filter(brand__brandmatch__dalliz_brand__id__in = [2334, 771])
 
-			# Now getting brands information
-			brands = set([ p.brand.brandmatch_set.all()[0].dalliz_brand for p in products[:] if p.brand is not None and p.brand.brandmatch_set.all().count()==1])
-			brands_count = len(brands)
 
 			if 'TOP_PRODUCTS_COUNT' in request.GET:
 				CategoryProducts.TOP_PRODUCTS_COUNT = request.GET['TOP_PRODUCTS_COUNT']
