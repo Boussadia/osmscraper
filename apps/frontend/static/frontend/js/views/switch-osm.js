@@ -22,8 +22,12 @@ define([
 		},
 		switchToThisOSM: function(){
 			this.osm.set('active', true);
-			this.osm.save();
-			this.vent.trigger('view:switch:hide');
+			var that = this;
+			this.osm.save({}, {
+				success: function(){
+					that.vent.trigger('view:switch:hide');
+				}
+			});
 		}
 	});
 

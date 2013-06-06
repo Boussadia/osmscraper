@@ -23,6 +23,7 @@ define([
 				var vent = that.vent;
 				options.emulateJSON = true;
 				vent.trigger('osm:current', this.toJSON());
+				var success = options.success;
 
 				options.data = {
 					'new_name': this.get('name')
@@ -32,6 +33,10 @@ define([
 					console.log(jqXHR);
 					console.log(textStatus);
 					console.log(errorThrown);
+				}
+
+				options.success = function(jqXHR, textStatus, errorThrown){
+					if(success) success(jqXHR, textStatus, errorThrown);
 				}
 
 				return BaseModel.prototype.save.apply(this, [attributes, options]);

@@ -11,6 +11,21 @@ define([
 		initialize: function(options){
 			this.osms = options.osms;
 
+			var that = this;
+
+			this.bindTo(this.osms, 'add change', this.render);
+
+			this.bindTo(this.osms, 'request', function(model, resp, xhr){
+				that.$el.find('a.cta').hide();
+				that.$el.find('.loader').show();
+			});
+
+			this.bindTo(this.osms, 'sync', function(model, resp, xhr){
+				that.$el.find('a.cta').show();
+				that.$el.find('.loader').hide();
+			});
+
+
 			this.bindTo(this.osms, 'add change', this.render);
 
 			// Global events
