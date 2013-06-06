@@ -110,7 +110,7 @@ p, h1, h2, h3, h4, h5, h6, div {
 /* Slide Show */
 
 section#cta-container {
-	height: 420px;
+	height: 500px;
 }
 
 #cta-container a:nth-child(2) {
@@ -122,10 +122,18 @@ section#cta-container {
 	width: 45%;
 }
 
+#cta-container .pub{
+	position: relative;
+	float: left;
+	width: 55%;
+	cursor: pointer;
+}
+
 #cta-container .message{
 	width: 45%;
 	position: relative;
 	float: left;
+	margin-top: 100px;
 }
 
 #cta-container .message p {
@@ -142,11 +150,11 @@ section#cta-container {
 	position: relative;
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 30px;
+	margin-top: 40px;
 }
 
 #slides {
-	height:300px;
+	height:340px;
 	width:960px;
 	overflow:hidden;
 }
@@ -171,7 +179,7 @@ section#cta-container {
 	position: relative;
 	float: right;
 	margin-left: 60px;
-	margin-top: 80px;
+	margin-top: 100px;
 }
 #menu {
 	height:45px;
@@ -216,7 +224,7 @@ li.act a{
 }
 
 #slider-pitch{
-	height: 400px;
+	height: 480px;
 }
 #slider-pagination li:first-child.act a {
 	background-position: 0px 0px;	
@@ -442,7 +450,6 @@ input[type="email"] {
 #myModal {
 	width: 480px;
 	height: 455px;
-	
 }
 
 #modal-header {
@@ -649,7 +656,7 @@ footer {
 }
 
 .mini-container {
-	width: 50%;
+	width: 40%;
 	height: 100%;
 	position: relative;
 	display: inline-block;
