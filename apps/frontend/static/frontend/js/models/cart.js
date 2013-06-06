@@ -12,7 +12,7 @@ define([
 				this.osms = options.osms;
 				this.set_suggested();
 				this.vent.on('cart:newproduct', this.fetch, this);
-				this.on('change',  this.check_quantity, this);
+				this.on('sync',  this.check_quantity, this);
 
 				this.osms.on('sync', function(osm){
 

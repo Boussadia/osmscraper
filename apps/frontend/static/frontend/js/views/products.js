@@ -113,6 +113,8 @@ define([
 				}
 			},
 			more: function(callback){
+				if(this.fetching) return ;
+
 				var nb_products_max = this.products.count;
 				var current_nb_products = this.products.length;
 				var current_page = this.page;
@@ -131,6 +133,8 @@ define([
 				}
 			},
 			less: function(callback){
+				if(this.fetching) return ;
+
 				var nb_products_max = this.products.count;
 				var current_nb_products = this.products.length;
 				var current_page = this.page;

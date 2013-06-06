@@ -8,6 +8,7 @@ define([
 		var ProductView = BaseView.extend({
 			// maximum length of product name,
 			MAX_NAME_LENGTH: 40,
+			BUFFER_INTERVAL_TIME: 1000, // time in milliseconds
 			tagName: 'div',
 			className: 'product',
 			model: ProductModel,
@@ -15,6 +16,8 @@ define([
 			initialize: function(options){
 				options || (options = {});
 				this.product = options.product || new ProductModel({}, {'vent': this.vent});
+				this.buffered_quantity = 0;
+				this.last_update = (new Date().getTime());
 
 				this.bindTo(this.product, 'change', this.render);
 			},
@@ -34,20 +37,55 @@ define([
 				'click a.plus': 'addToCart',
 				'click a.minus': 'removeFromCart',
 			},
-			addToCart: function(){
-				var quantity = this.product.get('quantity_in_cart');
-				this.product.set('quantity_in_cart', quantity + 1);
-				this.product.save(null, {'cart': true, 'add': 1, 'vent': this.vent});
+			addToCart: function(e, delayed){
+				var that = this;
+
+				if (!delayed){
+					var now = (new Date().getTime());
+					var diff = now - this.last_update;
+					this.buffered_quantity = this.buffered_quantity + 1;
+					var quantity = this.product.get('quantity_in_cart') + 1;
+					this.product.set('quantity_in_cart', quantity);
+				}
+
+				if (diff<=this.BUFFER_INTERVAL_TIME*10){
+					setTimeout(function(){
+						that.addToCart(null, true);
+					}, this.BUFFER_INTERVAL_TIME);
+				}else{
+					that.product.save(null, {'cart': true, 'quantity': that.buffered_quantity, 'vent': that.vent});
+					that.buffered_quantity = 0;
+					that.last_update = now;
+
+				}
 			},
-			removeFromCart: function(){
-				var quantity = this.product.get('quantity_in_cart');
-				if (quantity-1>=0){
-					this.product.set('quantity_in_cart', quantity - 1);
-					this.product.save(null, {'cart': true, 'remove': 1, 'vent': this.vent});
-					this.vent.trigger('product:quantity:set', {
-						'reference': this.product.get('reference'),
-						'quantity': this.product.get('quantity_in_cart')
-					})
+			removeFromCart: function(e, delayed){
+				var that = this;
+
+				if (!delayed){
+					var now = (new Date().getTime());
+					var diff = now - this.last_update;
+					this.buffered_quantity = this.buffered_quantity + 1;
+					var quantity = this.product.get('quantity_in_cart') - 1;
+					if (quantity>=0){
+						this.product.set('quantity_in_cart', quantity);
+					}else{
+						this.buffered_quantity = this.buffered_quantity - 1;
+					}
+				}
+
+				if (diff<=this.BUFFER_INTERVAL_TIME*10){
+					setTimeout(function(){
+						that.removeFromCart(null, true);
+					}, this.BUFFER_INTERVAL_TIME);
+				}else{
+					that.product.save(null, {'cart': true, 'remove': true,'quantity': that.buffered_quantity, 'vent': that.vent});
+					that.buffered_quantity = 0;
+					that.last_update = now;
+					// that.vent.trigger('product:quantity:set', {
+					// 	'reference': that.product.get('reference'),
+					// 	'quantity': that.product.get('quantity_in_cart')
+					// })
 				}
 
 			}

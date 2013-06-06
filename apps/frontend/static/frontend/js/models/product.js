@@ -17,19 +17,21 @@ define([
 			save: function(attributes, options){
 				options || (options = {});
 				var cart = options.cart || false;
-				var add = options.add || null;
-				var remove = options.remove || null;
+				var quantity = options.quantity || 0;
+				var remove = options.remove || false;
 				var vent = this.vent;
 				var reference = options.reference || this.id;
 
 				if(cart){
-					options.type = ( add ? 'POST' : 'DELETE' );
-					options.url = '/api/cart/product/'+reference+'/quantity/1';
+					options.type = ( !remove  ? 'POST' : 'DELETE' );
+					options.url = '/api/cart/product/'+reference+'/quantity/'+quantity;
 					var that = this;
 					options.success = function( data,  textStatus, jqXHR){
 						vent.trigger('cart:newproduct');
 					}
 				}
+
+				if (quantity<1) return null;
 
 				return BaseModel.prototype.save.apply(this, [attributes, options]);
 			},
