@@ -110,7 +110,7 @@ p, h1, h2, h3, h4, h5, h6, div {
 /* Slide Show */
 
 section#cta-container {
-	height: 260px;
+	height: 420px;
 }
 
 #cta-container a:nth-child(2) {
@@ -118,13 +118,21 @@ section#cta-container {
 	float: right;
 	right: 3%; 
 	top: -140px;
+	top: -20px;
+	width: 45%;
 }
+
+#cta-container .message{
+	width: 45%;
+	position: relative;
+	float: left;
+}
+
 #cta-container .message p {
 	position: relative;
 	font-size: 22px;
 	font-weight: bold;
 	line-height: 15px;
-	width: 500px;
 	left: 5%;
 }
 
@@ -134,8 +142,9 @@ section#cta-container {
 	position: relative;
 	margin-left: auto;
 	margin-right: auto;
-	top: -100px;
+	margin-top: 30px;
 }
+
 #slides {
 	height:300px;
 	width:960px;
@@ -148,16 +157,21 @@ section#cta-container {
 }
 
 .slide img{
-	display: block;
-	margin-left: 90px;
+	display: inline-block;
+	position: relative;
+	float: left;
+	width: 640px;
+	height: 300px;
 }
 .slide p {
-	top: -140px;
-	font-size: 16px;
-	left: 300px;
-	width: 280px;
+	font-size: 20px;
+	font-weight: bold;
+	line-height: 30px;
+	width: 260px;
 	position: relative;
-	margin-left: 100px;
+	float: right;
+	margin-left: 60px;
+	margin-top: 80px;
 }
 #menu {
 	height:45px;
@@ -235,8 +249,7 @@ li.act a{
 
 
  .cta {
-	display: block;
-	top: 110px;
+	display: inline-block;
 	position: relative;
 	left: 15%;
 	z-index: 9;
@@ -247,7 +260,6 @@ li.act a{
 	color: white;
 	text-align: center;
 	padding-top: 17px;
-	font-size: 17px;
 	font-size: 15px;
 	top: 50px;
 	cursor: pointer;
