@@ -562,6 +562,32 @@ class CartAPIView(BetaRestrictionAPIView):
 			else:
 				raise Http404
 
+	def get_serialized_product(self, product, osm_name = 'monoprix', osm_type='shipping', osm_location=None, cart_controller = None):
+		if cart_controller:
+			cart = getattr(cart_controller.metacart, osm_name+'_cart')
+		else:
+			cart = None
+
+		global_keys = globals().keys()
+		serialized = None
+		serializer_class_name = '%sProductSerializer'%osm_name.capitalize()
+		if serializer_class_name in global_keys:
+			Serializer = globals()[serializer_class_name]
+			serialized = Serializer(product, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}})
+
+
+		if serialized is None:
+			return Response(404, status=status.HTTP_400_BAD_REQUEST)
+		else:
+			data = serialized.data
+			quantity = 0
+			if cart:
+				for content in cart.cart_content_set.filter(product = product):
+					if content.product == product:
+						quantity = quantity + content.quantity
+			data['quantity_in_cart'] = quantity
+			return data
+
 	@osm
 	def get(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
 		# Getting cart for osm
@@ -617,16 +643,7 @@ class CartAPIView(BetaRestrictionAPIView):
 		else:
 			cart_controller.add_product(product)
 
-		carts = { o: {
-			'id': cart_controller.carts[o].cart.id,
-			'price': cart_controller.carts[o].cart.cart_history_set.all()[0].price,
-			'created':cart_controller.carts[o].cart.cart_history_set.all()[0].created,
-			'active': (request.cart_controller.metacart.current_osm == cart_controller.carts[o].cart.osm)
-		}
-			for o in cart_controller.carts
-		}
-
-		return {'carts':carts}
+		return self.get_serialized_product(product, osm_name, osm_type, osm_location, cart_controller)
 
 	@osm
 	def delete(self, request, reference, quantity = None, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
@@ -637,16 +654,7 @@ class CartAPIView(BetaRestrictionAPIView):
 		else:
 			cart_controller.remove_product(product)
 
-		carts = { o: {
-			'id': cart_controller.carts[o].cart.id,
-			'price': cart_controller.carts[o].cart.cart_history_set.all()[0].price,
-			'created':cart_controller.carts[o].cart.cart_history_set.all()[0].created,
-			'active': (request.cart_controller.metacart.current_osm == cart_controller.carts[o].cart.osm)
-		}
-			for o in cart_controller.carts
-		}
-
-		return {'carts':carts}
+		return self.get_serialized_product(product, osm_name, osm_type, osm_location, cart_controller)
 
 class CartImportation(BetaRestrictionAPIView):
 	"""

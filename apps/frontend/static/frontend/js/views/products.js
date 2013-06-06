@@ -28,15 +28,21 @@ define([
 				this.page = this.products.page;
 				var that = this;
 				this.fetching = false;
-				this.bindTo(this.products, 'request', function(){
-					that.fetching = true;
-					that.trigger('fetching', {'fetched': false});
+				this.bindTo(this.products, 'request', function(model, resp, options){
+					// Only when model is a collection
+					if(model.model){
+						that.fetching = true;
+						that.trigger('fetching', {'fetched': false});
+					};
 				});
 
 				this.bindTo(this.products, 'sync', function(model, resp, options){
-					this.fetching = false;
-					that.trigger('fetching', {'fetched': true});
-					if (options.reset) this.render();
+					// Only when model is a collection
+					if(model.model){
+						this.fetching = false;
+						that.trigger('fetching', {'fetched': true});
+						if (options.reset) this.render();
+					};
 				});
 
 				this.bindTo(this.products, 'add', this.render);

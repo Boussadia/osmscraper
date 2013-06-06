@@ -21,6 +21,7 @@ define([
 				var remove = options.remove || false;
 				var vent = this.vent;
 				var reference = options.reference || this.id;
+				var success = options.success;
 
 				if(cart){
 					options.type = ( !remove  ? 'POST' : 'DELETE' );
@@ -28,6 +29,7 @@ define([
 					var that = this;
 					options.success = function( data,  textStatus, jqXHR){
 						vent.trigger('cart:newproduct');
+						if (success) success(data,  textStatus, jqXHR);
 					}
 				}
 
