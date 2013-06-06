@@ -10,8 +10,7 @@ define([
 	function(_, Modernizr, ProductsCollection, BaseView, ProductView, productsTemplate, plusTemplate){
 
 		var ProductsView = BaseView.extend({
-			// This variable controlls whether or not to fetch products from server when requested
-			fetching: false, 
+			// This variable controlls whether or not to fetch products from server when requested 
 
 			// Products width
 			PRODUCT_WIDTH: 175,
@@ -28,12 +27,15 @@ define([
 				this.products_per_page = this.products.PRODUCTS_PER_PAGE;
 				this.page = this.products.page;
 				var that = this;
+				this.fetching = false;
 				this.bindTo(this.products, 'request', function(){
 					that.fetching = true;
+					that.trigger('fetching', {'fetched': false});
 				});
 
 				this.bindTo(this.products, 'sync', function(model, resp, options){
 					this.fetching = false;
+					that.trigger('fetching', {'fetched': true});
 					if (options.reset) this.render();
 				});
 

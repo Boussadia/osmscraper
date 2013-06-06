@@ -38,6 +38,12 @@ define([
 						that.bindTo(products, 'sync', function(model, resp, options){
 							that.controllerDisplay(model);
 						});
+						that.bindTo(view, 'fetching', function(options){
+							var category_id = view.products.id;
+							var display = !options.fetched;
+							if (display) this.$el.find('.products[data-id='+category_id+'] .loader').show();
+							if (!display) this.$el.find('.products[data-id='+category_id+'] .loader').hide();
+						});
 						that.addSubView(view);
 
 						var data_brands = data.brands.content;
