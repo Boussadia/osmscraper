@@ -1126,6 +1126,17 @@ div.promo-type {
 	position: relative;
 }
 
+.osm div.loader{
+	background-repeat: no-repeat;
+	background-image: url(../img/comparator/subtotal_loader.gif);
+	width: 25px;
+	height: 25px;
+	display: none;
+	position: absolute;
+	right: 9px;
+	z-index: 1;
+}
+
 	.osm div.auchan, .osm div.ooshop, .osm div.monoprix{
 		display: inline-block;
 		position: relative;
