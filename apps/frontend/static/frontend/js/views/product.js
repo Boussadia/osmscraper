@@ -37,14 +37,16 @@ define([
 				'click a.plus': 'addToCart',
 				'click a.minus': 'removeFromCart',
 			},
-			addToCart: function(e, delayed){
+			addToCart: function(e, delayed, options){
+				options || (options = {});
 				var that = this;
 
 				if (!delayed){
 					var now = (new Date().getTime());
 					var diff = now - this.last_update;
 					this.buffered_quantity = this.buffered_quantity + 1;
-					var quantity = this.product.get('quantity_in_cart') + 1;
+					var quantity = options.quantity || this.product.get('quantity_in_cart');
+					quantity = quantity - 1;
 					this.product.set('quantity_in_cart', quantity);
 				}
 
@@ -53,20 +55,23 @@ define([
 						that.addToCart(null, true);
 					}, this.BUFFER_INTERVAL_TIME);
 				}else{
-					that.product.save(null, {'cart': true, 'quantity': that.buffered_quantity, 'vent': that.vent});
+					_.extend(options, {'cart': true, 'quantity': that.buffered_quantity, 'vent': that.vent});
+					that.product.save(null, options);
 					that.buffered_quantity = 0;
 					that.last_update = now;
 
 				}
 			},
-			removeFromCart: function(e, delayed){
+			removeFromCart: function(e, delayed, options){
+				options || (options = {});
 				var that = this;
 
 				if (!delayed){
 					var now = (new Date().getTime());
 					var diff = now - this.last_update;
 					this.buffered_quantity = this.buffered_quantity + 1;
-					var quantity = this.product.get('quantity_in_cart') - 1;
+					var quantity = options.quantity || this.product.get('quantity_in_cart');
+					quantity = quantity - 1;
 					if (quantity>=0){
 						this.product.set('quantity_in_cart', quantity);
 					}else{
@@ -79,13 +84,10 @@ define([
 						that.removeFromCart(null, true);
 					}, this.BUFFER_INTERVAL_TIME);
 				}else{
-					that.product.save(null, {'cart': true, 'remove': true,'quantity': that.buffered_quantity, 'vent': that.vent});
+					_.extend(options, {'cart': true, 'remove': true,'quantity': that.buffered_quantity, 'vent': that.vent});
+					that.product.save(null, options)
 					that.buffered_quantity = 0;
 					that.last_update = now;
-					// that.vent.trigger('product:quantity:set', {
-					// 	'reference': that.product.get('reference'),
-					// 	'quantity': that.product.get('quantity_in_cart')
-					// })
 				}
 
 			}
