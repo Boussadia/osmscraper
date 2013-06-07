@@ -24,6 +24,8 @@ class Category(models.Model):
 	position = models.IntegerField(default=0)
 	tags = models.ManyToManyField(Tag)
 
+	algorithm_process = models.BooleanField(default = True)
+
 	class Meta:
 		unique_together = ("name", "parent_category")
 
