@@ -13,24 +13,29 @@ class AuchanStemmer(BaseHTMLStemmer):
 	def __init__(self, html):
 		super(AuchanStemmer, self).__init__(html)
 
-	# def extract_text(self):
-	# 	"""
-	# 		Extracts text form beautifulsoup object.
-	# 	"""
-	# 	# Extracting comments
-	# 	soup = self.soup
-	# 	comments = soup.findAll(text=lambda text:isinstance(text, Comment))
-	# 	[comment.extract() for comment in comments]
-	# 	# Specific to monoprix -> extract annotiation paragraphe
-	# 	annotation = soup.findAll('div', {'class': 'SubContent'})[-1] # Last element is annotation in html
-	# 	if annotation:
-	# 		annotation.extract()
-	# 	# extract unnecessary button
-	# 	print_button = soup.find('p',{'class', 'PrintBtn'})
-	# 	if print_button:
-	# 		print_button.extract()
-
-	# 	text = ''.join(soup.findAll(text=True))
-	# 	text = ' '.join(text.split())
-	# 	self.text = text
+	def extract_text(self):
+		"""
+			Extracts text form beautifulsoup object.
+		"""
+		# Extracting comments
+		soup = self.soup
+		comments = soup.findAll(text=lambda text:isinstance(text, Comment))
+		[comment.extract() for comment in comments]
+		# extract product description
+		description = soup.find(id='panel-infos-detaillees')
+		text_description = ''
+		if description:
+			text_description = ''.join(description.findAll(text=True))
+			text_description = ' '.join(text_description.split())
+		# extract product head
+		head = soup.find(id='produit-infos')
+		# Remove add to cart buttons
+		line = head.find('tr', {'class':'line-2'})
+		if line:
+			line.extract()
+		text_head = ''
+		if head:
+			text_head = ''.join(head.findAll(text=True))
+			text_head = ' '.join(text_head.split())
+		self.text = text_head+' '+text_description
 	

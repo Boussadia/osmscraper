@@ -1,7 +1,8 @@
 define([
+	'underscore',
 	'views/base',
 	'text!../../templates/brands-filter.html',
-], function(BaseView, brandsFilterTemplate){
+], function(_, BaseView, brandsFilterTemplate){
 
 	var BrandsFilterView = BaseView.extend({
 		tagName: 'ul',

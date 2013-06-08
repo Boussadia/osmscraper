@@ -12,6 +12,7 @@ define([
 			initialize: function(){
 				// Getting quantity in cart
 				this.vent.on('product:quantity:set', this.set_quantity, this);
+				this.vent.on('cart:empty', this.cart_empty, this);
 
 			},
 			save: function(attributes, options){
@@ -55,6 +56,9 @@ define([
 					this.set('quantity_in_cart', quantity);
 				}
 			},
+			cart_empty: function(options){
+				this.set('quantity_in_cart', 0);
+			}
 		})
 
 		return ProductModel;

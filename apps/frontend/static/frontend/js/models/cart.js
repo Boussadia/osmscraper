@@ -6,6 +6,7 @@ define([
 		var CartModel = BaseModel.extend({
 			url: '/api/cart',
 			defaults:{
+				'content': [],
 				'quantity': 0,
 			},
 			initialize: function(attributes, options){
@@ -67,6 +68,12 @@ define([
 
 					this.vent.trigger('product:quantity:set', option_to_send);
 				},this)
+			},
+			empty: function(){
+				this.set('quantity', 0);
+				this.set('content', []);
+				this.vent.trigger('cart:empty');
+				this.destroy();
 			}
 		})
 

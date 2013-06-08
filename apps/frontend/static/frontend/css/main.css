@@ -1408,6 +1408,12 @@ button:hover, button:focus, .button:hover, .button:focus {
 																margin: 0;
 															}
 
+															#cart-header div p:last-child {
+																top: 15px;
+																text-decoration: underline;
+																cursor: pointer;
+															}
+
 
 														#cart div.scrollarea{
 															height: 68%;

@@ -93,6 +93,7 @@ define([
 			},
 			events: {
 				'click div#cart-icone': 'cartClickHandler',
+				'click p.empty': 'empty'
 			},
 			cartClickHandler: function(e){
 
@@ -112,7 +113,13 @@ define([
 						that.substitutionView.render().$el.show();
 					}
 				});
+			},
+			empty: function(e){
+				var answer = confirm('Êtes-vous sûr de vouloir vider votre panier ?');
+
+				if (answer) this.cart.empty();
 			}
+
 		});
 
 

@@ -631,7 +631,7 @@ class CartAPIView(BetaRestrictionAPIView):
 				data.append(category_cart)
 
 
-		return {'content': data, 'name': osm_name, 'quantity': quantity_products}
+		return {'content': data, 'name': osm_name, 'quantity': quantity_products, 'id': cart_controller.metacart.id}
 
 	@osm
 	def post(self, request, reference, quantity = 1, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
@@ -646,15 +646,21 @@ class CartAPIView(BetaRestrictionAPIView):
 		return self.get_serialized_product(product, osm_name, osm_type, osm_location, cart_controller)
 
 	@osm
-	def delete(self, request, reference, quantity = None, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
-		product = self.get_product(reference, osm_name)
+	def delete(self, request, reference = None, quantity = None, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
 		cart_controller = request.cart_controller
-		if quantity is not None:
-			cart_controller.remove_product(product, int(quantity))
-		else:
-			cart_controller.remove_product(product)
+		if reference:
+			# removing product from cart
+			product = self.get_product(reference, osm_name)
+			if quantity is not None:
+				cart_controller.remove_product(product, int(quantity))
+			else:
+				cart_controller.remove_product(product)
 
-		return self.get_serialized_product(product, osm_name, osm_type, osm_location, cart_controller)
+			return self.get_serialized_product(product, osm_name, osm_type, osm_location, cart_controller)
+		else:
+			# empty cart
+			cart_controller.empty()
+			return {'content': [], 'name': osm_name, 'quantity': 0, 'id': cart_controller.metacart.id}
 
 class CartImportation(BetaRestrictionAPIView):
 	"""

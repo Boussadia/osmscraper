@@ -27,7 +27,7 @@ urlpatterns = patterns('',
 
     # Cart
     url(r'cart/?$', views.CartAPIView.as_view()),
-    url(r'cart/product/(?P<reference>(\d+))(/quantity/(?P<quantity>(\d+)))?/?$', views.CartAPIView.as_view()),
+    url(r'cart/product/((?P<reference>(\d+))(/quantity/(?P<quantity>(\d+)))?)?/?$', views.CartAPIView.as_view()),
     url(r'cart/importation/?$', views.CartImportation.as_view()),
 
     # Osm

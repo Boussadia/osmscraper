@@ -30,7 +30,19 @@ class MonoprixStemmer(BaseHTMLStemmer):
 		if print_button:
 			print_button.extract()
 
+		# extract unnecessary button
+		print_button = soup.find('p',{'class', 'BackBtn'})
+		if print_button:
+			print_button.extract()
+
+		# extract unnecessary information
+		line = soup.find('div',{'class' :'ProductBuyingControl'})
+		if line:
+			line.extract()
+		line = soup.find('div',{'class' :'Col01'})
+		if line:
+			line.extract()
+
 		text = ''.join(soup.findAll(text=True))
 		text = ' '.join(text.split())
 		self.text = text
-	
