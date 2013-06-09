@@ -6,7 +6,7 @@
 
 @font-face{
 	font-family: FuturaStd;
-	src: url('../fonts/tahomabd.ttf');
+	src: url('../fonts/FuturaStd-Heavy.otf');
 	font-weight: bold;
 }
 
@@ -203,8 +203,8 @@ header.top .block-right{
 	float: left;
 	margin: 0;
 	top: 70px;
-	right: 271px;
-	font-size: 15.5px;
+	right: 272px;
+	font-size: 17px;
 	color: #9f9fa1;
 }
 
@@ -586,7 +586,7 @@ li.has-dropdown.show {
 
 .products {
 	width: 100%;
-	height: 313px;
+	height: 315px;
 	position: relative;
 	top: 10px;
 	margin-bottom: -4px;
@@ -675,7 +675,7 @@ li.has-dropdown.show {
 
 .products-header {
 	position: relative;
-	height: 50px;
+	height: 52px;
 	padding-top: 18px;
 }
 
@@ -717,10 +717,9 @@ li.has-dropdown.show {
 .product {
 	position: relative;
 	width: 20%;
-	height: 237px;
+	height: 262px;
 	float: left;
 	padding-right: 1px;
-	margin-bottom: 5px;
 }
 
 .products .inner.touch .products-container .product{
@@ -731,14 +730,17 @@ li.has-dropdown.show {
 /*Product bloc*/
 
 .top-bloc {
-	z-index: 1px;
+	z-index: 1;
 	width: 100%;
-	height: 205px;
+	height: 215px;
 	position: relative;
 	background-color: white;
 	text-align: center;
 	border-right: 1px solid #f0f0f0; 
 }
+		.img-bloc{
+			margin-top: 5px;
+		}
 
 		.img-bloc img {
 			position: relative;
@@ -746,7 +748,6 @@ li.has-dropdown.show {
 			max-width: 150px;
 			display: block;
 			margin: 0 auto 0;
-			top: 1px;
 		}
 
 	.top-bloc > p {
@@ -780,7 +781,7 @@ li.has-dropdown.show {
 		position: relative;
 		text-align: center;
 		font-size: 30px;
-		top: 195px;
+		top: 220px;
 	}
 	.qte .plus, .qte .minus{
 		cursor: pointer;
@@ -799,13 +800,12 @@ li.has-dropdown.show {
 	top: 15px;
 }
 	.price-bloc.price-mask{
-		top: 23px;
+		top: 7px;
 		right: 5px;		
 	}
 
 	.price-bloc p, .price-bloc-promo p {
 		display: inline-block;
-		top: -13px;
 		position: absolute;
 		margin: 0;
 		color: #63c20c;
@@ -822,7 +822,7 @@ li.has-dropdown.show {
 	.price-bloc p:nth-child(2) {
 		font-size: 11px;
 		right: 3px;
-		top: 3px;
+		top: 17px;
 		color: #9f9f9f;
 	}
 
@@ -867,7 +867,7 @@ li.has-dropdown.show {
 	display: inline-block;
 	position: relative;
 	width: 100%;
-	height: 227px;
+	height: 100%;
 	float: left;
 }
 
@@ -925,7 +925,7 @@ li.has-dropdown.show {
 	color: white;
 	right: 19px;
 	top: -32px;
-	padding-top: 10px;
+	padding-top: 8px;
 	font-size: 20px;
 	font-weight: bold;
 	background-position: 34px 0px;
@@ -955,12 +955,12 @@ div.promo-type {
 
 .mask-bloc {
 	width: 100%;
-	height: 239px;
+	height: 262px;
 	position: absolute;
 	z-index: 1;
 	top: 0;
 	right: 1px;
-	background-color: rgba(0, 0, 0, 0.1);
+	background-color: rgba(0, 0, 0, 0.07);
 	text-align: center;
 }
 
