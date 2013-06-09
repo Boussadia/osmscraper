@@ -1,6 +1,6 @@
 <div class="osms-switch open">
 	<a class="osms-switch-close">×</a>
-	<div id="osms-switch-header">Changer de magasin pour économiser plus</div>
+	<div id="osms-switch-header">Changer de magasin <% if (price >0) {%>pour économiser jusqu'à <%= price.toFixed(2) %>€<% }%></div>
 	
 	<div class="osms-switch-active"></div>
 	

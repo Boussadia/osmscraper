@@ -35,7 +35,8 @@ define([
 		render: function(){
 			this.closeSubViews();
 			this.$el.empty();
-			this.$el.append(this.template({}));
+			var price_to_save = -this.osms.get_price_to_save();
+			this.$el.append(this.template({'price': price_to_save}));
 
 			this.osms.each(function(osm){
 
