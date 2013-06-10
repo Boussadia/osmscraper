@@ -2,12 +2,10 @@ define([
 	'underscore',
 	'views/base',
 	'views/osms',
-	'views/switch-area',
-	'views/order',
 	'views/cart-summary',
 	'collections/osms',
-	'text!../../templates/comparator.html'
-	], function(_, BaseView, OsmsView, SwitchAreaView, OrderView, CartSummaryView, OsmsCollection, comparatorTemplate){
+	'text!../../templates/comparator.html',
+	], function(_, BaseView, OsmsView, CartSummaryView, OsmsCollection, comparatorTemplate){
 
 		var ComparatorView = BaseView.extend({
 			el: '#comparator',
@@ -23,11 +21,11 @@ define([
 				this.closeSubViews();
 				this.$el.empty();
 
+				var active_osm = this.osms.get_active_osm().toJSON();
+
 				// Initializing subviews
-				this.$el.append(this.template({}));
+				this.$el.append(this.template({'active_osm': active_osm}));
 				this.addSubView(new OsmsView({'osms': this.osms, el: this.$el.find('#osms') ,'vent': this.vent}));
-				this.addSubView(new SwitchAreaView({'osms': this.osms, el: this.$el.find('#switch-area') ,'vent': this.vent}));
-				this.addSubView(new OrderView({'osms': this.osms, el: this.$el.find('#active-osm') ,'vent': this.vent}));
 				this.addSubView(new CartSummaryView({'cart':this.cart, el: this.$el.find('#mycart'), 'vent': this.vent})); // Cart summary
 
 

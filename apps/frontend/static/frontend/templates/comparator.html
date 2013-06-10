@@ -1,7 +1,14 @@
 <div id='mycart'></div>
 <div class='top-bar'></div>
-<div id="switch-area"></div>
-<div id="osms"></div>
-<div class='top-bar orange'></div>
-<div id="active-osm"></div>
-<div class='top-bar green'></div>
+<div id="osms">
+	<div id="active-osm"></div>
+	<div id="non-active-osm"></div>
+</div>
+
+<div class='cart-summary'>
+	<div class="cart-logo"></div>
+	<div><%= active_osm.price.toFixed(2) %>€</div>
+</div>
+
+<a class="cta commander no-hijax">COMMANDER chez <%= _(active_osm.name).capitalize()%></a>
+<div id='minimum-shipping'>Minimum de commande : 70€</div>

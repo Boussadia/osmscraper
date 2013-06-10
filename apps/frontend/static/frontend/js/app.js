@@ -18,6 +18,13 @@ define([
 	'cookie'
 ], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel,CartImporationModel, UserModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView, SwitchView){
 
+	// Adding capitalize to underscore
+	_.mixin({
+		capitalize : function(string) {
+			return string.charAt(0).toUpperCase() + string.substring(1).toLowerCase();
+		}
+	});
+
 	function MasterCoursesApp(){
 		// Global Scope
 		this.Views = {};

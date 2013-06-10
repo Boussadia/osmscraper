@@ -1,9 +1,10 @@
 define([
 	'underscore',
 	'views/base',
+	'views/order',
 	'collections/osms',
 	'text!../../templates/osm.html'
-	], function(_, BaseView, OsmsCollection, osmTemplate){
+	], function(_, BaseView, OrderView, OsmsCollection, osmTemplate){
 
 		var ComparatorView = BaseView.extend({
 			el: 'div#osms',
@@ -26,11 +27,13 @@ define([
 			},
 			render: function(){
 				this.closeSubViews();
-				this.$el.empty();
 				var that = this;
+				var order_view = new OrderView({'osms': this.osms, el: this.$el.find('#active-osm') ,'vent': this.vent});
+				order_view.render();
+				this.addSubView(order_view);
 				this.osms.each(function(osm){
 					var data = osm.toJSON();
-					that.$el.append(that.template(data));
+					that.$el.find('div#non-active-osm').append(that.template(data));
 				})
 
 				return this;

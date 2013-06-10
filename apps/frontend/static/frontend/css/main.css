@@ -1232,7 +1232,7 @@ div.cart-summary > div:not(.cart-logo) {
 	top: 5px;
 }
 
-.osm div#minimum-shipping{
+div#minimum-shipping{
 	font-size: 11px;
 	position: relative;
 	text-align: center;
