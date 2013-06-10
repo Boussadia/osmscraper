@@ -168,7 +168,6 @@ class TagsProcessor(object):
 			[[selected_caegories_tags.append(t) for t in c.tags.all()] for c in selected_caegories]
 			selected_caegories_tags = list(set(selected_caegories_tags))
 			new_tags, common_tags, removed_tags = diff( selected_caegories_tags, tags)
-			# return selected_caegory, common_tags
 
 			return selected_caegories, common_tags
 		else:

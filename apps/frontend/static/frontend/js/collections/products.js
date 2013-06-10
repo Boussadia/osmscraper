@@ -7,7 +7,7 @@ define([
 
 		var ProductsCollections = BaseCollection.extend({
 			model: ProductModel,
-			PRODUCTS_PER_PAGE: 5,
+			PRODUCTS_PER_PAGE: 6,
 			TYPE_TO_FETCH: 'products',
 			
 			// key = 'top' or 'mid' or 'end'
@@ -29,8 +29,8 @@ define([
 				this.previous =  null;
 				this.brands = [];
 
-				// If touch device, fetche
-				if (Modernizr.touch) this.PRODUCTS_PER_PAGE = 6;
+				// If touch device, fetch
+				if ($('body').outerWidth()<1172) this.PRODUCTS_PER_PAGE = 5;
 
 			},
 			parse: function(resp, xhr){

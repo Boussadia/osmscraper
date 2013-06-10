@@ -84,7 +84,7 @@ a {
 	position: relative;
 	padding: 0;
 	display: inline-block;
-	width: 85.7%;
+	width: 100%;
 	float: left;
 }
 
@@ -552,6 +552,7 @@ li.has-dropdown.show {
 #main{
 	top: 35px;
 	min-height: 95%;
+	padding-right: 180px;
 }
 
 /* Thin bar on top of products section */
@@ -614,13 +615,14 @@ li.has-dropdown.show {
 
 .products div.controller.right{
 	background-position: -44px 0px;
-	right: 11px;
+	right: 0;
 }
 
 .products div.controller.left{
 	background-position: 0;
 	opacity: .5;
-	left: 0px;
+	left: 0%;
+	z-index: 2;
 }
 
 .products .inner .loader{
@@ -723,7 +725,7 @@ li.has-dropdown.show {
 }
 
 .products-container{
-	min-width: 1226px;
+	/*min-width: 1226px;*/
 }
 
 /* Products*/

@@ -67,15 +67,13 @@ define([
 				// Adding plus button if more products are available to fetch
 				if(!Modernizr.touch){
 
-					var outerWidth = this.$el.find('.product').outerWidth();
-					if(outerWidth){
-						if (!this.PRODUCT_WIDTH_NO_TOUCH) this.PRODUCT_WIDTH_NO_TOUCH = outerWidth;
-						outerWidth = this.PRODUCT_WIDTH_NO_TOUCH;
-						// Setting width
-						this.$el.find('.product').width(outerWidth+'px')
-						var products_count = this.$el.find('.product').length;
-						this.$el.width(outerWidth*products_count*1.1);
-					}
+					var page = this.products.page;
+					var width_single_product_page = 100.0/(this.products.PRODUCTS_PER_PAGE*page);
+
+					this.$el.width((page*100)+'%');
+					this.$el.find('.product').css('width', width_single_product_page+'%');
+
+
 				};
 
 				if(Modernizr.touch){
@@ -165,15 +163,15 @@ define([
 				var current_page = this.page;
 				var products_per_page = this.products_per_page;
 				if (direction === 1){
-					var left_offset = -current_page*products_per_page*this.PRODUCT_WIDTH_NO_TOUCH;
-					this.$el.css('left', left_offset+'px');
+					var left_offset = -current_page*100;
+					this.$el.css('left', left_offset+'%');
 					this.page = current_page +1;
 				}else{
-					var left_offset = -(current_page-2)*products_per_page*this.PRODUCT_WIDTH_NO_TOUCH;
-					if(left_offset<0) this.$el.css('left', left_offset+'px');
+					var left_offset = -(current_page-2)*100;
+					if(left_offset<0) this.$el.css('left', left_offset+'%');
 					this.page = current_page - 1;
 					if (this.page<1) this.page = 1;
-					if(left_offset>=0) this.$el.css('left', '0px');
+					if(left_offset>=0) this.$el.css('left', '0%');
 					
 				}
 			},
