@@ -107,7 +107,7 @@ p, h1, h2, h3, h4, h5, h6, div {
 /* Slide Show */
 
 section#cta-container {
-	height: 500px;
+	height: 320px;
 }
 
 #cta-container a:nth-child(2) {
@@ -122,23 +122,24 @@ section#cta-container {
 #cta-container .pub{
 	position: relative;
 	float: left;
-	width: 55%;
+	width: 404px;
 	cursor: pointer;
+	text-align: center;
 }
 
 #cta-container .message{
-	width: 45%;
+	width: 560px;
 	position: relative;
 	float: left;
 	margin-top: 100px;
+	text-align: center;
 }
 
 #cta-container .message p {
 	position: relative;
-	font-size: 22px;
+	font-size: 26px;
 	font-weight: bold;
 	line-height: 15px;
-	left: 5%;
 }
 
 #gallery {
