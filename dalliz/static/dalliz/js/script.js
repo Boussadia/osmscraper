@@ -9,7 +9,7 @@ $(document).ready(function(){
 		/* Traverse through all the slides and store their accumulative widths in totWidth */
 		
 		positions[i]= totWidth;
-		totWidth += $(this).width();
+		totWidth += $(this).outerWidth();
 		
 		/* The positions array contains each slide's commulutative offset from the left part of the container */
 		
@@ -20,6 +20,7 @@ $(document).ready(function(){
 		}
 		
 	});
+
 	
 	$('#slides').width(totWidth);
 
@@ -33,7 +34,7 @@ $(document).ready(function(){
 			$(this).parent().addClass('act');
 			
 			var pos = $(this).parent().prevAll('.menuItem').length;
-			
+			console.log(-positions[pos]);
 			$('#slides').stop().animate({marginLeft:-positions[pos]+'px'},450);
 			/* Start the sliding animation */
 			

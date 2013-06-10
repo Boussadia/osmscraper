@@ -58,8 +58,8 @@ p, h1, h2, h3, h4, h5, h6, div {
 }
 
 .main-container {
-	width: 100%;
-	min-width: 1024px;
+	width: 1024px;
+	margin: auto;
 }
 
 .block {
@@ -100,7 +100,7 @@ p, h1, h2, h3, h4, h5, h6, div {
 		display: block;
 		float: left;
 		margin-top: 22px;
-		margin-left: 2%;
+		margin-left: 30px;
 	}
 
 
@@ -122,7 +122,7 @@ section#cta-container {
 #cta-container .pub{
 	position: relative;
 	float: left;
-	width: 404px;
+	width: 384px;
 	cursor: pointer;
 	text-align: center;
 }
@@ -131,13 +131,13 @@ section#cta-container {
 	width: 560px;
 	position: relative;
 	float: left;
-	margin-top: 100px;
+	margin-top: 80px;
 	text-align: center;
 }
 
 #cta-container .message p {
 	position: relative;
-	font-size: 26px;
+	font-size: 30px;
 	font-weight: bold;
 	line-height: 15px;
 }
@@ -160,14 +160,17 @@ section#cta-container {
 	float:left;
 	width: 960px;
 	margin-top: 30px;
+	padding-left: 130px;
+	padding-right: 130px;
 }
 
 .slide img{
 	display: inline-block;
 	position: relative;
+	width: 300px;
 	float: left;
-	width: 640px;
-	height: 300px;
+	margin-left: 50px;
+	margin-top: 50px;
 }
 .slide p {
 	font-size: 20px;
@@ -177,7 +180,7 @@ section#cta-container {
 	position: relative;
 	float: right;
 	margin-left: 60px;
-	margin-top: 100px;
+	margin-top: 50px;
 }
 #menu {
 	height:45px;
@@ -222,7 +225,7 @@ li.act a{
 }
 
 #slider-pitch{
-	height: 480px;
+	height: 380px;
 }
 #slider-pagination li:first-child.act a {
 	background-position: 0px 0px;	
@@ -257,18 +260,18 @@ li.act a{
  .cta {
 	display: inline-block;
 	position: relative;
-	left: 15%;
 	z-index: 9;
 	height: 50px;
-	width: 190px;
+	width: 285px;
 	border-radius: 4px;
 	background-color: #63c20c;
 	color: white;
 	text-align: center;
-	padding-top: 17px;
-	font-size: 15px;
-	top: 50px;
+	padding-top: 14px;
+	font-size: 20px;
+	top: 30px;
 	cursor: pointer;
+	font-weight: bold;
 }
 
 .cta:hover {
