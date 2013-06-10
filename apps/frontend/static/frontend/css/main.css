@@ -686,14 +686,27 @@ li.has-dropdown.show {
 	z-index: 10;
 	width: 167px;
 	left: -29%;
-	background-color: blue;
-	color: white;
 	list-style: none;
 	padding: 0;
+	background-color: white;
+	color: #9f9fa1;
+	font-size: 13px;
+	padding-bottom: 12px;
+	box-shadow: 1px 1px 6px rgba(0,0,0,0.2);
 }
+
+.products-header .brands li {margin-top: 6px;}
 
 .products-header .brands-controller{
 	cursor: pointer;
+}
+
+#brands-filter {
+	width: 66px;
+	height: 23px;
+	font-size: 15px;
+	padding-top: 4px;
+	margin-top: 15px;
 }
 
 .products-header span {
@@ -1271,7 +1284,7 @@ div#minimum-shipping{
 .cta.comparer{
 	background-color: #ff7800;
 	width: 135px;
-	padding-top: 7px;
+	padding: 8px 12px;
 	top: -10px;
 }
 

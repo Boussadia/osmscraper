@@ -21,7 +21,8 @@ define([
 			return this;
 		},
 		events: {
-			'click input[type=checkbox]': 'updateFilter'
+			'click input[type=checkbox]': 'updateFilter',
+			'click a.cta': 'updateFilter',
 		},
 		updateFilter: function(e){
 			this.selected_brand = [];

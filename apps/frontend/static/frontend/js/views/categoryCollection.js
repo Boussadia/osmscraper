@@ -103,18 +103,31 @@ define([
 				}
 			},
 			showBrandsFilter: function(e){
-				// this..is(":visible")
+				var hide_handler = function(e){
+					var clicked = e.target;
+					var is_in = $.contains(view.el, clicked);
+					if (!is_in && view.$el.is(":visible")){
+						view.$el.css('display', 'none')
+						$(window).unbind('click', hide_handler);
+					}else{
+						view.$el.css('display', 'inline-block');
+					}
+				}
+
+				// Nasty hack due to extreme laziness 
+				setTimeout(function(){
+					$(window).bind( 'click', hide_handler);
+				}, 500)
+				
 				var category_id = $(e.target).attr('data-id');
 				category_id = parseInt(category_id);
 				var view = _.find(this.subViews, function(view, i){
 					if (view.category_id) return view.category_id === category_id;
 					return false
 				}, this);
-
-
-
 				if(view && view.$el.is(":visible")) view.$el.css('display', 'none');
 				if(view && !view.$el.is(":visible")) view.$el.css('display', 'inline-block');
+
 			},
 			controllerDisplay: function(products){
 				var products_id = products.id;
