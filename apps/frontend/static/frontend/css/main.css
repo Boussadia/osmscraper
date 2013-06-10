@@ -722,7 +722,7 @@ li.has-dropdown.show {
 	padding-right: 1px;
 }
 
-.added p {color: #9f9fa1;} 
+.added .top-bloc > p{color: #9f9fa1;} 
 .added img {-webkit-filter: grayscale(100%); -moz-filter: grayscale(100%); -ms-filter: grayscale(100%); -o-filter: grayscale(100%); opacity: 0.9;}
 
 .products .inner.touch .products-container .product{
