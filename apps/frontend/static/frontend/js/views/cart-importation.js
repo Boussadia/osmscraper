@@ -17,6 +17,7 @@ define([
 			})
 			this.bindTo(this.importModel, 'sync', function(){
 				that.fetching = false;
+				that.hide();
 				that.vent.trigger('cart:newproduct');
 			})
 			this.vent.on('modal:show:import', this.show, this);
@@ -25,6 +26,7 @@ define([
 			'click a.close-reveal-modal': 'hide',
 			'click .reveal-modal-bg': 'hide',
 			'click #sign-in-button': 'import',
+			'keypress input': 'enterListener',
 		},
 		render: function(){
 			this.closeSubViews();
@@ -45,6 +47,15 @@ define([
 			this.importModel.set('email', mail);
 			this.importModel.set('password', pass);
 			this.importModel.save();
+		},
+		enterListener: function(event){
+			if(event.type === 'keypress'){
+				var code = event.charCode;
+				if (code === 13){
+					event.preventDefault();
+					this.$el.find('#sign-in-button').trigger('click');
+				}
+			}
 		}
 	});
 
