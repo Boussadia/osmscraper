@@ -5,10 +5,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 import simplejson as json
 
-import telemarket
-import place_du_marche
+import apps.osms.telemarket
+import apps.osms.place_du_marche
 import monoprix
-import coursengo
+import apps.osms.coursengo
 import dalliz
 import ooshop
 import auchan

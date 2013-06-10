@@ -5,8 +5,8 @@ import math
 
 from django.db import connection, transaction
 
-from telemarket.models import Monoprix_matching as Telemarket_monoprix_matching
-from telemarket.models import Product as Telemarket_product
+from apps.osms.telemarket.models import Monoprix_matching as Telemarket_monoprix_matching
+from apps.osms.telemarket.models import Product as Telemarket_product
 
 from monoprix.models import Product as Monoprix_product
 
