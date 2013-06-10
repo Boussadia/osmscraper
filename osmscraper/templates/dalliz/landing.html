@@ -53,14 +53,19 @@
 
 	<body>
 		<header class="main-container">
-			<div id="top-bar">
-				<div id="beta"><img src="{% static /dalliz/images/home/ruban.png %}"></div>
-				<a href="" data-reveal-id="myModal">
-					<!-- <div class="top-icon"><img src="img/header/play-icon.png"></div> -->
+				<div id="beta"><img src="/static/dalliz/images/home/ruban.png"></div>
+				<div id="profile-button" href="" data-reveal-id="myModal">
+					<div class="top-icon dropit" id="top-icon-play">
+						<div class="dropit-trigger">
+							<img src="">
+							<ul class="dropit-submenu" style="display: none;">
+								<li><a class="no-hijax" id="logout">Se connecter</a></li>
+							</ul>
+						</div>
+					</div>
 					<div class="top-icon">Se connecter</div>
-					<!-- <div class="top-icon"><img src="img/header/user-icon.png"></div> -->
-				</a>
-			</div>
+					<div class="top-icon"><img src=""></div>
+				</div>
 			<div id="logo-bar" class="block">
 				<a href="#"><img src="{% static /dalliz/images/header/logo-small.png %}"></a>
 			</div>
@@ -94,7 +99,7 @@
 				<div id="slides">
 					<div class="slide">
 						<img src="{% static /dalliz/images/home/compose.png %}" alt="composer" />
-						<p>Je compose mon panier de courses. J’y trouve tout ce dont j’ai besoin au quotidien.</p>
+						<p>Importez votre liste depuis votre supermarché habituel ou sélectionnez vos produits en quelques clics grâce à notre interface super simple.</p>
 					</div>
 					<div class="slide">
 						<img src="{% static /dalliz/images/home/compare.png %}" alt="comparer" />

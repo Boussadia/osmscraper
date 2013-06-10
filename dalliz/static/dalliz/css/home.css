@@ -67,11 +67,6 @@ p, h1, h2, h3, h4, h5, h6, div {
 	padding-right: 30px;
 }
 
-#top-bar {
-	height: 32px;
-	background-color: black;
-}
-
 	#top-bar a {
 		display: block;
 		float: right;
@@ -81,18 +76,20 @@ p, h1, h2, h3, h4, h5, h6, div {
 
 		.top-icon {
 			float: right;
-			color: white;
 			font-weight: bold;
 			margin-right: 8px;
 			margin-top: 7px;
+			color: #078bc9;
+			text-transform: capitalize;
 		}
 
 		#beta {
 			position: relative;
 			float: left;
 			left: 15px;
-			top: -5px;
+			top: -10px;
 		}
+		#profile-button {display: block; float: right; height: 32px; margin-right: 10%; cursor: pointer;}
 
 #logo-bar {
 	height: 100px;
