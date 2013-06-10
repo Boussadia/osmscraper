@@ -128,8 +128,11 @@ class TagsProcessor(object):
 		"""
 		chunks = [TagsProcessor.chunk(product.stemmed_text, n) for n in [1,2,3]]
 		common = []
+		stemmed_tags = []
+		[ [ [ stemmed_tags.append(tag.stemmed_name) for tag in d.tags.filter(stemmed_name__isnull = False)]for d in c.dalliz_category.all()]for c in product.categories.all()]
+		stemmed_tags = list(set(stemmed_tags))
 
-		[ common.extend(diff(c, TagsProcessor.STEMMED_TAGS)[1]) for c in chunks]
+		[ common.extend(diff(c, stemmed_tags)[1]) for c in chunks]
 
 		retained_tags = []
 
@@ -147,7 +150,7 @@ class TagsProcessor(object):
 		TagsProcessor.process_matched_products(product)
 
 	@staticmethod
-	def get_best_category_match(product):
+	def get_best_categories_match(product):
 		"""
 			Apply this to tags processed product.
 		"""
@@ -156,16 +159,20 @@ class TagsProcessor(object):
 		categories = list(set(categories))
 		
 		tags = product.tag.all()
-
 		if len(categories)>0:
-			selected_caegory = sorted([ (category, len(diff(category.tags.all(), tags)[1])) for category in categories], key = lambda item: -item[1])[0][0]
-			new_tags, common_tags, removed_tags = diff( selected_caegory.tags.all(), tags)
+			sorted_categories = sorted([ (category, len(diff(category.tags.all(), tags)[1])) for category in categories], key = lambda item: -item[1])
+
+			selected_caegories = [sorted_categories[0][0]]
+			[ selected_caegories.append(c[0]) for c in sorted_categories if c[1]>=sorted_categories[0][1]]
+			selected_caegories_tags = []
+			[[selected_caegories_tags.append(t) for t in c.tags.all()] for c in selected_caegories]
+			selected_caegories_tags = list(set(selected_caegories_tags))
+			new_tags, common_tags, removed_tags = diff( selected_caegories_tags, tags)
 			# return selected_caegory, common_tags
 
-			# saving product
-			return selected_caegory, common_tags
+			return selected_caegories, common_tags
 		else:
-			return None, None
+			return [], []
 
 	@staticmethod
 	def process_matched_products(product):
@@ -202,8 +209,8 @@ class TagsProcessor(object):
 
 			# Working with categories
 			for p in matched_products:
-				possible_category, common_tags = TagsProcessor.get_best_category_match(p)
-				possible_categories.append(possible_category)
+				selected_categories, common_tags = TagsProcessor.get_best_categories_match(p)
+				possible_categories = selected_categories + possible_categories
 
 
 			# unique category
@@ -219,7 +226,7 @@ class TagsProcessor(object):
 
 
 	@staticmethod
-	def process_tags_products(override = True):
+	def process_tags_products(override = False):
 		"""
 			Process all categories from all 
 		"""
@@ -233,8 +240,11 @@ class TagsProcessor(object):
 			OSMProduct = global_keys['%sProduct'%osm.capitalize()]
 			kwargs = {
 				'categories__dalliz_category__algorithm_process': True,
-				'tags_processed': False
 			}
+			if not override:
+				kwargs.update({
+					'tags_processed': False
+				})
 
 			products = OSMProduct.objects.filter(**kwargs).distinct('reference')
 			[ TagsProcessor.process_tags_product(p) for p in products]
