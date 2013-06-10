@@ -1193,6 +1193,10 @@ div.promo-type {
 		margin-top: 10px;
 	}
 
+#active-osm {position: absolute; top: -44px; width: 100%;}
+
+#non-active-osm {position: relative; margin-top: 55px;}
+
 #active-osm .osm > div.auchan, #active-osm .osm > div.monoprix, #active-osm .osm > div.ooshop{
 	background-image: url(../img/comparator/sprites_osm.png);
 }
@@ -1209,8 +1213,8 @@ div.promo-type {
 
 
 div.cart-summary{
-	height: 40px;
-	width: 160px;
+	height: 32px;
+	width: 140px;
 	margin: auto;
 }
 
@@ -1235,23 +1239,13 @@ div.cart-summary > div:not(.cart-logo) {
 	right: 12px;
 }
 
-#active-osm .osm p {
-	font-size: 78%;
-	position: relative;
-	float: left;
-	left: 3%;
-	margin: 0;
-	margin-bottom: 5px;
-	font-weight: normal;
-	top: 5px;
-}
-
 div#minimum-shipping{
-	font-size: 11px;
+	font-size: 11.5px;
 	position: relative;
 	text-align: center;
 	top: 5px;
 	width: 180px;
+	color: #9f9fa1;
 }
 
 .cta {
