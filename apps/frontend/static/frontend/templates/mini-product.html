@@ -12,34 +12,6 @@
 	</div>
 <%}%>
 
-
-<div class="sel-osm-product">
-	<% if(suggested_content) {%>
-	<img src="<%= suggested_product.image_url %>">
-	<div class="prod-desc">
-		<p><% if(suggested_product.brand) print(suggested_product.brand.name); %></p>
-		<p><%= suggested_product.name %></p>
-	</div>
-	<div class="qte" id="recap-price-qty">
-		<div class="price-bloc" id="recap-qty">
-			<p><%= suggested_product.package.package_quantity %> x <%= suggested_product.package.package_measure %> <%= suggested_product.package.package_unit %></p>
-			<p><%= suggested_product.history[0].unit_price %>€/<%= suggested_product.unit.name %></p>
-			<p><%= suggested_product.history[0].price %>€</p>
-			<% if( suggested_product.history[0].is_promotion ){ %>
-				<div id="osm-recap-promo">
-					<div class="promo-shadow"></div>
-					<div class="promo-type"> <%= (((suggested_product.history[0].price-suggested_product.history[0].before)/suggested_product.history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
-				</div>
-			<% } %> 
-		</div>
-		<a class="plus">+</a>
-		<a class="minus">-</a>
-		<a class="how-much"><%= suggested_content.quantity%></a>
-	</div>
-	<%}%>
-</div>
-
-
 <div class="active-osm-product">
 	<img src="<%= product.image_url %>">
 	<div class="prod-desc">
@@ -63,4 +35,9 @@
 		<a class="minus">-</a>
 		<a class="how-much"><%= quantity%></a>
 	</div>
+</div>
+
+
+<div class="sel-osm-product">
+	
 </div>
