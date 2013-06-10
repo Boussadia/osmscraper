@@ -9,7 +9,6 @@ define([
 				'password': '2asefthukom,3'
 			},
 			initialize: function(attributes, options){
-				// this.vent.on('cart:newproduct', this.fetch, this);
 				
 			},
 			parse: function(resp, xhr){

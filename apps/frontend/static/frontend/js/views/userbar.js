@@ -29,16 +29,20 @@ define([
 				// Dropdown
 				'click #logout': 'logout',
 				'click .top-icon:not(#top-icon-play)': 'showSubMenu',
+				'click #import-controller': 'importCart'
 			},
 			logout: function(event){
 				this.user.logout();
 			},
 			showSubMenu: function(e){
 				e.preventDefault();
-				console.log($('#top-icon-play img'));
 				setTimeout(function(){
 					$('#top-icon-play img').trigger('click');
 				}, 10)
+			},
+			importCart: function(e){
+				e.preventDefault();
+				this.vent.trigger('modal:show:import');
 			}
 
 		});

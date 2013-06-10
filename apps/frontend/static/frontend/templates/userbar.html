@@ -4,11 +4,12 @@
 			<img src="">
 			<ul>
 				<li><a class="no-hijax" id='logout'>Se déconnecter</a></li>
+				<li><a class="no-hijax" id='import-controller'>Importer ma liste</a></li>
 			</ul>
 		</div>
 	</div>
 <% } %>
 
-<div class="top-icon"><%= username %></div>
+<div class="top-icon"><%= _(username).capitalize() %></div>
 
 <% if (is_active ) {%> <div class="top-icon"><img src=""></div><% } %>

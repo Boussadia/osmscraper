@@ -2075,6 +2075,153 @@ input[type="email"] {
   width: 380px;
 }
 
+
+/************************************************************************************************************************************
+*	
+*														IMPORTATION POP UP
+*
+************************************************************************************************************************************/
+
+#importation{
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	z-index: 10000;
+	display: none;
+}
+
+#importModal{
+	position: fixed;
+	visibility: visible !important;
+	display: initial !important;
+	width: 570px !important;
+	height: 460px !important;
+	z-index: 100000 !important;
+}
+
+#importation .reveal-modal-bg{
+	display: block;
+}
+
+#importModal {
+  width: 570px;
+  height: 460px;
+}
+
+#importModal #modal-header {
+  height: 35px;
+  color: #078bc9;
+}
+
+#importModal #sign-in {
+  height: 380px;
+  position: relative;
+  top: -10px;
+  border: none;
+}
+
+#importModal #sign-in p:first-child {
+  position: relative;
+  font-size: 16px;
+  font-weight: bold;
+  color: #424242;
+}
+
+#importModal #sign-in p {
+  position: relative;
+  font-size: 14px;
+  color: #424242;
+  top: 2px;
+}
+
+#importModal #sign-in p:nth-child(7) {
+  font-size: 11px;
+  color: #9f9fa1;
+  top: -5px;
+  position: relative;
+  left: 8px;
+}
+
+#importModal #sign-in p:nth-child(5) {
+  top: -8px;
+  color: #9f9fa1;
+  font-size: 12px;
+}
+
+#importModal #sign-in table {
+  height: 80px;
+}
+
+#importModal #sign-in td div {
+  width: 135px;
+  height: 34px;
+  background: url(../img/comparator/sprites_osm_nb.png);
+  cursor: pointer;
+}
+
+  #importModal #sign-in td:nth-child(1) div {
+    background-position: 0px 238px;
+  }
+
+  #importModal #sign-in td:nth-child(2) div {
+    background-position: 0px 102px;
+  }
+
+  #importModal #sign-in td:nth-child(3) div {
+    background-position: 0px 170px;
+  }
+
+#importModal #sign-in td div:hover {
+  background: url(../img/comparator/sprites_osm.png);
+}
+
+  #importModal #sign-in td:nth-child(1) div:hover {
+    background-position: 0px 238px;
+  }
+
+  #importModal #sign-in td:nth-child(2) div:hover {
+    background-position: 0px 102px;
+  }
+
+  #importModal #sign-in td:nth-child(3) div:hover {
+    background-position: 0px 170px;
+  }
+
+#importModal form {
+  top: 0;
+  margin: 0;
+}
+
+#importModal #sign-in-button {
+  top: -5px;
+}
+
+#importModal #successmessage {
+  top: -60px;
+}
+
+#importModal #sign-in #successmessage p {
+  color: #ff7800;
+}
+
+#importModal .errormessage {
+  top: -70px;
+}
+
+#importModal #sign-in .errormessage p {
+  top: -70px;
+  left: 0px;
+  width: 335px;
+}
+
+
+/************************************************************************************************************************************
+*	
+*														END IMPORTATION POP UP
+*
+************************************************************************************************************************************/
+
+
 #follow-us {
 	width: 150px;
 	position: absolute;
@@ -2309,6 +2456,7 @@ span.ui-accordion-header-icon {
 	color: black;
 	top: 30px;
 	left: -100px;
+	width: 220px;
 }
 
 .dropit .dropit-submenu li{
