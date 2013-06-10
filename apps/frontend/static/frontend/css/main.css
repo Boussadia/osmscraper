@@ -695,7 +695,7 @@ li.has-dropdown.show {
 	box-shadow: 1px 1px 6px rgba(0,0,0,0.2);
 }
 
-.products-header .brands li {margin-top: 6px;}
+.products-header .brands li {margin-top: 6px; cursor: pointer;}
 
 .products-header .brands-controller{
 	cursor: pointer;
@@ -707,6 +707,7 @@ li.has-dropdown.show {
 	font-size: 15px;
 	padding-top: 4px;
 	margin-top: 15px;
+	background-color: #ff7800;
 }
 
 .products-header span {

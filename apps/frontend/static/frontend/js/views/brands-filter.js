@@ -21,8 +21,8 @@ define([
 			return this;
 		},
 		events: {
-			'click input[type=checkbox]': 'updateFilter',
 			'click a.cta': 'updateFilter',
+			'click li': 'checkInput',
 		},
 		updateFilter: function(e){
 			this.selected_brand = [];
@@ -37,6 +37,12 @@ define([
 				'brands': this.selected_brand,
 				'id': this.category_id
 			})
+			$(window).click();
+		},
+		checkInput: function(e){
+			var $element = $(e.target);
+			var input = $element.find('input');
+			if(input) input.click();
 		}
 	});
 	return BrandsFilterView;
