@@ -25,6 +25,9 @@ define([
 
 				this.bindTo(this.osms, 'change', this.render);
 			},
+			events: {
+				'click .osm': 'showModal',
+			},
 			render: function(){
 				this.closeSubViews();
 				var that = this;
@@ -37,6 +40,9 @@ define([
 				})
 
 				return this;
+			},
+			showModal: function(e){
+				this.vent.trigger('view:switch:show');
 			}
 		});
 
