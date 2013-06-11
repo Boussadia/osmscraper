@@ -7,7 +7,9 @@ import hashlib
 from time import time
 import re
 
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import get_template
+from django.template import Context
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import Http404
 from django.shortcuts import render, redirect
@@ -16,8 +18,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 
 from templates import templates
-# from osmscraper.utility import *
-# from monoprix.models import User, Cart
 from dalliz.models import Prospect
 
 def user(function):
@@ -73,19 +73,18 @@ def prospects(request):
 			nb_prospects = len(Prospect.objects.all())
 
 			if created:
-				subject = 'Master Courses, le comparateur de panier'
-				message ="""Bonjour,
+				subject, from_email = 'Master Courses, le comparateur de panier', 'hello@dalliz.com'
 
-Bienvenue sur Master Courses !
+				d = Context()
 
-Grâce à ce nouveau service, vous pourrez faire vos courses en ligne en toute simplicité, et avec la garantie des prix les moins chers.
+				text_content = get_template('dalliz/email-beta.txt').render(d)
+				html_content = get_template('dalliz/email-beta.html').render(d)
+				
+				msg = EmailMultiAlternatives(subject, text_content, from_email, [mail])
+				msg.attach_alternative(html_content, "text/html")
+				msg.send()
 
-Nous vous enverrons bientôt un identifiant pour pouvoir utiliser Master Courses en exclusivité !
-
-A bientôt,
-
-L'équipe Master Courses """
-				send_mail(subject, message, 'hello@dalliz.com', [mail], fail_silently=False)
+				# send_mail(subject, message, 'hello@dalliz.com', [mail], fail_silently=False)
 				if not settings.DEBUG:
 					send_mail('Nouveau prospect', 'Mail : '+mail+'.\nNombre d\'inscrits : '+str(nb_prospects), 'hello@dalliz.com', ['hello@dalliz.com'] , fail_silently=False)
 
