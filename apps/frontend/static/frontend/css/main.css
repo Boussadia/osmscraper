@@ -164,8 +164,8 @@ header.top .block-right{
 	display: block;
 	float: right;
 	height: 32px;
-	margin-right: 10%;
 	cursor: pointer;
+	margin-right: 120px;
 }
 
 .top-icon {
@@ -820,7 +820,7 @@ li.has-dropdown.show {
 }
 	.price-bloc.price-mask{
 		top: 7px;
-		right: 5px;		
+		right: 20px;		
 	}
 
 	.price-bloc p, .price-bloc-promo p {
@@ -1034,6 +1034,8 @@ div.promo-type {
 	font-size: 17px;
 }
 
+#mycart:hover {background-color: #efefef;}
+
 #mycart div{
 	display: inline-block;
 }
@@ -1074,12 +1076,23 @@ div.promo-type {
 
 #mycart .cart-text{
 	width: 140px;
-	text-align: center;
-	text-transform: uppercase;
 	top: 12%;
 	position: relative;
-	font-size: 14px;
+	font-size: 13px;
 	top: 20px;
+	left: 30px;
+}
+
+.cart-text.opened-cart{
+	display: none !important;
+}
+
+.open-cart .cart-text.closed-cart{
+	display: none !important;
+}
+
+.open-cart .cart-text.opened-cart{
+	display: inline-block !important;
 }
 
 #mycart .cart-qte{
@@ -1407,7 +1420,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 															height: 32px;
 															padding-top: 10px;
 															right: 30px;
-															top: -22px;
+															top: -11px;
 														}
 
 														#active-osm-cart div {
@@ -1442,7 +1455,9 @@ button:hover, button:focus, .button:hover, .button:focus {
 															overflow-y: auto;
 															overflow-x: hidden;
 															padding-left: 20px;
-															padding-right: 20px;
+															width: 50%; 
+															position: relative; 
+															float: left;
 														}
 
 .transition-wr{
@@ -1461,7 +1476,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 }
 
 														.cart-recap-accordion {
-															width: 50%;
+															width: 100%;
 															float: left;
 															position: relative;
 														}	
@@ -1648,7 +1663,19 @@ button:hover, button:focus, .button:hover, .button:focus {
 																	top: 40px;
 																}
 
-																
+
+#osms-area {width: 50%; position: relative; float: right; height: 400px;}
+.osm-recap {padding: 30px;}
+.osm-recap .ooshop, .osm-recap .auchan, .osm-recap .monoprix {position: relative; float: left; height: 34px; width:135px; background-image: url(../img/comparator/sprites_osm.png);}
+.osm-recap .total {position: relative; float: right;}
+.osm-recap #label-1 {position: relative; float: left;}
+.osm-recap #label-2 {position: relative; float: right;}
+.osm-recap #label-3 {position: relative; float: left;}
+.osm-recap #label-4 {position: relative; float: right;}
+.osm-recap #label-5 {position: relative; float: left;}
+.osm-recap .cta.comparer {font-size: 14px; width: 140px; top: 0; position: relative; float: right}
+
+
 /*POPUP PROD SUBSTITUTION*/ 
 
 #substitution{
