@@ -11,6 +11,7 @@ define([
 			this.bindTo(this.osms, 'change', this.render);
 		},
 		render: function() {
+			this.closeSubViews();
 			this.$el.empty();
 			var data = this.osms.get_active_osm().toJSON();
 			this.$el.append(this.template(data));

@@ -30,6 +30,7 @@ define([
 			},
 			render: function(){
 				this.closeSubViews();
+				this.$el.find('div#non-active-osm').empty();
 				var that = this;
 				var order_view = new OrderView({'osms': this.osms, el: this.$el.find('#active-osm') ,'vent': this.vent});
 				order_view.render();
