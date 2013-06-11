@@ -104,11 +104,13 @@ define([
 			substitution: function(product){
 				var that = this;
 				var osm_name = product.get('osm_suggested_from');
+				var reference = product.toJSON()[osm_name+'_product'].reference;
+
 				product.fetch({
 					'data':{
 						'osm_name': osm_name,
 					},
-					'reference': product.toJSON()[osm_name+'_product'].reference,
+					'reference': reference,
 					success: function(){
 						that.substitutionView.product = product;
 						that.substitutionView.suggested = that.cart.suggested;
