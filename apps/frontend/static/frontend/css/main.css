@@ -627,7 +627,7 @@ li.has-dropdown.show {
 	z-index: 2;
 }
 
-.products .inner .loader{
+.products .loader{
 	position: absolute;
 	display: block;
 	width: 100%;

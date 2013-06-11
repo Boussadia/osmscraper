@@ -1,4 +1,5 @@
 <div class="products" data-id='<%= id %>'>
+	<div class="loader"></div>
 	<div class="products-header <% if (name === 'promotions') {%> promotion <%}%>">
 		<p><%= name %> (<%= count %>)</p>	
 		<p class='brands-controller' data-id='<%= id %>'> <%= brands.count %> </p>
@@ -13,7 +14,6 @@
 	<div class="controller left" data-id='<%= id %>'></div>
 	<%}%>
 	<div class='inner'>
-		<div class="loader"></div>
 		<div class='products-container transition-l'></div>
 	</div>
 	<%if (count>threshold) {%>
