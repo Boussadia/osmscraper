@@ -46,7 +46,7 @@ define([
 					var diff = now - this.last_update;
 					this.buffered_quantity = this.buffered_quantity + 1;
 					var quantity = options.quantity || this.product.get('quantity_in_cart');
-					quantity = quantity - 1;
+					quantity = quantity + 1;
 					this.product.set('quantity_in_cart', quantity);
 				}
 
