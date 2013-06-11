@@ -108,6 +108,13 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+
+# Custom authentication backend
+AUTHENTICATION_BACKENDS = (
+    'apps.accounts.backends.EmailOrUsernameModelBackend',
+    'django.contrib.auth.backends.ModelBackend'
+)
+
 ROOT_URLCONF = 'osmscraper.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
