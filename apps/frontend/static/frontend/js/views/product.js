@@ -40,7 +40,8 @@ define([
 			addToCart: function(e, delayed, options){
 				options || (options = {});
 				var that = this;
-				this.vent.trigger('product:request');
+
+				this.product.vent.trigger('product:request');
 
 				if (!delayed){
 					var now = (new Date().getTime());
@@ -56,7 +57,7 @@ define([
 						that.addToCart(null, true);
 					}, this.BUFFER_INTERVAL_TIME);
 				}else{
-					_.extend(options, {'cart': true, 'quantity': that.buffered_quantity, 'vent': that.vent});
+					_.extend(options, {'cart': true, 'quantity': that.buffered_quantity, 'vent': that.product.vent});
 					that.product.save(null, options);
 					that.buffered_quantity = 0;
 					that.last_update = now;
@@ -66,7 +67,7 @@ define([
 			removeFromCart: function(e, delayed, options){
 				options || (options = {});
 				var that = this;
-				this.vent.trigger('product:request');
+				this.product.vent.trigger('product:request');
 
 				if (!delayed){
 					var now = (new Date().getTime());
@@ -86,7 +87,7 @@ define([
 						that.removeFromCart(null, true);
 					}, this.BUFFER_INTERVAL_TIME);
 				}else{
-					_.extend(options, {'cart': true, 'remove': true,'quantity': that.buffered_quantity, 'vent': that.vent});
+					_.extend(options, {'cart': true, 'remove': true,'quantity': that.buffered_quantity, 'vent': this.product.vent});
 					that.product.save(null, options)
 					that.buffered_quantity = 0;
 					that.last_update = now;
