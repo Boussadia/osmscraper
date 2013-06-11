@@ -19,6 +19,7 @@ define([
 
 				// Global events
 				this.vent.on('route:category', this.showOrHide, this);
+				this.vent.on('brands:filter', this.updateView, this);
 			},
 			render: function(){
 				this.closeSubViews();
@@ -156,6 +157,21 @@ define([
 					this.$el.find('.controller.left[data-id='+products_id+']').hide();
 				}else{
 					this.$el.find('.controller.left[data-id='+products_id+']').show();
+				}
+			},
+			updateView: function(options){
+				var count_brands = options.brands.length;
+				var products_id = options.id;
+				var max_brands = options.max_count;
+				var text_to_show = 'marques : toutes';
+				if(count_brands > 0){
+					this.$el.find($('.brands-controller[data-id='+products_id+']:nth-child(2)')).text(count_brands);
+					if (count_brands > 1) text_to_show = 'marques / '+ max_brands;
+					if (count_brands === 1) text_to_show = 'marque / '+ max_brands;
+					this.$el.find($('.brands-controller[data-id='+products_id+']:nth-child(3)')).text(text_to_show);
+				}else{
+					this.$el.find($('.brands-controller[data-id='+products_id+']:nth-child(2)')).text(max_brands);
+					this.$el.find($('.brands-controller[data-id='+products_id+']:nth-child(3)')).text(text_to_show);
 				}
 			}
 		});

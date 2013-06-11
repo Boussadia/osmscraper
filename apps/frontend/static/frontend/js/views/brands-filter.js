@@ -35,7 +35,8 @@ define([
 
 			this.vent.trigger('brands:filter', {
 				'brands': this.selected_brand,
-				'id': this.category_id
+				'id': this.category_id,
+				'max_count': this.brands.length
 			})
 			$(window).click();
 		},
