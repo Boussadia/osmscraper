@@ -14,7 +14,7 @@ define([
 			initialize: function(options){
 				this.osms = options.osms || new OsmsCollection([], {'vent': this.vent});
 				this.cart = options.cart;
-				this.bindTo(this.osms, 'sync', this.render);
+				this.bindTo(this.osms, 'sync change', this.render);
 			},
 			render: function(){
 				// Resetting view

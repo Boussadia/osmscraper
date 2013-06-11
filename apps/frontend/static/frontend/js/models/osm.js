@@ -14,6 +14,10 @@ define([
 					var active = (osm.name === this.get('name'));
 					this.set('active', active);
 				}, this);
+
+				this.vent.on('cart:empty', function(){
+					this.set('price', 0);
+				}, this)
 				
 			},
 			save: function(attributes, options){
