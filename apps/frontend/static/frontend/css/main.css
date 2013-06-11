@@ -1667,7 +1667,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 																}
 
 
-#osms-area {width: 50%; position: relative; float: right; height: 400px;}
+#osms-area {width: 50%; position: relative; float: right;}
 .osm-recap {padding: 30px;}
 .osm-recap > div {width: 100%; height: 20px; position: relative; float: left; font-size: 14px;}
 .osm-recap > div:last-child {height: 55px; border-bottom: 1px solid #e2e3e5; padding-top: 10px;}
