@@ -2111,7 +2111,7 @@ input[type="email"] {
 	z-index: 100000 !important;
 }
 
-#importation .reveal-modal-bg{
+#importation > .reveal-modal-bg{
 	display: block;
 }
 
@@ -2224,6 +2224,22 @@ input[type="email"] {
   top: -70px;
   left: 0px;
   width: 335px;
+}
+
+#import-loader{
+	position: absolute;
+	width: 260px;
+	height: 220px;
+	background: url(../img/main/import_loader.gif);
+	z-index: 10;
+	left: 160px;
+	top: 100px;
+	display: none;
+}
+
+.import-loader-bg{
+	z-index: 9;
+	display: none;
 }
 
 
@@ -2465,12 +2481,16 @@ span.ui-accordion-header-icon {
 
 /* TEMPORARY */
 .dropit .dropit-submenu{
-	color: black;
-	top: 30px;
-	left: -100px;
-	width: 220px;
+	color: #9f9fa1;
+	top: 25px;
+	left: -60px;
+	width: 130px;
+	font-size: 14px;
+	font-weight: normal;
+	min-width: 0px;
 }
 
 .dropit .dropit-submenu li{
 	cursor: pointer;
+	margin: 5px;
 }

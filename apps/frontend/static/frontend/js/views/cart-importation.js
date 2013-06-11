@@ -14,11 +14,15 @@ define([
 			var that = this;
 			this.bindTo(this.importModel, 'request', function(){
 				that.fetching = true;
+				that.$el.find('.import-loader-bg').show();
+				that.$el.find('#import-loader').show();
 			})
 			this.bindTo(this.importModel, 'sync', function(){
 				that.fetching = false;
 				that.hide();
 				that.vent.trigger('cart:newproduct');
+				that.$el.find('.import-loader-bg').hide();
+				that.$el.find('#import-loader').hide();
 			})
 			this.vent.on('modal:show:import', this.show, this);
 		},
