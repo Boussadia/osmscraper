@@ -126,6 +126,8 @@ header.top .block-right{
 	top: 0px;
 }
 
+#cart-bg {z-index: 1998;}
+
 #menu{
 	background: white;
 	position: relative;
@@ -1342,7 +1344,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 }
 
 .block-right.open-cart{
-	width: 100%;
+	width: 90%;
 	padding-left: 0;
 }
 
@@ -1383,12 +1385,13 @@ button:hover, button:focus, .button:hover, .button:focus {
 															border-bottom: 5px solid #e2e3e5;
 														}
 
-														#cart-header > div {
+														div#active-osm-cart {
 															position: relative;
 															float: left;
 															width: 50%;
 															height: 90px;
 															text-align: center;
+															border-right: 1px solid #e2e3e5;
 														}
 
 														#cart-header-content{
@@ -1399,16 +1402,24 @@ button:hover, button:focus, .button:hover, .button:focus {
 															border-right: 1px solid #e2e3e5;
 														}
 
-														#cart-header div div {
+														#cta-cart {
+															float: right;
+															height: 32px;
+															padding-top: 10px;
+															right: 30px;
+															top: -22px;
+														}
+
+														#active-osm-cart div {
 															position: relative;
 															background-image: url(../img/comparator/sprites_osm.png);
 															width: 135px;
 															height: 34px;
-															margin: auto;
-															top: 15px;
+															top: 22px;
+															margin-left: 12%;
 														}
 
-															#cart-header div p {
+															#active-osm-cart p{
 																position: relative;
 																top: 6px;
 																font-size: 14px;
@@ -1416,9 +1427,13 @@ button:hover, button:focus, .button:hover, .button:focus {
 															}
 
 															#cart-header div p:last-child {
-																top: 15px;
+																top: 28px;
 																text-decoration: underline;
 																cursor: pointer;
+																width: 90px;
+																color: #078bc9;
+																margin-left: 17%;
+																font-size: 13px;
 															}
 
 
@@ -1446,8 +1461,8 @@ button:hover, button:focus, .button:hover, .button:focus {
 }
 
 														.cart-recap-accordion {
-															width: 100%;
-															float: right;
+															width: 50%;
+															float: left;
 															position: relative;
 														}	
 
@@ -1485,22 +1500,14 @@ button:hover, button:focus, .button:hover, .button:focus {
 																height: 85px;
 															}
 
-															.sel-osm-product, .active-osm-product {
-																position: relative;
-																float: left;
-																width: 50%;
-																height: 85px;
-															}
-
-															.sel-osm-product {
-																padding-right: 140px;
-																border-right: 1px solid #e2e3e5;
-															}
-
 															.active-osm-product {
 																border-right: 1px solid #e2e3e5;
 																padding-left: 20px;
 																padding-right: 120px;
+																position: relative;
+																float: left;
+																width: 100%;
+																height: 85px;
 															}
 
 															.prod-desc {

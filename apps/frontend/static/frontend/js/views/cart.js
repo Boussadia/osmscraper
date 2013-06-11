@@ -75,9 +75,11 @@ define([
 				return this;
 			},
 			show: function(){
+				$('#cart-bg').show();
 				$('.block-right').addClass('open-cart')
 			},
 			hide: function(){
+				$('#cart-bg').hide();
 				$('.block-right').removeClass('open-cart')
 			},
 			set_fixed_position: function(){
