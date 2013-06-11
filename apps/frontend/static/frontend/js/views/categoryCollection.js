@@ -38,6 +38,19 @@ define([
 						that.bindTo(products, 'sync', function(model, resp, options){
 							that.controllerDisplay(model);
 						});
+						
+						products.once('sync', function(){
+							// Pre Fetching products here (its a hack :/)
+							view.$el.removeClass('transition-l'); 
+							products.once('sync', function(){
+								var products_id = view.products.id;
+								var left_controller = that.$el.find('.controller.left[data-id='+products_id+']');
+								left_controller.click();
+								view.$el.addClass('transition-l'); 
+							})
+							view.more();
+						});
+
 						that.bindTo(view, 'fetching', function(options){
 							var category_id = view.products.id;
 							var display = !options.fetched;

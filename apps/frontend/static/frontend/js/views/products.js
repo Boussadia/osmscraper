@@ -182,7 +182,7 @@ define([
 				var products_per_page = this.products_per_page;
 				var nb_max_pages = Math.ceil(nb_products_max/products_per_page);
 				var max_current_page = Math.ceil(current_nb_products/products_per_page);
-				this.$el.css('left', '0px');
+				this.$el.css('left', '0%');
 			},
 			filter: function(options){
 				if(options.id === this.products.id){
