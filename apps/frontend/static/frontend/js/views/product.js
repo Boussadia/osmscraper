@@ -40,6 +40,7 @@ define([
 			addToCart: function(e, delayed, options){
 				options || (options = {});
 				var that = this;
+				this.vent.trigger('product:request');
 
 				if (!delayed){
 					var now = (new Date().getTime());
@@ -65,6 +66,7 @@ define([
 			removeFromCart: function(e, delayed, options){
 				options || (options = {});
 				var that = this;
+				this.vent.trigger('product:request');
 
 				if (!delayed){
 					var now = (new Date().getTime());

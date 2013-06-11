@@ -634,7 +634,6 @@ li.has-dropdown.show {
 	height: 100%;
 	z-index: 12;
 	background-image: url(../img/main/products_loader.gif);
-	background-color: rgba(0,0,0,0.2);
 	background-repeat: no-repeat;
 	background-position: 49% 49%;
 }

@@ -14,14 +14,14 @@ define([
 				this.osms = options.osms || new OsmsCollection([], {'vent': this.vent});
 				var that = this;
 				this.bindTo(this.osms, 'request', function(){
-					that.$el.find('.loader').show();
-					that.$el.find('.loader+p').hide();
+					that.showLoader();
 				});
 
 				this.bindTo(this.osms, 'sync', function(){
-					that.$el.find('.loader').hide();
-					that.$el.find('.loader+p').show();
+					that.hideLoader();
 				});
+
+				this.vent.on('product:request', this.showLoader, this);
 
 				this.bindTo(this.osms, 'change', this.render);
 			},
@@ -44,6 +44,15 @@ define([
 			},
 			showModal: function(e){
 				this.vent.trigger('view:switch:show');
+			},
+			showLoader: function(){
+				this.$el.find('.loader').show();
+				this.$el.find('.loader+p').hide();
+			},
+			hideLoader: function(){
+				this.$el.find('.loader').hide();
+				this.$el.find('.loader+p').show();
+				
 			}
 		});
 
