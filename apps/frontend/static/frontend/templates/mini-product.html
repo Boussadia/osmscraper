@@ -4,6 +4,9 @@
 
 %>
 
+<% if (is_suggested){%>
+	<div style='width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.05);position: absolute;'></div>
+<%}%>
 <div class="active-osm-product">
 	<img src="<%= product.image_url %>">
 	<div class="prod-desc">
