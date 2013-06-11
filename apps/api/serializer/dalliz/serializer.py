@@ -8,6 +8,8 @@ from django.contrib.auth.models import User
 from rest_framework import serializers, pagination
 from dalliz.models import Category, Brand
 
+from apps.api.helper import ApiHelper
+
 class DallizBrandField(serializers.RelatedField):
 	def to_native(self, value):
 		brand_match = value.brandmatch_set.all()
@@ -54,26 +56,7 @@ class CategorySerializer(serializers.ModelSerializer):
 			else:
 				data['leave'] = True
 				if leaves:
-					# Getting count of products and brands
-					# Settings location kwargs :
-					kwargs_location_history = {}
-					if osm_name == 'monoprix':
-						if osm_location is None:
-							kwargs_location_history['history__store__isnull'] = True
-						else:
-							kwargs_location_history['history__store__id'] = osm_location
-					else:
-						if osm_location is None:
-							kwargs_location_history['history__shipping_area__isnull'] = True
-						else:
-							kwargs_location_history['history__shipping_area__id'] = osm_location
-
-					kwargs = {
-						'exists':True,
-					}
-					kwargs.update(kwargs_location_history) # adding location filter
-					products = getattr(c, osm_name+'_product_dalliz_category').filter(**kwargs).distinct('reference')
-
+					products = ApiHelper.get_products_query_set(c, type_fetched = 'products', osm_name = osm_name , osm_type=osm_type, osm_location=osm_location)
 					products_count = products.count() # Adding total count of products in category
 
 					# Now getting brands information
@@ -91,7 +74,8 @@ class CategorySerializer(serializers.ModelSerializer):
 		"""
 			Return pomotions summary for a category that is not a leaf but is a direct parent to a leaf category.
 		"""
-		categories = CategorySerializer.get_subs_dalliz(category)
+		query_set = ApiHelper.get_products_query_set(category, type_fetched = 'promotions', osm_name = osm_name , osm_type=osm_type, osm_location=osm_location)
+		
 		promotions = {
 			'id': category.id, # Putting parent catgory as id for promotions
 			'name': 'promotions',
@@ -102,33 +86,9 @@ class CategorySerializer(serializers.ModelSerializer):
 			'brands': {'count':0, 'content':[]},
 			'url': category.url+"/promotions"
 		}
-		products = []
-
-		# Getting promtions
-		for c in categories:
-			# Getting count of products and brands
-			# Settings location kwargs :
-			kwargs_location_promotion = {}
-			if osm_name == 'monoprix':
-				if osm_location is None:
-					kwargs_location_promotion['history__store__isnull'] = True
-				else:
-					kwargs_location_promotion['history__store__id'] = osm_location
-			else:
-				if osm_location is None:
-					kwargs_location_promotion['history__shipping_area__isnull'] = True
-				else:
-					kwargs_location_promotion['history__shipping_area__id'] = osm_location
-
-			kwargs = {
-				'exists':True,
-			}
-			kwargs.update(kwargs_location_promotion) # adding location filter
-			kwargs.update({'promotion__id__isnull': False, 'promotion__type' : 's'}) # Only handeling simple promotions
-			products = products + list(getattr(c, osm_name+'_product_dalliz_category').filter(**kwargs).distinct('reference'))
 
 		# Removing duplicates
-		products = set(products)
+		products = query_set.all()
 		promotions['count']= len(products)
 
 		# Now getting brands information

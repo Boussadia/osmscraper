@@ -23,18 +23,17 @@ from rest_framework.views import APIView
 
 from apps.scrapers.ooshop.ooshopscraper import OoshopScraper
 
+from dalliz.models import Category
+
+from monoprix.models import History as MonoprixHistory, Product as MonoprixProduct, Promotion as MonoprixPromotion
+from ooshop.models import History as OoshopHistory, Product as OoshopProduct, Promotion as OoshopPromotion
+from auchan.models import History as AuchanHistory, Product as AuchanProduct, Promotion as AuchanPromotion
+
 from cart.base.basecartcontroller import BaseCartController
 from cart.dalliz.dallizcartcontroller import DallizCartController
 from cart.models import MetaCart
 
-from auchan.models import History as AuchanHistory, Product as AuchanProduct, Promotion as AuchanPromotion
-
-from dalliz.models import Category
-
-from monoprix.models import History as MonoprixHistory, Product as MonoprixProduct, Promotion as MonoprixPromotion
-
-from ooshop.models import History as OoshopHistory, Product as OoshopProduct, Promotion as OoshopPromotion
-
+from apps.api.helper import ApiHelper
 from apps.api.renderer import ProductsCSVRenderer, ProductRecommendationCSVRenderer, NewProductsCSVRenderer
 from apps.api.serializer.dalliz.serializer import CategorySerializer, UserSerializer, BrandSerializer
 from apps.api.serializer.auchan.serializer import ProductSerializer as AuchanProductSerializer, ProductsPaginationSerializer as AuchanProductsPaginationSerializer, CartContentSerializer as AuchanCartContentSerializer
@@ -240,8 +239,8 @@ class CategoryProducts(CategorySimple):
 	@osm
 	def get(self, request, id_category, type_fetched, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
 		category = self.get_object(id_category)
-		serialized = None
 		global_keys = globals().keys()
+		serialized = None
 
 		# Brands filter parameter
 		brands = request.QUERY_PARAMS.getlist('brands[]')
@@ -255,50 +254,10 @@ class CategoryProducts(CategorySimple):
 		else:
 			page = CategoryProducts.PAGE
 
+		# Getting query from api helper class
+		products_query_set = ApiHelper.get_products_query_set(category, type_fetched, osm_name, osm_type, osm_location, brands)
 
-		# Building QuerySet
-		# Settings location kwargs :
-		kwargs_location_history = {}
-		kwargs_location_promotion = {}
-		if osm_name == 'monoprix':
-			if osm_location is None:
-				kwargs_location_history['history__store__isnull'] = True
-				kwargs_location_promotion['promotion__store__isnull'] = True
-			else:
-				kwargs_location_history['history__store__id'] = osm_location
-				kwargs_location_promotion['promotion__store__id'] = osm_location
-		else:
-			if osm_location is None:
-				kwargs_location_history['history__shipping_area__isnull'] = True
-				kwargs_location_promotion['promotion__shipping_area__isnull'] = True
-			else:
-				kwargs_location_history['history__shipping_area__id'] = osm_location
-				kwargs_location_promotion['promotion__shipping_area__id'] = osm_location
-
-		# Getting products without simple promotion
-		product_class_name = '%sProduct'%osm_name.capitalize()
-		if product_class_name in global_keys:
-			Product = globals()[product_class_name]
-			kwargs = {
-				'exists':True,
-			}
-			kwargs.update(kwargs_location_history) # adding location filter
-			kwargs.update(kwargs_location_promotion)
-
-			if type_fetched == 'promotions':
-				kwargs.update({'promotion__id__isnull': False, 'promotion__type' : 's','dalliz_category__parent_category': category}) # Only handeling simple promotions
-				products_query_set = Product.objects.filter(~Q(promotion__end__lte = F('history__created'))).filter(**kwargs).distinct('reference')
-			else:
-				kwargs.update({'dalliz_category': category})
-				products_query_set = Product.objects.filter(**kwargs).distinct('reference')
-
-			# Filtering before slicing
-			# Filtering by brands
-			if len(brands)>0:
-				products_query_set = products_query_set.filter(brand__brandmatch__dalliz_brand__id__in = brands)
-
-
-
+		if products_query_set is not None:
 			# Generating pagination object
 			paginator = Paginator(products_query_set, CategoryProducts.PRODUCTS_PER_PAGE)
 			try:
@@ -313,6 +272,7 @@ class CategoryProducts(CategorySimple):
 
 
 		serializer_class_name = '%sProductsPaginationSerializer'%osm_name.capitalize()
+		serializer = None
 
 		if serializer_class_name in global_keys:
 			cart = getattr(request.cart_controller.metacart, osm_name+'_cart')
