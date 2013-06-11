@@ -120,6 +120,19 @@ class TagsProcessor(object):
 	#								Static methods approach
 	#
 	####################################################################################################
+	@staticmethod
+	def get_matched_products(product):
+		matched_products = []
+		product_match = product.productmatch_set.all()
+
+		if product_match.count()>0:
+			product_match = product_match[0]
+			for osm in TagsProcessor.OSMS:
+				matched_product = getattr(product_match, '%s_product'%osm)
+				if matched_product and matched_product != product:
+					matched_products.append(matched_product)
+
+		return matched_products
 
 	@staticmethod
 	def process_tags_product(product):
@@ -150,77 +163,104 @@ class TagsProcessor(object):
 		TagsProcessor.process_matched_products(product)
 
 	@staticmethod
-	def get_best_categories_match(product):
-		"""
-			Apply this to tags processed product.
-		"""
-		categories = []
-		[ [categories.append(c) for c in category.dalliz_category.all()]for category in product.categories.all()]
-		categories = list(set(categories))
-		
-		tags = product.tag.all()
-		if len(categories)>0:
-			sorted_categories = sorted([ (category, len(diff(category.tags.all(), tags)[1])) for category in categories], key = lambda item: -item[1])
-
-			selected_caegories = [sorted_categories[0][0]]
-			[ selected_caegories.append(c[0]) for c in sorted_categories if c[1]>=sorted_categories[0][1]]
-			selected_caegories_tags = []
-			[[selected_caegories_tags.append(t) for t in c.tags.all()] for c in selected_caegories]
-			selected_caegories_tags = list(set(selected_caegories_tags))
-			new_tags, common_tags, removed_tags = diff( selected_caegories_tags, tags)
-
-			return selected_caegories, common_tags
-		else:
-			return [], []
-
-	@staticmethod
 	def process_matched_products(product):
 		"""
 			This method merges matched product tags.
 		"""
-		matched_products = [product]
-		possible_categories = []
-		product_match = product.productmatch_set.all()
+		matched_products = [product] + TagsProcessor.get_matched_products(product)
+		tags = []
 		if not product.tags_processed:
 			TagsProcessor.process_tags_product(product)
+
+		for matched_product in matched_products:
+			if matched_product:
+				if not matched_product.tags_processed:
+					TagsProcessor.process_tags_product(matched_product)
+
+				tags = tags + list(matched_product.tag.all())
+
+		# Getting unique tags
+		tags = list(set(tags))
+		for p in matched_products:
+			new, common, removed = diff( list(p.tag.all()), tags)
+
+			[p.tag.add(t) for t in new]
+			[p.tag.remove(t) for t in removed]
+
+	@staticmethod
+	def get_tags_score(u_tags, v_tags):
+		"""
+			u_tags and v_tags are list of tags, computes square value cos theta
+		"""
+		# Calculate square of norms
+		u_norm = len(u_tags)
+		v_norm = len(v_tags)
+		norm_product = u_norm*v_norm
+
+		# Calculate scalar product
+		new_tags, common_tags, removed_tags = diff( u_tags, v_tags)
+		scalar = len(common_tags)
+
+		# Return score
+		if norm_product != 0:
+			return scalar*scalar/float(norm_product)
+		else:
+			return 0
+
+	@staticmethod
+	def get_best_categories_match(product, categories):
+		"""
+			Apply this to tags processed product.
+		"""
+		categories = list(set(categories))
+		
+		tags = product.tag.all()
+		if len(categories)>0:
+			sorted_categories = sorted(
+				[
+					(
+						category, TagsProcessor.get_tags_score(category.tags.all(), tags)
+					) for category in categories
+				], key = lambda item: -item[1] )
+
+			selected_caegories = [sorted_categories[0]]
+			[ selected_caegories.append(c) for c in sorted_categories if c[1]>=sorted_categories[0][1] and sorted_categories[0] != c]
+			return selected_caegories
+		else:
+			return []
+
+	@staticmethod
+	def process_categories_product(product):
+		# First get all categories from matched product
+		possible_categories = []
+		matched_products = [product] + TagsProcessor.get_matched_products(product)
+		
+		categories = []
+
+		for matched_product in matched_products:
+			[ [categories.append(c) for c in category.dalliz_category.all()] for category in matched_product.categories.all()]
+
+		categories = list(set(categories))
+
+		# Now getting best match between categories an dmatched products
+		best_categories = []
+		[best_categories.extend( [ c for c, s in TagsProcessor.get_best_categories_match(matched_product, categories)] ) for matched_product in matched_products]
+
+		best_categories =list(set(best_categories))
+
 		tags = list(product.tag.all())
+		common_tags = []
+		for category in best_categories:
+			n, c, d = diff(category.tags.all(), tags)
+			common_tags.extend(c)
 
-		if product_match.count()>0:
-			product_match = product_match[0]
-			for osm in TagsProcessor.OSMS:
-				matched_product = getattr(product_match, '%s_product'%osm)
-				if matched_product and matched_product != product:
-					matched_products.append(matched_product)
-					if not matched_product.tags_processed:
-						TagsProcessor.process_tags_product(matched_product)
+		tags = list(set(common_tags))
 
-					tags = tags + list(matched_product.tag.all())
-
-
-
-			# Getting unique tags
-			tags = list(set(tags))
-			for p in matched_products:
-				new, common, removed = diff( list(p.tag.all()), tags)
-
-				[p.tag.add(t) for t in new]
-				[p.tag.remove(t) for t in removed]
-
-			# Working with categories
-			for p in matched_products:
-				selected_categories, common_tags = TagsProcessor.get_best_categories_match(p)
-				possible_categories = selected_categories + possible_categories
-
-
-			# unique category
-			possible_categories = list(set(possible_categories))
-
-			# Setting Dalliz_category to matched products
-			for p in matched_products:
-				p.dalliz_category.clear()
-				[p.dalliz_category.add(c) for c in possible_categories]
-
-
+		for matched_product in matched_products:
+				matched_product.dalliz_category.clear()
+				matched_product.tag.clear()
+				[matched_product.dalliz_category.add( c ) for c in best_categories]
+				[matched_product.tag.add( t ) for t in tags]
 
 
 
@@ -250,25 +290,40 @@ class TagsProcessor(object):
 
 			print time()-t0
 
-	# @staticmethod
-	# def process_categories_products():
-	# 	# Get variables in global scope
-	# 	global_keys = globals()
+	@staticmethod
+	def process_categories_products(override = False):
+		"""
+			Process all categories from all 
+		"""
+		# Get variables in global scope
+		global_keys = globals()
 
-	# 	# cycle trough all osms, and attribute tags to products (regardless of matches)
-	# 	for osm in TagsProcessor.OSMS:
-	# 		t0 = time()
-	# 		print 'Start %s'%(osm)
-	# 		OSMProduct = global_keys['%sProduct'%osm.capitalize()]
-	# 		kwargs = {
-	# 			'categories__dalliz_category__algorithm_process': True,
-	# 			'tags_processed': True,
-	# 		}
+		# cycle trough all osms, and attribute tags to products (regardless of matches)
+		for osm in TagsProcessor.OSMS:
+			t0 = time()
+			print 'Start %s'%(osm)
+			OSMProduct = global_keys['%sProduct'%osm.capitalize()]
+			kwargs = {
+				'categories__dalliz_category__algorithm_process': True,
+			}
+			if not override:
+				kwargs.update({
+					'tags_processed': False
+				})
 
-	# 		products = OSMProduct.objects.filter(**kwargs).distinct('reference')
-	# 		[ TagsProcessor.set_best_category_match(p) for p in products]
+			products = OSMProduct.objects.filter(**kwargs).distinct('reference')
+			[ TagsProcessor.process_categories_product(p) for p in products]
 
-	# 		print time()-t0
+			print time()-t0
+
+	@staticmethod
+	def process(override = False):
+		"""
+		"""
+		print 'Processing tags'
+		TagsProcessor.process_tags_products(override)
+		print 'Processing categories'
+		TagsProcessor.process_categories_products(override)
 
 
 
