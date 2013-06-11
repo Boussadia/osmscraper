@@ -715,6 +715,7 @@ footer {
 	border: none !important;
 	clear: none;
 	line-height: 100%;
+	margin-left: 10px;
 	}
 
 	.social-widget li a {
