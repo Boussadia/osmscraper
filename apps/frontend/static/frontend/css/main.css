@@ -1206,6 +1206,14 @@ div.promo-type {
 #active-osm .osm > div.monoprix {background-position: 0 -25px;}
 #cart div.monoprix {background-position: 0 -33px;}
 
+#active-osm .osm #arrow-pointer{
+	display: inline-block;
+	position: relative;
+	float: left;
+	height: 34px;
+	width: 12px;
+	background: url(../img/comparator/osm_selector.png);
+}
 
 #active-osm .osm > div.auchan {background-position: 0 -72px;}
 #cart div.auchan {background-position: 0 -101px;}
