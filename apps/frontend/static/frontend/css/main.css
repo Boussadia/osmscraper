@@ -1168,8 +1168,8 @@ div.promo-type {
 		float: left;
 		height: 24px;
 		width: 95px;
-		top: 6px;
-		left: 10px;
+		top: 4px;
+		left: 22px;
 		background-image: url(../img/comparator/sprites_osm_nb.png);
 		background-size: 95px;
 	}
@@ -1194,14 +1194,15 @@ div.promo-type {
 		font-weight: bold;
 		font-size: 11px;
 		right: 4px;
-		margin-top: 10px;
+		margin-top: 12px;
 	}
 
-#active-osm {position: absolute; top: -44px; width: 100%;}
+#active-osm {position: absolute; top: -40px; width: 100%;}
 
 #non-active-osm {position: relative; margin-top: 55px;}
 
 #active-osm .osm > div.auchan, #active-osm .osm > div.monoprix, #active-osm .osm > div.ooshop{
+	left: 10px;
 	background-image: url(../img/comparator/sprites_osm.png);
 }
 
@@ -1217,7 +1218,7 @@ div.promo-type {
 	background: url(../img/comparator/osm_selector.png);
 }
 
-#active-osm .osm > div.auchan {background-position: 0 -72px;}
+#active-osm .osm > div.auchan {background-position: 0 -71px;}
 #cart div.auchan {background-position: 0 -101px;}
 #active-osm .osm > div.ooshop {background-position: 0 -120px;}
 #cart div.ooshop {background-position: 0 -170px;}
