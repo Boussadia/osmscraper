@@ -182,12 +182,8 @@ header.top .block-right{
 	margin-top: 5px;
 }
 
-#top-icon-play img{
-	content: url(../img/header/play-icon.png);
-}
-
-.top-icon img:last-child{
-	content: url(../img/header/user-icon.png);
+.top-icon.arrow{
+	margin-top: 5px;
 }
 
 #main-logo-bar {
@@ -2136,7 +2132,7 @@ input[type="email"] {
 #importModal{
 	position: fixed;
 	visibility: visible !important;
-	display: initial !important;
+	display: block !important;
 	width: 570px !important;
 	height: 460px !important;
 	z-index: 100000 !important;
