@@ -22,6 +22,8 @@
 		<% for (var i = 0; i<osms.length; i++){
 			var osm = osms[i];
 
+			if(!osm.active){
+
 		%>
 		<div class="osm-recap">
 			<div class="<%= osm.name %>"></div>
@@ -39,7 +41,7 @@
 				<a class="cta comparer no-hijax" data-osm="<%= osm.name %>">Choisir ce magasin</a>
 			</div>
 		</div>
-		<%}%>
+		<%}}%>
 		
 	</div>
 </div>
