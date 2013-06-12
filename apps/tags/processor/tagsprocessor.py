@@ -265,7 +265,7 @@ class TagsProcessor(object):
 
 
 	@staticmethod
-	def process_tags_products(override = False):
+	def process_tags_products(override = False, filter_hash = {}):
 		"""
 			Process all categories from all 
 		"""
@@ -284,6 +284,8 @@ class TagsProcessor(object):
 				kwargs.update({
 					'tags_processed': False
 				})
+
+			kwargs.update(filter_hash)
 
 			products = OSMProduct.objects.filter(**kwargs).distinct('reference')
 			[ TagsProcessor.process_tags_product(p) for p in products]
@@ -291,9 +293,9 @@ class TagsProcessor(object):
 			print time()-t0
 
 	@staticmethod
-	def process_categories_products(override = False):
+	def process_categories_products(override = False, filter_hash = {}):
 		"""
-			Process all categories from all 
+			Process all categories from all.
 		"""
 		# Get variables in global scope
 		global_keys = globals()
@@ -311,19 +313,22 @@ class TagsProcessor(object):
 					'tags_processed': False
 				})
 
+			kwargs.update(filter_hash)
+
+
 			products = OSMProduct.objects.filter(**kwargs).distinct('reference')
 			[ TagsProcessor.process_categories_product(p) for p in products]
 
 			print time()-t0
 
 	@staticmethod
-	def process(override = False):
+	def process(override = False, filter_hash = {}):
 		"""
 		"""
 		print 'Processing tags'
-		TagsProcessor.process_tags_products(override)
+		TagsProcessor.process_tags_products(override, filter_hash)
 		print 'Processing categories'
-		TagsProcessor.process_categories_products(override)
+		TagsProcessor.process_categories_products(override, filter_hash)
 
 
 
