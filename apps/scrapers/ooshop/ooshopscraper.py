@@ -414,6 +414,40 @@ class OoshopScraper(BaseScraper):
 		else:
 			return cart, code, is_logued
 
+	def export_cart(self, user_email = 'ahmed.boussadia@hotmail.fr', password = '2asefthukom,3'):
+		"""
+			Exports cart for a ooshop user.
+		"""
+		products = [
+			{
+				'url': 'http://www.ooshop.com/courses-en-ligne/ContentNavigation.aspx?NOEUD_IDFO=97024',
+				'reference': 97024,
+				'quantity': 5
+			},
+			{
+				'url': 'http://www.ooshop.com/courses-en-ligne/ContentNavigation.aspx?NOEUD_IDFO=11152',
+				'reference': 11152,
+				'quantity': 3
+			}
+		]
+
+		# Clearing cookies
+		self.crawler.empty_cookie_jar()
+
+		# log user
+		is_logued, code = self.login_user(user_email, password)
+
+		if code == 200:
+			if is_logued:
+				# Cycle throug every product and put it in cart
+				for product in products:
+					url_product = product['url']
+					html, code = self.crawler.get(url_product)
+					self.parser.set_html(html)
+					# Getting options
+					options = self.parser.get_form_values()
+					html, code = self.crawler.put_product_in_cart(product, options)
+
 
 	def is_available(self, product_url):
 		"""

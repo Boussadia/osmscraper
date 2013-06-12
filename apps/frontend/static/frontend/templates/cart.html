@@ -6,10 +6,12 @@
 			<a class="cta commander no-hijax" id="cta-cart">COMMANDER</a>
 			<p class='empty'> Vider le panier</p>
 		</div>
+		<% if(-price_to_save>0){%>
 		<div id="savings">
 			<div>économisez jusqu'à</div>
-			<div>233,45€</div>
+			<div><%= -price_to_save.toFixed(2) %>€</div>
 		</div>
+		<% }%>
 	</div>
 	
 	<div class="scrollarea">
@@ -17,9 +19,13 @@
 	</div>
 
 	<div id="osms-area">
+		<% for (var i = 0; i<osms.length; i++){
+			var osm = osms[i];
+
+		%>
 		<div class="osm-recap">
-			<div class="ooshop"></div>
-			<div class="total">43,45 €</div>
+			<div class="<%= osm.name %>"></div>
+			<div class="total"><%= osm.price.toFixed(2) %> €</div>
 			<div>
 				<div id="label-1">Dont frais de livraison:</div>
 				<div id="label-2">9,99€</div>
@@ -30,25 +36,10 @@
 			</div>
 			<div>
 				<div id="label-5">2 produits substitués</div>
-				<a class="cta comparer no-hijax">Choisir ce magasin</a>
+				<a class="cta comparer no-hijax" data-osm="<%= osm.name %>">Choisir ce magasin</a>
 			</div>
 		</div>
-		<div class="osm-recap">
-			<div class="ooshop"></div>
-			<div class="total">43,45 €</div>
-			<div>
-				<div id="label-1">Dont frais de livraison:</div>
-				<div id="label-2">9,99€</div>
-			</div>
-			<div>
-				<div id="label-3">Points de fidélité:</div>
-				<div id="label-4">+ 34 pts</div>
-			</div>
-			<div>
-				<div id="label-5">2 produits substitués</div>
-				<a class="cta comparer no-hijax">Choisir ce magasin</a>
-			</div>
-		</div>
+		<%}%>
 		
 	</div>
 </div>

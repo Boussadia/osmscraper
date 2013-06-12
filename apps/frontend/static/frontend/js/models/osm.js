@@ -18,7 +18,22 @@ define([
 				this.vent.on('cart:empty', function(){
 					this.set('price', 0);
 				}, this)
+
+				this.vent.on('osm:require:switch', this.switchToThisOsm, this);
 				
+			},
+			switchToThisOsm: function(options){
+				options || (options = {});
+				var name = options.name || '';
+				if (name === this.get('name')){
+					this.set('active', true);
+					var that = this;
+					this.save({}, {
+						success: function(){
+							that.vent.trigger('view:switch:hide');
+						}
+					});
+				}
 			},
 			save: function(attributes, options){
 				attributes || (attributes = {});

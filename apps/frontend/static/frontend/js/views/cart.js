@@ -40,6 +40,8 @@ define([
 				var data = {};
 				data = this.cart.toJSON();
 				data['suggested'] = this.cart.suggested;
+				data['osms'] = this.osms.toJSON()
+				data['price_to_save'] = this.osms.get_price_to_save()
 				this.$el.append(this.template(data));
 			
 
@@ -95,7 +97,8 @@ define([
 			},
 			events: {
 				'click div#cart-icone': 'cartClickHandler',
-				'click p.empty': 'empty'
+				'click p.empty': 'empty',
+				'click .osm-recap .cta': 'switchOSM',
 			},
 			cartClickHandler: function(e){
 
@@ -122,6 +125,11 @@ define([
 				var answer = confirm('Êtes-vous sûr de vouloir vider votre panier ?');
 
 				if (answer) this.cart.empty();
+			},
+			switchOSM: function(e){
+				var $cta = $(e.target);
+				var osm = $cta.attr('data-osm');
+				this.vent.trigger('osm:require:switch', {'name': osm});
 			}
 
 		});
