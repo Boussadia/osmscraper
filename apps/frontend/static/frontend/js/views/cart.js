@@ -99,10 +99,9 @@ define([
 				'click div#cart-icone': 'cartClickHandler',
 				'click p.empty': 'empty',
 				'click .osm-recap .cta': 'switchOSM',
-				'click .cta.commander': 'showExport'
+				'click .cta.commander': 'showExport',
 			},
 			cartClickHandler: function(e){
-
 				this.$el.hasClass('open') ? this.$el.removeClass('open') : this.$el.addClass('open');
 			},
 			substitution: function(product){

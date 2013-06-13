@@ -126,7 +126,7 @@ header.top .block-right{
 	top: 0px;
 }
 
-#cart-bg {z-index: 1998;}
+#cart-bg {z-index: 1998; cursor: pointer;}
 
 #menu{
 	background: white;
@@ -612,7 +612,7 @@ li.has-dropdown.show {
 }
 
 .products div.controller.right{
-	background-position: -44px 0px;
+	background-position: -45px 0px;
 	right: 0;
 }
 

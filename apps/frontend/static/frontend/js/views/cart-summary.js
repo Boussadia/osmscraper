@@ -9,6 +9,12 @@ define([
 		initialize: function(options){
 			this.cart = options.cart;
 			this.bindTo(this.cart, 'change', this.render);
+
+			var that = this;
+
+			$('#cart-bg').click( function(e){
+				that.showOrHide(e);
+			});
 			 
 		},
 		render: function(){
