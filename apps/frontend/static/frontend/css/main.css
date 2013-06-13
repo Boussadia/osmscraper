@@ -2129,7 +2129,16 @@ input[type="email"] {
 	display: none;
 }
 
-#importModal, #exportModal{
+#exportModal {
+  position: fixed;
+  visibility: visible !important;
+  display: block !important;
+  width: 570px !important;
+  height: 320px !important;
+  z-index: 100000 !important;
+}
+
+#importModal {
 	position: fixed;
 	visibility: visible !important;
 	display: block !important;
@@ -2142,9 +2151,13 @@ input[type="email"] {
 	display: block;
 }
 
-#importModal, #exportModal {
+#importModal {
   width: 570px;
   height: 460px;
+}
+
+#export #sign-in {
+  border: none;
 }
 
 #importModal #modal-header, #exportModal #modal-header {
@@ -2162,7 +2175,7 @@ input[type="email"] {
 #exportModal #modal-header {
   position: relative;
   top: -10px;
-  border: none;
+  border-bottom: 1px solid #e2e3e5;
 }
 
 #importModal #sign-in p:first-child, #exportModal #sign-in p:first-child {
@@ -2170,13 +2183,12 @@ input[type="email"] {
   font-size: 16px;
   font-weight: bold;
   color: #424242;
+  top: 2px;
 }
 
 #importModal #sign-in p, #exportModal #sign-in p {
   position: relative;
-  font-size: 14px;
-  color: #424242;
-  top: 2px;
+  top: -10px;
 }
 
 #importModal #sign-in p:nth-child(7), #exortModal #sign-in p:nth-child(7) {
