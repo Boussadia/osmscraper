@@ -7,6 +7,7 @@ define([
 	'models/osm',
 	'models/cart',
 	'models/cart-importation',
+	'models/cart-export',
 	'models/user',
 	'views/menu',
 	'views/main',
@@ -16,8 +17,9 @@ define([
 	'views/userbar',
 	'views/switch',
 	'views/cart-importation',
+	'views/cart-export',
 	'cookie'
-], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel,CartImporationModel, UserModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView, SwitchView, CartImporationView){
+], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel,CartImporationModel, CartExportModel, UserModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView, SwitchView, CartImporationView, CartExportView){
 
 	// Adding capitalize to underscore
 	_.mixin({
@@ -112,6 +114,10 @@ define([
 		// Imporation view
 		this.Views.imporation = new CartImporationView({'vent': this.Vent, el: $('#importation')});
 		this.Views.imporation.render();
+
+		// Imporation view
+		this.Views.export = new CartExportView({'vent': this.Vent, el: $('#export')});
+		this.Views.export.render();
 
 		var that = this;
 

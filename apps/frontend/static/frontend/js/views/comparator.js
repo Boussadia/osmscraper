@@ -35,6 +35,12 @@ define([
 				}, this);
 
 				return this;
+			},
+			events: {
+				'click .cta.commander': 'showExport'
+			},
+			showExport: function(e){
+				this.vent.trigger('modal:show:export');
 			}
 		});
 

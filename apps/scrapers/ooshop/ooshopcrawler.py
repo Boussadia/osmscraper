@@ -209,7 +209,7 @@ class OoshopCrawler(BaseCrawler, Singleton):
 
 		"""
 
-		url = product['url']
+		url = self.clean_url(product['url'])
 		quantity = product['quantity']
 
 		allowed_args = {
@@ -233,8 +233,7 @@ class OoshopCrawler(BaseCrawler, Singleton):
 		availables_keys = allowed_args.keys()
 
 		# Adding missing keys to options
-		for key in availables_keys:
-			options[key] = allowed_args[key]
+		options.update(allowed_args)
 
 		availables_keys = options.keys()
 		# removing undesired keys from options
@@ -248,14 +247,24 @@ class OoshopCrawler(BaseCrawler, Singleton):
 		request.add_header('X-MicrosoftAjax', 'Delta=true')
 		request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
 		request.add_header('Accept-Language', 'en-US,en;q=0.8')
-		request.add_header('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3')
+		# request.add_header('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.3')
 		request.add_header('Cache-Control', 'no-cache')
-		request.add_header('Pragma', 'no-cache')
+		# request.add_header('Pragma', 'no-cache')
 		request.add_header('Origin', 'http://www.ooshop.com')
 		request.add_header('Referer', url)
 		request.add_header('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31')
 
 		return self.do_request(request = request)
+
+
+	def clean_url(self, url):
+		"""
+			Checking if it is a proper ooshop url.
+		"""
+		base_url = 'www.ooshop.com'
+		middle_url = 'courses-en-ligne'
+		if middle_url not in url:
+			return 'http://%s/%s%s'%(base_url, middle_url, url.split(base_url)[-1])
 
 
 

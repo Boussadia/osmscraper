@@ -334,6 +334,17 @@ class BaseCartController(object):
 
 		return sorted((scores), key=lambda item: -item[1])
 
+	def get_products_for_export(self):
+		"""
+		"""
+		products = []
+		[ products.append({
+			'reference': int(c.product.reference),
+			'url': c.product.url,
+			'quantity': c.quantity
+			}) for c in self.cart.cart_content_set.all()]
+		return products
+
 	def get_equivalent_content(self, base_content, base_osm):
 		"""
 			This method takes as argument a cart content database entity and its correspondaing osm,

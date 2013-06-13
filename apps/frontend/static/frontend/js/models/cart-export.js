@@ -3,16 +3,13 @@ define([
 	], function(BaseModel){
 
 		var CartImportationModel = BaseModel.extend({
-			url: '/api/cart/importation',
+			url: '/api/cart/export',
 			defaults:{
 				'email': 'ahmed.boussadia@hotmail.fr',
 				'password': '2asefthukom,3'
 			},
 			initialize: function(attributes, options){
 				
-			},
-			parse: function(resp, xhr){
-				return resp.test;
 			},
 			save: function(attributes, options){
 				attributes || (attributes = {});

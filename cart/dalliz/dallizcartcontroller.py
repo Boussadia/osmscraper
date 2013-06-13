@@ -255,5 +255,13 @@ class DallizCartController(object):
 			if cart:
 				cart.empty()
 
+	def get_products_for_export(self, osm):
+		"""
+		"""
+		cart = self.carts[osm]
+		products = cart.get_products_for_export()
+		return products
+
+
 
 

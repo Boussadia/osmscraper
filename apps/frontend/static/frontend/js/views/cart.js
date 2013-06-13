@@ -99,6 +99,7 @@ define([
 				'click div#cart-icone': 'cartClickHandler',
 				'click p.empty': 'empty',
 				'click .osm-recap .cta': 'switchOSM',
+				'click .cta.commander': 'showExport'
 			},
 			cartClickHandler: function(e){
 
@@ -130,6 +131,9 @@ define([
 				var $cta = $(e.target);
 				var osm = $cta.attr('data-osm');
 				this.vent.trigger('osm:require:switch', {'name': osm});
+			},
+			showExport: function(e){
+				this.vent.trigger('modal:show:export');
 			}
 
 		});

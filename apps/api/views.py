@@ -653,6 +653,23 @@ class CartImportation(BetaRestrictionAPIView):
 
 			return {'test': cart}
 
+class CartExport(BetaRestrictionAPIView):
+	"""
+		Import cart from ooshop.
+	"""
+
+	@osm
+	def post(self, request, osm_name = 'ooshop', osm_type='shipping', osm_location=None):
+		cart_controller = request.cart_controller
+
+		ooshop_email = request.DATA['email']
+		ooshop_password = request.DATA['password']
+		scraper = OoshopScraper()
+		products = cart_controller.get_products_for_export(osm_name)
+		print products
+		scraper.export_cart(products, user_email = ooshop_email, password = ooshop_password)
+		return {}
+
 
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #
