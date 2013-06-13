@@ -1062,7 +1062,7 @@ div.promo-type {
 }
 
 #mycart .caddie{
-	background: url(../img/comparator/caddie.png);
+	background: url(../img/comparator/caddie.png) no-repeat;
 	width: 50px;
 	height: 41px;
 	position: relative;
@@ -1223,7 +1223,7 @@ div.promo-type {
 	float: left;
 	height: 34px;
 	width: 12px;
-	background: url(../img/comparator/osm_selector.png);
+	background: url(../img/comparator/osm_selector.png) no-repeat;
 }
 
 #active-osm .osm > div.auchan {background-position: 0 -71px;}
@@ -1674,7 +1674,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 .osm-recap #label-3 {position: relative; float: left;}
 .osm-recap #label-4 {position: relative; float: right;}
 .osm-recap #label-5 {position: relative; float: left;font-weight: bold; font-size: 16px;}
-.osm-recap .cta.comparer {font-size: 14px; width: 140px; top: 0; position: relative; float: right; top: -5px;}
+.osm-recap .cta.comparer {font-size: 13px; width: 140px; position: relative; float: right; top: -5px;}
 
 
 /*POPUP PROD SUBSTITUTION*/ 
