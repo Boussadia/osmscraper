@@ -666,7 +666,6 @@ class CartExport(BetaRestrictionAPIView):
 		ooshop_password = request.DATA['password']
 		scraper = OoshopScraper()
 		products = cart_controller.get_products_for_export(osm_name)
-		print products
 		scraper.export_cart(products, user_email = ooshop_email, password = ooshop_password)
 		return {}
 
