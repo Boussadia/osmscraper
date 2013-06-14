@@ -524,6 +524,8 @@ class MonoprixScraper(BaseScraper):
 		"""
 			Exports cart for a ooshop user.
 		"""
+
+		add_product_url = 'http://courses.monoprix.fr/productlist.productslist.lp4oneproduct.addproduct.addproductform'
 		
 		# Clearing cookies
 		self.crawler.empty_cookie_jar()
@@ -533,12 +535,18 @@ class MonoprixScraper(BaseScraper):
 
 		if code == 200:
 			if is_logued:
-				# Cycle throug every product and put it in cart
-				for product in products:
-					url_product = product['url']
-					html, code = self.crawler.get(url_product)
-					self.parser.set_html(html)
-					# Getting options
-					options = self.parser.get_form_values()
-					html, code = self.crawler.put_product_in_cart(product, options)
+
+				# Empty cart
+				html, code = self.crawler.empty_cart()
+
+				if code == 200:
+					# Cycle throug every product and put it in cart
+					for product in products:
+						url_product = product['url']
+						html, code = self.crawler.get(url_product)
+						self.parser.set_html(html)
+						# Getting options
+						data = self.parser.get_form_add_product(product['quantity'])
+						print self.crawler.post(add_product_url, data)
+
 

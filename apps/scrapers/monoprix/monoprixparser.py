@@ -589,9 +589,26 @@ class MonoprixParser(BaseParser):
 					'reference': reference,
 					'quantity': qte
 					})
-
-
-
 		return cart
 
-		
+	def get_form_add_product(self, quantity = 1):
+		"""
+			getting form values in order to add product to cart (html has to be a product page)
+		"""
+		data = {}
+		parsed_page = self.parsed_page
+
+		# 1861266:1
+		# 1861266:
+
+		form_add_product = parsed_page.find('form', {'name': 'addProductForm'})
+
+		if form_add_product:
+			data['t:formdata'] = form_add_product.find('input', {'name': 't:formdata'}).attrs['value']
+			data['productRef'] = form_add_product.find('input', {'name': 'productRef'}).attrs['value']
+			custom_name = 'hiddenQtyPList'+data['productRef']
+			data[custom_name] = quantity
+			custom_name = 'varietyPList'+data['productRef']
+			data[custom_name] = ''
+
+		return data

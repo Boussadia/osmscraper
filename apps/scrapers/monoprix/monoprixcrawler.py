@@ -144,3 +144,19 @@ class MonoprixCrawler(BaseCrawler, Singleton):
 		url = url_main+url_user+'?'+url_params
 
 		return self.get(url)
+
+	def empty_cart(self):
+		"""
+		"""
+
+		url = 'http://courses.monoprix.fr/product.displaybasketright:removebasketevent/ShoppingCart'
+		request = mechanize.Request(url, '')
+		request.add_header('Accept', 'text/javascript, text/html, application/xml, text/xml, */*')
+		request.add_header('Accept-Encoding', 'gzip,deflate,sdch')
+		request.add_header('Accept-Language', 'en-US,en;q=0.8')
+		request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+		request.add_header('X-Requested-With', 'XMLHttpRequest')
+		request.add_header('X-Prototype-Version', '1.7')
+		html, code = self.do_request(request = request)
+
+		return html, code
