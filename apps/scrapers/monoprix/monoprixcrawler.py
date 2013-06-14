@@ -3,6 +3,7 @@
 
 import mechanize
 from urllib import urlencode
+import time
 
 from apps.scrapers.base.basecrawler import BaseCrawler, Singleton
 
@@ -103,3 +104,43 @@ class MonoprixCrawler(BaseCrawler, Singleton):
 		html, code = self.do_request(request = request)
 
 		return html, code
+
+	def encodeTapestry(self, b):
+		"""
+			Encoding string tapestry style
+		"""
+		if b is None or len(b) == 0:
+			return "$B"
+
+		VALID_T5_CHARS = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "_", ".", ":"]
+
+		a = ""
+		for i in xrange(0, len(b)):
+			d = b[i]
+			if d in VALID_T5_CHARS:
+				a = a + d
+			else:
+				a = a +'%2400'+str.lstrip(hex(ord(b[i])), '0x') 
+				# a = a +str.lstrip(hex(ord(b[i])), '0x') 
+		return a
+
+	def login_user(self, user_email = 'ahmed.boussadia@hotmail.fr', password = '2asefthukom,3'):
+		"""
+			This method authenticates and logs in user into oohop website
+		"""
+		# First get cookies by going to home page
+		self.get('http://courses.monoprix.fr/');
+		
+		# Building url
+		now = int(time.time())
+		params = {'d': str(now)}
+		url_params = urlencode(params)
+
+		user_email = self.encodeTapestry((user_email))
+		password = self.encodeTapestry((password))
+		
+		url_main = 'http://courses.monoprix.fr/action/IdentificationPage/'
+		url_user = (user_email)+'/'+(password)+'/N/N'
+		url = url_main+url_user+'?'+url_params
+
+		return self.get(url)

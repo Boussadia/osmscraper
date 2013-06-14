@@ -139,7 +139,7 @@ class BaseCrawler(object):
 		"""
 		return self.do_request(url)
 
-	def post(self, url, data):
+	def post(self, url, data = {}):
 		"""
 			Executes a POST url fetch.
 		"""

@@ -556,4 +556,42 @@ class MonoprixParser(BaseParser):
 					})
 		return suggestions
 
+
+	def is_logued(self):
+		"""
+			Check if user is logued in.
+		"""
+		is_logued = False
+		parsed_page = self.parsed_page
+
+		header = parsed_page.find(id='identification')
+		deconnexion = header.find('a', {'title': 'Déconnexion'})
+		return (deconnexion is not None)
+
+	def get_cart(self):
+		"""
+			Get products in cart
+		"""
+		cart = []
+		parsed_page = self.parsed_page
+
+		products_blocs = parsed_page.find_all('div', {'class': 'tuProducts'})
+
+		for div in products_blocs:
+			lis = div.find_all('li')
+			for li in lis:
+				input_product_ref = li.find(id='productRef')
+				reference = input_product_ref['value']
+				input_qte = li.find(id='quantityFull'+reference)
+				qte = int(input_qte['value'])
+
+				cart.append({
+					'reference': reference,
+					'quantity': qte
+					})
+
+
+
+		return cart
+
 		
