@@ -340,13 +340,20 @@ class OoshopScraper(BaseScraper):
 			form_data['ctl00$ucDetProd$AjoutPanier1$nbrProduit'] = 1
 
 			# Deleting unecessary post argument
-			del form_data['ctl00$Perso$ucAu$SubmitButton']
-			del form_data['ctl00$Perso$ucAu$ValiderEmail']
-			del form_data['ctl00$headerCtrl$btOK']
-			del form_data['ctl00$cphC$elig$ValiderEmail2']
-			del form_data['ctl00$ucDetProd$AjoutPanier1$btPan']
-			del form_data['ctl00$cphC$elig$bEli']
-			del form_data['ctl00$Perso$ucAu$lv$LoginButton']
+			if 'ctl00$Perso$ucAu$SubmitButton' in form_data:
+				del form_data['ctl00$Perso$ucAu$SubmitButton']
+			if 'ctl00$Perso$ucAu$ValiderEmail' in form_data:
+				del form_data['ctl00$Perso$ucAu$ValiderEmail']
+			if 'ctl00$headerCtrl$btOK' in form_data:
+				del form_data['ctl00$headerCtrl$btOK']
+			if 'ctl00$cphC$elig$ValiderEmail2' in form_data:
+				del form_data['ctl00$cphC$elig$ValiderEmail2']
+			if 'ctl00$ucDetProd$AjoutPanier1$btPan' in form_data:
+				del form_data['ctl00$ucDetProd$AjoutPanier1$btPan']
+			if 'ctl00$cphC$elig$bEli' in form_data:
+				del form_data['ctl00$cphC$elig$bEli']
+			if 'ctl00$Perso$ucAu$lv$LoginButton' in form_data:
+				del form_data['ctl00$Perso$ucAu$lv$LoginButton']
 
 			# geting response
 			html, code = self.crawler.login_user(url, data = form_data)

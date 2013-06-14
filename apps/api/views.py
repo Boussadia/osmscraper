@@ -22,6 +22,8 @@ from rest_framework.settings import api_settings
 from rest_framework.views import APIView
 
 from apps.scrapers.ooshop.ooshopscraper import OoshopScraper
+from apps.scrapers.monoprix.monoprixscraper import MonoprixScraper
+from apps.scrapers.auchan.auchanscraper import AuchanScraper
 
 from dalliz.models import Category
 
@@ -624,34 +626,50 @@ class CartAPIView(BetaRestrictionAPIView):
 
 class CartImportation(BetaRestrictionAPIView):
 	"""
-		Import cart from ooshop.
+		Import cart from osm.
 	"""
 
 	@osm
 	def post(self, request, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
-		ooshop_email = request.DATA['email']
-		ooshop_password = request.DATA['password']
+		email = request.DATA['email']
+		password = request.DATA['password']
 
-		# Getting cart content from ooshop site
-		scraper = OoshopScraper()
-		cart, code, is_logued = scraper.import_cart(user_email = ooshop_email, password = ooshop_password)
-		
-		if not is_logued:
-			raise AuthenticationFailed
+		global_keys = globals().keys()
+
+		# Getting cart content from osm site
+		scraper_class_name = '%sScraper'%(osm_name.capitalize())
+		product_class_name = '%sProduct'%(osm_name.capitalize())
+		if scraper_class_name in global_keys:
+			Scraper = globals()[scraper_class_name]
+			Product = globals()[product_class_name]
+			scraper = Scraper()
+			cart, code, is_logued = scraper.import_cart(user_email = email, password = password)
+			
+			if not is_logued:
+				return {'error': {
+					'status': 403,
+					'msg': 'Credentials not valid'
+				}}
+			else:
+				# Setting cart 
+				cart_controller = request.cart_controller
+				cart_controller.set_osm(osm_name)
+				cart_controller.empty()
+				for content in cart:
+					product = Product.objects.filter(reference = content['reference'])
+					if product.count() == 0:
+						print 'Product not found : '+content['reference']
+					else:
+						product = product[0]
+						cart_controller.add_product(product, content['quantity'])
+
+				return {'cart': cart}
 		else:
-			# Setting cart 
-			cart_controller = request.cart_controller
-			cart_controller.set_osm('ooshop')
-			cart_controller.empty()
-			for content in cart:
-				product = OoshopProduct.objects.filter(reference = content['reference'])
-				if product.count() == 0:
-					print 'Product not found : '+content['reference']
-				else:
-					product = product[0]
-					cart_controller.add_product(product, content['quantity'])
+			return {'error': {
+					'status': 500,
+					'msg': 'Osm name not valid'
+				}}
 
-			return {'test': cart}
 
 class CartExport(BetaRestrictionAPIView):
 	"""
