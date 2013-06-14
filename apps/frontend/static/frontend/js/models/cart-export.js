@@ -22,8 +22,7 @@ define([
 				options.emulateJSON = true;
 				options.data = {
 					'email': email,
-					'password': password,
-					'osm_name': 'ooshop'
+					'password': password
 				};
 
 				return BaseModel.prototype.save.apply(this, [attributes, options]);

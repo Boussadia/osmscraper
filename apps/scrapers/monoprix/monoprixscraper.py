@@ -525,8 +525,8 @@ class MonoprixScraper(BaseScraper):
 			Exports cart for a ooshop user.
 		"""
 
-		add_product_url = 'http://courses.monoprix.fr/productlist.productslist.lp4oneproduct.addproduct.addproductform'
-		
+		feedback = []
+			
 		# Clearing cookies
 		self.crawler.empty_cookie_jar()
 
@@ -544,9 +544,42 @@ class MonoprixScraper(BaseScraper):
 					for product in products:
 						url_product = product['url']
 						html, code = self.crawler.get(url_product)
-						self.parser.set_html(html)
-						# Getting options
-						data = self.parser.get_form_add_product(product['quantity'])
-						print self.crawler.post(add_product_url, data)
+						if code == 200:
+							self.parser.set_html(html)
+							# Getting options
+							data = self.parser.get_form_add_product(product['quantity'])
+							try:
+								html, code = self.crawler.add_product( data)
+								if code == 200:
+									feedback.append({
+										'reference': product['reference'],
+										'msg': 'Exportation OK',
+										'code': code
+										})
+								else:
+									feedback.append({
+										'reference': product['reference'],
+										'msg': 'Failed exportation',
+										'code': code
+										})
+							except Exception, e:
+								feedback.append({
+									'reference': product['reference'],
+									'msg': 'Failed exportation',
+									'code': code,
+									'error': e
+									})
+						else:
+							feedback.append({
+								'reference': product['reference'],
+								'msg': 'Failed exportation',
+								'code': code,
+								})
+
+		return {
+			'feedback': feedback,
+			'code': code,
+			'is_logued': is_logued
+		}
 
 

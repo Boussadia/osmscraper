@@ -14,7 +14,7 @@ from django.http import Http404
 
 from rest_framework import status, permissions
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.exceptions import AuthenticationFailed, APIException
 from rest_framework.renderers import XMLRenderer
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -57,6 +57,11 @@ AVAILABLE_OSMS = [
 		'type':'shipping',
 	}
 ]
+
+class OSMNotFoundException(APIException):
+	status_code = 500
+	detail = 'OSM not found'
+
 
 def osm(function):
 	"""
@@ -665,10 +670,7 @@ class CartImportation(BetaRestrictionAPIView):
 
 				return {'cart': cart}
 		else:
-			return {'error': {
-					'status': 500,
-					'msg': 'Osm name not valid'
-				}}
+			raise OSMNotFoundException
 
 
 class CartExport(BetaRestrictionAPIView):
@@ -680,12 +682,20 @@ class CartExport(BetaRestrictionAPIView):
 	def post(self, request, osm_name = 'ooshop', osm_type='shipping', osm_location=None):
 		cart_controller = request.cart_controller
 
-		ooshop_email = request.DATA['email']
-		ooshop_password = request.DATA['password']
-		scraper = OoshopScraper()
-		products = cart_controller.get_products_for_export(osm_name)
-		scraper.export_cart(products, user_email = ooshop_email, password = ooshop_password)
-		return {}
+		email = request.DATA['email']
+		password = request.DATA['password']
+		global_keys = globals().keys()
+
+		# Getting cart content from osm site
+		scraper_class_name = '%sScraper'%(osm_name.capitalize())
+		if scraper_class_name in global_keys:
+			Scraper = globals()[scraper_class_name]
+			scraper = Scraper()
+			products = cart_controller.get_products_for_export(osm_name)
+			feedback = scraper.export_cart(products, user_email = email, password = password)
+			return feedback
+		else:
+			raise OSMNotFoundException
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------
