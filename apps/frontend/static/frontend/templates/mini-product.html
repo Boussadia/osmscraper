@@ -12,7 +12,7 @@
 <div class="active-osm-product <%if(is_suggested) print('grey-mask') %>">
 	<img src="<%= product.image_url %>">
 	<div class="prod-desc">
-		<%if(is_suggested){ %> <p>Non disponible</p> <%} %>
+		<%if(is_suggested){ %> <p>Produit de remplacement</p> <%} %>
 		<p><% if(product.brand) print(product.brand.name); %></p>
 		<p><%= product.name %></p>
 	</div>
