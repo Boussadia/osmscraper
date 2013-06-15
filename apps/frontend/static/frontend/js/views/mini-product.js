@@ -25,8 +25,7 @@ define([
 			events: {
 				'click p.minus': 'lessQte',
 				'click p.plus': 'moreQte',
-				'click .unavailable-mask div:last-child': 'showSubstitution',
-				'click .unavailable-mask': 'showSubstitution',
+				'click .replacement': 'showSubstitution',
 			},
 			moreQte: function(e){
 				var quantity = this.product.get('quantity');

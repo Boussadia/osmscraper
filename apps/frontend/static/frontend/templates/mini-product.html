@@ -9,9 +9,10 @@
 		<div class='replacement'></div>
 	</div>
 <%}%>
-<div class="active-osm-product <%if(is_suggested > 0) print('grey-mask') %>">
+<div class="active-osm-product <%if(is_suggested) print('grey-mask') %>">
 	<img src="<%= product.image_url %>">
 	<div class="prod-desc">
+		<%if(is_suggested){ %> <p>Non disponible</p> <%} %>
 		<p><% if(product.brand) print(product.brand.name); %></p>
 		<p><%= product.name %></p>
 	</div>
@@ -27,9 +28,12 @@
 				</div>
 			<% } %> 
 		</div>
+
+		<% if (!is_suggested){%>
+			<a class="plus">+</a>
+			<a class="minus">-</a>
+			<a class="how-much"><%= quantity%></a>
+		<%}%>
 		
-		<a class="plus">+</a>
-		<a class="minus">-</a>
-		<a class="how-much"><%= quantity%></a>
 	</div>
 </div>

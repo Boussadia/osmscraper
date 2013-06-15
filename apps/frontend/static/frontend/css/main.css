@@ -183,7 +183,7 @@ header.top .block-right{
 }
 
 .top-icon.arrow{
-	margin-top: 5px;
+	margin-top: 7px;
 }
 
 #main-logo-bar {
@@ -926,21 +926,21 @@ li.has-dropdown.show {
 }
 
 .qte a:nth-child(2) {
-	right: 20px;
+	right: 0px;
 	top: 0px;
 	background-position: 0px 0px;
 }
 .qte a:nth-child(3) {
-	font-size: 34px;
+	font-size: 38px;
 	right: 58px;
 	top: 0px;
 }
 
 .qte a:nth-child(4) {	
 	color: white;
-	right: 39px;
+	right: 19px;
 	top: -32px;
-	padding-top: 8px;
+	padding-top: 9px;
 	font-size: 20px;
 	font-weight: bold;
 	background-position: 34px 0px;
@@ -1522,6 +1522,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 																float: left;
 																width: 100%;
 																height: 85px;
+																color: #9f9fa1;
 															}
 
 															.prod-desc {
@@ -1540,7 +1541,10 @@ button:hover, button:focus, .button:hover, .button:focus {
 
 															.product-recap .prod-desc p:first-child {
 																font-weight: bold;
+																color: #424242;
+																font-size: 14px;
 															}
+															.product-recap .prod-desc p:nth-child(2) {font-weight: bold;}
 
 															.product-recap img {
 																	display: block;
@@ -1577,7 +1581,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 															#recap-qty p:first-child {
 																font-size: 12px;
 																font-weight: normal;
-																color: #424242;
+																color: #9f9fa1;
 																display: block;
 																right: -38px;
 															}
@@ -1586,6 +1590,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 																position: relative;
 																font-size: 14px;
 																font-weight: bold;
+																color: #9f9fa1;
 															}
 
 															.osm-recap-promo .promo-shadow {
@@ -1616,7 +1621,6 @@ button:hover, button:focus, .button:hover, .button:focus {
 																background-color: rgba(0, 0, 0, 0.05);
 																position: absolute;
 																z-index: 1;
-																cursor: pointer;
 															}
 
 																/*.unavailable-mask div:first-child {
@@ -1638,29 +1642,14 @@ button:hover, button:focus, .button:hover, .button:focus {
 																.unavailable-mask div.replacement {
 																	display: inline-block;
 																	position: relative;
-																	float: left;
-																	width: 113px;
-																	height: 70px;
-																	top: 7px;
-																	right: -140px;
-																	background: url(../img/comparator/replacement.png);
-																}
-
-
-																/*.unavailable-mask div:last-child {
-																	position: relative;
-																	float: left;
-																	color: #ff7800;
-																	top: 7px;
-																	right: 105px;
+																	float: right;
+																	width: 28px;
+																	height: 29px;
+																	top: 25px;
+																	right: 49px;
 																	cursor: pointer;
-																}*/
-
-																/*#cart .unavailable-mask div:last-child{
-																	position: absolute;
-																	left: 26px;
-																	top: 40px;
-																}*/
+																	background: url(../img/comparator/replacement-switch.png);
+																}
 
 
 #osms-area {width: 50%; position: relative; float: right;}
@@ -1685,12 +1674,10 @@ button:hover, button:focus, .button:hover, .button:focus {
 
 .equivalent-switch {
 	width: 780px;
-	height: 380px;
+	height: 400px;
 	top: 50px;
-/*	display: none;*/
 	position: absolute;
 	z-index: 3004;
-	/*left: 110%;*/
 	margin-left: 0;
 	background-color: white;
 	padding: 1.25em;
@@ -1714,7 +1701,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 
 .equivalent-switch .product {
 	width: 165px;
-	height: 280px;
+	height: 290px;
 	margin-top: 15px;
 }
 
@@ -1726,6 +1713,7 @@ button:hover, button:focus, .button:hover, .button:focus {
 .product .cta.comparer {
 	width: 70%;
 	padding-top: 7px;
+	top: 0px;
 }
 
 .equivalent-switch .price-bloc, .equivalent-switch .price-bloc-promo {

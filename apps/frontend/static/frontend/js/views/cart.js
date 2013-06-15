@@ -51,27 +51,6 @@ define([
 					this.addSubView(view);
 					this.$el.find('.scrollarea').append(view.render().el);
 				}, this);
-
-
-				// Temporary cart rendering
-				// var products_array = [];
-				// // // Categories in cart
-				// _.each(data['content'], function(category, i){
-				// 	products_array = products_array.concat(category.products);
-				// }, this);
-
-				// products_array = _.uniq(products_array, false, function(element){
-				// 	return element.product.reference
-				// });
-
-				// var products = new ProductsCollection(products_array, {'vent': this.vent});
-
-				// products.each(function(product){
-				// 	this.bindTo(product, 'change', this.render);
-				// 	var view = new ProductInCartView({'product': product, 'vent': this.vent});
-				// 	this.addSubView(view);
-				// 	this.$el.find('.scrollarea').append(view.render().el);
-				// }, this);
 				
 	
 				return this;
