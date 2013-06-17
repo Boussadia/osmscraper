@@ -7,7 +7,6 @@
 
 		<!-- Classic meta description -->
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<meta http-equiv="Content-Language" content="fr-fr">
 		<meta name="viewport" content="width=device-width" />
 		<meta name="author" content="www.mastercourses.com" >
 		<meta name="description" content="Faites des économies sur vos courses en ligne en trouvant le prix le moins cher pour votre panier.">
@@ -15,9 +14,6 @@
 
 		<!-- Bing authentication -->
 		<meta name="msvalidate.01" content="E4AF46245775AA2147B1DCDA91022A88" />
-
-		<!-- Detectify -->
-		<meta name="detectify-verification" content="be485bb0b2d44b7e6a0d7efa7e6752bf" />
 
 
 		<!-- Open graph meta tags -->
@@ -53,12 +49,12 @@
 
 	<body>
 		<header class="main-container">
-				<div id="beta"><img src="/static/dalliz/images/home/ruban.png"></div>
-				<div id="profile-button" href="" data-reveal-id="myModal">
+				<div id="beta"><img alt="Ruban Béta"src="/static/dalliz/images/home/ruban.png"></div>
+				<div id="profile-button" data-reveal-id="myModal">
 					<div class="top-icon">Se connecter</div>
 				</div>
 			<div id="logo-bar" class="block">
-				<a href="#"><img src="{% static /dalliz/images/header/logo-small.png %}"></a>
+				<a href="#"><img alt='Logo MasterCourses'src="{% static /dalliz/images/header/logo-small.png %}"></a>
 			</div>
 		</header>
 		<section id="cta-container" class="main-container block">
@@ -69,7 +65,7 @@
 		</section>
 
 		<section class="main-container block" id='slider-pitch'>
-			<div id="separator"></div>
+			<div class="separator"></div>
 			<div id="gallery">
 				<div id="slider-menu">
 				<ul id="slider-pagination">
@@ -105,16 +101,16 @@
 
 
 		<section class="main-container block">
-			<div id="separator"></div>
+			<div class="separator"></div>
 			<table id="osms">
 				<tbody><tr>
-					<td><img src="{% static /dalliz/images/home/monop.gif %}"></td>
-					<td><img src="{% static /dalliz/images/home/auchan.png %}"></td>
-					<td><img src="{% static /dalliz/images/home/ooshop.png %}"></td>
+					<td><img alt='Monoprix.fr' src="{% static /dalliz/images/home/monop.gif %}"></td>
+					<td><img alt='Auchan Direct' src="{% static /dalliz/images/home/auchan.png %}"></td>
+					<td><img alt='Ooshop' src="{% static /dalliz/images/home/ooshop.png %}"></td>
 
-					<td><img src="{% static /dalliz/images/home/auchan-nb.png %}"></td>
-					<td><img src="{% static /dalliz/images/home/carrefour-nb.png %}"></td>
-					<td><img src="{% static /dalliz/images/home/u-nb.png %}"></td>
+					<td><img alt='Auchan drive' src="{% static /dalliz/images/home/auchan-nb.png %}"></td>
+					<td><img alt='Carrefour Drive' src="{% static /dalliz/images/home/carrefour-nb.png %}"></td>
+					<td><img alt='Courses U' src="{% static /dalliz/images/home/u-nb.png %}"></td>
 				</tr>
 			</tbody></table>
 		</section>
@@ -126,24 +122,24 @@
 				<form  method='post' action='/comparateur/start/'>
 					<div class="form-container">
 						<input name='username' type="email" placeholder="Email">
-						<img src="{% static /dalliz/images/home/mail.png %}">
+						<img alt='email' src="{% static /dalliz/images/home/mail.png %}">
 					</div>
 					<div class="form-container">
 						<input name='password' type="password" placeholder="Mot de passe">
 						{% csrf_token %}
-						<img src="{% static /dalliz/images/home/lock.png %}">
+						<img alt='mot de passe' src="{% static /dalliz/images/home/lock.png %}">
 					</div>
 
 		    	</form>
 		    	<p>Mot de passe oublié ?</p>
-		    	<a tyep='submit' id="sign-in-button" href="#">Se connecter</a>
+		    	<a type='submit' id="sign-in-button" href="#">Se connecter</a>
 			</div>
 			<div id="invitation">
 				<p>Vous n'avez pas de compte sur Master Courses ? Demandez votre invitation !</p>
 				<form>
 					<div class="form-container">
 						<input class="mail prospect" type="email" placeholder="Email">
-						<img src="{% static /dalliz/images/home/mail.png %}">
+						<img alt='email' src="{% static /dalliz/images/home/mail.png %}">
 					</div>
 				</form>
 				<a id="invitation-button" href="#">Envoyer</a>
@@ -202,17 +198,15 @@
 			</div>
 			<div class="footer-bottom">
 					<ul class="dropdown-aligned">
-						<li id="footer-int"><a >Partenariat</a></li>
+						<li class="footer-int"><a >Partenariat</a></li>
 						<li>•</li>
-						<li id="footer-int">Jobs</li>
+						<li class="footer-int">Jobs</li>
 						<li>•</li>
-						<li id="footer-int"><a href="/mentions-legales/">Mentions légales</a></li>
+						<li class="footer-int"><a href="/mentions-legales/">Mentions légales</a></li>
 						<li>•</li>
-						<li id="footer-int"><a href="/conditions-generale-d-utilisation/">Conditions générales d'utilisation</a></li>
+						<li class="footer-int"><a href="/conditions-generale-d-utilisation/">Conditions générales d'utilisation</a></li>
 						<li>•</li>
-						<!-- <li id="footer-int"><a href="/a-propos-de-dalliz/">À propos de Master Courses</a></li>
-						<li>•</li> -->
-						<li id="footer-int">Master Courses © 2013</li>
+						<li class="footer-int">Master Courses © 2013</li>
 					</ul>	
 			</div>
 		</footer>

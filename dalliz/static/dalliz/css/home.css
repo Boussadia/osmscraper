@@ -284,7 +284,7 @@ li.act a{
 
 /* OSMS */
 
-#separator {
+.separator {
 	height: 1px;
 	width: 60%;
 	background-color: #e2e3e5;
@@ -751,7 +751,7 @@ footer {
 		padding-top: 13px;
 	}
 
-#footer-int {
+.footer-int {
 	width: 20%;
 }
 
