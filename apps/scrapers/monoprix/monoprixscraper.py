@@ -470,13 +470,6 @@ class MonoprixScraper(BaseScraper):
 
 	def login_user(self, user_email = 'ahmed.boussadia@hotmail.fr', password = '2asefthukom,3'):
 		"""
-			This method checks if a given area is served by ooshop.
-
-			Input :
-				- code_postal (string) : french postal code of a city.
-			Output:
-				- boolean : True -> served, False -> not served
-				- code : was the request successfull? (200 = OK)
 		"""
 		is_logued = False
 

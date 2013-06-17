@@ -498,3 +498,30 @@ class AuchanParser(BaseParser):
 
 		package.update({'str': str_package})
 		return package
+
+
+	def get_form_login(self):
+		"""
+			getting form values in order to login to auchan website
+		"""
+		data = {}
+		parsed_page = self.parsed_page
+
+		form = parsed_page.find('div', {'id': 'authenticateFormZone'}).find('form')
+
+		data['action'] = form.attrs['action']
+		data['form'] = {}
+
+		if form:
+			for input_html in form.find_all('input'):
+				name = None
+				value = ''
+				if 'name' in input_html.attrs:
+					name = input_html.attrs['name']
+				if 'value' in input_html.attrs:
+					value = input_html.attrs['value']
+
+				if name:
+					data['form'][name] = value
+
+		return data

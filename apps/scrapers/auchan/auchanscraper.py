@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import re
+import re, json
 from urlparse import urlparse, parse_qs, urlunparse
 
 from apps.scrapers.base.basescraper import BaseScraper
@@ -207,3 +207,42 @@ class AuchanScraper(BaseScraper):
 			new_products.append(product)
 
 		return new_products
+
+
+	def login_user(self, user_email = 'ahmed.boussadia@hotmail.fr', password = '2asefthukom3'):
+		"""
+		"""
+		is_logued = False
+
+		# First get cookies by going to home page
+		html, code = self.crawler.get('http://www.auchandirect.fr/Accueil');
+
+		if code == 200:
+			self.parser.set_html(html)
+
+			# Getting pop up for login 
+			response, code = self.crawler.get_login_popup()
+			if code == 200:
+
+				# get html from json
+				response_hash = json.loads(response)
+				pop_up_html = response_hash['zones']['secondPopupZone']
+				self.parser.set_html(pop_up_html)
+
+				# Now parsing form data to get relevant information from html
+				form_data = self.parser.get_form_login()
+
+				form_data['form']['inputLogin'] = user_email
+				form_data['form']['inputPwd'] = password
+
+				response, code = self.crawler.login_user(form_data)
+
+				response_hash = json.loads(response)
+
+				if 'redirectURL' in response_hash and 'Accueil' in response_hash['redirectURL']:
+					return True, code
+			else:
+				return is_logued, code	
+			
+		else:
+			return is_logued, code

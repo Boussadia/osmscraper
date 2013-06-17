@@ -60,7 +60,7 @@ class BaseCrawler(object):
 		# time of last http request
 		self.last_time = time.time() - BaseCrawler.INTERVAL
 
-	def do_request(self, url ='', data = {}, request = None):
+	def do_request(self, url ='', data = {}, request = None, is_post = False, url_fix = True):
 		"""
 			Base method to perform a request to a url.
 
@@ -71,14 +71,15 @@ class BaseCrawler(object):
 			Output:
 				- (html, code) : html as string and code as defined in the class docstring.
 		"""
-		# Making sure it is utf8 encoded
-		url = self.url_fix(url)
+		if url_fix:
+			# Making sure it is utf8 encoded
+			url = self.url_fix(url)
 		# Request cannot happen inside a cetain lapse of time (INTERVAL seconds in between)
 		now = time.time()
 		if now-self.last_time<BaseCrawler.INTERVAL:
 			print 'Waiting %d ms in order not to flood server'%((BaseCrawler.INTERVAL+self.last_time-now)*1000)
 			time.sleep(BaseCrawler.INTERVAL+self.last_time-now)
-			return self.do_request( url, data, request)
+			return self.do_request( url, data, request, is_post= is_post, url_fix = url_fix)
 		self.last_time = now
 
 		# Encapsulating request in try block in order to catch HTTPError 
@@ -89,7 +90,7 @@ class BaseCrawler(object):
 				print "Fetching page from "+response.geturl()
 				print "Using personalized Request"
 				html = response.read()
-			elif data == {}:
+			elif not is_post:
 				print "Fetching page from "+url
 				print "GET method used"
 				response = self.browser.open(url)
@@ -114,7 +115,7 @@ class BaseCrawler(object):
 				if self.__network_failures_retry__ < BaseCrawler.MAX_NETWORK_FAILURE_TRIES:
 					print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
 					time.sleep(self.__network_failures_retry__)
-					return self.do_request(url, data)
+					return self.do_request(url, data, is_post = is_post, url_fix = url_fix)
 				else:
 					print "Error when retrieving "+url
 					return None, e.code
@@ -124,7 +125,7 @@ class BaseCrawler(object):
 			if self.__network_failures_retry__ < BaseCrawler.MAX_NETWORK_FAILURE_TRIES:
 				print "Error occured, retrying in "+str(self.__network_failures_retry__)+" s"
 				time.sleep(self.__network_failures_retry__)
-				return self.do_request(url, data)
+				return self.do_request(url, data, is_post = is_post, url_fix = url_fix)
 			else:
 				print "Error when retrieving "+url
 				return None, -1
@@ -133,17 +134,17 @@ class BaseCrawler(object):
 			print e
 			return None, -1
 
-	def get(self,url):
+	def get(self,url, url_fix = True):
 		"""
 			Executes a GET url fetch.
 		"""
-		return self.do_request(url)
+		return self.do_request(url, url_fix = url_fix)
 
-	def post(self, url, data = {}):
+	def post(self, url, data = {}, url_fix = True):
 		"""
 			Executes a POST url fetch.
 		"""
-		return self.do_request(url, data)
+		return self.do_request(url, data = data, is_post=True, url_fix = url_fix)
 
 	def empty_cookie_jar(self):
 		"""

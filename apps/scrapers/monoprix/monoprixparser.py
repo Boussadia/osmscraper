@@ -598,9 +598,6 @@ class MonoprixParser(BaseParser):
 		data = {}
 		parsed_page = self.parsed_page
 
-		# 1861266:1
-		# 1861266:
-
 		form_add_product = parsed_page.find('form', {'name': 'addProductForm'})
 
 		if form_add_product:
