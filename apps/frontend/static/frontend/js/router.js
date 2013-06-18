@@ -3,6 +3,7 @@ define([
 	'analytics'
 ], function(Backbone, GooglAnalyticsHelper){
 	Router = Backbone.Router.extend({
+		DEFAULT_URL: '/categorie/cremerie/beurres-et-margarines',
 		routes: {
 			'': 'index',
 			'start': 'index',
@@ -18,7 +19,7 @@ define([
 			this.vent.on('route:category:force', this.forceCategory, this);
 		},
 		index: function(){
-			var url = '/categorie/epicerie-sucree/cafes-et-chicorees';
+			var url = this.DEFAULT_URL;
 			this.navigate(url, true);
 		},
 		category: function(parentCategoryName, childCategoryName){
