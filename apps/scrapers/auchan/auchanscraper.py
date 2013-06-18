@@ -246,3 +246,31 @@ class AuchanScraper(BaseScraper):
 			
 		else:
 			return is_logued, code
+
+	def import_cart(self, user_email = 'ahmed.boussadia@hotmail.fr', password = '2asefthukom3'):
+		"""
+			Imports cart for a ooshop user.
+		"""
+		cart = []
+
+		# Clearing cookies
+		self.crawler.empty_cookie_jar()
+
+		# log user
+		is_logued, code = self.login_user(user_email, password)
+
+		if code == 200:
+			if is_logued:
+				url_cart = 'https://www.auchandirect.fr/commander/panier'
+				html, code = self.crawler.get(url_cart)
+				if code == 200:
+					self.parser.set_html(html)
+					cart = self.parser.get_cart();
+				else:
+					print 'Error %d'%(code)
+				return cart, code, is_logued
+			else:
+				# user not loged
+				return cart, code, is_logued
+		else:
+			return cart, code, is_logued

@@ -6,6 +6,7 @@ import simplejson as json
 from urlparse import urlparse, parse_qs
 
 from bs4 import BeautifulSoup
+import libs.soupselect.soupselect as soupselect; soupselect.monkeypatch(BeautifulSoup)
 
 from apps.scrapers.base.baseparser import BaseParser
 
@@ -525,3 +526,27 @@ class AuchanParser(BaseParser):
 					data['form'][name] = value
 
 		return data
+
+
+	def get_cart(self):
+		"""
+
+		"""
+		cart = []
+		parsed_page = self.parsed_page
+
+		div_products = parsed_page.find(id = 'basketDetail')
+
+		col4s = parsed_page.findSelect('#basketDetail .col-4')
+		for col4 in col4s:
+			qte = int(col4.find('input').attrs['value'])
+			a = col4.find(id = re.compile(r'^removeProductFromBasket_(.*)$'))
+			if a:
+				href = a.attrs['href']
+				reference = href.split('/')[-1]
+				cart.append({
+					'reference': reference,
+					'quantity': qte
+				})
+		return cart
+
