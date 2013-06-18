@@ -619,7 +619,7 @@ li.has-dropdown.show {
 .products div.controller.left{
 	background-position: 0;
 	opacity: .5;
-	left: 0%;
+	left: -30px;
 	z-index: 2;
 }
 
