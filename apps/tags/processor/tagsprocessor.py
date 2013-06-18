@@ -330,5 +330,37 @@ class TagsProcessor(object):
 		print 'Processing categories'
 		TagsProcessor.process_categories_products(override, filter_hash)
 
+	@staticmethod
+	def reset(options = {}):
+		"""
+			Resetting tags and categories, options = products filter for queryset
+		"""
+		# Get variables in global scope
+		global_keys = globals()
+
+		for osm in TagsProcessor.OSMS:
+			OSMProduct = global_keys['%sProduct'%osm.capitalize()]
+			products = OSMProduct.objects.filter(**options).distinct('reference')
+			for p in products:
+				# First getting default categories
+				categories = p.categories.all()
+				dalliz_categories = []
+				[ [dalliz_categories.append(d_c) for d_c in c.dalliz_category.all()] for c in categories]
+				dalliz_categories = set(dalliz_categories)
+
+				p.dalliz_category.clear()
+				[p.dalliz_category.add(c) for c in dalliz_categories]
+				# Now setting tags
+				tags = []
+				[[ tags.append(t) for t in c.tags.all()]for c in p.dalliz_category.all()]
+				tags = set(tags)
+
+				p.tag.clear()
+				[p.tag.add(t) for t in tags]
+				
+				p.tags_processed = False
+				p.save()
+
+
 
 
