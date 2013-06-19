@@ -19,7 +19,7 @@ define([
 				var email = attributes.email || this.get('email');
 				var password = attributes.password || this.get('password');
 				var osm = attributes.osm || this.get('osm');
-				console.log(osm);
+				
 				options || (options = {});
 				var vent = this.vent;
 				var that = this;
@@ -30,6 +30,12 @@ define([
 					'password': password,
 					'osm_name': osm
 				};
+
+				var that = this;
+
+				options.success = function(){
+					
+				}
 
 				return BaseModel.prototype.save.apply(this, [attributes, options]);
 			}

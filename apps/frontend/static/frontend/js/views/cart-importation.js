@@ -12,7 +12,7 @@ define([
 			this.importModel = new CartImportationModel({}, {'vent': this.vent});
 			this.fetching = false;
 			this.osms = options.osms;
-			this.selected_osm = this.osms.get_active_osm().get('name');
+			this.selected_osm = this.osms.get_active_osm();
 			var that = this;
 			this.bindTo(this.importModel, 'request', function(){
 				that.fetching = true;
@@ -55,8 +55,9 @@ define([
 			var pass = this.$el.find('input[type="password"]').val();
 			this.importModel.set('email', mail);
 			this.importModel.set('password', pass);
-			this.importModel.set('osm', this.selected_osm);
+			this.importModel.set('osm', this.selected_osm.get('name'));
 			this.importModel.save();
+			this.switchToSelectedOSM(this.selected_osm);
 		},
 		enterListener: function(event){
 			if(event.type === 'keypress'){
@@ -70,8 +71,20 @@ define([
 		set_osm: function(e){
 			var $element = $(e.target).parent();
 			this.$el.find('.active').removeClass('active');
-			this.selected_osm = $element.attr('class').replace(/\s+/g, '');;
+			var selected_osm_name = $element.attr('class').replace(/\s+/g, '');
+
+			var selected_osm = _.find(this.osms.models, function(osm, i){
+				return osm.get('name') === selected_osm_name;
+			}, this);
+
+			if (selected_osm) this.selected_osm = selected_osm;
+
 			$element.addClass('active');
+		},
+		switchToSelectedOSM: function(osm){
+			osm.set('active', true);
+			var that = this;
+			osm.save({}, {});
 		}
 	});
 

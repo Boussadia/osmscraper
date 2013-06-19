@@ -13,7 +13,8 @@ define([
 				}, this);
 			},
 			get_active_osm: function(){
-				var active_osm = _.find(this.models, function(osm, i){
+				var active_osm = this.at(0);
+				active_osm = _.find(this.models, function(osm, i){
 					return osm.get('active');
 				}, this);
 				return active_osm;
@@ -28,7 +29,8 @@ define([
 			get_price_to_save: function(){
 				var min_osm = this.get_min_osm();
 				var active_osm = this.get_active_osm();
-				return min_osm.get('price') - active_osm.get('price');
+				if (min_osm && active_osm) return min_osm.get('price') - active_osm.get('price');
+				return 0;
 			}
 		});
 
