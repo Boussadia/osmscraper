@@ -1,0 +1,3 @@
+[submodule "libs/soupselect"]
+	path = libs/soupselect
+	url = https://github.com/simonw/soupselect.git

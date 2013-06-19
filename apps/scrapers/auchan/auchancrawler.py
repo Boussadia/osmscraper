@@ -80,4 +80,61 @@ class AuchanCrawler(BaseCrawler, Singleton):
 
 		return json, code
 
+	def pop_up_empty_cart(self):
+		"""
+			Get popup with empty cart button.
+		"""
+
+		url = 'http://www.auchandirect.fr/boutiques.paniervolant.customerinfos.minibasket.cleanbasket?t:ac=Accueil&t:cp=gabarit/generated'
+		data = {}
+
+		new_data = urlencode(data)
+
+		request = mechanize.Request(url, new_data)
+		request.add_header('Accept', 'text/javascript, text/html, application/xml, text/xml, */*')
+		request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+		request.add_header('X-Requested-With', 'XMLHttpRequest')
+		request.add_header('X-Prototype-Version', '1.6.0.3')
+
+		json, code = self.do_request(request = request)
+
+
+		return json, code
+
+	def empty_cart(self, form_data):
+		"""
+			Method to empty auchandirect cart.
+		"""
+
+		url = "http://www.auchandirect.fr%s"%(form_data['href'])
+		data = {}
+
+		new_data = urlencode(data)
+
+		request = mechanize.Request(url, new_data)
+		request.add_header('Accept', 'text/javascript, text/html, application/xml, text/xml, */*')
+		request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+		request.add_header('X-Requested-With', 'XMLHttpRequest')
+		request.add_header('X-Prototype-Version', '1.6.0.3')
+
+		json, code = self.do_request(request = request)
+		return json, code
+
+	def add_product(self, data):
+		"""
+			Performs request to add product to cart.
+		"""
+		url = "http://www.auchandirect.fr%s"%(data['action'])
+
+		new_data = urlencode(data['form'])
+
+		request = mechanize.Request(url, new_data)
+		request.add_header('Accept', 'text/javascript, text/html, application/xml, text/xml, */*')
+		request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+		request.add_header('X-Requested-With', 'XMLHttpRequest')
+		request.add_header('X-Prototype-Version', '1.6.0.3')
+
+		json, code = self.do_request(request = request)
+		return json, code
+
 

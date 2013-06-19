@@ -550,3 +550,48 @@ class AuchanParser(BaseParser):
 				})
 		return cart
 
+	def get_form_empty_cart(self):
+		"""
+			Getting data in order to empty cart
+		"""
+		data = {}
+		parsed_page = self.parsed_page
+		a = parsed_page.findSelect('.btn-supprimer')[0]
+
+		data['href'] = a.attrs['href']
+		return data
+
+	def cart_is_empty(self):
+		"""
+			Check if cart is empty
+		"""
+		parsed_page = self.parsed_page
+		p  = parsed_page.find('p')
+		return p.text.lower().split()[-1] == 'vide'
+
+	def get_form_add_product(self, quantity = 1):
+		"""
+			Getting form from product page in order to add product to cart.
+		"""
+
+		data = {
+			'action':'',
+			'form': {},
+			'parsed': False
+		}
+		parsed_page = self.parsed_page
+
+		form = parsed_page.find(id = 'addProductForm')
+
+		if form:
+			data['parsed'] = True
+			data['action'] = form.attrs['action']
+			for input_ in form.find_all('input'):
+				if 'name' in  input_.attrs:
+					name = input_.attrs['name']
+					value = input_.attrs['value']
+					data['form'][name] = value
+					if name == 'qty':
+						data['form'][name] = quantity
+
+		return data

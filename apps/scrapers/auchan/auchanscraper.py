@@ -274,3 +274,109 @@ class AuchanScraper(BaseScraper):
 				return cart, code, is_logued
 		else:
 			return cart, code, is_logued
+
+	def empty_cart(self):
+		"""
+			The scraper needs to be loggued in first.
+		"""
+		# Empty cart
+		is_empty = False
+		response, code = self.crawler.pop_up_empty_cart()
+		if code == 200:
+			response_hash = json.loads(response)
+
+			html = response_hash['zones']['popupZone']
+
+			self.parser.set_html(html)
+
+			form_data = self.parser.get_form_empty_cart()
+			
+			response, code = self.crawler.empty_cart(form_data)
+
+			response_hash = json.loads(response)
+
+			html = response_hash['zones']['miniBasket']
+
+			self.parser.set_html(html)
+
+			is_empty = self.parser.cart_is_empty()
+
+
+		else:
+			pass
+
+		return is_empty, code
+
+	def export_cart(self, products, user_email = 'ahmed.boussadia@hotmail.fr', password = '2asefthukom3'):
+		"""
+			Exports cart for a ooshop user.
+		"""
+
+		feedback = []
+			
+		# Clearing cookies
+		self.crawler.empty_cookie_jar()
+
+		# log user
+		is_logued, code = self.login_user(user_email, password)
+
+		if code == 200:
+			if is_logued:
+
+				# Empty cart
+				is_empty, code = self.empty_cart()
+
+
+				if code == 200:
+					# Cycle throug every product and put it in cart
+					for product in products:
+						url_product = product['url']
+						html, code = self.crawler.get(url_product)
+						if code == 200:
+							self.parser.set_html(html)
+
+							try:
+								# Getting options
+								print 'HAHA'
+								data = self.parser.get_form_add_product(product['quantity'])
+
+								if data['parsed']:
+									html, code = self.crawler.add_product(data)
+									
+									if code == 200:
+										feedback.append({
+											'reference': product['reference'],
+											'msg': 'Exportation OK',
+											'code': code
+											})
+									else:
+										feedback.append({
+											'reference': product['reference'],
+											'msg': 'Failed exportation',
+											'code': code
+											})
+								else:
+									feedback.append({
+											'reference': product['reference'],
+											'msg': 'Failed exportation',
+											'code': code
+											})
+							except Exception, e:
+								feedback.append({
+									'reference': product['reference'],
+									'msg': 'Failed exportation',
+									'code': code,
+									'error': e
+									})
+						else:
+							feedback.append({
+								'reference': product['reference'],
+								'msg': 'Failed exportation',
+								'code': code,
+								})
+
+		return {
+			'feedback': feedback,
+			'code': code,
+			'is_logued': is_logued
+		}
