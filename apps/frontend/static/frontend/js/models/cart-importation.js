@@ -18,6 +18,8 @@ define([
 				attributes || (attributes = {});
 				var email = attributes.email || this.get('email');
 				var password = attributes.password || this.get('password');
+				var osm = attributes.osm || this.get('osm');
+				console.log(osm);
 				options || (options = {});
 				var vent = this.vent;
 				var that = this;
@@ -25,7 +27,8 @@ define([
 				options.emulateJSON = true;
 				options.data = {
 					'email': email,
-					'password': password
+					'password': password,
+					'osm_name': osm
 				};
 
 				return BaseModel.prototype.save.apply(this, [attributes, options]);

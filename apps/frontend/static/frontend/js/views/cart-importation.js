@@ -11,6 +11,8 @@ define([
 		initialize: function(options){
 			this.importModel = new CartImportationModel({}, {'vent': this.vent});
 			this.fetching = false;
+			this.osms = options.osms;
+			this.selected_osm = this.osms.get_active_osm().get('name');
 			var that = this;
 			this.bindTo(this.importModel, 'request', function(){
 				that.fetching = true;
@@ -31,11 +33,14 @@ define([
 			'click .reveal-modal-bg': 'hide',
 			'click #sign-in-button': 'import',
 			'keypress input': 'enterListener',
+			'click #osms td': 'set_osm'
 		},
 		render: function(){
 			this.closeSubViews();
 			this.$el.empty();
-			var rendered = this.template({});
+			var data = [];
+			data['osms'] = this.osms.toJSON();
+			var rendered = this.template(data);
 			this.$el.append(rendered);
 			return this;
 		},
@@ -50,6 +55,7 @@ define([
 			var pass = this.$el.find('input[type="password"]').val();
 			this.importModel.set('email', mail);
 			this.importModel.set('password', pass);
+			this.importModel.set('osm', this.selected_osm);
 			this.importModel.save();
 		},
 		enterListener: function(event){
@@ -60,6 +66,12 @@ define([
 					this.$el.find('#sign-in-button').trigger('click');
 				}
 			}
+		},
+		set_osm: function(e){
+			var $element = $(e.target).parent();
+			this.$el.find('.active').removeClass('active');
+			this.selected_osm = $element.attr('class').replace(/\s+/g, '');;
+			$element.addClass('active');
 		}
 	});
 

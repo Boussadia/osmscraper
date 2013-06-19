@@ -639,6 +639,7 @@ class CartImportation(BetaRestrictionAPIView):
 		email = request.DATA['email']
 		password = request.DATA['password']
 
+
 		global_keys = globals().keys()
 
 		# Getting cart content from osm site

@@ -111,14 +111,6 @@ define([
 		this.Views.userbar = new UserBarView({'user': this.Models.user, 'vent': this.Vent});
 		this.Views.userbar.render();
 
-		// Imporation view
-		this.Views.imporation = new CartImporationView({'vent': this.Vent, el: $('#importation')});
-		this.Views.imporation.render();
-
-		// Imporation view
-		this.Views.export = new CartExportView({'vent': this.Vent, el: $('#export')});
-		this.Views.export.render();
-
 		var that = this;
 
 		// Comparator, rendering comparator after fetching menu
@@ -126,6 +118,14 @@ define([
 		this.Collections.osms.fetch({
 			'vent': this.Vent,
 			success: function(){
+				// Imporation view
+				that.Views.imporation = new CartImporationView({'vent': that.Vent, el: $('#importation'), 'osms': that.Collections.osms});
+				that.Views.imporation.render();
+
+				// Imporation view
+				that.Views.export = new CartExportView({'vent': that.Vent, el: $('#export'), 'osms': that.Collections.osms});
+				that.Views.export.render();
+				
 				// Cart
 				that.Models.cart = new CartModel({}, {'vent': that.Vent, 'osms': that.Collections.osms});
 

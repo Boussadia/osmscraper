@@ -5,11 +5,14 @@
 		<p>Pour importer votre liste de courses :</p>
 		<p>Sélectionnez votre supermarché préféré :</p>
 		<table id="osms">
-			<tbody><tr>
-						<td><div></div></td>
-						<td><div></div></td>
-						<td><div></div></td>
-				   </tr>
+			<tbody>
+				<tr>
+					<% for (var i = 0; i<osms.length; i++) {
+						osm = osms[i];
+						%>
+						<td class='<%=osm.name%> <% if(osm.active) print('active')%>'><div></div></td>
+					<% }%>
+				</tr>
 			</tbody>
 		</table>
 		<p>Puis saisissez vos identifiants d'accès :</p>

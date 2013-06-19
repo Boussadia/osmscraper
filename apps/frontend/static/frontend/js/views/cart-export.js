@@ -11,6 +11,7 @@ define([
 		initialize: function(options){
 			this.exportModel = new CartExportModel({}, {'vent': this.vent});
 			this.fetching = false;
+			this.osms = options.osms;
 			var that = this;
 			this.bindTo(this.exportModel, 'request', function(){
 				that.fetching = true;
@@ -35,7 +36,9 @@ define([
 		render: function(){
 			this.closeSubViews();
 			this.$el.empty();
-			var rendered = this.template({});
+			var current_osm = this.osms.get_active_osm();
+			var data = current_osm.toJSON();
+			var rendered = this.template(data);
 			this.$el.append(rendered);
 			return this;
 		},

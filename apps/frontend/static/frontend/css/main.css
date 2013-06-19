@@ -2204,31 +2204,31 @@ input[type="email"] {
   cursor: pointer;
 }
 
-  #importModal #sign-in td:nth-child(1) div,   #exportModal #sign-in td:nth-child(1) div {
+  #importModal #sign-in td.monoprix div,   #exportModal #sign-in td.monoprix div {
     background-position: 0px 238px;
   }
 
-  #importModal #sign-in td:nth-child(2) div,   #exportModal #sign-in td:nth-child(2) div {
+  #importModal #sign-in td.ooshop div,   #exportModal #sign-in td.ooshop div {
     background-position: 0px 102px;
   }
 
-  #importModal #sign-in td:nth-child(3) div,   #exportModal #sign-in td:nth-child(3) div {
+  #importModal #sign-in td.auchan div,   #exportModal #sign-in td.auchan div {
     background-position: 0px 170px;
   }
 
-#importModal #sign-in td div:hover, #exportModal #sign-in td div:hover {
+#importModal #sign-in td div:hover, #importModal #sign-in td.active div, #exportModal #sign-in td div:hover, #exportModal #sign-in td.active div {
   background: url(../img/comparator/sprites_osm.png);
 }
 
-  #importModal #sign-in td:nth-child(1) div:hover,   #exportModal #sign-in td:nth-child(1) div:hover {
+  #importModal #sign-in td.monoprix div:hover, #importModal #sign-in td.monoprix.active div,   #exportModal #sign-in td.monoprix div:hover, #exportModal #sign-in td.monoprix.active div {
     background-position: 0px 238px;
   }
 
-  #importModal #sign-in td:nth-child(2) div:hover,   #exportModal #sign-in td:nth-child(2) div:hover {
+  #importModal #sign-in td.ooshop div:hover, #importModal #sign-in td.ooshop.active div,   #exportModal #sign-in td.ooshop div:hover, #exportModal #sign-in td.ooshop.active div {
     background-position: 0px 102px;
   }
 
-  #importModal #sign-in td:nth-child(3) div:hover,   #exportModal #sign-in td:nth-child(3) div:hover {
+  #importModal #sign-in td.auchan div:hover, #importModal #sign-in td.auchan.active div,   #exportModal #sign-in td.auchan div:hover, #exportModal #sign-in td.auchan.active div {
     background-position: 0px 170px;
   }
 
