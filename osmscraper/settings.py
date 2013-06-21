@@ -16,15 +16,20 @@ ADMINS = (
     ('Ahmed Boussadia', 'ahmed@dalliz.com'),
 )
 
-ALLOWED_HOSTS =['127.0.0.1', '192.168.0.13', 'www.dalliz.com', 'dalliz.cloudapp.net', 'www.mastercourses.com']
+ALLOWED_HOSTS =['127.0.0.1', '192.168.0.13', 'www.dalliz.com', 'mastercourses.cloudapp.net','dalliz.cloudapp.net', 'dalliz-dev.cloudapp.net','www.mastercourses.com', 'dev.mastercourses.com']
 
 MANAGERS = ADMINS
 
 import dj_database_url
 
-DATABASES = {
-    'default': dj_database_url.config(default='postgres://postgres:2asefthukom,3@localhost:5432/osmsdb'),
-}
+if DEBUG:
+	DATABASES = {
+    	'default': dj_database_url.config(default='postgres://postgres:2asefthukom,3@localhost:5432/osmsdb'),
+	}
+else:
+	DATABASES = {
+	'default': dj_database_url.config(default='postgres://postgres:2asefthukom,3@mastercourses-db.cloudapp.net:5432/osmsdb'),
+	}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
