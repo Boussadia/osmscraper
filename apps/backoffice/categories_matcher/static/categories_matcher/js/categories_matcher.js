@@ -132,8 +132,15 @@ $(document).ready(function(){
 		for( id in categories){
 			var title = categories[id]['name'];
 			var is_final = categories[id]['final'];
+			var created = categories[id]['created'];
+			var date = new Date(created);
+			var limit = date.setDate(date.getDate()+15);
+			var today = new Date();
+			var is_new = (today < limit) ;
+			var exists = categories[id]['exists'];
 			var path_indicator = $('<div>').addClass("path");
 			var li = $("<li>").text(title).attr("data-osm",osm).attr("data-id", id).attr("data-level", level).attr("data-parent", parent);
+			if (is_new) li.addClass('new');
 			li.prepend(path_indicator);
 			
 

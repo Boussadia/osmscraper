@@ -25,6 +25,10 @@
 	position: relative;
 }
 
+#main .block li{
+	background-color: #3aa0cc;
+}
+
 #main .set_category{
 	position: absolute;
 	top: 0px;

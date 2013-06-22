@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.template import Context, loader
 from django.views.decorators.csrf import csrf_exempt
 
+import datetime
 import simplejson as json
 
 import apps.osms.telemarket
@@ -34,7 +35,11 @@ def get_subs_dalliz(id = None):
 
 def build_dalliz_tree(id = None):
 	categories = get_subs_dalliz(id)
-	response = { cat.id : {'name': cat.name, 'display': (lambda x : x.parent_category.name+' / '+x.name if x.parent_category is not None else x.name)(cat),'subs':build_dalliz_tree(cat.id)} for cat in categories}
+	response = { cat.id : {
+		'name': cat.name,
+		'display': (lambda x : x.parent_category.name+' / '+x.name if x.parent_category is not None else x.name)(cat),
+		'subs':build_dalliz_tree(cat.id)}
+	for cat in categories}
 	return response
 
 def diff(l1,l2):
@@ -131,7 +136,11 @@ def categories(request, osm, level, parent='0'):
 
 		# Are they final categories?
 		for cat in categories:
-			j = {'name': cat.name}
+			j = {
+				'name': cat.name,
+				'created': cat.created,
+				'exsts': cat.exists,
+			}
 			sub_categories = Category.objects.filter(parent_category = cat, exists = True)
 			if sub_categories.count() == 0:
 				j['final'] = True
@@ -139,8 +148,11 @@ def categories(request, osm, level, parent='0'):
 				j['final'] = False
 			response.update({cat.id: j})
 
+		dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None
+		response = json.dumps(response, default=dthandler)
 
-	return HttpResponse(json.dumps(response))
+
+	return HttpResponse(response)
 
 @csrf_exempt
 def add_link(request):
