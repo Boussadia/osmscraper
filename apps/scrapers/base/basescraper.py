@@ -152,8 +152,8 @@ class BaseScraper(object):
 			return {'type':'categories'}
 		else:
 			# Was the last time categories where updated more than 2 weeks ago?
-			old_updated_categories = filter(lambda cat: cat['updated'].replace(tzinfo=None) + timedelta(days = 15)<datetime.today(), categories)
-			if len(old_updated_categories) > 0:
+			oldest_updated_categories = max( categories, key = lambda cat: cat['updated'])
+			if oldest_updated_categories['updated'].replace(tzinfo=None) + timedelta(days = 15)<datetime.today() :
 				# Need to update categories list
 				return {'type':'categories'}
 			else:
