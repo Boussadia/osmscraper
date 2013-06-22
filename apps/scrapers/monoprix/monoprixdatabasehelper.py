@@ -46,9 +46,9 @@ class MonoprixDatabaseHelper(BaseDatabaseHelper):
 			name = unicode(category['name'])
 			url = unicode(category['url'].split(';jsessionid=')[0])
 			if id_parent_category:
-				category_db, created = Category.objects.get_or_create(url = url, defaults={'name': name, 'parent_category_id': id_parent_category})
+				category_db, created = Category.objects.get_or_create(url = url, name = name, parent_category_id =  id_parent_category)
 			else:
-				category_db, created = Category.objects.get_or_create(name = name, defaults={'url': url})
+				category_db, created = Category.objects.get_or_create(name = name, url = url, parent_category = None)
 
 			if not created:
 				category_db.name = name

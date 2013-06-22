@@ -34,7 +34,7 @@ class Category(models.Model):
 	dalliz_category = models.ManyToManyField(Dalliz_category, related_name="ooshop_category_dalliz_category")
 
 	class Meta:
-		unique_together = ("name", "parent_category")
+		unique_together = ("name", "parent_category", "url")
 
 	def __unicode__(self):
 		return self.name

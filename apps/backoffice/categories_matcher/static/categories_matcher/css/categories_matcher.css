@@ -25,7 +25,7 @@
 	position: relative;
 }
 
-#main .block li{
+#main .block li.new{
 	background-color: #3aa0cc;
 }
 
