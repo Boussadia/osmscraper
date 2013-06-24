@@ -159,13 +159,13 @@ class BaseScraper(object):
 			else:
 				pass
 
-		# Get complete products informations
-		products = self.databaseHelper.get_uncomplete_products()
-		if len(products)>0:
-			return{
-				'type': 'products',
-				'products': products
-			}
+		# # Get complete products informations
+		# products = self.databaseHelper.get_uncomplete_products()
+		# if len(products)>0:
+		# 	return{
+		# 		'type': 'products',
+		# 		'products': products
+		# 	}
 
 		# Getting all shipping areas
 
