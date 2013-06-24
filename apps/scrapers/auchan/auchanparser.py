@@ -147,6 +147,7 @@ class AuchanParser(BaseParser):
 
 				p_html = bloc_product.find('div',{'class':'infos-produit-2'}).find('p')
 				p_content = [p for p in p_html.text.split('\n') if p != '']
+				unit_price = ''
 				if len(p_content) == 2:
 					[package, unit_price_text] = p_content
 				elif len(p_content) == 1:
@@ -158,7 +159,10 @@ class AuchanParser(BaseParser):
 					unit_price = ''
 
 				[unit_price, unit] = unit_price_text.split(u'€/')
-				unit_price = float(unit_price)
+				try:
+					unit_price = float(unit_price)
+				except Exception, e:
+					unit_price = 0
 
 				product.update({
 					'url': url,
