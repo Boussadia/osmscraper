@@ -80,19 +80,21 @@ class MonoprixParser(BaseParser):
 				})
 
 		elif level == 3:
-			ul = self.parsed_page.find(id="topNavigation").find("ul",{"class","N4"})
-			if ul  is not None:
-				lis = ul.find_all("li")
+			topNavigation = self.parsed_page.find(id="topNavigation")
+			if topNavigation is not None:
+				ul = topNavigation.find("ul",{"class","N4"})
+				if ul  is not None:
+					lis = ul.find_all("li")
 
-				for i in xrange(0,len(lis)):
-					li = lis[i]
-					name = li.find("a").get("title")
-					url = li.find("a").get("href")
-					print "Found sub category level 3 "+name
-					categories.append({
-						'name': name,
-						'url':url,
-					})
+					for i in xrange(0,len(lis)):
+						li = lis[i]
+						name = li.find("a").get("title")
+						url = li.find("a").get("href")
+						print "Found sub category level 3 "+name
+						categories.append({
+							'name': name,
+							'url':url,
+						})
 
 		return categories
 
