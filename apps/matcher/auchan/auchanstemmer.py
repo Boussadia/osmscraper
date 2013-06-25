@@ -38,4 +38,5 @@ class AuchanStemmer(BaseHTMLStemmer):
 			text_head = ''.join(head.findAll(text=True))
 			text_head = ' '.join(text_head.split())
 		self.text = text_head+' '+text_description
+		return self
 	

@@ -39,4 +39,5 @@ class OoshopStemmer(BaseHTMLStemmer):
 		text = ''.join(soup.findAll(text=True))
 		text = ' '.join(text.split())
 		self.text = text
+		return self
 	
