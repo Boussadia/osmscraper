@@ -33,6 +33,9 @@ def populate_db(path):
 			# Getting database instance or creating it
 			stem_db, created = Stem.objects.get_or_create(word = stem)
 			base_word, created = BaseWord.objects.get_or_create(text = word, defaults = {'stem': stem_db})
+			if not created:
+				base_word.stem = stem_db
+				base_word.save()
 
 def main():
 	path = '/'.join([directory, 'stems.txt'])
