@@ -235,6 +235,9 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 		if 'before_date' in options:
 			products = products.filter(history__created__lte = options['before_date'])
 
+		if 'after_date' in options:
+			products = products.filter(history__created__gte = options['after_date'])
+
 		products = products.filter(exists = True)
 
 		products = self.serialize(products)
