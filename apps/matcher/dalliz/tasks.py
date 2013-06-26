@@ -9,6 +9,6 @@ from apps.matcher.dalliz.stemmer import DallizStemmer
 
 celery = Celery('tasks', broker=settings.BROKER_URL)
 
-@celery.task
+@celery.task(name='apps.matcher.dalliz.tasks.run_stemmer')
 def run_stemmer():
 	DallizStemmer.run()
