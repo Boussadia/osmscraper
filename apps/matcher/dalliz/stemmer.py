@@ -2,10 +2,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import # Import because of modules names
 
-from django.conf import settings
-from celery import Celery
-from celery.task import periodic_task, task
-
 from apps.matcher.auchan.auchanstemmer import AuchanStemmer
 from apps.matcher.monoprix.monoprixstemmer import MonoprixStemmer
 from apps.matcher.ooshop.ooshopstemmer import OoshopStemmer
@@ -49,9 +45,3 @@ class DallizStemmer(object):
 				print 'Stemming %s (Progress : %f %s)'%(product.name, progress, '%')
 				product.stemmed_text = Stemmer(product.html).stem_text()
 				product.save()
-
-celery = Celery('tasks', broker=settings.BROKER_URL)
-
-@celery.task
-def run_stemmer():
-	DallizStemmer.run()
