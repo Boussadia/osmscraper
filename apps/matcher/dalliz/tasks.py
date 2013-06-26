@@ -5,7 +5,7 @@ from django.conf import settings
 from celery import Celery
 from celery.task import periodic_task, task
 
-from apps.dalliz.stemmer import DallizStemmer
+from apps.matcher.dalliz.stemmer import DallizStemmer
 
 celery = Celery('tasks', broker=settings.BROKER_URL)
 
