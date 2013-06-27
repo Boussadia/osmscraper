@@ -52,9 +52,9 @@ class OoshopDatabaseHelper(BaseDatabaseHelper):
 			name = unicode(category['name'])
 			url = unicode(category['url'])
 			if id_parent_category:
-				category_db, created = Category.objects.get_or_create( name = name, parent_category_id = id_parent_category, url = url)
+				category_db, created = Category.objects.get_or_create( name = name, parent_category_id = id_parent_category, defaults = {'url': url})
 			else:
-				category_db, created = Category.objects.get_or_create(name = name, url = url, parent_category = None)
+				category_db, created = Category.objects.get_or_create(name = name, parent_category = None, defaults = {'url': url})
 
 			if not created:
 				category_db.name = name

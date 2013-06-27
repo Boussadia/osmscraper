@@ -39,7 +39,7 @@ class Category(models.Model):
 	dalliz_category = models.ManyToManyField(Dalliz_category, related_name="monoprix_category_dalliz_category")
 
 	class Meta:
-		unique_together = ("name", "parent_category", "url")
+		unique_together = ("name", "parent_category")
 
 	def __unicode__(self):
 		return self.name

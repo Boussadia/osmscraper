@@ -50,20 +50,21 @@ class AuchanDatabaseHelper(BaseDatabaseHelper):
 			main_category_db, created = Category.objects.get_or_create(name = main_category['name'], parent_category__isnull = True)
 
 			for category_level_1 in main_category['sub_categories']:
-				print category_level_1
-				category_level_1_db, created = Category.objects.get_or_create(url= category_level_1['url'], name = category_level_1['name'], parent_category = main_category_db)
+				category_level_1_db, created = Category.objects.get_or_create(name = category_level_1['name'], parent_category = main_category_db, defaults = {'url': category_level_1['url']})
 
 				if not created:
 					category_level_1_db.name = category_level_1['name']
+					category_level_1_db.url= category_level_1['url']
 					category_level_1_db.parent_category = main_category_db
 					category_level_1_db.save()
 
 
 				for category_level_2 in category_level_1['sub_categories']:
-					category_level_2_db, created = Category.objects.get_or_create(url= category_level_2['url'], name = category_level_2['name'], parent_category = category_level_1_db)
+					category_level_2_db, created = Category.objects.get_or_create(name = category_level_2['name'], parent_category = category_level_1_db, defaults = {'url': category_level_2['url']})
 
 					if not created:
 						category_level_2_db.name = category_level_2['name']
+						category_level_2_db.url= category_level_2['url']
 						category_level_2_db.parent_category = category_level_1_db
 						category_level_2_db.save()
 		
