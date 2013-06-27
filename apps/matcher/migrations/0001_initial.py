@@ -19,7 +19,7 @@ class Migration(SchemaMigration):
         db.create_table('matcher_baseword', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('text', self.gf('django.db.models.fields.TextField')(unique=True, null=True)),
-            ('stem', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['apps.matcher.Stem'])),
+            ('stem', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['matcher.Stem'])),
         ))
         db.send_create_signal('matcher', ['BaseWord'])
 
@@ -33,17 +33,17 @@ class Migration(SchemaMigration):
 
 
     models = {
-        'apps.matcher.baseword': {
+        'matcher.baseword': {
             'Meta': {'object_name': 'BaseWord'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'stem': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['matcher.Stem']"}),
             'text': ('django.db.models.fields.TextField', [], {'unique': 'True', 'null': 'True'})
         },
-        'apps.matcher.stem': {
+        'matcher.stem': {
             'Meta': {'object_name': 'Stem'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'word': ('django.db.models.fields.TextField', [], {'unique': 'True', 'null': 'True'})
         }
     }
 
-    complete_apps = ['apps.matcher']
+    complete_apps = ['matcher']

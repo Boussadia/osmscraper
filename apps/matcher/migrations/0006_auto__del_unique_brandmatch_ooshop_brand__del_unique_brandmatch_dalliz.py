@@ -127,13 +127,13 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '10'})
         },
-        u'apps.matcher.baseword': {
+        u'matcher.baseword': {
             'Meta': {'object_name': 'BaseWord'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'stem': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['apps.matcher.Stem']"}),
+            'stem': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['matcher.Stem']"}),
             'text': ('django.db.models.fields.TextField', [], {'unique': 'True', 'null': 'True'})
         },
-        u'apps.matcher.brandmatch': {
+        u'matcher.brandmatch': {
             'Meta': {'unique_together': "(('dalliz_brand', 'auchan_brand'), ('dalliz_brand', 'ooshop_brand'), ('dalliz_brand', 'monoprix_brand'))", 'object_name': 'BrandMatch'},
             'auchan_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Brand']", 'null': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -142,7 +142,7 @@ class Migration(SchemaMigration):
             'monoprix_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['monoprix.NewBrand']", 'null': 'True'}),
             'ooshop_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['ooshop.NewBrand']", 'null': 'True'})
         },
-        u'apps.matcher.brandsimilarity': {
+        u'matcher.brandsimilarity': {
             'Meta': {'object_name': 'BrandSimilarity'},
             'auchan_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Brand']", 'null': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -154,7 +154,7 @@ class Migration(SchemaMigration):
             'query_name': ('django.db.models.fields.TextField', [], {}),
             'score': ('django.db.models.fields.FloatField', [], {})
         },
-        u'apps.matcher.matcherlog': {
+        u'matcher.matcherlog': {
             'Meta': {'object_name': 'MatcherLog'},
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),

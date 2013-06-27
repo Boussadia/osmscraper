@@ -278,4 +278,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['apps.matcher']
+    complete_apps = ['matcher']

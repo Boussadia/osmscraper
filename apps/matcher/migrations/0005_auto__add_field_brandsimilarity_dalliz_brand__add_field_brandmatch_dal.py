@@ -101,13 +101,13 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '10'})
         },
-        u'apps.matcher.baseword': {
+        u'matcher.baseword': {
             'Meta': {'object_name': 'BaseWord'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'stem': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['apps.matcher.Stem']"}),
+            'stem': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['matcher.Stem']"}),
             'text': ('django.db.models.fields.TextField', [], {'unique': 'True', 'null': 'True'})
         },
-        u'apps.matcher.brandmatch': {
+        u'matcher.brandmatch': {
             'Meta': {'object_name': 'BrandMatch'},
             'auchan_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Brand']", 'unique': 'True', 'null': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -116,7 +116,7 @@ class Migration(SchemaMigration):
             'monoprix_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['monoprix.NewBrand']", 'unique': 'True', 'null': 'True'}),
             'ooshop_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['ooshop.NewBrand']", 'unique': 'True', 'null': 'True'})
         },
-        u'apps.matcher.brandsimilarity': {
+        u'matcher.brandsimilarity': {
             'Meta': {'object_name': 'BrandSimilarity'},
             'auchan_brand': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Brand']", 'null': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -128,14 +128,14 @@ class Migration(SchemaMigration):
             'query_name': ('django.db.models.fields.TextField', [], {}),
             'score': ('django.db.models.fields.FloatField', [], {})
         },
-        u'apps.matcher.matcherlog': {
+        u'matcher.matcherlog': {
             'Meta': {'object_name': 'MatcherLog'},
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.TextField', [], {}),
             'type': ('django.db.models.fields.TextField', [], {})
         },
-        u'apps.matcher.possiblematch': {
+        u'matcher.possiblematch': {
             'Meta': {'object_name': 'PossibleMatch'},
             'auchan_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Product']", 'null': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -143,7 +143,7 @@ class Migration(SchemaMigration):
             'monoprix_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['monoprix.NewProduct']", 'null': 'True'}),
             'ooshop_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['ooshop.NewProduct']", 'null': 'True'})
         },
-        u'apps.matcher.productmatch': {
+        u'matcher.productmatch': {
             'Meta': {'object_name': 'ProductMatch'},
             'auchan_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Product']", 'unique': 'True', 'null': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -151,7 +151,7 @@ class Migration(SchemaMigration):
             'monoprix_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['monoprix.NewProduct']", 'unique': 'True', 'null': 'True'}),
             'ooshop_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['ooshop.NewProduct']", 'unique': 'True', 'null': 'True'})
         },
-        u'apps.matcher.productsimilarity': {
+        u'matcher.productsimilarity': {
             'Meta': {'object_name': 'ProductSimilarity'},
             'auchan_product': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auchan.Product']", 'null': 'True'}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -162,7 +162,7 @@ class Migration(SchemaMigration):
             'query_name': ('django.db.models.fields.TextField', [], {}),
             'score': ('django.db.models.fields.FloatField', [], {})
         },
-        u'apps.matcher.stem': {
+        u'matcher.stem': {
             'Meta': {'object_name': 'Stem'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'word': ('django.db.models.fields.TextField', [], {'unique': 'True', 'null': 'True'})
@@ -276,4 +276,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['apps.matcher']
+    complete_apps = ['matcher']
