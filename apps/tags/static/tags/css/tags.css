@@ -38,8 +38,8 @@
 #pop_over_window {
 	display: none;
 	position: fixed;
-	width: 500px;
-	height: 400px;
+	width: 650px;
+	height: 431px;
 	padding: .5em;
 	overflow-y:scroll; 
 	border: 2px solid black;
@@ -69,4 +69,16 @@
 
 .add{
 	height: 295px;
+}
+
+div.tagsinput{
+	display: inline-block;
+}
+
+#titles h4{
+	display: inline-block;
+}
+
+#titles h4:first-child{
+	width: 312px;
 }

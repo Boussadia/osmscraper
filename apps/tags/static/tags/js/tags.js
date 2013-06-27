@@ -43,20 +43,16 @@ $(document).ready(function(){
 		'autocomplete_url': '/backend/tags/autocomplete/',
 	});
 
-	// $("div.add textarea").autocomplete({
-	// 	wordCount:1,
-	// 	mode: "outter",
-	// 	on: {
-	// 		query: function(text,cb){
-	// 			var words = [];
-	// 			for( var i=0; i<tags.length; i++ ){
-	// 				if( tags[i].toLowerCase().indexOf(text.toLowerCase()) == 0 ) words.push(tags[i]);
-	// 				if( words.length > 5 ) break;
-	// 			}
-	// 			cb(words);								
-	// 		}
-	// 	}
-	// });
+	$('#super_tags').tagsInput({
+		'removeWithBackspace' : false,
+		'onAddTag': function(t){
+			save_tags(t);
+		},
+		'onRemoveTag': function(t){
+			save_tags(t);
+		},
+		'autocomplete_url': '/backend/tags/autocomplete/',
+	});
 
 	// Bootstraping app
 	$('#main').empty()
@@ -104,6 +100,7 @@ $(document).ready(function(){
 							// console.log(jqXHR);
 							if(data["status"] === 200 ){
 								$('#tags').importTags(data['tags']);
+								$('#super_tags').importTags(data['super_tags']);
 							}
 
 						},
@@ -112,7 +109,7 @@ $(document).ready(function(){
 							console.log(textStatus);
 							console.log(errorThrown);
 
-							// alert("L'opération ne s'est pas déroulée avec succès, réessayez ultérieurement!");
+							alert("L'opération ne s'est pas déroulée avec succès, réessayez ultérieurement!");
 						}
 					});
 
@@ -180,11 +177,14 @@ $(document).ready(function(){
 	var save_tags = function(t){
 		var id_category = $("div.add").attr('data-id_category');
 		var tags_string = $('#tags').val();
+		
 		$.ajax({
 			url:'/backend/tags/'+id_category+'/'+tags_string,
 			type:"POST",
 			dataType:"json",
-			data:{},
+			data:{
+				'is_super_tag': false
+			},
 			beforeSend: function(jqXHR, settings){
 				// console.log(jqXHR);
 				// console.log(settings);
@@ -197,6 +197,41 @@ $(document).ready(function(){
 					for(i in tags_string.split(";")){
 						if (tags.indexOf(tags_string.split(";")[i])===-1){
 							tags.push(tags_string.split(";")[i]);
+						}
+					}
+				};
+
+			},
+			error: function(jqXHR, textStatus, errorThrown){
+				console.log(jqXHR);
+				console.log(textStatus);
+				console.log(errorThrown);
+
+				// alert("L'opération ne s'est pas déroulée avec succès, réessayez ultérieurement!");
+			}
+		});
+
+
+		var super_tags_string = $('#super_tags').val();
+		$.ajax({
+			url:'/backend/tags/'+id_category+'/'+super_tags_string,
+			type:"POST",
+			dataType:"json",
+			data:{
+				'is_super_tag': true
+			},
+			beforeSend: function(jqXHR, settings){
+				// console.log(jqXHR);
+				// console.log(settings);
+			},
+			success: function(data, textStatus, jqXHR){
+				// console.log(data);
+				// console.log(textStatus);
+				// console.log(jqXHR);
+				if (data['status'] === 200) {
+					for(i in super_tags_string.split(";")){
+						if (super_tags.indexOf(super_tags_string.split(";")[i])===-1){
+							super_tags.push(super_tags_string.split(";")[i]);
 						}
 					}
 				};

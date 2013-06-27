@@ -105,9 +105,10 @@ def index(request):
 	response = {}
 	# Getting parent categories
 	categories = build_dalliz_tree()
-	tags = [ t.name for t in Tag.objects.all()]
+	tags = [ t.name for t in Tag.objects.filter(is_super_tag = False)]
+	super_tags = [ t.name for t in Tag.objects.filter(is_super_tag = True)]
 
-	return render(request, 'tags/index.html', {"categories": json.dumps(categories), "tags": json.dumps(tags)})
+	return render(request, 'tags/index.html', {"categories": json.dumps(categories), "tags": json.dumps(tags), "super_tags": json.dumps(super_tags)})
 @csrf_exempt
 def tags(request, id_category, tags =''):
 	response = {}
@@ -119,6 +120,9 @@ def tags(request, id_category, tags =''):
 		return HttpResponse(json.dumps({"status":404}))
 
 	if request.method == 'POST':
+		is_super_tag = False
+		if 'is_super_tag' in request.POST:
+			is_super_tag = (request.POST['is_super_tag'] == 'true')
 		old_tags = list(category.tags.all()) # important to convert to list ohterwise it is a generator and if the tags are removed, old tags become empty
 		category.tags.clear() # Removing exsisting relationships
 		if tags:
@@ -128,7 +132,10 @@ def tags(request, id_category, tags =''):
 		for tag in tags_string:
 			if tag not in [' ', '', '\t', '\r', '\n']:
 				stemmed_name = Stemmer(tag).stem_text()
-				tag_db, created = Tag.objects.get_or_create(name = tag, stemmed_name = stemmed_name)
+				tag_db, created = Tag.objects.get_or_create(name = tag,  is_super_tag = is_super_tag, defaults = {'stemmed_name' : stemmed_name})
+				if created:
+					tag_db.stemmed_name = stemmed_name
+					tag_db.save()
 				try:
 					category.tags.add(tag_db)
 				except Exception, e:
@@ -136,8 +143,11 @@ def tags(request, id_category, tags =''):
 		new_tags = list(category.tags.all())
 		# set_tags_to_products(old_tags, new_tags, category)
 	if request.method == 'GET':
-		tags = ','.join([ t.name for t in category.tags.all()])
+		tags = ','.join([ t.name for t in category.tags.filter(is_super_tag = False)])
 		response['tags'] = tags
+
+		super_tags = ','.join([ t.name for t in category.tags.filter(is_super_tag = True)])
+		response['super_tags'] = super_tags
 
 	return HttpResponse(json.dumps(response))
 
@@ -150,7 +160,8 @@ def autocomplete(request):
 	term = ''
 	if request.method == 'GET':
 		term = unaccent(request.GET['term']).lower()
-	possible_tags = Tag.objects.raw( "SELECT * FROM tags_tag WHERE LOWER(UNACCENT(name)) LIKE %s", ('%'+term+'%',))
-	response = [{'id':t.id,'label':t.name,'value':t.name} for t in possible_tags]	
+	# possible_tags = Tag.objects.raw( "SELECT DISTINCT * FROM tags_tag WHERE LOWER(UNACCENT(name)) LIKE %s", ('%'+term+'%',))
+	possible_tags = Tag.objects.filter(name__icontains = term).distinct('name')
+	response = [{'id':t.id,'label':t.name,'value':t.name, 'is_super_tag': t.is_super_tag} for t in possible_tags]	
 	return HttpResponse(json.dumps(response))
 

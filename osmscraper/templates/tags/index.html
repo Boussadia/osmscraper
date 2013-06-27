@@ -8,6 +8,7 @@
 		<script type="text/javascript">
 			var dalliz_categories = {{categories|safe}};
 			var tags = {{tags|safe}};
+			var super_tags = {{super_tags|safe}};
 		</script>
 		<!-- <script src="{% static tags/js/jquery.autocomplete.js %}"></script>  -->
 
@@ -30,12 +31,13 @@
 		<div id="pop_over_window">
 			<h2>Add Category link</h2>
 			<button class="close">X</button>
+			<div id='titles'>
+				<h4>Tags</h4>
+				<h4>Super Tags</h4>
+			</div>
 			<div class="add">
-				<input name="tags" id="tags" value="foo,bar,baz" />
-<!-- 				<div id="contries">
-					<textarea style="width: 400px; height: 250px; resize: none;"></textarea>
-				</div> -->
-				<!-- <button>Save</button></div> -->
+				<input name="tags" id="tags" value="" />
+				<input name="super_tags" id="super_tags" value="" />
 		</div>
 	</body>
 </html>
