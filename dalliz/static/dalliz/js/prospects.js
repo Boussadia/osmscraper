@@ -1,14 +1,14 @@
 $(document).ready(function(){
-	$('.mail.prospect').keypress(function(e){
+	$('#email').keypress(function(e){
 		var code = e.charCode;
 		if (code === 13) {
 			e.preventDefault();
-			$('#invitation-button').trigger('click');
+			$('#ok').trigger('click');
 		};
 	})
-	$('#invitation-button').click(function(e){
+	$('#ok').click(function(e){
 		e.preventDefault();
-		var mail = $('.mail.prospect').val();
+		var mail = $('#email').val();
 		send_mail_prospect(mail);
 	});
 
@@ -45,21 +45,24 @@ function send_mail_prospect(mail){
 				// console.log(jqXHR);
 				// console.log(textStatus);
 				// console.log(errorThrown);
-				$('#successmessage, .errormessage').hide();
+				$('.show').hide().removeClass('show');
 				$('.errormessage').fadeIn();
+				$('.errormessage').addClass('show');
 			},
 			success: function(data, textStatus, jqXHR){
 				// console.log(data);
 				// console.log(jqXHR);
 				// console.log(textStatus);
-				$('#successmessage, .errormessage').hide();
+				$('.show').hide().removeClass('show');
 				$('#successmessage').fadeIn();
+				$('#successmessage').addClass('show');
 			}
 		});
 
 	}else{
-		$('#successmessage, .errormessage').hide();
+		$('.show').hide().removeClass('show');
 		$('.mailnotok').fadeIn();
+		$('.mailnotok').addClass('show');
 	}
 }
 

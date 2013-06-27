@@ -59,7 +59,17 @@
 		</header>
 		<section id="cta-container" class="main-container block">
 			<div class="message">
-				<p>Mes courses en ligne, plus simples, </p> <p>et jusqu'à 20% moins chères !</p><a class="cta" data-reveal-id="myModal">Commencer vos courses !</a>
+				<p>Mes courses en ligne, plus simples, </p>
+				<p>et jusqu'à 20% moins chères !</p>
+				<p><span>Inscrivez vous à notre Beta !</span></p>
+				<form>
+					<input type="text" id="email" value="" placeholder="Entrez votre email" name="email" />
+					<div id="ok">OK</div>
+					<div id="successmessage">Votre email a été enregistré avec succès !</div>
+					<div class="errormessage">Désolé une erreur s'est produite, veuillez réessayer !</div>
+					<div class="mailnotok errormessage">Veuillez entrer une adresse mail valide !</div>	
+				</form>									  
+				<a id="login" data-reveal-id="myModal" href="#">Vous avez déjà un compte ?</a>
 			</div>
 			<div class='pub' data-reveal-id="myModal"><img src="{% static /dalliz/images/home/pub1.png %}" alt="catégories alimentaires"></div>
 		</section>
@@ -133,25 +143,7 @@
 		    	</form>
 		    	<p>Mot de passe oublié ?</p>
 		    	<a id="sign-in-button" href="#">Se connecter</a>
-			</div>
-			<div id="invitation">
-				<p>Vous n'avez pas de compte sur Master Courses ? Demandez votre invitation !</p>
-				<form>
-					<div class="form-container">
-						<input class="mail prospect" type="email" placeholder="Email">
-						<img alt='email' src="{% static /dalliz/images/home/mail.png %}">
-					</div>
-				</form>
-				<a id="invitation-button" href="#">Envoyer</a>
-				<div id="successmessage">
-					<p>Votre inscription a bien été prise en compte !</p>
-				</div>
-				<div class="mailnotok errormessage">
-					<p>Le mail que vous avez donné est incorrect.</p>
-				</div>
-				<div class="errormessage">
-					<p>Oups, il semble qu'un problème soit survenu lors de l'enregistrement de votre mail, veuillez réessayer.</p>
-				</div>
+		    	<p><span>Aidez-nous à nous faire connaitre !</span></p>
 			</div>
 			<div id="follow-us">
 				<ul>

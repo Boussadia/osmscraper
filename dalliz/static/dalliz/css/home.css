@@ -128,11 +128,11 @@ section#cta-container {
 }
 
 #cta-container .message{
-	width: 560px;
 	position: relative;
 	float: left;
 	margin-top: 80px;
-	text-align: center;
+	width: 530px;
+	margin-left: 30px;
 }
 
 #cta-container .message p {
@@ -403,8 +403,9 @@ li.act a{
 
 form {
 	margin: 0 0 1em; 
-	top: 24px;
+	top: 10px;
 	position: relative;
+	width: 592px;
 }
 
 input[type="password"],
@@ -451,7 +452,7 @@ input[type="email"] {
 
 #myModal {
 	width: 480px;
-	height: 455px;
+	height: 350px;
 }
 
 #modal-header {
@@ -469,7 +470,6 @@ input[type="email"] {
 }
 
 #sign-in {
-	border-bottom: 1px solid #e2e3e5;
 	height: 200px;
 }
 
@@ -551,24 +551,22 @@ input[type="email"] {
 }
 .errormessage {
 	position: relative;
-	float: right;
 	color: red;
 	font-weight: bold;
 	font-size: 12px;
-	top: -37px;
-	width: 380px;
-	left: 50px;
+	top: 4px;
+	width: 230px;
+	left: 10px;
 }
 
 #successmessage {
 	position: relative;
-	float: right;
 	color: green;
 	font-weight: bold;
-	top: -35px;
-	left: 50px;
 	font-size: 12px;
-	width: 380px;
+	top: -4px;
+	left: 10px;
+	width: 210px;
 }
 
 #follow-us {
@@ -786,3 +784,39 @@ footer {
 	.linked_in_icon a:hover {
 		background-position: 74px -5px !important;
 	}
+
+
+#email {
+	width: 260px;
+	height: 34px;
+	background-color: #dcf0ca;
+	border-radius: 4px 0 0 4px;
+	border: none;
+	font-size: 18px;
+	position: relative;
+	padding: 2px 0 0 16px;
+}
+
+#ok{
+	position: relative;
+	display: inline-block;
+	border-radius: 0 4px 4px 0;
+	background-color: #6eb72c;
+	width: 37px;
+	height: 34px;
+	top: -2px;
+	border: none;
+	color: white;
+	cursor: pointer;
+	font-weight: bold;
+	text-align: center;
+	left: -5px;
+	padding: 9px 0 0 0;
+}
+
+#sign-in p span {position: relative; top: 40px; left: 100px; font-size: 14px; color: #078bc9; font-weight: bold;}
+span {font-size: 22px; color: #078bc9; position: relative; top: 15px;}
+#login {position: relative; float: left; width: 250px; margin-top: -1px; font-size: 14px; color: #64c20c; cursor: pointer; text-decoration: underline;}
+#login:hover {text-decoration: none; color:#51a10a;}
+.show{display: inline-block !important;}
+.mailnotok{top: -3px;}

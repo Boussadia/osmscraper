@@ -34,7 +34,6 @@ $(document).ready(function(){
 			$(this).parent().addClass('act');
 			
 			var pos = $(this).parent().prevAll('.menuItem').length;
-			console.log(-positions[pos]);
 			$('#slides').stop().animate({marginLeft:-positions[pos]+'px'},450);
 			/* Start the sliding animation */
 			
