@@ -236,6 +236,7 @@ class DallizCartController(object):
 								connection._rollback()
 						else:
 							if quantity > 0 and equivalent_content.quantity > quantity:
+								# TO DO : set equivalent quantity
 								equivalent_content.quantity = equivalent_content.quantity - quantity
 								try:
 									equivalent_content.save()

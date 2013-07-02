@@ -358,7 +358,8 @@ class BaseCartController(object):
 			match = match[0]
 			mathed_product = getattr(match, self.cart.osm+'_product') # Evil hack!! Or is it? I love Python :D
 			if mathed_product is not None:
-				match_content = self.add_product(mathed_product, quantity, is_user_added = False, is_match = True, is_suggested = False, override_qte = True)
+				equivalent_quantity = quantity # Same product, no need to ge,erate equivalent quantity
+				match_content = self.add_product(mathed_product, equivalent_quantity, is_user_added = False, is_match = True, is_suggested = False, override_qte = True)
 				setattr(match_content, base_content.cart.osm+'_content', base_content)
 				setattr(base_content, match_content.cart.osm+'_content', match_content)
 				equivalent_content = {
@@ -383,7 +384,9 @@ class BaseCartController(object):
 				# Look for similarities
 				similarities = self.get_similarites(base_product, base_osm)
 				if(len(similarities)>0):
-					sim_content = self.add_product(similarities[0][0], quantity, is_user_added = False, is_match = False, is_suggested = True, override_qte = True, osm = base_osm)
+					# Generate proper quantity
+					equivalent_quantity = self.generate_equivalent_quantity(base_product, similarities[0][0], quantity)
+					sim_content = self.add_product(similarities[0][0], equivalent_quantity, is_user_added = False, is_match = False, is_suggested = True, override_qte = True, osm = base_osm)
 					setattr(sim_content, base_content.cart.osm+'_content', base_content)
 					setattr(base_content, sim_content.cart.osm+'_content', sim_content)
 					equivalent_content = {
@@ -414,7 +417,9 @@ class BaseCartController(object):
 			# Look for similarities
 			similarities = self.get_similarites(base_product, base_osm)
 			if(len(similarities)>0):
-				sim_content = self.add_product(similarities[0][0], quantity, is_user_added = False, is_match = False, is_suggested = True, override_qte = True, osm = base_osm)
+				# TODO : find proper quantity
+				equivalent_quantity = self.generate_equivalent_quantity(base_product, similarities[0][0], quantity)
+				sim_content = self.add_product(similarities[0][0], equivalent_quantity, is_user_added = False, is_match = False, is_suggested = True, override_qte = True, osm = base_osm)
 				setattr(sim_content, base_content.cart.osm+'_content', base_content)
 				setattr(base_content, sim_content.cart.osm+'_content', sim_content)
 				equivalent_content = {
@@ -565,6 +570,53 @@ class BaseCartController(object):
 
 
 		return equivalence_store
+
+	def generate_equivalent_quantity(self, base_product, compared_product ,quantity):
+		"""
+			Generates equivalent quantity of compared_product related to base_product.
+
+			i.e.:
+				- base_product : 120g, compared_product = 100g, quantity = 1 -> equivalent_quantity = 1
+				- base_product : 220g, compared_product = 100g, quantity = 1 -> equivalent_quantity = 2
+
+			Formula :
+				0.5*qunatity(compared_product) < qunatity(base_product) < 1.5*qunatity(compared_product)
+		"""
+
+		equivalent_quantity = quantity
+
+		base_history_set = base_product.history_set.all()
+		compared_history_set = compared_product.history_set.all()
+
+		if base_history_set.count()>0 and compared_history_set.count()>0:
+			base_unit_price = base_history_set[0].unit_price
+			base_price = base_history_set[0].price
+			compared_unit_price = compared_history_set[0].unit_price
+			compared_price = compared_history_set[0].price
+			if base_price is not None and base_unit_price is not None and compared_price is not None and compared_unit_price is not None:
+				base_unit_measure = base_price/base_unit_price
+				compared_unit_measure = compared_price/compared_unit_price
+
+				equivalent_quantity = self.compute_closest_quantity(quantity, base_unit_measure, compared_unit_measure)	
+
+		return equivalent_quantity
+
+	def compute_closest_quantity(self, q, bum, cum):
+		"""
+			q : integer
+			bum : base_unit_measure
+			cum : compared_unit_measure
+		"""
+
+		# Computing 2 possible integers closest to 
+		q_1 = int(q*float(bum)/cum)
+		deltas = abs(q_1*cum-q*bum), abs((q_1+1)*cum-q*bum)
+
+		if deltas[0]>deltas[1]:
+			return q_1 + 1
+		return q_1
+
+
 
 
 
