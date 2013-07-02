@@ -23,7 +23,7 @@ lxml==3.0
 mechanize==0.2.5
 meld3==0.6.10
 newrelic==1.9.0.21
-numpy==1.6.2
+numpy==1.7.0
 oauth2==1.5.211
 psycopg2==2.4.5
 pylibmc==1.2.3
