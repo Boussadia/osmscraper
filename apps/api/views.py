@@ -529,6 +529,13 @@ class CartAPIView(BetaRestrictionAPIView):
 			else:
 				raise Http404
 
+	def get_content(self, content_id, cart_controller, osm_name):
+			try:
+				cart = getattr(cart_controller.metacart, '%s_cart'%(osm_name))
+				return cart.cart_content_set.get(id = content_id)
+			except Product.DoesNotExist:
+				raise Http404
+
 	def get_serialized_product(self, product, osm_name = 'monoprix', osm_type='shipping', osm_location=None, cart_controller = None):
 		if cart_controller:
 			cart = getattr(cart_controller.metacart, osm_name+'_cart')
@@ -576,7 +583,7 @@ class CartAPIView(BetaRestrictionAPIView):
 		for category in main_categories:
 			# Filtering by main category
 			category_cart = {'name': category.name}
-			cart_content = cart.cart_content_set.filter(product__dalliz_category__parent_category__parent_category = category).distinct('product')
+			cart_content = cart.cart_content_set.filter(product__dalliz_category__parent_category__parent_category = category).distinct('id')
 
 			# Serializing products
 			serialized = Serializer(cart_content, many = True, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}, 'time':datetime.now(), 'cart': cart})
@@ -608,32 +615,51 @@ class CartAPIView(BetaRestrictionAPIView):
 		content_id = None
 		if 'content_id' in request.DATA:
 			content_id = request.DATA['content_id']
-		
 
-		product = self.get_product(reference, osm_name)
-		cart_controller = request.cart_controller
+		if content_id is None:
+			# This is a new product in cart
+			product = self.get_product(reference, osm_name)
+			cart_controller = request.cart_controller
 
-		if quantity is not None:
-			cart_controller.add_product(product, int(quantity))
+			if quantity is not None:
+				cart_controller.add_product(product, int(quantity))
+			else:
+				cart_controller.add_product(product)
 		else:
-			cart_controller.add_product(product)
+			# This is a product that is already in the cart
+			content = self.get_content(content_id, cart_controller, osm_name)
+			cart_controller = request.cart_controller
+
+			if quantity is not None:
+				cart_controller.add(content, int(quantity))
+			else:
+				cart_controller.add(content)
+
+			# Getting product for response
+			product = content.product
+
 
 		return self.get_serialized_product(product, osm_name, osm_type, osm_location, cart_controller)
 
 	@osm
 	def delete(self, request, reference = None, quantity = None, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
-		cart_controller = request.cart_controller
-		if reference:
-			# removing product from cart
-			product = self.get_product(reference, osm_name)
-			if quantity is not None:
-				cart_controller.remove_product(product, int(quantity))
-			else:
-				cart_controller.remove_product(product)
+		content_id = None
+		if 'content_id' in request.DATA:
+			content_id = request.DATA['content_id']
 
-			return self.get_serialized_product(product, osm_name, osm_type, osm_location, cart_controller)
+		cart_controller = request.cart_controller
+		if content_id:
+			# removing  from cart
+			content = self.get_content(content_id, cart_controller, osm_name)
+			if quantity is not None:
+				cart_controller.remove(content, int(quantity))
+			else:
+				cart_controller.remove(content)
+
+			return self.get_serialized_product(content.product, osm_name, osm_type, osm_location, cart_controller)
+
 		else:
-			# empty cart
+			# Emptying the whole cart
 			cart_controller.empty()
 			return {'content': [], 'name': osm_name, 'quantity': 0, 'id': cart_controller.metacart.id}
 
