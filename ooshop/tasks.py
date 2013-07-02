@@ -123,5 +123,12 @@ def simple_update():
 			else:
 				simple_update.apply_async(countdown = 3600)
 
+# Temporary
 
+@celery.task
+def match_products():
+	from apps.matcher.matcher import ProductMatcher
+
+	matcher = ProductMatcher()
+	matcher.run(override = True)
 
