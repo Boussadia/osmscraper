@@ -191,6 +191,6 @@ class CartContentSerializer(serializers.ModelSerializer):
 	auchan_product = AuchanProductSerializer(source='auchan_content.product')
 	class Meta:
 		model = Cart_content
-		exclude = ('id', 'cart')
+		exclude = ('cart')
 		depth = 1
 

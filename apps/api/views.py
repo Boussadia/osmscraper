@@ -548,11 +548,14 @@ class CartAPIView(BetaRestrictionAPIView):
 		else:
 			data = serialized.data
 			quantity = 0
+			content_id = None
 			if cart:
 				for content in cart.cart_content_set.filter(product = product):
 					if content.product == product:
 						quantity = quantity + content.quantity
+						content_id = content.id
 			data['quantity_in_cart'] = quantity
+			data['content_id'] = content_id
 			return data
 
 	@osm
@@ -602,6 +605,11 @@ class CartAPIView(BetaRestrictionAPIView):
 
 	@osm
 	def post(self, request, reference, quantity = 1, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+		content_id = None
+		if 'content_id' in request.DATA:
+			content_id = request.DATA['content_id']
+		
+
 		product = self.get_product(reference, osm_name)
 		cart_controller = request.cart_controller
 

@@ -189,7 +189,7 @@ class CartContentSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Cart_content
-		exclude = ('id', 'cart')
+		exclude = ('cart')
 		depth = 1
 		
 
