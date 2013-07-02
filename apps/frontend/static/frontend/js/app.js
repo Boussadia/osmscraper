@@ -45,13 +45,14 @@ define([
 		Backbone.sync = function(method, model, options){
 			options || (options = {});
 			var base_data = that.get_data();
-
+			
 			if(method === 'create' || method === 'update' || method === 'patch'){
 				options.attrs || (options.attrs = {});
-				var data = _.clone(options.data);
+				var attrs = _.clone(options.attrs);
 				_.extend(options.attrs, base_data);
 				// Removing location if null (causes 500 error from server)
 				if(!options.attrs.osm_location) delete options.attrs.osm_location;
+				if ('osm_name' in attrs) options.attrs.osm_name = attrs.osm_name; // for the suggeted cart
 			}else{
 				options.data || (options.data = {});
 				var data = _.clone(options.data);
@@ -66,7 +67,6 @@ define([
 
 		// Settings listeners
 		this.Vent.on('route:category', this.category, this);
-		// this.Vent.on('route:product', this.product, this); TODO
 	}
 
 	/*******************************************************************************************************************************************

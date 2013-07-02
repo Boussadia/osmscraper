@@ -7,7 +7,8 @@ define([
 			idAttribute: 'reference',
 			urlRoot: '/api/product/reference/',
 			defaults: {
-				'name': 'test'
+				'name': 'test',
+				'content_id': null
 			},
 			initialize: function(){
 				// Getting quantity in cart
@@ -22,6 +23,7 @@ define([
 				var remove = options.remove || false;
 				var vent = this.vent;
 				var reference = options.reference || this.id;
+				var content_id = options.content_id || this.get('content_id');
 				var success = options.success;
 
 				if(cart){
@@ -32,6 +34,10 @@ define([
 						vent.trigger('cart:newproduct');
 						if (success) success(data,  textStatus, jqXHR);
 					}
+				}
+
+				options.attrs = {
+					'content_id': content_id
 				}
 
 				if (quantity<1) return null;
@@ -47,13 +53,15 @@ define([
 			set_quantity: function(options){
 				options || (options = {});
 
-				var local_reference = this.get('reference')
+				var local_reference = this.get('reference');
 				var cart_reference = options.reference;
 
 
 				if(local_reference === cart_reference){
 					var quantity = options.quantity || 0;
+					var content_id = options.content_id || null;
 					this.set('quantity_in_cart', quantity);
+					this.set('content_id', content_id);
 				}
 			},
 			cart_empty: function(options){

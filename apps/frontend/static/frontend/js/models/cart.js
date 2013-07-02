@@ -56,14 +56,20 @@ define([
 					_.each(products, function(product){
 						var reference = product.product.reference;
 						var quantity = product.quantity;
-						to_send[reference] = quantity;
+						var content_id = product.id;
+						to_send[reference] = {'quantity': quantity, 'content_id': content_id};
+
 					}, this);
 				}, this);
 
-				_.each(to_send, function(quantity,reference){
+				_.each(to_send, function(options,reference){
+					var quantity = options.quantity;
+					var content_id = options.content_id;
 					var option_to_send = {
 						'reference': reference,
-						'quantity': quantity
+						'quantity': quantity,
+						'content_id': content_id
+
 					}
 
 					this.vent.trigger('product:quantity:set', option_to_send);
