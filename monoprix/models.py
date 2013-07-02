@@ -161,9 +161,6 @@ class Cart_content(models.Model):
 
 	def __unicode__(self):
 		return '%s - %d'%(unicode(self.product), self.quantity)
-		
-	class Meta:
-		unique_together = ("cart", "product")
 
 class Cart_history(models.Model):
 	cart = models.ForeignKey(Cart)
