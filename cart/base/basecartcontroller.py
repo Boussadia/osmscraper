@@ -237,61 +237,50 @@ class BaseCartController(object):
 		self.cart.cart_history_set.create(price = self.price, computed = computed)
 
 	@price
-	def add_product(self, product, quantity = 1, is_user_added = True, is_match = False, is_suggested = False, is_user_set = False, override_qte = False, osm = 'self'):
+	def add_product(self, product, quantity = 1, is_user_added = True, is_match = False, is_suggested = False, is_user_set = False, osm = 'self'):
 		if osm == 'self':
 			osm = self.osm
 		if quantity >0:
-			content, created = self.cart.cart_content_set.get_or_create( product = product)
-			if created:
-				content.quantity = quantity
-				content.is_user_added = is_user_added
-				content.is_match = is_match
-				content.is_suggested = is_suggested
-				content.is_user_set = is_user_set
-				content.osm_suggested_from = osm
-			else:
-				if override_qte:
-					content.quantity = quantity
-				else:
-					content.quantity = content.quantity + quantity 
-			try:
-				content.save()
-				return content
-			except Exception, e:
-				connection._rollback()
-				return None
+			content = self.cart.cart_content_set.create(
+				product = product,
+				quantity = quantity,
+				is_user_added = is_user_added,
+				is_match = is_match,
+				is_suggested = is_suggested,
+				is_user_set = is_user_set,
+				osm_suggested_from = osm
+				)
+			return content
 		else:
 			return None
 
-
 	@price
-	def remove_product(self, product, quantity = None):
-		# Getting content of cart
-		content = self.cart.cart_content_set.filter(product = product)
-		if len(content)>0:
-			content = content[0]
-		else:
-			content = None
+	def remove(self, content, quantity = None):
+		"""
+			This method removes the adequate amount of products from cart
 
-		if content is not None:
-			if quantity is None:
-				# Removing completly product from cart
+			Input : 
+				- content : cart content entity database
+				- quantity (int OR None): if None : removes the product, otherwise decreases the amount of products in cart.
+		"""
+		if quantity is None:
+			# Removing completly product from cart
+			try:
+				content.delete()
+			except Exception, e:
+				connection._rollback()
+		else:
+			if quantity > 0 and content.quantity > quantity:
+				content.quantity = content.quantity - quantity
+				try:
+					content.save()
+				except Exception, e:
+					connection._rollback()
+			else:
 				try:
 					content.delete()
 				except Exception, e:
 					connection._rollback()
-			else:
-				if quantity > 0 and content.quantity > quantity:
-					content.quantity = content.quantity - quantity
-					try:
-						content.save()
-					except Exception, e:
-						connection._rollback()
-				else:
-					try:
-						content.delete()
-					except Exception, e:
-						connection._rollback()
 
 	@price
 	def empty(self):
@@ -345,7 +334,7 @@ class BaseCartController(object):
 			}) for c in self.cart.cart_content_set.all()]
 		return products
 
-	def get_equivalent_content(self, base_content, base_osm):
+	def generate_equivalent_content(self, base_content, base_osm):
 		"""
 			This method takes as argument a cart content database entity and its correspondaing osm,
 			and returns an equivalent cart content.
@@ -358,8 +347,8 @@ class BaseCartController(object):
 			match = match[0]
 			mathed_product = getattr(match, self.cart.osm+'_product') # Evil hack!! Or is it? I love Python :D
 			if mathed_product is not None:
-				equivalent_quantity = quantity # Same product, no need to ge,erate equivalent quantity
-				match_content = self.add_product(mathed_product, equivalent_quantity, is_user_added = False, is_match = True, is_suggested = False, override_qte = True)
+				equivalent_quantity = quantity # Same product, no need to generate equivalent quantity
+				match_content = self.add_product(mathed_product, equivalent_quantity, is_user_added = False, is_match = True, is_suggested = False)
 				setattr(match_content, base_content.cart.osm+'_content', base_content)
 				setattr(base_content, match_content.cart.osm+'_content', match_content)
 				equivalent_content = {
@@ -386,7 +375,7 @@ class BaseCartController(object):
 				if(len(similarities)>0):
 					# Generate proper quantity
 					equivalent_quantity = self.generate_equivalent_quantity(base_product, similarities[0][0], quantity)
-					sim_content = self.add_product(similarities[0][0], equivalent_quantity, is_user_added = False, is_match = False, is_suggested = True, override_qte = True, osm = base_osm)
+					sim_content = self.add_product(similarities[0][0], equivalent_quantity, is_user_added = False, is_match = False, is_suggested = True, osm = base_osm)
 					setattr(sim_content, base_content.cart.osm+'_content', base_content)
 					setattr(base_content, sim_content.cart.osm+'_content', sim_content)
 					equivalent_content = {
@@ -419,7 +408,7 @@ class BaseCartController(object):
 			if(len(similarities)>0):
 				# TODO : find proper quantity
 				equivalent_quantity = self.generate_equivalent_quantity(base_product, similarities[0][0], quantity)
-				sim_content = self.add_product(similarities[0][0], equivalent_quantity, is_user_added = False, is_match = False, is_suggested = True, override_qte = True, osm = base_osm)
+				sim_content = self.add_product(similarities[0][0], equivalent_quantity, is_user_added = False, is_match = False, is_suggested = True, osm = base_osm)
 				setattr(sim_content, base_content.cart.osm+'_content', base_content)
 				setattr(base_content, sim_content.cart.osm+'_content', sim_content)
 				equivalent_content = {
@@ -457,12 +446,12 @@ class BaseCartController(object):
 		return None
 
 
-	def add_equivalent_content(self, content):
-		"""
-			Adding directly a cart content to cart.
-		"""
-		if content['content'] is not None:
-			self.cart.cart_content_set.add(content['content'])
+	# def add_equivalent_content(self, content):
+	# 	"""
+	# 		Adding directly a cart content to cart.
+	# 	"""
+	# 	if content['content'] is not None:
+	# 		self.cart.cart_content_set.add(content['content'])
 
 	def set_equivalent_cart(self, base_cart):
 		"""

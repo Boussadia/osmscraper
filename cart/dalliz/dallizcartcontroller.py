@@ -170,6 +170,62 @@ class DallizCartController(object):
 
 	@osm
 	def add_product(self, product, quantity = 1):
+		"""
+			This method adds a product that is not in the cart
+
+			Input :
+				- product : product database entity
+				- quantity (int ) : amount of products to add
+		"""
+		if self.carts[self.osm] is None:
+			self.carts[self.osm] = DallizCartController.AVAILABLE_OSMS[self.osm]['class']()
+		cart_content = self.carts[self.osm].add_product(product, quantity, is_user_added = True, is_match = False, is_suggested = False, is_user_set = False)
+
+		equivalent_contents = {}
+
+		for osm in DallizCartController.AVAILABLE_OSMS.keys():
+			if osm != self.osm:
+				if self.carts[osm] is None:
+					self.carts[osm] = DallizCartController.AVAILABLE_OSMS[self.osm]['class']()
+
+				equivalent_contents[osm] = self.carts[osm].generate_equivalent_content(cart_content, self.osm)
+		
+		for osm in equivalent_contents.keys():
+			if osm != self.osm:
+				for other_osm in equivalent_contents.keys():
+					if other_osm != osm and other_osm != self.osm:
+						try:
+							other_content = equivalent_contents[osm]['content']
+						except Exception, e:
+							pass
+
+						try:
+							other_content_bis = equivalent_contents[other_osm]['content']
+						except Exception, e:
+							pass
+						
+						try:
+							setattr(other_content_bis, other_content.cart.osm+'_content', other_content)
+						except Exception, e:
+							pass
+						
+						try:
+							setattr(other_content, other_content_bis.cart.osm+'_content', other_content_bis)
+						except Exception, e:
+							pass
+
+						try:
+							other_content_bis.save()
+						except Exception, e:
+							pass
+
+						try:
+							other_content.save()
+						except Exception, e:
+							pass
+
+	@osm
+	def add(self, content, quantity = 1):
 		if self.carts[self.osm] is None:
 			self.carts[self.osm] = DallizCartController.AVAILABLE_OSMS[self.osm]['class']()
 		cart_content = self.carts[self.osm].add_product(product, quantity, is_user_added = True, is_match = False, is_suggested = False, is_user_set = False)
@@ -219,36 +275,49 @@ class DallizCartController(object):
 							pass
 
 	@osm
-	def remove_product(self, product, quantity = None):
+	def remove(self, cart_content, quantity = None):
+		"""
+			This method either completely removes a product from a cart or decreases its quantity. It works with 
+			cart contents.
+
+			Input : 
+				- content : cart content entity database
+				- quantity (int OR None): if None : removes the product, otherwise decreases the amount of products in cart.
+		"""
+
 		if self.carts[self.osm] is None:
 			self.carts[self.osm] = DallizCartController.AVAILABLE_OSMS[self.osm]['class']()
-		cart_content = self.carts[self.osm].get_content(product = product)
-		if cart_content is not None:
-			for osm in DallizCartController.AVAILABLE_OSMS.keys():
-				if osm != self.osm:
-					equivalent_content = getattr(cart_content, osm+'_content')
-					if equivalent_content is not None:
-						if quantity is None:
-							# Removing completly product from cart
+
+		base_product = cart_content.product
+
+		for osm in DallizCartController.AVAILABLE_OSMS.keys():
+			if osm != self.osm:
+				equivalent_content = getattr(cart_content, osm+'_content')
+				if equivalent_content is not None:
+					if quantity is None:
+						# Removing completly product from cart
+						try:
+							equivalent_content.delete()
+						except Exception, e:
+							connection._rollback()
+					else:
+						equivalent_product = equivalent_content.product
+						equivalent_quantity = self.carts[self.osm].generate_equivalent_quantity(base_product, equivalent_product, quantity)
+						if quantity > 0 and equivalent_content.quantity > equivalent_quantity:
+							# TO DO : set equivalent quantity
+							equivalent_content.quantity = equivalent_content.quantity - equivalent_quantity
+							try:
+								equivalent_content.save()
+							except Exception, e:
+								connection._rollback()
+						else:
 							try:
 								equivalent_content.delete()
 							except Exception, e:
 								connection._rollback()
-						else:
-							if quantity > 0 and equivalent_content.quantity > quantity:
-								# TO DO : set equivalent quantity
-								equivalent_content.quantity = equivalent_content.quantity - quantity
-								try:
-									equivalent_content.save()
-								except Exception, e:
-									connection._rollback()
-							else:
-								try:
-									equivalent_content.delete()
-								except Exception, e:
-									connection._rollback()
 
-		self.carts[self.osm].remove_product(product, quantity)
+		self.carts[self.osm].remove(cart_content, quantity)
+
 
 
 	def empty(self):
