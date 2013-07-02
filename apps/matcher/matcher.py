@@ -81,7 +81,8 @@ class Matcher(object):
 			# Set all documents
 			self.set_all_documents()
 			# Cleaning all indexes amd rebuilding
-			[[indexer.service.drop_index(), indexer.build_all_index()] for indexer in self.indexers]
+			[[indexer.service.drop_index()] for indexer in self.indexers]
+			[[indexer.build_all_index()] for indexer in self.indexers]
 
 		
 		# Performing queries
@@ -172,6 +173,12 @@ class ProductMatcher(Matcher):
 					self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = LIMIT_BATCH)
 					similarities_db_list = []
 
+		# Dealing with left overs
+		if len(similarities_db_list) != 0:
+			# Creating data in bulk
+			self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = LIMIT_BATCH)
+			similarities_db_list = []
+
 class BrandMatcher(Matcher):
 	"""
 		This class is responsible for managing the different indexes of osms brands.
@@ -238,6 +245,13 @@ class BrandMatcher(Matcher):
 					# Creating data in bulk
 					self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = LIMIT_BATCH)
 					similarities_db_list = []
+
+		# Dealing with left overs
+		if len(similarities_db_list) != 0:
+			# Creating data in bulk
+			self.SimilarityEntity.objects.bulk_create(similarities_db_list, batch_size = LIMIT_BATCH)
+			similarities_db_list = []
+
 
 
 
