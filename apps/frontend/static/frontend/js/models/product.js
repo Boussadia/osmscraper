@@ -54,14 +54,15 @@ define([
 				options || (options = {});
 
 				var local_reference = this.get('reference');
-				var cart_reference = options.reference;
 
-
-				if(local_reference === cart_reference){
-					var quantity = options.quantity || 0;
-					var content_id = options.content_id || null;
+				if ( local_reference in options){
+					var content_id = options[local_reference].content_id || null;
+					var quantity = options[local_reference].quantity;
 					this.set('quantity_in_cart', quantity);
 					this.set('content_id', content_id);
+				}else{
+					this.set('quantity_in_cart', 0);
+					this.set('content_id', null);
 				}
 			},
 			cart_empty: function(options){

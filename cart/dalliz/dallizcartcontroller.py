@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from django.db import connection
+
 from cart.auchan.auchancartcontroller import AuchanCartController
 from cart.monoprix.monoprixcartcontroller import MonoprixCartController
 from cart.ooshop.ooshopcartcontroller import OoshopCartController

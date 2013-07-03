@@ -30,13 +30,15 @@ define([
 			moreQte: function(e){
 				var quantity = this.product.get('quantity');
 				this.product.set('quantity', quantity + 1);
-				this.product.save(null, {'cart': true, 'add': 1, 'vent': this.vent});
+				var content_id = this.product.toJSON().id;
+				this.product.save(null, {'cart': true, 'quantity': 1, 'vent': this.vent, 'content_id': content_id});
 			},
 			lessQte: function(e){
 				var quantity = this.product.get('quantity');
 				if (quantity-1>=0){
 					this.product.set('quantity', quantity - 1);
-					this.product.save(null, {'cart': true, 'remove': 1, 'vent': this.vent});
+					var content_id = this.product.toJSON().id;
+					this.product.save(null, {'cart': true, 'remove': true, 'quantity': 1, 'vent': this.vent, 'content_id': content_id});
 				}
 
 			},

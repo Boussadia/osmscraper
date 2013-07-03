@@ -62,18 +62,7 @@ define([
 					}, this);
 				}, this);
 
-				_.each(to_send, function(options,reference){
-					var quantity = options.quantity;
-					var content_id = options.content_id;
-					var option_to_send = {
-						'reference': reference,
-						'quantity': quantity,
-						'content_id': content_id
-
-					}
-
-					this.vent.trigger('product:quantity:set', option_to_send);
-				},this)
+				this.vent.trigger('product:quantity:set', to_send);
 			},
 			empty: function(){
 				this.set('quantity', 0);
