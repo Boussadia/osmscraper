@@ -473,7 +473,6 @@ class ProductRecommendation(Product):
 	"""
 		Get Recommendation for product
 	"""
-	# renderer_classes = BetaRestrictionAPIView.renderer_classes + [ProductRecommendationCSVRenderer]
 
 	@osm
 	def get(self, request, reference, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
@@ -593,7 +592,7 @@ class CartAPIView(BetaRestrictionAPIView):
 			if len(serialized.data)>0:
 				category_cart['products'] = serialized.data
 				# Computing total price
-				category_cart['price'] = sum([ product['product']['history'][0]['price']*product['quantity'] for product in category_cart['products']])
+				category_cart['price'] = sum([ product['product']['history'][0]['price']*product['quantity'] for product in category_cart['products'] if len(product['product']['history'])>0 )
 				for osm in AVAILABLE_OSMS:
 					try:
 						if osm['name'] != osm_name:
