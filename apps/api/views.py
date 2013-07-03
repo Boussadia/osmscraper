@@ -532,8 +532,8 @@ class CartAPIView(BetaRestrictionAPIView):
 			try:
 				cart = getattr(cart_controller.metacart, '%s_cart'%(osm_name))
 				return cart.cart_content_set.get(id = content_id)
-			except Product.DoesNotExist:
-				raise Http404
+			except Exception, e:
+				return None
 
 	def get_serialized_product(self, product, osm_name = 'monoprix', osm_type='shipping', osm_location=None, cart_controller = None):
 		if cart_controller:
@@ -629,13 +629,16 @@ class CartAPIView(BetaRestrictionAPIView):
 			# This is a product that is already in the cart
 			content = self.get_content(content_id, cart_controller, osm_name)
 
-			if quantity is not None:
-				cart_controller.add(content, int(quantity))
-			else:
-				cart_controller.add(content)
+			if content is not None:
+				if quantity is not None:
+					cart_controller.add(content, int(quantity))
+				else:
+					cart_controller.add(content)
 
-			# Getting product for response
-			product = content.product
+				# Getting product for response
+				product = content.product
+			else:
+				product = self.get_product(reference, osm_name)
 
 
 		return self.get_serialized_product(product, osm_name, osm_type, osm_location, cart_controller)

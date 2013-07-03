@@ -23,8 +23,8 @@ define([
 				return this;
 			},
 			events: {
-				'click p.minus': 'lessQte',
-				'click p.plus': 'moreQte',
+				'click .minus': 'lessQte',
+				'click .plus': 'moreQte',
 				'click .replacement': 'showSubstitution',
 			},
 			moreQte: function(e){
