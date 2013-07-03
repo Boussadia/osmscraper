@@ -616,10 +616,11 @@ class CartAPIView(BetaRestrictionAPIView):
 		if 'content_id' in request.DATA:
 			content_id = request.DATA['content_id']
 
+		cart_controller = request.cart_controller
+
 		if content_id is None:
 			# This is a new product in cart
 			product = self.get_product(reference, osm_name)
-			cart_controller = request.cart_controller
 
 			if quantity is not None:
 				cart_controller.add_product(product, int(quantity))
@@ -628,7 +629,6 @@ class CartAPIView(BetaRestrictionAPIView):
 		else:
 			# This is a product that is already in the cart
 			content = self.get_content(content_id, cart_controller, osm_name)
-			cart_controller = request.cart_controller
 
 			if quantity is not None:
 				cart_controller.add(content, int(quantity))

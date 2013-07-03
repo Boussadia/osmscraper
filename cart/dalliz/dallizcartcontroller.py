@@ -225,54 +225,39 @@ class DallizCartController(object):
 							pass
 
 	@osm
-	def add(self, content, quantity = 1):
-		if self.carts[self.osm] is None:
-			self.carts[self.osm] = DallizCartController.AVAILABLE_OSMS[self.osm]['class']()
-		cart_content = self.carts[self.osm].add_product(product, quantity, is_user_added = True, is_match = False, is_suggested = False, is_user_set = False)
+	def add(self, cart_content, quantity = 1):
+		"""
+			This method increases quantity of a product that is already in the cart. It operates on a cart_content. If the product is not in the cart, use 
+			@add_product method.
 
-		equivalent_contents = {}
+			Input :
+				- cart_content : database entity foir a cart content
+				- quantity (int) : how much products to add to cart
+		"""
 
+		# First set new quantity to cart content
+		cart_content.quantity = cart_content.quantity + quantity
+		controller = self.carts[self.osm]
+		cart_content.save()
+
+		new_quantity = cart_content.quantity
+		base_product = cart_content.product
+
+		# Setting up equivalent quantities for equivalent contents
 		for osm in DallizCartController.AVAILABLE_OSMS.keys():
 			if osm != self.osm:
-				if self.carts[osm] is None:
-					self.carts[osm] = DallizCartController.AVAILABLE_OSMS[self.osm]['class']()
+				equivalent_content = getattr(cart_content, '%s_content'%(osm))
 
-				equivalent_contents[osm] = self.carts[osm].get_equivalent_content(cart_content, self.osm)
-				self.carts[osm].add_equivalent_content(equivalent_contents[osm])
-		
-		for osm in equivalent_contents.keys():
-			if osm != self.osm:
-				for other_osm in equivalent_contents.keys():
-					if other_osm != osm and other_osm != self.osm:
-						try:
-							other_content = equivalent_contents[osm]['content']
-						except Exception, e:
-							pass
+				if equivalent_content is not None:
+					equivalent_product = equivalent_content.product
 
-						try:
-							other_content_bis = equivalent_contents[other_osm]['content']
-						except Exception, e:
-							pass
-						
-						try:
-							setattr(other_content_bis, other_content.cart.osm+'_content', other_content)
-						except Exception, e:
-							pass
-						
-						try:
-							setattr(other_content, other_content_bis.cart.osm+'_content', other_content_bis)
-						except Exception, e:
-							pass
+					# Computing equivalent content
+					equivalent_quantity = controller.generate_equivalent_quantity(base_product, equivalent_product, new_quantity)
 
-						try:
-							other_content_bis.save()
-						except Exception, e:
-							pass
+					# Setting equivalent quantity to equiuvalent content
+					equivalent_content.quantity = equivalent_quantity
+					equivalent_content.save()
 
-						try:
-							other_content.save()
-						except Exception, e:
-							pass
 
 	@osm
 	def remove(self, cart_content, quantity = None):
