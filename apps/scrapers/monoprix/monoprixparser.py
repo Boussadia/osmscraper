@@ -583,14 +583,15 @@ class MonoprixParser(BaseParser):
 			lis = div.find_all('li')
 			for li in lis:
 				input_product_ref = li.find(id='productRef')
-				reference = input_product_ref['value']
-				input_qte = li.find(id='quantityFull'+reference)
-				qte = int(input_qte['value'])
+				if input_product_ref is not None:
+					reference = input_product_ref['value']
+					input_qte = li.find(id='quantityFull'+reference)
+					qte = int(input_qte['value'])
 
-				cart.append({
-					'reference': reference,
-					'quantity': qte
-					})
+					cart.append({
+						'reference': reference,
+						'quantity': qte
+						})
 		return cart
 
 	def get_form_add_product(self, quantity = 1):
