@@ -376,6 +376,48 @@ class BaseCartController(object):
 					# Generate proper quantity
 					equivalent_quantity = self.generate_equivalent_quantity(base_product, similarities[0][0], quantity)
 					sim_content = self.add_product(similarities[0][0], equivalent_quantity, is_user_added = False, is_match = False, is_suggested = True, osm = base_osm)
+					if sim_content is not None:
+						setattr(sim_content, base_content.cart.osm+'_content', base_content)
+						setattr(base_content, sim_content.cart.osm+'_content', sim_content)
+						equivalent_content = {
+							'content': sim_content,
+							'is_user_added': False,
+							'is_match': False,
+							'is_suggested': True
+						}
+						try:
+							base_content.save()
+						except Exception, e:
+							connection._rollback()
+
+						try:
+							sim_content.save()
+						except Exception, e:
+							connection._rollback()
+					else:
+						equivalent_content = {
+							'content': None,
+							'is_user_added': False,
+							'is_match': False,
+							'is_suggested': True
+						}
+				else:
+					equivalent_content = {
+						'content': None,
+						'is_user_added': False,
+						'is_match': False,
+						'is_suggested': True
+					}
+
+
+		else:
+			# Look for similarities
+			similarities = self.get_similarites(base_product, base_osm)
+			if(len(similarities)>0):
+				# TODO : find proper quantity
+				equivalent_quantity = self.generate_equivalent_quantity(base_product, similarities[0][0], quantity)
+				sim_content = self.add_product(similarities[0][0], equivalent_quantity, is_user_added = False, is_match = False, is_suggested = True, osm = base_osm)
+				if sim_content is not None:
 					setattr(sim_content, base_content.cart.osm+'_content', base_content)
 					setattr(base_content, sim_content.cart.osm+'_content', sim_content)
 					equivalent_content = {
@@ -401,31 +443,6 @@ class BaseCartController(object):
 						'is_suggested': True
 					}
 
-
-		else:
-			# Look for similarities
-			similarities = self.get_similarites(base_product, base_osm)
-			if(len(similarities)>0):
-				# TODO : find proper quantity
-				equivalent_quantity = self.generate_equivalent_quantity(base_product, similarities[0][0], quantity)
-				sim_content = self.add_product(similarities[0][0], equivalent_quantity, is_user_added = False, is_match = False, is_suggested = True, osm = base_osm)
-				setattr(sim_content, base_content.cart.osm+'_content', base_content)
-				setattr(base_content, sim_content.cart.osm+'_content', sim_content)
-				equivalent_content = {
-					'content': sim_content,
-					'is_user_added': False,
-					'is_match': False,
-					'is_suggested': True
-				}
-				try:
-					base_content.save()
-				except Exception, e:
-					connection._rollback()
-
-				try:
-					sim_content.save()
-				except Exception, e:
-					connection._rollback()
 			else:
 				equivalent_content = {
 					'content': None,
@@ -597,16 +614,17 @@ class BaseCartController(object):
 			cum : compared_unit_measure
 		"""
 
+		if q == 0:
+			return 0
+
 		# Computing 2 possible integers closest to 
 		q_1 = int(q*float(bum)/cum)
 		deltas = abs(q_1*cum-q*bum), abs((q_1+1)*cum-q*bum)
 
 		if deltas[0]>deltas[1]:
 			return q_1 + 1
+
+		# Return at least 1 if q is not 0
+		if q_1 == 0:
+			return 1
 		return q_1
-
-
-
-
-
-
