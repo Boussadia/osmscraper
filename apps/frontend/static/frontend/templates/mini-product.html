@@ -19,14 +19,16 @@
 	<div class="qte" id="recap-price-qty">
 		<div class="price-bloc" id="recap-qty">
 			<p><%= product.package.package_quantity %> x <%= product.package.package_measure %> <%= product.package.package_unit %></p>
-			<p><%= product.history[0].unit_price %>€/<%= product.unit.name %></p>
-			<p><%= product.history[0].price %>€</p>
-			<% if( product.history[0].is_promotion ){ %>
-				<div class="osm-recap-promo">
-					<div class="promo-shadow"></div>
-					<div class="promo-type"> <%= (((product.history[0].price-product.history[0].before)/product.history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
-				</div>
-			<% } %> 
+			<% if (product.history.length>0){ %>
+				<p><%= product.history[0].unit_price %>€/<%= product.unit.name %></p>
+				<p><%= product.history[0].price %>€</p>
+				<% if( product.history[0].is_promotion ){ %>
+					<div class="osm-recap-promo">
+						<div class="promo-shadow"></div>
+						<div class="promo-type"> <%= (((product.history[0].price-product.history[0].before)/product.history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
+					</div>
+				<% 		}
+				} %> 
 		</div>
 
 		<% if (!is_suggested){%>

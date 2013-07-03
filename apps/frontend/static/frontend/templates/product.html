@@ -12,7 +12,7 @@
 		<%}%>
 
 
-		<% if( history[0].is_promotion ){%>
+		<% if( history.length >0 && history[0].is_promotion ){%>
 				<div class="promo-shadow"></div>
 				<div class="promo-type"> <%= (((history[0].price-history[0].before)/history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
 
@@ -22,7 +22,7 @@
 	<% if(quantity_in_cart !== 0) {%>
 		<div class="mask-bloc">
 
-			<% if( !history[0].is_promotion ){ // NO PROMOTION%>
+			<% if( history.length >0 && !history[0].is_promotion ){ // NO PROMOTION%>
 
 				<div class="qte">
 					<div class="price-bloc price-mask">
@@ -34,7 +34,7 @@
 					<a class="how-much no-hijax"><%=quantity_in_cart%></a>
 				</div>
 
-			<%}else{ // PROMOTION%> 
+			<%}else if(history.length >0){ // PROMOTION%> 
 
 				<div class="qte">
 					<div class="price-bloc-promo price-mask">
@@ -48,10 +48,23 @@
 				</div>
 				<div class="promo-shadow"></div>
 				<div class="promo-type"> <%= (((history[0].price-history[0].before)/history[0].before).toFixed(2)*100).toFixed(0) %>% </div>
+			<% }else {%>
+				<div class="qte">
+					<div class="price-bloc-promo price-mask">
+						<p class="promo-line">-€</p>
+						<p>- €</p>
+						<p>- €/-</p>
+					</div>
+					<a class="plus no-hijax">+</a>
+					<a class="minus no-hijax">-</a>
+					<a class="how-much no-hijax"><%=quantity_in_cart%></a>
+				</div>
+				<div class="promo-shadow"></div>
+				<div class="promo-type"> - </div>
 
 			<%}%>
 		</div>
-	<% }else{%>
+	<% }else if(history.length >0){%>
 		<% if( !history[0].is_promotion ){%>
 			<div class="price-bloc">
 				<p><%= history[0].price %>€</p>
@@ -64,5 +77,10 @@
 				<p><%= history[0].unit_price %> €/<% if(unit) print(unit.name)%></p>
 			</div>
 		<%}%>
+	<% }else {%>
+			<div class="price-bloc">
+				<p>-€</p>
+				<p>- €/-</p>
+			</div>
 	<% } %>
 </div>
