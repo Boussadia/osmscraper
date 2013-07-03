@@ -526,7 +526,7 @@ class OoshopParser(BaseParser):
 		reference = href.split('?NOEUD_IDFO=')[-1]
 		quantity = tr.find('div', {'class': 'basket'}).find('input', {'class': 'txtM'})['value']
 		product['reference'] = reference
-		product['quantity'] = quantity
+		product['quantity'] = int(quantity)
 		return product
 
 
