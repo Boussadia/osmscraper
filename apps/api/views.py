@@ -439,7 +439,7 @@ class Product(BetaRestrictionAPIView):
 		API view for a product.
 	"""
 
-	def get_object(self, reference, osm_name):
+	def get_product(self, reference, osm_name):
 		
 			global_keys = globals().keys()
 			product_class_name = '%sProduct'%osm_name.capitalize()
@@ -453,10 +453,17 @@ class Product(BetaRestrictionAPIView):
 			else:
 				raise Http404
 
+	def get_content(self, content_id, cart_controller, osm_name):
+		try:
+			cart = getattr(cart_controller.metacart, '%s_cart'%(osm_name))
+			return cart.cart_content_set.get(id = content_id)
+		except Exception, e:
+			return None
+
 
 	@osm
 	def get(self, request, reference, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
-		product = self.get_object(reference, osm_name)
+		product = self.get_product(reference, osm_name)
 		global_keys = globals().keys()
 		serialized = None
 		serializer_class_name = '%sProductSerializer'%osm_name.capitalize()
@@ -476,7 +483,7 @@ class ProductRecommendation(Product):
 
 	@osm
 	def get(self, request, reference, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
-		product = self.get_object(reference, osm_name)
+		product = self.get_product(reference, osm_name)
 		global_keys = globals().keys()
 		serialized = None
 		recommendations = {}
@@ -502,6 +509,24 @@ class ProductRecommendation(Product):
 				similarities = BaseCartController.similarities(osm, product, osm_name)
 				recommendations[osm] = [ Serializer(p, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}, 'score': score, 'matching': False}).data for p, score in similarities]
 		return {'recommendations':recommendations}
+
+	@osm
+	def post(self, request, reference, osm_name = 'monoprix', osm_type='shipping', osm_location=None):
+		if 'content_id' in request.DATA and 'reference_selected' in request.DATA and 'osm_selected' in request.DATA:
+			content_id = request.DATA['content_id']
+			product_reference_selected = request.DATA['reference_selected']
+			osm_selected = request.DATA['osm_selected']
+			cart_controller = request.cart_controller
+
+			product = self.get_product(product_reference_selected, osm_selected)
+			cart_content = self.get_content(content_id, cart_controller, osm_selected)
+			cart_content.product = product
+			cart_content.save()
+
+			return {'ok':True}
+
+		else:
+			return {'ok':False}
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------
@@ -529,11 +554,11 @@ class CartAPIView(BetaRestrictionAPIView):
 				raise Http404
 
 	def get_content(self, content_id, cart_controller, osm_name):
-			try:
-				cart = getattr(cart_controller.metacart, '%s_cart'%(osm_name))
-				return cart.cart_content_set.get(id = content_id)
-			except Exception, e:
-				return None
+		try:
+			cart = getattr(cart_controller.metacart, '%s_cart'%(osm_name))
+			return cart.cart_content_set.get(id = content_id)
+		except Exception, e:
+			return None
 
 	def get_serialized_product(self, product, osm_name = 'monoprix', osm_type='shipping', osm_location=None, cart_controller = None):
 		if cart_controller:

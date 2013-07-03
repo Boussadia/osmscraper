@@ -29,7 +29,7 @@ define([
 				this.bindTo(this.cart, 'change', this.render);
 
 				// Substitution View (apart from other views)
-				this.substitutionView = new SubstitutionView({el: $('#substitution'), 'osms': this.osms});
+				this.substitutionView = new SubstitutionView({el: $('#substitution'), 'osms': this.osms, 'vent':this.vent});
 				this.vent.on('product:recomandation', this.substitution, this);
 
 			},
@@ -99,6 +99,10 @@ define([
 						that.substitutionView.render().$el.show();
 					}
 				});
+
+				this.vent.on('product:substitute', function(options){
+					product.save(null, options);
+				})
 			},
 			empty: function(e){
 				var answer = confirm('Êtes-vous sûr de vouloir vider votre panier ?');

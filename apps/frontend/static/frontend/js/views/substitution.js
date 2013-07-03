@@ -24,9 +24,32 @@ define([
 		events:{
 			'click .equivalent-switch-bg': 'hide',
 			'click a.osms-switch-close': 'hide',
+			'click a.substitute': 'substitute',
 		},
 		hide: function(e){
 			this.$el.hide();
+		},
+		substitute: function(e){
+			var that = this;
+			var content_id = this.product.get('id');
+			var $target = $(e.target);
+			var reference_selected = $target.attr('data-reference');
+
+			options = {
+				'content_id': content_id,
+				'reference_selected': reference_selected,
+				'osm_selected': this.osms.get_active_osm().get('name')
+			}
+
+			_.extend(options, {
+				'substitute': true,
+				'success': function(){
+					that.hide();
+					
+				}
+			});
+
+			this.vent.trigger('product:substitute', options);
 		}
 
 	});
