@@ -100,9 +100,10 @@ define([
 					}
 				});
 
-				this.vent.on('product:substitute', function(options){
-					product.save(null, options);
-				})
+				// this.vent.on('product:substitute', function(options){
+				// 	console.log(product);
+				// 	// product.save(null, options);
+				// })
 			},
 			empty: function(e){
 				var answer = confirm('Êtes-vous sûr de vouloir vider votre panier ?');

@@ -49,7 +49,7 @@ define([
 				}
 			});
 
-			this.vent.trigger('product:substitute', options);
+			this.product.save(null, options);
 		}
 
 	});
