@@ -128,18 +128,19 @@ class BaseCartController(object):
 		# Cycling through every promotion and computing state price
 		for promotion_id, promotion in state['promotions'].iteritems():
 			# Checking if products left:
-			products = [ (i in state['products']) and (state['products'][i]['qte']>=requirements[promotion_id][i]) for i in requirements[promotion_id]]
-			if reduce(mul, products):
-				# Minimum requirments satisfied
-				new_state = deepcopy(state)
-				for product_id in requirements[promotion_id]:
-					new_state['products'][product_id]['qte'] = new_state['products'][product_id]['qte'] - requirements[promotion_id][product_id]
-				new_state['promotions'][promotion_id]['qte'] = new_state['promotions'][promotion_id]['qte'] + 1
-				new_price = self.state_price(new_state)
-				sub_state, sub_price = self.get_min_state(new_state, requirements, new_price)
-				if sub_price<price:
-					price = sub_price
-					min_state = deepcopy(sub_state)
+			if promotion_id in requirements:
+				products = [ (i in state['products']) and (state['products'][i]['qte']>=requirements[promotion_id][i]) for i in requirements[promotion_id]]
+				if reduce(mul, products):
+					# Minimum requirments satisfied
+					new_state = deepcopy(state)
+					for product_id in requirements[promotion_id]:
+						new_state['products'][product_id]['qte'] = new_state['products'][product_id]['qte'] - requirements[promotion_id][product_id]
+					new_state['promotions'][promotion_id]['qte'] = new_state['promotions'][promotion_id]['qte'] + 1
+					new_price = self.state_price(new_state)
+					sub_state, sub_price = self.get_min_state(new_state, requirements, new_price)
+					if sub_price<price:
+						price = sub_price
+						min_state = deepcopy(sub_state)
 
 		return min_state, price
 
@@ -206,7 +207,9 @@ class BaseCartController(object):
 					price_after = promotion.after
 					content = [ (p, 1) for p in promotion.content.all()]
 					found, requirement = self.get_promotion_requirement(content, price_before)
-					requirements[promotion.id] = { p.id:q for p, q in requirement} # updating promotion multi requirements
+					if found and requirement is not None:
+						requirements[promotion.id] = { p.id:q for p, q in requirement} # updating promotion multi requirements
+
 					# Updating promotion multi state
 					prod, price = self.get_simple_price([{'product':product, 'quantity':1}], date)[0]
 					# print quantity
