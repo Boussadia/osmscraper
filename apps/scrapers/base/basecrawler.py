@@ -37,7 +37,7 @@ class BaseCrawler(object):
 
 	# The number of times the crawler has to retry to fetch html page when a network failure error occurs
 	MAX_NETWORK_FAILURE_TRIES = 10
-	INTERVAL = 1 # interval between 2 http request in seconds
+	INTERVAL = 0 # interval between 2 http request in seconds
 
 	def __init__(self):
 		# Mechanize Browser

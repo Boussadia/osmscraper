@@ -11,7 +11,7 @@ class AuchanCrawler(BaseCrawler, Singleton):
 	
 	def __init__(self):
 		BaseCrawler.MAX_NETWORK_FAILURE_TRIES = 20
-		BaseCrawler.INTERVAL = 2
+		BaseCrawler.INTERVAL = 0
 		super(AuchanCrawler, self).__init__()
 
 	def category_tag(self, tag):

@@ -12,7 +12,7 @@ class MonoprixCrawler(BaseCrawler, Singleton):
 	def __init__(self):
 		super(MonoprixCrawler, self).__init__()
 		BaseCrawler.MAX_NETWORK_FAILURE_TRIES = 20
-		BaseCrawler.INTERVAL = 2
+		BaseCrawler.INTERVAL = 0
 		# Monoprix does mot like Python user agemt, so we are cheating a little bit ...
 		user_agent = 'Mozilla/5.0 (Windows NT 6.1; Intel Mac OS X 10.6; rv:7.0.1) Gecko/20100101 Firefox/7.0.1'
 		self.browser.addheaders = [('User-agent', user_agent)]		
