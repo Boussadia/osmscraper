@@ -521,6 +521,10 @@ class ProductRecommendation(Product):
 			product = self.get_product(product_reference_selected, osm_selected)
 			cart_content = self.get_content(content_id, cart_controller, osm_selected)
 			cart_content.product = product
+			cart_content.is_user_added = False
+			cart_content.is_match = False
+			cart_content.is_suggested = True
+			cart_content.is_user_set = True
 			cart_content.save()
 
 			return {'ok':True}
