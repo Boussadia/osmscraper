@@ -99,11 +99,6 @@ define([
 						that.substitutionView.render().$el.show();
 					}
 				});
-
-				// this.vent.on('product:substitute', function(options){
-				// 	console.log(product);
-				// 	// product.save(null, options);
-				// })
 			},
 			empty: function(e){
 				var answer = confirm('Êtes-vous sûr de vouloir vider votre panier ?');
@@ -113,7 +108,7 @@ define([
 			switchOSM: function(e){
 				var $cta = $(e.target);
 				var osm = $cta.attr('data-osm');
-				this.vent.trigger('osm:require:switch', {'name': osm});
+				if (osm) this.vent.trigger('osm:require:switch', {'name': osm});
 			},
 			showExport: function(e){
 				this.vent.trigger('modal:show:export');

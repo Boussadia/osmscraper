@@ -28,6 +28,7 @@ define([
 		}
 	});
 
+	// Application Class contructor
 	function MasterCoursesApp(){
 		// Global Scope
 		this.Views = {};
@@ -44,6 +45,8 @@ define([
 		Backbone.originalSync = Backbone.sync; // Saving reference of original sunc method
 		Backbone.sync = function(method, model, options){
 			options || (options = {});
+			var success = options.success;
+			var error = options.error;
 			var base_data = that.get_data();
 			
 			if(method === 'create' || method === 'update' || method === 'patch'){
@@ -60,6 +63,34 @@ define([
 				// Removing location if null (causes 500 error from server)
 				if(!options.data.osm_location) delete options.data.osm_location;
 				if ('osm_name' in data) options.data.osm_name = data.osm_name; // for the suggeted cart
+			}
+
+			// Setting up default error and success behavior
+			options.success = function(data,  textStatus, jqXHR){
+				if (success) success(data,  textStatus, jqXHR);
+			}
+
+			options.error = function(jqXHR, textStatus, errorThrown ){
+				if (error) error(jqXHR, textStatus, errorThrown);
+
+				var status = jqXHR.status;
+				console.log(status);
+
+				console.log(jqXHR);
+				console.log(textStatus);
+				console.log(errorThrown);
+
+				if (status !== 403 && status !== 0){
+
+					var message = 'Hmm...\nUne erreur est survenue, un mail a été envoyé pour notifier les administrateurs du probléme.';
+					message = message + '\nVeuillez nous excuser de la géne occasionnée.';
+					message = message + '\nPrécisions sur l\'erreur :';
+					message = message + '\n\t-errorThrown : '+errorThrown;
+					message = message + '\n\t-textStatus : '+textStatus;
+					message = message + '\n\t-status : '+status;
+
+					alert(message);
+				}
 			}
 
 			return Backbone.originalSync(method, model, options);
