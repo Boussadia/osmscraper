@@ -206,7 +206,8 @@ class BaseCartController(object):
 					price_after = promotion.after
 					content = [ (p, 1) for p in promotion.content.all()]
 					found, requirement = self.get_promotion_requirement(content, price_before)
-					requirements[promotion.id] = { p.id:q for p, q in requirement} # updating promotion multi requirements
+					if found and requirement is not None:
+						requirements[promotion.id] = { p.id:q for p, q in requirement} # updating promotion multi requirements
 					# Updating promotion multi state
 					prod, price = self.get_simple_price([{'product':product, 'quantity':1}], date)[0]
 					# print quantity
