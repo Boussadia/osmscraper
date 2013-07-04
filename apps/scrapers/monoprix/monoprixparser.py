@@ -565,9 +565,11 @@ class MonoprixParser(BaseParser):
 		"""
 		is_logued = False
 		parsed_page = self.parsed_page
-
+		deconnexion = None # Default value
 		header = parsed_page.find(id='identification')
-		deconnexion = header.find('a', {'title': 'Déconnexion'})
+		if header is not None:
+			deconnexion = header.find('a', {'title': 'Déconnexion'})
+			
 		return (deconnexion is not None)
 
 	def get_cart(self):
