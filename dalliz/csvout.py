@@ -152,22 +152,6 @@ def do_categories():
         writer = UnicodeWriter(f, delimiter='\t')#, quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer.writerows(rows)
 
-
-def do_score_test():
-    monoprix_urls = [
-        'http://courses.monoprix.fr/RIDE/Cafe-moulu-pur-arabica-intense-1113676',
-        'http://courses.monoprix.fr/RIDE/Cafe-moulu-pur-arabica-Bolivie-1043047',
-        'http://courses.monoprix.fr/RIDE/Cafe-moulu-pur-arabica-doux-1314',
-        'http://courses.monoprix.fr/RIDE/Cafe-moulu-pur-arabica-doux-1702',
-        'http://courses.monoprix.fr/RIDE/Cafe-moulu-pur-arabica-Colombie-9002'
-        ]
-    cart = DallizCartController()
-    for url in monoprix_urls:
-        cart.empty()
-        print url
-        p = MonoprixProduct.objects.get(url = url)
-        cart.add_product(p)
-
 def get_stemmed_documents(products):
     reg = re.compile(r'\b[^\W\d]{3,}\b', re.U)
     documents = [{'id': p.id, 'text': reg.findall(unicode(BaseHTMLStemmer(p.html).extract_text().text.lower()))} for p in products]
