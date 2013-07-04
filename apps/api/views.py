@@ -776,6 +776,7 @@ class OSMSAPIView(BetaRestrictionAPIView):
 	"""
 
 	def get_osms(self, cart_controller):
+		count_summary_products = cart_controller.get_count_summary_products()
 		osms = []
 		# No computing necessary
 		active_osm = {
@@ -786,6 +787,8 @@ class OSMSAPIView(BetaRestrictionAPIView):
 			'price': cart_controller.carts[cart_controller.metacart.current_osm].price
 
 		}
+
+		active_osm.update(count_summary_products[active_osm['name']])
 
 		osms.append(active_osm)
 		
@@ -798,6 +801,8 @@ class OSMSAPIView(BetaRestrictionAPIView):
 					'active': False,
 					'price': cart_controller.carts[o['name']].price
 				})
+
+				osms[-1].update(count_summary_products[osms[-1]['name']])
 
 		return osms
 

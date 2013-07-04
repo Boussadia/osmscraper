@@ -6,7 +6,9 @@
 <p class="osms-switch-shipping">dont frais de livraison : 9,99€</p>
 <p class='bonus'> Points de fidélité : +34</p>
 <% if (!active){%>
-	<p>2 produits substitués</p>
+	<p>
+		<%= substitution %> produit<% if (substitution>1) print('s');%> substitué<% if (substitution>1) print('s');%>
+	</p>
 	<a class="cta comparer no-hijax">Choisir ce magasin</a>
 	<div class="loader"></div>
 <% }%>

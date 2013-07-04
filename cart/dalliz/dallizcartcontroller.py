@@ -320,5 +320,50 @@ class DallizCartController(object):
 		return products
 
 
+	def get_count_summary_products(self):
+		"""
+			This method returns the count of products that are matched, substituted and missing for each osm.
 
+			Input :
+				None
+			Return :
+				- hash : 
+					{
+						'osm_name':{
+							'substitution': Integer,
+							'match': Integer,
+							'missing': Integer,
+							'count': Integer
+						}
+					}
+		"""
 
+		result = {}
+		metacart = self.metacart
+
+		for osm in DallizCartController.AVAILABLE_OSMS.keys():
+			cart = getattr(metacart, '%s_cart'%(osm))
+			substituted_count = 0
+			matched_count = 0
+			count = 0
+			
+			for cart_content in cart.cart_content_set.all():
+				count = count + 1
+				if cart_content.is_match:
+					matched_count = matched_count + 1
+				elif cart_content.is_suggested:
+					substituted_count = substituted_count + 1
+
+			result[osm] = {
+				'substitution' : substituted_count,
+				'match' : matched_count,
+				'missing': 0,
+				'count': count
+			}
+
+		# Setting missing count
+		osm_max_count = max(result.keys(), key = (lambda key: result[key]['count']))
+		max_count = result[osm_max_count]['count']
+		[ r.update({'missing': max_count-r['count']})for key, r in result.iteritems()]
+
+		return result
