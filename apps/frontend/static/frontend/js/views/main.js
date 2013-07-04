@@ -29,34 +29,36 @@ define([
 
 			var current_osm = this.osms.get_active_osm();
 			this.categories = {};
-			if (!this.categories[current_osm.get('name')]) this.categories[current_osm.get('name')] = [];
-			var categories = this.categories[current_osm.get('name')];
+			if (current_osm){
+				if (!this.categories[current_osm.get('name')]) this.categories[current_osm.get('name')] = [];
+				var categories = this.categories[current_osm.get('name')];
 
-			_.each(categories, function(category, i){
-				if(category.id == category_id){
-					category_already_fetched = true;
-					category.current = true;
-				}else if(category.id < category_id){
-					category.current = false;
-				}
-			}, this);
-
-			if (!category_already_fetched){
-				// If the category was not fetched, proceed
-				var categoryCollection = new CategoryCollection([], {'id': category_id,'osm': current_osm.get('name'), 'vent': this.vent});
-				categoryCollection.current = true;
-				categories.push(categoryCollection);
-
-				var that = this;
-				categoryCollection.fetch({
-					'vent': this.vent,
-					success:function(collection, response, options){
-						collection.each(function(model){
-							model.fetch_products({'vent': that.vent});
-						});
-						that.render(categoryCollection)
+				_.each(categories, function(category, i){
+					if(category.id == category_id){
+						category_already_fetched = true;
+						category.current = true;
+					}else if(category.id < category_id){
+						category.current = false;
 					}
-				});
+				}, this);
+
+				if (!category_already_fetched){
+					// If the category was not fetched, proceed
+					var categoryCollection = new CategoryCollection([], {'id': category_id,'osm': current_osm.get('name'), 'vent': this.vent});
+					categoryCollection.current = true;
+					categories.push(categoryCollection);
+
+					var that = this;
+					categoryCollection.fetch({
+						'vent': this.vent,
+						success:function(collection, response, options){
+							collection.each(function(model){
+								model.fetch_products({'vent': that.vent});
+							});
+							that.render(categoryCollection)
+						}
+					});
+				}
 			}
 
 		},

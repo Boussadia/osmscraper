@@ -51,6 +51,16 @@ define([
 					this.addSubView(view);
 					this.$el.find('.scrollarea').append(view.render().el);
 				}, this);
+
+				// Controlling loader on osm switch request
+				var that = this;
+				this.bindTo(this.osms, 'request', function(model, resp, xhr){
+					that.showLoader();
+				});
+
+				this.bindTo(this.osms, 'sync', function(model, resp, xhr){
+					that.hideLoader();
+				});
 				
 	
 				return this;
@@ -112,6 +122,15 @@ define([
 			},
 			showExport: function(e){
 				this.vent.trigger('modal:show:export');
+			},
+			showLoader: function(){
+				this.$el.find('.loader').show();
+				this.$el.find('#osms-area .cta').hide();
+			},
+			hideLoader: function(){
+				this.$el.find('.loader').hide();
+				this.$el.find('#osms-area .cta').show();
+				
 			}
 
 		});
