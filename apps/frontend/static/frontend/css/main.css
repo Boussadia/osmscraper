@@ -1622,23 +1622,6 @@ button:hover, button:focus, .button:hover, .button:focus {
 																position: absolute;
 																z-index: 1;
 															}
-
-																/*.unavailable-mask div:first-child {
-																	display: inline-block;
-																	position: relative;
-																	float: left;
-																	width: 25px;
-																	height: 26px;
-																	background: url(../img/comparator/swap.png);
-																}
-
-																#cart .unavailable-mask div:first-child{
-																	top: 200px;
-																	position: absolute;
-																	left: 5px;	
-																	cursor: pointer;
-																}*/
-
 																.unavailable-mask div.replacement {
 																	display: inline-block;
 																	position: relative;

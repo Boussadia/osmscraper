@@ -74,11 +74,6 @@ define([
 				if (error) error(jqXHR, textStatus, errorThrown);
 
 				var status = jqXHR.status;
-				console.log(status);
-
-				console.log(jqXHR);
-				console.log(textStatus);
-				console.log(errorThrown);
 
 				if (status !== 403 && status !== 0){
 
