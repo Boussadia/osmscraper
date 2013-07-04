@@ -337,7 +337,6 @@ class AuchanScraper(BaseScraper):
 
 							try:
 								# Getting options
-								print 'HAHA'
 								data = self.parser.get_form_add_product(product['quantity'])
 
 								if data['parsed']:
