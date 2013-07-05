@@ -5,9 +5,10 @@ define([
 	'views/base',
 	'views/products',
 	'views/brands-filter',
+	'views/price-filter',
 	'text!../../templates/category.html'
 	],
-	function(_, $, CategoryCollection, BaseView, ProductsView, BrandsFilterView, categoryTemplate){
+	function(_, $, CategoryCollection, BaseView, ProductsView, BrandsFilterView, PriceFilterView, categoryTemplate){
 
 		var CategoryCollectionView = BaseView.extend({
 			className: 'category',
@@ -63,6 +64,23 @@ define([
 						var data_brands = data.brands.content;
 						var filter_view = new BrandsFilterView({'brands': data_brands, 'category_id': products.id, 'el': that.$el.find('.products:last-child ul.brands'), 'vent': that.vent});
 						that.addSubView(filter_view);
+
+						var data_price_filter = [{
+							'id': 0,
+							'name': 'Pas de filtre',
+							'checked': true
+						},{
+							'id': 1,
+							'name': 'Filtre par prix',
+							'checked': false
+						},{
+							'id': 2,
+							'name': ' Filtre par prix au Kg ou L',
+							'checked': false
+						}]
+
+						var price_filter_view = new PriceFilterView({'filters': data_price_filter, 'category_id': products.id, 'el': that.$el.find('.products:last-child ul.price-filter'), 'vent': that.vent});
+						that.addSubView(price_filter_view);
 					}
 				})
 
@@ -76,6 +94,7 @@ define([
 				'click .controller.right': 'moreProducts',
 				'click .controller.left': 'lessProducts',
 				'click .brands-controller': 'showBrandsFilter',
+				'click .price-filter-controller': 'showPriceFilter',
 			},
 			moreProducts: function(e){
 				var id_category = parseInt($(e.target).attr('data-id'));
@@ -136,7 +155,34 @@ define([
 				var category_id = $(e.target).attr('data-id');
 				category_id = parseInt(category_id);
 				var view = _.find(this.subViews, function(view, i){
-					if (view.category_id) return view.category_id === category_id;
+					if (view.category_id && view.$el.attr('class').indexOf('brands')>-1) return view.category_id === category_id;
+					return false
+				}, this);
+				if(view && view.$el.is(":visible")) view.$el.css('display', 'none');
+				if(view && !view.$el.is(":visible")) view.$el.css('display', 'inline-block');
+
+			},
+			showPriceFilter: function(e){
+				var hide_handler = function(e){
+					var clicked = e.target;
+					var is_in = $.contains(view.el, clicked);
+					if (!is_in && view.$el.is(":visible")){
+						view.$el.css('display', 'none')
+						$(window).unbind('click', hide_handler);
+					}else{
+						view.$el.css('display', 'inline-block');
+					}
+				}
+
+				// Nasty hack due to extreme laziness 
+				setTimeout(function(){
+					$(window).bind( 'click', hide_handler);
+				}, 500)
+				
+				var category_id = $(e.target).attr('data-id');
+				category_id = parseInt(category_id);
+				var view = _.find(this.subViews, function(view, i){
+					if (view.category_id &&  view.$el.attr('class').indexOf('price-filter')>-1) return view.category_id === category_id;
 					return false
 				}, this);
 				if(view && view.$el.is(":visible")) view.$el.css('display', 'none');

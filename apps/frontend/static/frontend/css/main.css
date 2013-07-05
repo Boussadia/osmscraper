@@ -677,13 +677,12 @@ li.has-dropdown.show {
 	padding-top: 18px;
 }
 
-.products-header .brands{
+.products-header .brands, .products-header .price-filter{
 	display: inline-block;
 	display: none;
 	position: relative;
 	z-index: 10;
 	width: 167px;
-	left: -29%;
 	list-style: none;
 	padding: 0;
 	background-color: white;
@@ -693,13 +692,16 @@ li.has-dropdown.show {
 	box-shadow: 1px 1px 6px rgba(0,0,0,0.2);
 }
 
-.products-header .brands li {margin-top: 6px; cursor: pointer;}
+.products-header .brands {left: -29%;}
+.products-header .price-filter {left: -11%;}
 
-.products-header .brands-controller{
+.products-header .brands li, .products-header .price-filter li {margin-top: 6px; cursor: pointer;}
+
+.products-header .brands-controller, .products-header .price-filter-controller{
 	cursor: pointer;
 }
 
-#brands-filter {
+#brands-filter, #price-filter {
 	width: 66px;
 	height: 23px;
 	font-size: 15px;

@@ -28,6 +28,7 @@ define([
 				this.next =  null;
 				this.previous =  null;
 				this.brands = [];
+				this.filter = 0;
 
 				// If touch device, fetch
 				if ($('body').outerWidth()<1172) this.PRODUCTS_PER_PAGE = 5;
@@ -48,6 +49,7 @@ define([
 				var callback = options.callback || null;
 				var that = this;
 				var brands = options.brands || this.brands;
+				var filter = options.filter || this.filter;
 				this.brands = brands;
 
 				if (more){
@@ -72,7 +74,8 @@ define([
 				options.data = {
 					'PRODUCTS_PER_PAGE': this.PRODUCTS_PER_PAGE,
 					'page': this.page,
-					'brands': brands
+					'brands': brands,
+					'filter': filter
 				}
 
 				options.success = function(collection, response, option){

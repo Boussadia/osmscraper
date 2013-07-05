@@ -1,0 +1,7 @@
+<% for (var i = 0; i<filters.length; i++){
+		var filter = filters[i];
+	%>
+	<li><input type="radio" name="filter" value="<%=filter.id%>" <% if(filter.checked) print('checked') %>> <%=filter.name%><br></li>
+<%}%>
+
+<li><a class="cta" id="price-filter">Filtrer</a></li>
