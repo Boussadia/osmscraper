@@ -47,7 +47,7 @@ define([
 
 				this.bindTo(this.products, 'add', this.render);
 
-				this.vent.on('brands:filter price:filter',this.filter, this);
+				this.vent.on('products:filter',this.filter, this);
 
 			},
 			render: function(product){
@@ -186,20 +186,14 @@ define([
 				this.$el.css('left', '0%');
 			},
 			filter: function(options){
-				if(options.id === this.products.id && options.brands){
+				if(options.id === this.products.id){
 					var that = this;
+					var brands = options.brands || [];
+					var filter = options.filter || 0;
+
 					this.products.fetch({
-						'brands': options.brands,
-						'reset': true,
-						'vent': this.vent,
-						'callback':function(){
-							that.reset();
-						}
-					});
-				}else if(options.id === this.products.id && (options.filter === 0 || options.filter === 1 || options.filter === 2)){
-					var that = this;
-					this.products.fetch({
-						'filter': options.filter,
+						'brands': brands,
+						'filter': filter,
 						'reset': true,
 						'vent': this.vent,
 						'callback':function(){

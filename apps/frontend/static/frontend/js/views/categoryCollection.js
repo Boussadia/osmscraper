@@ -21,6 +21,7 @@ define([
 				// Global events
 				this.vent.on('route:category', this.showOrHide, this);
 				this.vent.on('brands:filter', this.updateView, this);
+				this.vent.on('brands:filter price:filter', this.filter, this);
 			},
 			render: function(){
 				this.closeSubViews();
@@ -79,7 +80,7 @@ define([
 							'checked': false
 						}]
 
-						var price_filter_view = new PriceFilterView({'filters': data_price_filter, 'category_id': products.id, 'el': that.$el.find('.products:last-child ul.price-filter'), 'vent': that.vent});
+						var price_filter_view = price_filter_view = new PriceFilterView({'filters': data_price_filter, 'category_id': products.id, 'el': that.$el.find('.products:last-child ul.price-filter'), 'vent': that.vent});
 						that.addSubView(price_filter_view);
 					}
 				})
@@ -204,6 +205,27 @@ define([
 				}else{
 					this.$el.find('.controller.left[data-id='+products_id+']').show();
 				}
+			},
+			filter: function(options){
+				var category_id = options.id;
+				var price_filter_view;
+				var brands_filter_view;
+				_.each(this.subViews, function(view, i){
+					if (view.category_id && view.category_id === category_id && view.selected_brands) brands_filter_view = view;
+					if (view.category_id && view.category_id === category_id && (typeof view.selected_filter) ==="number") price_filter_view = view;
+				}, this);
+
+				// Getting filter valuess from child views
+				var price_filter = price_filter_view.selected_filter;
+				var brands_filter = brands_filter_view.selected_brands;
+
+				options = {
+					'brands': brands_filter,
+					'filter': price_filter,
+					'id': category_id
+				};
+
+				this.vent.trigger('products:filter', options);
 			},
 			updateView: function(options){
 				var count_brands = options.brands.length;
