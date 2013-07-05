@@ -51,6 +51,7 @@ define([
 				var brands = options.brands || this.brands;
 				var filter = options.filter || this.filter;
 				this.brands = brands;
+				this.filter = filter;
 
 				if (more){
 					options.remove = false;

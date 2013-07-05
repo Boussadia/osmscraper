@@ -254,8 +254,7 @@ class CategoryProducts(CategorySimple):
 
 		# Ordering
 		price_ordering = 0
-		print 'filter' in request.QUERY_PARAMS
-		print request.QUERY_PARAMS
+
 		if 'filter' in request.QUERY_PARAMS:
 			price_ordering = int(request.QUERY_PARAMS['filter'])
 
@@ -276,7 +275,6 @@ class CategoryProducts(CategorySimple):
 			if price_ordering == 1:
 				# ordering by price
 				products_query_set = sorted(products_query_set, key =(lambda p: p.history_set.all()[0].price if p.history_set.all().exists() else 0))
-				print [p for p in products_query_set]
 			elif price_ordering == 2:
 				# ordering by unit price
 				products_query_set = sorted(products_query_set, key =(lambda p: p.history_set.all()[0].unit_price if p.history_set.all().exists() else 0))
