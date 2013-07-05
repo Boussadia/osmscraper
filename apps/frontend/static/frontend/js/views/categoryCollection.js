@@ -222,8 +222,6 @@ define([
 			}
 		});
 
-
-
 		return CategoryCollectionView;
 
 })

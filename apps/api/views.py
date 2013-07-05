@@ -252,6 +252,13 @@ class CategoryProducts(CategorySimple):
 		# Brands filter parameter
 		brands = request.QUERY_PARAMS.getlist('brands[]')
 
+		# Ordering
+		price_ordering = 0
+		print 'filter' in request.QUERY_PARAMS
+		print request.QUERY_PARAMS
+		if 'filter' in request.QUERY_PARAMS:
+			price_ordering = int(request.QUERY_PARAMS['filter'])
+
 		# Pagination arguments
 		if 'PRODUCTS_PER_PAGE' in request.GET:
 			CategoryProducts.PRODUCTS_PER_PAGE = request.QUERY_PARAMS.get('PRODUCTS_PER_PAGE')
@@ -265,6 +272,15 @@ class CategoryProducts(CategorySimple):
 		products_query_set = ApiHelper.get_products_query_set(category, type_fetched, osm_name, osm_type, osm_location, brands)
 
 		if products_query_set is not None:
+			# Price ordering
+			if price_ordering == 1:
+				# ordering by price
+				products_query_set = sorted(products_query_set, key =(lambda p: p.history_set.all()[0].price if p.history_set.all().exists() else 0))
+				print [p for p in products_query_set]
+			elif price_ordering == 2:
+				# ordering by unit price
+				products_query_set = sorted(products_query_set, key =(lambda p: p.history_set.all()[0].unit_price if p.history_set.all().exists() else 0))
+
 			# Generating pagination object
 			paginator = Paginator(products_query_set, CategoryProducts.PRODUCTS_PER_PAGE)
 			try:
@@ -276,7 +292,6 @@ class CategoryProducts(CategorySimple):
 				# If page is out of range (e.g. 9999),
 				# deliver last page of results.
 				products = paginator.page(paginator.num_pages)
-
 
 		serializer_class_name = '%sProductsPaginationSerializer'%osm_name.capitalize()
 		serializer = None
