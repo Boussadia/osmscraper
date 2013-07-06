@@ -34,7 +34,8 @@ class TagsProcessor(object):
 		Base class that sets tags for products and assigns unique dalliz category to products.
 	"""
 	OSMS = ['auchan', 'monoprix', 'ooshop']
-	STEMMED_TAGS = [tag.stemmed_name for tag in Tag.objects.filter(stemmed_name__isnull = False)]
+	STEMMED_TAGS = [tag.stemmed_name for tag in Tag.objects.filter(stemmed_name__isnull = False, is_super_tag = False)]
+	STEMMED_SUPER_TAGS = [tag.stemmed_name for tag in Tag.objects.filter(stemmed_name__isnull = False, is_super_tag = True)]
 
 	def __init__(self, osm = 'monoprix'):
 		self.osm = osm
@@ -55,11 +56,11 @@ class TagsProcessor(object):
 			return []
 
 	@staticmethod
-	def reverse_get_tag(stemmed_name):
+	def reverse_get_tag(stemmed_name, is_super_tag = False):
 		"""
 			Gets tag database entity from stemmed_name
 		"""
-		return Tag.objects.filter(stemmed_name = stemmed_name)
+		return Tag.objects.filter(stemmed_name = stemmed_name, is_super_tag = is_super_tag)
 
 	def best_category_match(self, categories, retained_tags):
 		if len(categories)>0:
@@ -135,24 +136,25 @@ class TagsProcessor(object):
 		return matched_products
 
 	@staticmethod
-	def process_tags_product(product):
+	def process_tags_product(product, super_tag = False):
 		"""
 			This static method sets tags to product
 		"""
 		chunks = [TagsProcessor.chunk(product.stemmed_text, n) for n in [1,2,3]]
 		common = []
 		stemmed_tags = []
-		[ [ [ stemmed_tags.append(tag.stemmed_name) for tag in d.tags.filter(stemmed_name__isnull = False)]for d in c.dalliz_category.all()]for c in product.categories.all()]
+		[ [ [ stemmed_tags.append(tag.stemmed_name) for tag in d.tags.filter(stemmed_name__isnull = False, is_super_tag = super_tag)]for d in c.dalliz_category.all()]for c in product.categories.all()]
 		stemmed_tags = list(set(stemmed_tags))
 
 		[ common.extend(diff(c, stemmed_tags)[1]) for c in chunks]
 
 		retained_tags = []
 
-		[ retained_tags.extend(TagsProcessor.reverse_get_tag(c)) for c in list(set(common))]
+		[ retained_tags.extend(TagsProcessor.reverse_get_tag(c, is_super_tag = super_tag)) for c in list(set(common))]
 
 		# Cleaning and saving new relations
-		product.tag.clear()
+		tags = product.tag.filter(is_super_tag = super_tag)
+		[product.tag.remove(t) for t in tags] # removing tags from product tags table
 		Through = product.__class__.tag.through
 		Through.objects.bulk_create([ Through(product_id=product.pk, tag_id=t.pk) for t in retained_tags ])
 
@@ -160,24 +162,24 @@ class TagsProcessor(object):
 		product.save()
 
 		# Processing matched products
-		TagsProcessor.process_matched_products(product)
+		TagsProcessor.process_matched_products(product, super_tag = super_tag)
 
 	@staticmethod
-	def process_matched_products(product):
+	def process_matched_products(product, super_tag = False):
 		"""
 			This method merges matched product tags.
 		"""
 		matched_products = [product] + TagsProcessor.get_matched_products(product)
 		tags = []
 		if not product.tags_processed:
-			TagsProcessor.process_tags_product(product)
+			TagsProcessor.process_tags_product(product, is_super_tag = super_tag)
 
 		for matched_product in matched_products:
 			if matched_product:
 				if not matched_product.tags_processed:
-					TagsProcessor.process_tags_product(matched_product)
+					TagsProcessor.process_tags_product(matched_product, super_tag = super_tag)
 
-				tags = tags + list(matched_product.tag.all())
+				tags = tags + list(matched_product.tag.filter(is_super_tag = super_tag))
 
 		# Getting unique tags
 		tags = list(set(tags))
@@ -214,12 +216,12 @@ class TagsProcessor(object):
 		"""
 		categories = list(set(categories))
 		
-		tags = product.tag.all()
+		tags = product.tag.filter(is_super_tag = True)
 		if len(categories)>0:
 			sorted_categories = sorted(
 				[
 					(
-						category, TagsProcessor.get_tags_score(category.tags.all(), tags)
+						category, TagsProcessor.get_tags_score(category.tags.filter(is_super_tag = True), tags)
 					) for category in categories
 				], key = lambda item: -item[1] )
 
@@ -248,24 +250,25 @@ class TagsProcessor(object):
 
 		best_categories =list(set(best_categories))
 
-		tags = list(product.tag.all())
+		tags = list(product.tag.filter(is_super_tag = True))
 		common_tags = []
 		for category in best_categories:
-			n, c, d = diff(category.tags.all(), tags)
+			n, c, d = diff(category.tags.filter(is_super_tag = True), tags)
 			common_tags.extend(c)
 
 		tags = list(set(common_tags))
 
 		for matched_product in matched_products:
 				matched_product.dalliz_category.clear()
-				matched_product.tag.clear()
+				tags_to_be_removed = matched_product.tag.filter(is_super_tag = True)
+				[matched_product.tag.remove(t) for t in tags_to_be_removed]
 				[matched_product.dalliz_category.add( c ) for c in best_categories]
 				[matched_product.tag.add( t ) for t in tags]
 
 
 
 	@staticmethod
-	def process_tags_products(override = False, filter_hash = {}):
+	def process_tags_products(override = False, filter_hash = {}, super_tag = False):
 		"""
 			Process all categories from all 
 		"""
@@ -288,7 +291,7 @@ class TagsProcessor(object):
 			kwargs.update(filter_hash)
 
 			products = OSMProduct.objects.filter(**kwargs).distinct('reference')
-			[ TagsProcessor.process_tags_product(p) for p in products]
+			[ TagsProcessor.process_tags_product(p, super_tag) for p in products]
 
 			print time()-t0
 
@@ -322,11 +325,11 @@ class TagsProcessor(object):
 			print time()-t0
 
 	@staticmethod
-	def process(override = False, filter_hash = {}):
+	def process(override = False, filter_hash = {}, super_tag = False):
 		"""
 		"""
 		print 'Processing tags'
-		TagsProcessor.process_tags_products(override, filter_hash)
+		TagsProcessor.process_tags_products(override, filter_hash,super_tag)
 		print 'Processing categories'
 		TagsProcessor.process_categories_products(override, filter_hash)
 
