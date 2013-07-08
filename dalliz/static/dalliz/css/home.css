@@ -570,22 +570,22 @@ input[type="email"] {
 }
 
 #follow-us {
-	width: 150px;
+	width: 450px;
 	position: absolute;
-	bottom: -8px;
-	left: 160px;
+	bottom: 0px;
 }
 
 #follow-us ul {
 	display: inline-block;
 	list-style: none;
 	position: relative;
+	margin: auto;
 }
 
 #follow-us ul .facebook_icon, #follow-us ul .twitter_icon {
 		float: left;
 		border: none !important;
-		margin-right: 16px;
+		margin-right: 20px;
 	}
 
 		#follow-us ul li a {
