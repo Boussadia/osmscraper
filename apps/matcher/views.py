@@ -111,7 +111,8 @@ def serialize_product(product, osm, categories = None):
 				'unit':(lambda x: x.name if x is not None else 'Unknown')(product.unit),
 				# 'possible_categories': (lambda p:[[{'id':x.id, 'name':x.name} for x in c.dalliz_category.all()] for c in p.categories.all()][0] if len(p.categories.all())>0 else [])(product),
 				'categories': [{'id':x.id, 'name':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(x)} for x in product.dalliz_category.all()],
-				'tags': [{'name':tag.name, 'id':tag.id} for tag in product.tag.all()],
+				'tags': [{'name':tag.name, 'id':tag.id} for tag in product.tag.filter(is_super_tag = False)],
+				'super_tags': [{'name':tag.name, 'id':tag.id} for tag in product.tag.filter(is_super_tag = True)],
 				# 'possible_tags':(lambda p:list(itertools.chain(*[[[{'id':t.id, 'name':t.name} for t in x.tags.all()] for x in c.dalliz_category.all()] for c in p.categories.all()][0] if len(p.categories.all())>0 else [])(product) ))
 				'is_in_category': False,
 				'parent_categories': get_main_categories(product.dalliz_category.all())
@@ -272,13 +273,13 @@ def set_categories_to_product(product, dalliz_categories, osm, set_match = True)
 				[ set_categories_to_product(getattr(match,other_osm+'_product'), dalliz_categories, other_osm, set_match = False)  for other_osm in available_osms.keys() if other_osm != osm]
 
 
-def set_tags_to_product(product, tags, osm, set_match = True):
+def set_tags_to_product(product, tags, osm, set_match = True, is_super_tag = False):
 	"""
 		Setting tags to a product
 	"""
 	# Clearing tags of products
 	if product is not None:
-		old_tags = product.tag.all()
+		old_tags = product.tag.filter(is_super_tag = is_super_tag)
 
 		new, common, removed = diff(old_tags, tags)
 		for t in new:
@@ -294,7 +295,7 @@ def set_tags_to_product(product, tags, osm, set_match = True):
 
 		match = get_match(product, osm)
 		if set_match and match is not None:
-			[ set_tags_to_product(getattr(match,other_osm+'_product'), tags, other_osm, set_match = False)  for other_osm in available_osms.keys() if other_osm != osm]
+			[ set_tags_to_product(getattr(match,other_osm+'_product'), tags, other_osm, set_match = False, is_super_tag = is_super_tag)  for other_osm in available_osms.keys() if other_osm != osm]
 @csrf_exempt
 def comment(request, osm, product_id):
 	"""
@@ -329,6 +330,9 @@ def comment(request, osm, product_id):
 	return HttpResponse(json.dumps(response))
 @csrf_exempt
 def tags(request, osm, product_id, tags):
+	super_tag = False
+	if 'super_tag':
+		super_tag = (request.POST['super_tag'] == 'true')
 	response = {}
 	if osm in available_osms:
 		Product = available_osms[osm]['product']
@@ -343,7 +347,7 @@ def tags(request, osm, product_id, tags):
 				db_tags = []
 				for t in tags:
 					stemmed_name = Stemmer(t).stem_text()
-					tag_db, created = Tag.objects.get_or_create(name = t, defaults =  {'stemmed_name': stemmed_name})
+					tag_db, created = Tag.objects.get_or_create(name = t, is_super_tag = super_tag, defaults =  {'stemmed_name': stemmed_name})
 					if created:
 						tag_db.stemmed_name = stemmed_name
 						tag_db.save()
@@ -351,7 +355,7 @@ def tags(request, osm, product_id, tags):
 			else:
 				db_tags = []
 
-			set_tags_to_product(product, db_tags, osm, set_match = True)
+			set_tags_to_product(product, db_tags, osm, set_match = True, is_super_tag = super_tag)
 			response['status'] = 200
 	else:
 		response['status'] = 404
@@ -521,6 +525,3 @@ def reset_product(product):
 	categories = [{'id':x.id, 'name':(lambda i: i.parent_category.name+' / '+i.name if i.parent_category is not None else i.name)(x)} for x in product.dalliz_category.all()]
 	tags = [{'name':tag.name, 'id':tag.id} for tag in product.tag.all()]
 	return tags, categories
-
-
-

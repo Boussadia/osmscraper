@@ -165,3 +165,17 @@ def autocomplete(request):
 	response = [{'id':t.id,'label':t.name,'value':t.name, 'is_super_tag': t.is_super_tag} for t in possible_tags]	
 	return HttpResponse(json.dumps(response))
 
+def superautocomplete(request):
+	"""
+		Get all tags that are like term
+
+		For instance : term = 'fr' -> resultats : 'fraise', 'africe' etc..
+	"""
+	term = ''
+	if request.method == 'GET':
+		term = unaccent(request.GET['term']).lower()
+	# possible_tags = Tag.objects.raw( "SELECT DISTINCT * FROM tags_tag WHERE LOWER(UNACCENT(name)) LIKE %s", ('%'+term+'%',))
+	possible_tags = Tag.objects.filter(name__icontains = term, is_super_tag = True).distinct('name')
+	response = [{'id':t.id,'label':t.name,'value':t.name, 'is_super_tag': t.is_super_tag} for t in possible_tags]	
+	return HttpResponse(json.dumps(response))
+

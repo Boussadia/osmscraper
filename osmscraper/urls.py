@@ -34,6 +34,7 @@ urlpatterns = patterns('',
     # Tags creator app
     url(r'^backend/tags/(?P<id_category>(\d+))(/(?P<tags>(.+)))?/?$', 'apps.tags.views.tags'),
     url(r'^backend/tags/autocomplete/?$', 'apps.tags.views.autocomplete'),
+    url(r'^backend/supertags/autocomplete/?$', 'apps.tags.views.superautocomplete'),
     url(r'^backend/tags/?$', 'apps.tags.views.index'),
 
     # Dalliz backend categories builder

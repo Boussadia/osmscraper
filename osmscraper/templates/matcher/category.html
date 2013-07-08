@@ -59,11 +59,11 @@
 									</div>
 									<div class='block tag'>
 										<h3> Tags</h3>
-										<input name="tags" class='tags'  data-update='0' data-product='{{product.id}}' data-osm='{{product.osm}}' value="{% for t in product.tags %}{{t.name}},{% endfor %}" />
+										<input name="tags" class='tags'  data-update='0' data-product='{{product.id}}' data-tag='normal' data-osm='{{product.osm}}' value="{% for t in product.tags %}{{t.name}},{% endfor %}" />
 									</div>
-									<div class='block comments'>
-										<h3>Commentaires</h3>
-										<textarea class='comment' data-product='{{product.id}}' data-osm='{{product.osm}}'>{{product.comment}}</textarea>
+									<div class='block super_tag'>
+										<h3> Super Tags</h3>
+										<input name="super_tags" class='super_tags'  data-update='0' data-product='{{product.id}}' data-tag='super' data-osm='{{product.osm}}' value="{% for t in product.super_tags %}{{t.name}},{% endfor %}" />
 									</div>
 								</li>
 								<div class="matched_area">
@@ -89,11 +89,11 @@
 													</div>
 													<div class='block tag'>
 														<h3> Tags</h3>
-														<input name="tags" class='tags'  data-update='0' data-product='{{match.id}}' data-osm='{{match.osm}}' value="{% for t in match.tags %}{{t.name}},{% endfor %}" />
+														<input name="tags" class='tags'  data-update='0' data-product='{{match.id}}' data-tag='normal' data-osm='{{match.osm}}' value="{% for t in match.tags %}{{t.name}},{% endfor %}" />
 													</div>
-													<div class='block comments'>
-														<h3>Commentaires</h3>
-														<textarea class='comment' data-product='{{match.id}}' data-osm='{{match.osm}}'>{{match.comment}}</textarea>
+													<div class='block super_tag'>
+														<h3> Super Tags</h3>
+														<input name="tags" class='tags'  data-update='0' data-product='{{match.id}}' data-tag='super' data-osm='{{match.osm}}' value="{% for t in match.super_tags %}{{t.name}},{% endfor %}" />
 													</div>
 												</li>
 											</div>
@@ -124,12 +124,11 @@
 													</div>
 													<div class='block tag'>
 														<h3> Tags</h3>
-														<input name="tags" class='tags'  data-update='0' data-product='{{p.id}}' data-osm='{{p.osm}}' value="{% for t in p.tags %}{{t.name}},{% endfor %}" />
+														<input name="tags" class='tags'  data-update='0' data-product='{{p.id}}' data-tag='normal' data-osm='{{p.osm}}' value="{% for t in p.tags %}{{t.name}},{% endfor %}" />
 													</div>
-													<div class='block comments'>
-														<h3>Commentaires</h3>
-														<textarea class='comment' data-product='{{p.id}}' data-osm='{{p.osm}}'>{{p.comment}}</textarea>
-														<button data-osm='{{product.osm}}' data-osm_from='{{osm}}' data-product='{{product.id}}' data-product_from='{{p.id}}' class='nogood btn btn-danger'>Pas le bon</button>
+													<div class='block super_tag'>
+														<h3> Super Tags</h3>
+														<input name="super_tags" class='super_tags'  data-update='0' data-product='{{p.id}}' data-tag='super' data-osm='{{p.osm}}' value="{% for t in p.super_tags %}{{t.name}},{% endfor %}" />
 													</div>
 												</li>
 											</div>
