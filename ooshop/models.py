@@ -80,6 +80,7 @@ class Product(models.Model):
 	# Final tags and dalliz_categories
 	dalliz_category = models.ManyToManyField(Dalliz_category, related_name="ooshop_product_dalliz_category")
 	tag = models.ManyToManyField(Tag, related_name="ooshop_product_tag_dalliz_tag")
+	super_tags_processed = models.BooleanField(default = False)
 
 	# for admins
 	comment = models.TextField(default = "")

@@ -87,6 +87,7 @@ class Product(models.Model):
 	comment = models.TextField(default = "")
 	processed = models.BooleanField(default = False)
 	tags_processed = models.BooleanField(default = False)
+	super_tags_processed = models.BooleanField(default = False)
 
 	def __unicode__(self):
 		if self.name is not None:
