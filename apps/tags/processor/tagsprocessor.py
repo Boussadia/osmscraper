@@ -184,7 +184,7 @@ class TagsProcessor(object):
 		# Getting unique tags
 		tags = list(set(tags))
 		for p in matched_products:
-			new, common, removed = diff( list(p.tag.all()), tags)
+			new, common, removed = diff( list(p.tag.filter(is_super_tag = super_tag)), tags)
 
 			[p.tag.add(t) for t in new]
 			[p.tag.remove(t) for t in removed]
