@@ -158,7 +158,11 @@ class TagsProcessor(object):
 		Through = product.__class__.tag.through
 		Through.objects.bulk_create([ Through(product_id=product.pk, tag_id=t.pk) for t in retained_tags ])
 
-		product.tags_processed = True
+		if not super_tag:
+			product.tags_processed = True
+		else:
+			product.super_tags_processed = True
+
 		product.save()
 
 		# Processing matched products
@@ -171,12 +175,12 @@ class TagsProcessor(object):
 		"""
 		matched_products = [product] + TagsProcessor.get_matched_products(product)
 		tags = []
-		if not product.tags_processed:
-			TagsProcessor.process_tags_product(product, is_super_tag = super_tag)
+		if (not super_tag and not product.tags_processed) or ( super_tag and not product.super_tags_processed):
+			TagsProcessor.process_tags_product(product, super_tag = super_tag)
 
 		for matched_product in matched_products:
 			if matched_product:
-				if not matched_product.tags_processed:
+				if (not super_tag and not matched_product.tags_processed) or( super_tag and not matched_product.super_tags_processed):
 					TagsProcessor.process_tags_product(matched_product, super_tag = super_tag)
 
 				tags = tags + list(matched_product.tag.filter(is_super_tag = super_tag))
@@ -283,9 +287,13 @@ class TagsProcessor(object):
 			kwargs = {
 				'categories__dalliz_category__algorithm_process': True,
 			}
-			if not override:
+			if not override and not super_tag:
 				kwargs.update({
 					'tags_processed': False
+				})
+			if not override and super_tag:
+				kwargs.update({
+					'super_super_tags_processed': False
 				})
 
 			kwargs.update(filter_hash)
@@ -313,7 +321,7 @@ class TagsProcessor(object):
 			}
 			if not override:
 				kwargs.update({
-					'tags_processed': False
+					'super_tags_processed': False
 				})
 
 			kwargs.update(filter_hash)
@@ -325,11 +333,13 @@ class TagsProcessor(object):
 			print time()-t0
 
 	@staticmethod
-	def process(override = False, filter_hash = {}, super_tag = False):
+	def process(override = False, filter_hash = {}):
 		"""
 		"""
 		print 'Processing tags'
-		TagsProcessor.process_tags_products(override, filter_hash,super_tag)
+		TagsProcessor.process_tags_products(override, filter_hash,False)
+		print 'Processing Super tags'
+		TagsProcessor.process_tags_products(override, filter_hash,True)
 		print 'Processing categories'
 		TagsProcessor.process_categories_products(override, filter_hash)
 
@@ -362,6 +372,7 @@ class TagsProcessor(object):
 				[p.tag.add(t) for t in tags]
 				
 				p.tags_processed = False
+				p.super_tags_processed = False
 				p.save()
 
 
