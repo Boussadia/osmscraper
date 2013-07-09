@@ -1,5 +1,7 @@
 {{ object.name }}
-{{ object.brand }}
+{% for brand_match in object.brand.brandmatch_set.all%}
+{{brand_match.dalliz_brand}}
+{% endfor %}
 {% for tag in object.tag.all%}
-	{{tag}}
+{{tag}}
 {% endfor %}
