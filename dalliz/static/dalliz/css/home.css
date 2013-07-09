@@ -385,22 +385,30 @@ li.act a{
 	margin-left: 0;
 	background-color: white;
 	padding: 1.25em;
-	top: 50px; }
+	top: 50px; 
+}
 
-	.reveal-modal > :first-child {
-	margin-top: 0; }
-	.reveal-modal > :last-child {
-	margin-bottom: 0; }
-	.reveal-modal .close-reveal-modal {
-	font-size: 1.375em;
+.reveal-modal > :first-child {
+	margin-top: 0; 
+}
+
+.reveal-modal > :last-child {
+	margin-bottom: 0; 
+}
+
+.reveal-modal .close-reveal-modal{
+	font-size: 40px;
 	line-height: 1;
 	position: absolute;
 	z-index: 10;
-	top: 0.5em;
-	right: 0.6875em;
+	top: 0px;
+	right: 0px;
 	color: #aaaaaa;
 	font-weight: bold;
-	cursor: pointer; }
+	cursor: pointer;
+	height: 40px;
+	width: 40px;
+}
 
 form {
 	margin: 0 0 1em; 
@@ -788,7 +796,7 @@ footer {
 	}
 
 
-#email {width:260px; height: 34px; background-color: #dcf0ca; border-radius: 4px 0 0 4px; border: none; font-size: 18px; padding-left: 16px; position: relative;}
+#email {width:260px; height: 34px; background-color: #dcf0ca; border-radius: 4px 0 0 4px; border: none; font-size: 18px; padding-left: 16px; position: relative; float: left; top: -10px;}
 
 #ok {position: relative; float: left; display: inline-block; border-radius: 0 4px 4px 0; background-color: #6eb72c; width: 37px; height: 34px; top: -10px; border: none; color: white; cursor: pointer; font-weight: bold; padding-top: 8px; text-align: center;}
 
