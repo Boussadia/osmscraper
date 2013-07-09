@@ -129,6 +129,7 @@
 													<div class='block super_tag'>
 														<h3> Super Tags</h3>
 														<input name="super_tags" class='super_tags'  data-update='0' data-product='{{p.id}}' data-tag='super' data-osm='{{p.osm}}' value="{% for t in p.super_tags %}{{t.name}},{% endfor %}" />
+														<button data-osm='{{product.osm}}' data-osm_from='{{osm}}' data-product='{{product.id}}' data-product_from='{{p.id}}' class='nogood btn btn-danger'>Pas le bon</button>
 													</div>
 												</li>
 											</div>
