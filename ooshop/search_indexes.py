@@ -4,7 +4,7 @@ from ooshop.models import Product
 
 class ProductIndex(indexes.SearchIndex, indexes.Indexable):
 	text = indexes.CharField(document = True, use_template = True)
-	# brand = indexes.CharField(model_attr = 'brand')
+	osm = 'ooshop'
 
 
 	def get_model(self):
