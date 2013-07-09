@@ -1,0 +1,5 @@
+{{ object.name }}
+{{ object.brand }}
+{% for tag in object.tag.all%}
+	{{tag}}
+{% endfor %}
