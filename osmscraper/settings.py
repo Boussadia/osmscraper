@@ -140,30 +140,36 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
+
+    # Third party apps
     'gunicorn',
     'kombu.transport.django',
     'djcelery',
     'south',
     'storages',
     'cachebuster',
-    'auchan',
-    'monoprix',
-    'ooshop',
+    'haystack',
+    'libs.pystache',
+    'libs.soupselect',
+    'rest_framework',
+
+    # Home made apps
+    'apps.api',
     'apps.scrapers',
     'apps.backoffice.categories_matcher',
     'apps.backoffice.categories_builder',
     'apps.backoffice.brand_builder',
     'apps.backoffice.brand_matcher',
-    'dalliz',
-    'libs.pystache',
     'apps.matcher',
     'apps.tags',
+    'auchan',
+    'monoprix',
+    'ooshop',
+    'dalliz',
     'cart',
-    'rest_framework',
-    'apps.api',
     'mturk',
     'apps.frontend',
-    'libs.soupselect',
+
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
@@ -220,13 +226,6 @@ if SANDBOX:
 else:
     HOST = 'mechanicalturk.amazonaws.com'
 
-#if not DEBUG:
-#    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-#    STATICFILES_STORAGE = DEFAULT_FILE_STORAGE
-#    AWS_STORAGE_BUCKET_NAME = 'dalliz_static'
-#    STATIC_URL = '//s3.amazonaws.com/%s/' % AWS_STORAGE_BUCKET_NAME
-#    ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
-
 # Cache busting
 from django.template.loader import add_to_builtins
 # from cachebuster.detectors import git
@@ -235,7 +234,7 @@ add_to_builtins('cachebuster.templatetags.cachebuster')
 # CACHEBUSTER_UNIQUE_STRING = git.unique_string(__file__)
 CACHEBUSTER_PREPEND_STATIC = False
 
-# Sendgrid configuration
+# Email configuration
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'hello@dalliz.com'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -266,6 +265,13 @@ def get_cache():
 
 CACHES = get_cache()
 
-# Rest API framework
 
-# DEFAULT_RENDERER_CLASSES = ( 'serializer.category.UnicodeJSONRenderer',)
+# Haystack configuration
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'mastercourses',
+        'TIMEOUT': 60,
+    },
+}  
