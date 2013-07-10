@@ -34,6 +34,10 @@ urlpatterns = patterns('',
 
     # Osm
     url(r'osm/?$', views.OSMSAPIView.as_view()),
+
+
+    # Search
+    url(r'search/?$', cache_page(60 * 60 * 24)(views.SearchAPIView.as_view()))
 )
 
 urlpatterns += patterns('',

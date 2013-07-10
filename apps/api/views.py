@@ -21,6 +21,8 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.views import APIView
 
+from haystack.query import SearchQuerySet
+
 from apps.scrapers.ooshop.ooshopscraper import OoshopScraper
 from apps.scrapers.monoprix.monoprixscraper import MonoprixScraper
 from apps.scrapers.auchan.auchanscraper import AuchanScraper
@@ -340,7 +342,6 @@ class CategoryMatching(CategorySimple):
 		serializer_class_name = '%sProductSerializer'%osm_name.capitalize()
 		
 		if serializer_class_name in global_keys:
-			global_keys = globals().keys()
 			serialized = []
 			# Processing matching
 			for product in products:
@@ -845,5 +846,46 @@ class OSMSAPIView(BetaRestrictionAPIView):
 
 
 
+#----------------------------------------------------------------------------------------------------------------------------------------------
+#
+#														SEARCH
+#
+#----------------------------------------------------------------------------------------------------------------------------------------------
 
+class SearchAPIView(BetaRestrictionAPIView):
+	"""
+		This method handles search queries
+	"""
+
+	@osm
+	def get(self, request, osm_name = 'ooshop', osm_type='shipping', osm_location=None):
+		# V0 : full text search using haystack
+		# getting search parameter
+		text = u''
+
+		if 'text' in request.GET:
+			text = request.GET['text']
+
+
+		if text == '':
+			# If text is empty, return empty list no need to query elasticsearch
+			return []
+		else:
+			# Querying elastic search trough haystack
+			sqs = SearchQuerySet().filter(content = text, osm = osm_name)
+			data = []
+
+			global_keys = globals().keys()
+			serializer_class_name = '%sProductSerializer'%osm_name.capitalize()
 		
+			if serializer_class_name in global_keys:
+				Serializer_class = globals()[serializer_class_name]
+				for result in sqs:
+					product = result.object
+					serialized_product = Serializer_class(product, context = {'osm': {'name':osm_name,'type': osm_type, 'location':osm_location}}).data
+					data.append(serialized_product)
+
+			return data
+				
+
+
