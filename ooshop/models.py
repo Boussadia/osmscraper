@@ -44,6 +44,17 @@ class Brand(models.Model):
 	image_url = models.CharField(max_length=9999, null = True)
 	parent_brand = models.ForeignKey('self', null = True)
 
+	def get_dalliz_brand(self):
+		"""
+			This methoid retrieves the equivalent dalliz brand.
+		"""
+		brandmatch_set = self.brandmatch_set.all()
+
+		if brandmatch_set.count() == 1:
+			dalliz_brand = brandmatch_set[0].dalliz_brand
+			return dalliz_brand
+		return None
+
 	def __unicode__(self):
 		return self.name
 
