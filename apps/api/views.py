@@ -858,14 +858,13 @@ class SearchAPIView(BetaRestrictionAPIView):
 	"""
 
 	@osm
-	def get(self, request, osm_name = 'ooshop', osm_type='shipping', osm_location=None):
+	def post(self, request, osm_name = 'ooshop', osm_type='shipping', osm_location=None):
 		# V0 : full text search using haystack
 		# getting search parameter
 		text = u''
 
-		if 'text' in request.GET:
-			text = request.GET['text']
-
+		if 'text' in request.DATA:
+			text = request.DATA['text']
 
 		if text == '':
 			# If text is empty, return empty list no need to query elasticsearch
