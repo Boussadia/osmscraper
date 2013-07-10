@@ -17,6 +17,7 @@ define([
 			GooglAnalyticsHelper.init();
 			this.bind('route', this._trackPageview);
 			this.vent.on('route:category:force', this.forceCategory, this);
+			this.vent.on('search:results', this.search, this);
 		},
 		index: function(){
 			var url = this.DEFAULT_URL;
@@ -25,6 +26,10 @@ define([
 		category: function(parentCategoryName, childCategoryName){
 			var url = parentCategoryName+'/'+childCategoryName;
 			this.vent.trigger('route:category', {'url': url});
+		},
+		search: function(options){
+			this.navigate('search', {trigger: false});
+			this.vent.trigger('search:results:display', options);
 		},
 		forceCategory: function(){
 			var url;

@@ -3,8 +3,9 @@ define([
 	'views/base',
 	'models/category',
 	'collections/category',
-	'views/categoryCollection'
-], function(_, BaseView, CategoryModel, CategoryCollection, CategoryCollectionView){
+	'views/categoryCollection',
+	'views/product'
+], function(_, BaseView, CategoryModel, CategoryCollection, CategoryCollectionView, ProductView){
 
 	var MainView = BaseView.extend({
 		el: 'section#main div.block-left',
@@ -15,6 +16,8 @@ define([
 
 			// Global event listening
 			this.vent.on('window:scroll', this.scrollController, this);
+			this.vent.on('search:results:display', this.renderSearch, this);
+
 			var that = this;
 
 			// Updating current osm
@@ -64,12 +67,26 @@ define([
 		},
 		render: function(categoryCollection){
 			this.closeSubViews();
+			this.$el.empty();
 			var view = new CategoryCollectionView({'collection': categoryCollection, 'osms': this.osms,'vent': this.vent});
 			this.addSubView(view);
 			this.$el.append(view.render().el);
 			categoryCollection.current ? view.$el.show() : view.$el.hide();
 			return this;
 
+		},
+		renderSearch: function(options){
+			this.closeSubViews();
+			this.$el.empty();
+			var results = options.results;
+
+			var that = this;
+
+			results.each(function(product, i){
+				var view = new ProductView({'product': product, 'vent': that.vent});
+				that.$el.append(view.render().el);
+			});
+			return this;
 		}
 	});
 

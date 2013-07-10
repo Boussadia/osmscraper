@@ -15,16 +15,15 @@ define([
 			do_search: function(e){
 				if (e.keyCode === 13){
 					// Pressing enter -> performing search
-					console
-					this.search = new SearchModel({
+					this.search_model = new SearchModel({
 						text: this.$el.val()
+					},
+					{
+						'vent': this.vent
 					});
 					var that = this;
-					this.bindTo(this.search, 'search:ready', function(results){
-						that.render(results);
-					});
 
-					this.search.save(null, {
+					this.search_model.save(null, {
 						attrs: {
 							text: this.$el.val()
 						}
@@ -32,7 +31,6 @@ define([
 				}
 			},
 			render: function(resutls){
-				console.log(resutls);
 			}
 
 		});

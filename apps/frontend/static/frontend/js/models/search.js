@@ -7,12 +7,15 @@ define([
 			url: '/api/search',
 
 			initialize: function(){
-				this.results = new SearchResultsCollection( this.get( "results" ) );
-				this.trigger( "search:ready", this );
 			},
 
 			parse: function(response, options){
-				this.results = response
+				// Setting search result in collection
+				this.results = new SearchResultsCollection( response , {'vent': this.vent});
+				this.vent.trigger('search:results', {
+					'results':this.results
+				});
+				return this.toJSON();
 			}
 
 		});

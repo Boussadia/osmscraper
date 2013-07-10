@@ -139,7 +139,7 @@ define([
 		this.Views.userbar.render();
 
 		// Search
-		this.Views.search = new SearchView();
+		this.Views.search = new SearchView({'vent': this.Vent});
 
 		var that = this;
 
