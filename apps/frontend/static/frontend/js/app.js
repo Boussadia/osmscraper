@@ -18,8 +18,9 @@ define([
 	'views/switch',
 	'views/cart-importation',
 	'views/cart-export',
+	'views/search',
 	'cookie'
-], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel,CartImporationModel, CartExportModel, UserModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView, SwitchView, CartImporationView, CartExportView){
+], function($,_ , Backbone, Router, OsmsCollections, OsmModel, CartModel,CartImporationModel, CartExportModel, UserModel, MenuView, MainView, ComparatorView, CartView, LoginView, UserBarView, SwitchView, CartImporationView, CartExportView, SearchView){
 
 	// Adding capitalize to underscore
 	_.mixin({
@@ -136,6 +137,9 @@ define([
 		this.Models.user.fetch(); // Getting user details from server
 		this.Views.userbar = new UserBarView({'user': this.Models.user, 'vent': this.Vent});
 		this.Views.userbar.render();
+
+		// Search
+		this.Views.search = new SearchView();
 
 		var that = this;
 
