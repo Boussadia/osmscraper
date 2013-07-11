@@ -9,7 +9,8 @@
 			'underscore': 'libs/underscore/underscore',
 			'backbone': 'libs/backbone/backbone',
 			'foundation': 'libs/foundation/foundation.min',
-			'analytics': 'libs/google/analytics'
+			'analytics': 'libs/google/analytics',
+			'typeahead': 'libs/typeahead.js/typeahead'
 		},
 		shim: {
 			'cookie': {
@@ -32,6 +33,9 @@
 				exports: 'Modernizr'
 			},
 			'foundation': {
+				deps: ['jquery']
+			},
+			'typeahead': {
 				deps: ['jquery']
 			}
 		},
