@@ -55,9 +55,24 @@
 		<div id="main-logo-bar">
 			<a href="/"><img src="{% static frontend/img/header/logo-small.png %}"></a>
 			<div class='moto' >Mes courses simplement moins chères</div>
-			<div id='search-container'>
-				<input id="search" placeHolder = 'Rechercher un produit'></input>
-			</div>
+
+			<!-- Search bar -->
+			<ul class="nav-search">
+				<li id="search-container">
+					<input id="search" placeHolder = 'Rechercher un produit'></input>
+					<input type="button" name="search_button" id="search_button">
+				</li>
+
+				<li id="search-osm">
+					<a href="#">Monoprix</a>
+					<ul class="sub-osm">
+						<li><a href="#">Ooshop</a></li>
+						<li><a href="#">AuchanDirect</a></li>
+					</ul>
+				</li>
+			</ul>
+
+
 		</div>
 		<!-- MENU -->
 		<header class='block'>
