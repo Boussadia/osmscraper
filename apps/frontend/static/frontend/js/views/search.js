@@ -16,13 +16,13 @@ define([
 						name: 'products-sugestion',
 						local: [],
 						remote: '/api/autocomplete/products/%QUERY',
-						header: '<h3 class="league-name">Produits</h3>'
+						header: '<h3 class="suggestion-header">Produits</h3>'
 					},
 					{
 						name: 'brands-sugestion',
 						local: [],
 						remote: '/api/autocomplete/brands/%QUERY',
-						header: '<h3 class="league-name">Marques</h3>'
+						header: '<h3 class="suggestion-header">Marques</h3>'
 					}
 				]);
 			},
