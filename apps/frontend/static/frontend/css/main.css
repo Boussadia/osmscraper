@@ -219,13 +219,13 @@ header.top .block-right{
     display: inline-block;
 }
  
-.nav li {
+.nav-search li {
     float: left;
     list-style-type: none;
     position: relative;
 }
 
-.nav li a {
+.nav-search li a {
     font-size: 16px;
     color: white;
     display: block;
@@ -236,7 +236,7 @@ header.top .block-right{
     font-family: Montserrat, sans-serif;
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
-.nav li a:hover {
+.nav-search li a:hover {
     background-color: #2e2e2e;
 }
 
