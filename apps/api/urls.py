@@ -37,7 +37,10 @@ urlpatterns = patterns('',
 
 
     # Search
-    url(r'search/?$', cache_page(60 * 60 * 24)(views.SearchAPIView.as_view()))
+    url(r'search/?$', cache_page(60 * 60 * 24)(views.SearchAPIView.as_view())),
+
+    # Uatocomplete
+    url(r'autocomplete/(?P<type_fetched>products|brands)/(?P<text>(.+))/?', cache_page(60 * 60 * 24)(views.AutocompleteAPIView.as_view())),
 )
 
 urlpatterns += patterns('',

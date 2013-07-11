@@ -887,4 +887,22 @@ class SearchAPIView(BetaRestrictionAPIView):
 			return data
 				
 
+#----------------------------------------------------------------------------------------------------------------------------------------------
+#
+#														Autocomplete
+#
+#----------------------------------------------------------------------------------------------------------------------------------------------
 
+class AutocompleteAPIView(BetaRestrictionAPIView):
+	"""
+		This method handles autocomplete queries
+	"""
+
+	@osm
+	def get(self, request, type_fetched, text,osm_name = 'ooshop', osm_type='shipping', osm_location=None):
+		if type_fetched == 'products':
+			sqs = SearchQuerySet().filter(osm = osm_name).autocomplete(name_auto=text)[:10]
+			return [r.object.name for r in sqs]
+		else:
+			sqs = SearchQuerySet().filter(osm = 'dalliz').autocomplete(name_auto=text)[:10]
+			return [r.object.name for r in sqs]

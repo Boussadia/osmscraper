@@ -7,6 +7,9 @@ class ProductIndex(indexes.SearchIndex, indexes.Indexable):
 	brand = indexes.CharField(model_attr='brand__get_dalliz_brand', default = '')
 	osm = indexes.CharField(default='ooshop')
 
+	# autocomplete for name
+	name_auto = indexes.EdgeNgramField(model_attr='name', default = '')
+
 	def get_model(self):
 		return Product
 
